@@ -39,113 +39,114 @@ export interface TwilioAPISubcategory {
   description: string;
 }
 
-// Comprehensive Twilio API Categories
+// Business-focused Twilio API Categories for Subscription Billing
 export const TWILIO_API_CATEGORIES: TwilioAPICategory[] = [
   {
-    id: 'messaging',
-    name: 'Messaging',
-    description: 'SMS, MMS, WhatsApp, and other messaging services',
-    icon: 'MessageSquare',
+    id: 'marketing',
+    name: 'Marketing',
+    description: 'Customer acquisition, campaigns, and promotional messaging',
+    icon: 'TrendingUp',
     subcategories: [
-      { id: 'sms', name: 'SMS', description: 'Send and manage SMS messages' },
-      { id: 'mms', name: 'MMS', description: 'Send and manage MMS messages' },
-      { id: 'whatsapp', name: 'WhatsApp', description: 'WhatsApp Business API' },
-      { id: 'conversations', name: 'Conversations', description: 'Unified messaging conversations' }
+      { id: 'campaigns', name: 'SMS Campaigns', description: 'Bulk marketing SMS and promotional messages' },
+      { id: 'sequences', name: 'Drip Sequences', description: 'Automated marketing message sequences' },
+      { id: 'segmentation', name: 'Segmentation', description: 'Customer segmentation and targeting' },
+      { id: 'analytics', name: 'Campaign Analytics', description: 'Marketing performance tracking' }
     ]
   },
   {
-    id: 'voice',
-    name: 'Voice & Calls',
-    description: 'Voice calls, recordings, and call management',
-    icon: 'Phone',
-    subcategories: [
-      { id: 'calls', name: 'Calls', description: 'Make and manage voice calls' },
-      { id: 'recordings', name: 'Recordings', description: 'Call recordings and transcriptions' },
-      { id: 'conferences', name: 'Conferences', description: 'Conference calling' },
-      { id: 'twiml', name: 'TwiML', description: 'Twilio Markup Language' }
-    ]
-  },
-  {
-    id: 'video',
-    name: 'Video',
-    description: 'Video calling and streaming services',
-    icon: 'Video',
-    subcategories: [
-      { id: 'rooms', name: 'Video Rooms', description: 'Video calling rooms' },
-      { id: 'compositions', name: 'Compositions', description: 'Video compositions and recordings' },
-      { id: 'media', name: 'Media', description: 'Media processing and storage' }
-    ]
-  },
-  {
-    id: 'verify',
-    name: 'Verify',
-    description: 'Phone number verification and 2FA',
+    id: 'compliance',
+    name: 'Compliance & SPAM',
+    description: 'Regulatory compliance, opt-in/out management, and SPAM prevention',
     icon: 'Shield',
     subcategories: [
-      { id: 'verifications', name: 'Verifications', description: 'Phone verification services' },
-      { id: 'services', name: 'Services', description: 'Verification service management' }
+      { id: 'opt-management', name: 'Opt-In/Out', description: 'Subscription consent management' },
+      { id: 'compliance-check', name: 'Compliance Check', description: 'Message compliance validation' },
+      { id: 'carrier-filtering', name: 'Carrier Filtering', description: 'Carrier-level SPAM protection' },
+      { id: 'regulatory', name: 'Regulatory', description: 'TCPA, CAN-SPAM compliance tools' }
     ]
   },
   {
-    id: 'lookup',
-    name: 'Lookup',
-    description: 'Phone number information and validation',
-    icon: 'Search',
+    id: 'billing-usage',
+    name: 'Billing & Usage',
+    description: 'Payment notifications, usage tracking, and billing communications',
+    icon: 'CreditCard',
     subcategories: [
-      { id: 'phone-numbers', name: 'Phone Numbers', description: 'Phone number information lookup' },
-      { id: 'carrier', name: 'Carrier', description: 'Carrier information lookup' }
+      { id: 'payment-reminders', name: 'Payment Reminders', description: 'Automated billing reminders' },
+      { id: 'failed-payments', name: 'Failed Payments', description: 'Failed payment recovery messaging' },
+      { id: 'usage-alerts', name: 'Usage Alerts', description: 'Service usage notifications' },
+      { id: 'billing-confirmations', name: 'Confirmations', description: 'Payment and billing confirmations' }
     ]
   },
   {
-    id: 'notify',
-    name: 'Notify',
-    description: 'Push notifications and multi-channel messaging',
-    icon: 'Bell',
+    id: 'customer-service',
+    name: 'Customer Service',
+    description: 'Support communications and customer care',
+    icon: 'Headphones',
     subcategories: [
-      { id: 'services', name: 'Services', description: 'Notification services' },
-      { id: 'bindings', name: 'Bindings', description: 'Device bindings for push notifications' }
+      { id: 'support-tickets', name: 'Support Tickets', description: 'Automated support communications' },
+      { id: 'status-updates', name: 'Status Updates', description: 'Service status and maintenance alerts' },
+      { id: 'escalations', name: 'Escalations', description: 'Support escalation notifications' },
+      { id: 'satisfaction', name: 'Satisfaction', description: 'Customer satisfaction surveys' }
     ]
   },
   {
-    id: 'chat',
-    name: 'Chat',
-    description: 'In-app chat and messaging',
-    icon: 'MessageCircle',
+    id: 'onboarding',
+    name: 'Onboarding & Lifecycle',
+    description: 'Customer onboarding, lifecycle management, and retention',
+    icon: 'UserCheck',
     subcategories: [
-      { id: 'services', name: 'Services', description: 'Chat service management' },
-      { id: 'channels', name: 'Channels', description: 'Chat channels' },
-      { id: 'users', name: 'Users', description: 'Chat users management' }
+      { id: 'welcome-series', name: 'Welcome Series', description: 'New customer onboarding sequences' },
+      { id: 'activation', name: 'Activation', description: 'Account activation and setup' },
+      { id: 'retention', name: 'Retention', description: 'Customer retention campaigns' },
+      { id: 'winback', name: 'Win-back', description: 'Churn prevention and win-back campaigns' }
     ]
   },
   {
-    id: 'sync',
-    name: 'Sync',
-    description: 'Real-time data synchronization',
-    icon: 'RefreshCw',
+    id: 'authentication',
+    name: 'Authentication & Security',
+    description: 'Two-factor authentication and security verification',
+    icon: 'Lock',
     subcategories: [
-      { id: 'services', name: 'Services', description: 'Sync services' },
-      { id: 'documents', name: 'Documents', description: 'Sync documents' },
-      { id: 'lists', name: 'Sync Lists', description: 'Synchronized lists' }
+      { id: 'two-factor', name: '2FA Verification', description: 'Two-factor authentication codes' },
+      { id: 'login-alerts', name: 'Login Alerts', description: 'Suspicious login notifications' },
+      { id: 'password-reset', name: 'Password Reset', description: 'Password reset verification' },
+      { id: 'security-alerts', name: 'Security Alerts', description: 'Account security notifications' }
     ]
   },
   {
-    id: 'numbers',
-    name: 'Phone Numbers',
-    description: 'Phone number management and provisioning',
-    icon: 'Hash',
+    id: 'voice-calls',
+    name: 'Voice & Calls',
+    description: 'Voice calls for support, sales, and customer outreach',
+    icon: 'Phone',
     subcategories: [
-      { id: 'incoming', name: 'Incoming Numbers', description: 'Manage your Twilio phone numbers' },
-      { id: 'available', name: 'Available Numbers', description: 'Search for available phone numbers' }
+      { id: 'sales-calls', name: 'Sales Calls', description: 'Automated sales and follow-up calls' },
+      { id: 'support-calls', name: 'Support Calls', description: 'Customer support voice interactions' },
+      { id: 'reminders', name: 'Voice Reminders', description: 'Automated voice reminders' },
+      { id: 'ivr', name: 'IVR Systems', description: 'Interactive voice response systems' }
     ]
   },
   {
-    id: 'accounts',
-    name: 'Accounts',
-    description: 'Account management and subaccounts',
-    icon: 'Users',
+    id: 'analytics-reporting',
+    name: 'Analytics & Reporting',
+    description: 'Communication analytics, delivery reports, and insights',
+    icon: 'BarChart3',
     subcategories: [
-      { id: 'main', name: 'Main Account', description: 'Main account management' },
-      { id: 'subaccounts', name: 'Subaccounts', description: 'Subaccount management' }
+      { id: 'delivery-reports', name: 'Delivery Reports', description: 'Message delivery status tracking' },
+      { id: 'engagement', name: 'Engagement Metrics', description: 'Customer engagement analytics' },
+      { id: 'roi-tracking', name: 'ROI Tracking', description: 'Communication ROI measurement' },
+      { id: 'performance', name: 'Performance', description: 'Campaign performance analytics' }
+    ]
+  },
+  {
+    id: 'integration-apis',
+    name: 'Integration & APIs',
+    description: 'Core APIs for integration with billing and CRM systems',
+    icon: 'Zap',
+    subcategories: [
+      { id: 'webhook-management', name: 'Webhooks', description: 'Webhook configuration and management' },
+      { id: 'api-management', name: 'API Management', description: 'API key and access management' },
+      { id: 'bulk-operations', name: 'Bulk Operations', description: 'Bulk messaging and operations' },
+      { id: 'real-time', name: 'Real-time APIs', description: 'Real-time communication APIs' }
     ]
   }
 ];
