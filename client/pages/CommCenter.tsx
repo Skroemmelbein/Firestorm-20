@@ -539,7 +539,9 @@ export default function CommCenter() {
                                 <div key={step.id} className="flex items-center gap-1">
                                   <Badge variant="outline" className="gap-1">
                                     <Icon className="w-3 h-3" />
-                                    {step.type === 'wait' ? `${step.delay}h` : step.type}
+                                    {step.type === 'wait' ? `${step.delay || 0}h` :
+                                     step.type === 'condition' ? 'condition' :
+                                     step.type}
                                   </Badge>
                                   {index < journey.steps.length - 1 && (
                                     <div className="w-4 h-px bg-border" />
