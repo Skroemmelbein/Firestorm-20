@@ -431,9 +431,17 @@ export default function Integrations() {
                   />
                 </div>
 
-                <Button onClick={testTwilioConnection} disabled={testing.twilio} variant="outline">
-                  {testing.twilio ? 'Testing...' : 'Test Connection'}
-                </Button>
+                <div className="flex gap-2">
+                  <Button onClick={testTwilioConnection} disabled={testing.twilio} variant="outline">
+                    {testing.twilio ? 'Testing...' : 'Test Connection'}
+                  </Button>
+                  <RouterLink to="/twilio-vault">
+                    <Button variant="ghost" className="gap-2">
+                      <ExternalLink className="w-4 h-4" />
+                      Browse API Vault
+                    </Button>
+                  </RouterLink>
+                </div>
 
                 {twilioStatus.error && (
                   <Alert variant="destructive">
