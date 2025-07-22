@@ -27,31 +27,36 @@ interface AdminLayoutProps {
 const navigationItems = [
   {
     id: 'admin',
-    label: 'Admin Dashboard',
-    icon: Database,
+    label: 'Administration',
+    icon: Settings,
     path: '/admin',
-    description: 'Overview and system management'
+    description: 'System management & configuration',
+    subItems: [
+      { id: 'dashboard', label: 'Dashboard', path: '/admin', icon: Database },
+      { id: 'api-vault', label: 'API Vault', path: '/twilio-vault', icon: Database },
+      { id: 'settings', label: 'Settings', path: '/integrations', icon: Settings }
+    ]
   },
   {
     id: 'billing-kit',
-    label: 'Client Billing Kit',
+    label: 'Client Services',
     icon: CreditCard,
     path: '/billing-kit',
-    description: 'Invoices, ID cards & digital wallet'
+    description: 'Client billing & account management'
   },
   {
     id: 'business-overview',
-    label: 'Business Overview',
+    label: 'Analytics',
     icon: BarChart3,
     path: '/business-overview',
-    description: 'Analytics, charts & predictions'
+    description: 'Business intelligence & forecasting'
   },
   {
     id: 'comm',
-    label: 'Comm Center',
+    label: 'Communications',
     icon: MessageSquare,
     path: '/comm-center',
-    description: 'Communication management'
+    description: 'Customer communication management'
   }
 ];
 
@@ -64,9 +69,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   );
 
   return (
-    <div className="min-h-screen animate-fade-in">
+    <div className="min-h-screen animate-fade-in animated-bg">
       {/* Top Header */}
-      <header className="glass-nav sticky top-0 z-50 animate-slide-up">
+      <header className="glass-nav sticky top-0 z-50 animate-slide-up corp-shadow">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
             <Button
@@ -79,12 +84,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </Button>
             
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 flex items-center justify-center animate-glow">
+              <div className="w-8 h-8 rounded-md bg-gradient-to-br from-blue-600 via-blue-700 to-green-600 flex items-center justify-center corp-shadow">
                 <Zap className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold gradient-text">RecurFlow Pro</h1>
-                <p className="text-xs text-purple-600/70">Client Billing Suite</p>
+                <h1 className="text-lg font-bold gradient-text tracking-tight">RecurFlow Enterprise</h1>
+                <p className="text-xs text-blue-600/70 font-medium">Business Management Platform</p>
               </div>
             </div>
           </div>
@@ -113,7 +118,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className="flex">
         {/* Sidebar Navigation */}
         <nav className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 glass-sidebar transform transition-all duration-300 ease-out lg:translate-x-0 lg:static lg:inset-0",
+          "fixed inset-y-0 left-0 z-40 w-72 glass-sidebar transform transition-all duration-300 ease-out lg:translate-x-0 lg:static lg:inset-0 corp-shadow-lg",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}>
           <div className="flex flex-col h-full pt-16 lg:pt-0">
@@ -129,26 +134,26 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       to={item.path}
                       onClick={() => setSidebarOpen(false)}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-300 group transform hover:scale-105",
+                        "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group font-medium",
                         isActive
-                          ? "glass-card bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg animate-glow"
-                          : "text-purple-700 hover:text-purple-900 hover:glass-card"
+                          ? "glass-card bg-gradient-to-r from-blue-600 to-green-600 text-white corp-shadow-lg"
+                          : "text-blue-700 hover:text-blue-900 hover:glass-card hover:corp-shadow"
                       )}
                     >
                       <Icon className={cn(
                         "w-5 h-5 flex-shrink-0",
-                        isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"
+                        isActive ? "text-white" : "text-blue-600 group-hover:text-blue-800"
                       )} />
                       <div className="flex-1 min-w-0">
                         <div className={cn(
-                          "font-medium text-sm",
-                          isActive ? "text-primary-foreground" : "text-foreground"
+                          "font-semibold text-sm tracking-wide",
+                          isActive ? "text-white" : "text-blue-800"
                         )}>
                           {item.label}
                         </div>
                         <div className={cn(
-                          "text-xs",
-                          isActive ? "text-primary-foreground/70" : "text-muted-foreground"
+                          "text-xs font-medium",
+                          isActive ? "text-white/80" : "text-blue-600/70"
                         )}>
                           {item.description}
                         </div>
