@@ -188,8 +188,8 @@ export default function BusinessOverview() {
         {/* Header */}
         <div className="flex items-center justify-between animate-slide-up">
           <div>
-            <h1 className="text-3xl font-bold gradient-text">Business Overview</h1>
-            <p className="text-purple-600/70">Analytics, predictions & AI-powered insights</p>
+            <h1 className="text-3xl font-bold gradient-text tracking-tight">Business Analytics</h1>
+            <p className="text-blue-700/70 font-medium">Enterprise analytics, forecasting & intelligence</p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant={autoPredict ? "default" : "outline"} className="gap-1">
@@ -209,56 +209,56 @@ export default function BusinessOverview() {
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 animate-scale-in">
-          <Card className="glass-card">
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-              <DollarSign className="h-4 w-4 text-purple-600" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Monthly Revenue</CardTitle>
+              <DollarSign className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold gradient-text">$67,000</div>
-              <p className="text-xs text-green-600 flex items-center gap-1">
+              <p className="text-xs text-green-600 font-medium flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
                 +23% from last month
               </p>
             </CardContent>
           </Card>
 
-          <Card className="glass-card">
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Subscriptions</CardTitle>
-              <Users className="h-4 w-4 text-purple-600" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Active Subscriptions</CardTitle>
+              <Users className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold gradient-text">1,120</div>
-              <p className="text-xs text-green-600 flex items-center gap-1">
+              <p className="text-xs text-green-600 font-medium flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
                 +130 this month
               </p>
             </CardContent>
           </Card>
 
-          <Card className="glass-card">
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Retention Rate</CardTitle>
-              <Award className="h-4 w-4 text-purple-600" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Retention Rate</CardTitle>
+              <Award className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold gradient-text">96.5%</div>
-              <p className="text-xs text-green-600 flex items-center gap-1">
+              <p className="text-xs text-green-600 font-medium flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
                 +1.7% improvement
               </p>
             </CardContent>
           </Card>
 
-          <Card className="glass-card">
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">AI Predictions</CardTitle>
-              <Brain className="h-4 w-4 text-purple-600" />
+              <CardTitle className="text-sm font-semibold text-blue-800">AI Predictions</CardTitle>
+              <Brain className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold gradient-text">{predictions.length}</div>
-              <p className="text-xs text-purple-600 flex items-center gap-1">
+              <p className="text-xs text-blue-600 font-medium flex items-center gap-1">
                 <RefreshCw className="w-3 h-3" />
                 Live monitoring
               </p>
@@ -267,7 +267,7 @@ export default function BusinessOverview() {
         </div>
 
         <Tabs defaultValue="analytics" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3 glass-card">
+          <TabsList className="grid w-full grid-cols-3 glass-card corp-shadow">
             <TabsTrigger value="analytics" className="gap-2">
               <BarChart3 className="w-4 h-4" />
               Analytics
