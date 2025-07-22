@@ -292,8 +292,12 @@ export default function TwilioVault() {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <Tabs defaultValue="browse" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-3">
+            <Tabs defaultValue="manager" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="manager" className="gap-2">
+                  <Database className="w-4 h-4" />
+                  API Manager
+                </TabsTrigger>
                 <TabsTrigger value="browse" className="gap-2">
                   <Book className="w-4 h-4" />
                   Browse APIs
@@ -307,6 +311,11 @@ export default function TwilioVault() {
                   Test History
                 </TabsTrigger>
               </TabsList>
+
+              {/* API Manager Tab */}
+              <TabsContent value="manager" className="space-y-4">
+                <TwilioAPIManager />
+              </TabsContent>
 
               {/* Browse APIs */}
               <TabsContent value="browse" className="space-y-4">
