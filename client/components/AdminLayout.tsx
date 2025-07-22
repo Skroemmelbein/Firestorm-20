@@ -19,7 +19,7 @@ import {
   X,
   Building,
   Package,
-  Robot,
+  Bot,
   Shield,
   Wallet
 } from "lucide-react";
