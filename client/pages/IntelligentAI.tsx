@@ -16,7 +16,7 @@ export default function IntelligentAI() {
             <p className="text-blue-700/70 font-medium">AI-powered insights, automation, and predictive analytics</p>
           </div>
           <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 corp-shadow">
-            <Robot className="w-4 h-4" />
+            <Bot className="w-4 h-4" />
             Train Model
           </Button>
         </div>
