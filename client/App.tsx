@@ -14,6 +14,9 @@ import BillingLogic from "./pages/BillingLogic";
 import CommCenter from "./pages/CommCenter";
 import Integrations from "./pages/Integrations";
 import TwilioVault from "./pages/TwilioVault";
+import MemberPortal from "./pages/MemberPortal";
+import Fulfillment from "./pages/Fulfillment";
+import IntelligentAI from "./pages/IntelligentAI";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
