@@ -118,20 +118,20 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-            <p className="text-muted-foreground">Manage your recurring billing infrastructure</p>
+            <h1 className="text-3xl font-bold gradient-text tracking-tight">Administration Center</h1>
+            <p className="text-blue-700/70 font-medium">Enterprise billing infrastructure management</p>
           </div>
           <div className="flex gap-2">
             <Link to="/twilio-vault">
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline" className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50 corp-shadow">
                 <Database className="w-4 h-4" />
                 API Vault
               </Button>
             </Link>
-            <Link to="/settings">
-              <Button className="gap-2">
+            <Link to="/integrations">
+              <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 corp-shadow">
                 <Settings className="w-4 h-4" />
-                Settings
+                System Settings
               </Button>
             </Link>
           </div>
@@ -139,27 +139,27 @@ export default function AdminDashboard() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card>
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Subscriptions</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Total Subscriptions</CardTitle>
+              <Users className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{systemStats.totalSubscriptions.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                +12% from last month
+              <div className="text-2xl font-bold gradient-text">{systemStats.totalSubscriptions.toLocaleString()}</div>
+              <p className="text-xs text-green-600 font-medium">
+                ↗ +12% from last month
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Subscriptions</CardTitle>
-              <Activity className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Active Subscriptions</CardTitle>
+              <Activity className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{systemStats.activeSubscriptions.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="text-2xl font-bold gradient-text">{systemStats.activeSubscriptions.toLocaleString()}</div>
+              <p className="text-xs text-blue-600 font-medium">
                 87.7% retention rate
               </p>
             </CardContent>
