@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Settings, 
-  Database, 
-  MessageSquare, 
+import {
+  Settings,
+  Database,
+  MessageSquare,
   CreditCard,
   BarChart3,
   Users,
