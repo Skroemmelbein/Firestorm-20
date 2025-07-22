@@ -35,9 +35,9 @@ interface TwilioAPI {
   lastUsed: string;
 }
 
-import { TWILIO_COMPLETE_API_VAULT, TWILIO_BUSINESS_CATEGORIES } from "../shared/twilio-complete-api-vault";
+import { ALL_TWILIO_APIS, TWILIO_BUSINESS_CATEGORIES } from "../shared/twilio-complete-api-registry";
 
-const twilioAPIs = TWILIO_COMPLETE_API_VAULT.map(api => ({
+const twilioAPIs = ALL_TWILIO_APIS.map(api => ({
   id: api.id,
   name: api.name,
   endpoint: api.path,
