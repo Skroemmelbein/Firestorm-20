@@ -121,7 +121,7 @@ const navigationItems = [
   {
     id: 'intelligent-ai',
     label: 'INTELLIGENT AI',
-    icon: Robot,
+    icon: Bot,
     path: '/ai',
     description: 'AI-powered insights & automation',
     subItems: [
