@@ -129,36 +129,63 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   const isActive = location.pathname.startsWith(item.path);
                   
                   return (
-                    <Link
-                      key={item.id}
-                      to={item.path}
-                      onClick={() => setSidebarOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group font-medium",
-                        isActive
-                          ? "glass-card bg-gradient-to-r from-blue-600 to-green-600 text-white corp-shadow-lg"
-                          : "text-blue-700 hover:text-blue-900 hover:glass-card hover:corp-shadow"
+                    <div key={item.id}>
+                      <Link
+                        to={item.path}
+                        onClick={() => setSidebarOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group font-medium",
+                          isActive
+                            ? "glass-card bg-gradient-to-r from-blue-600 to-green-600 text-white corp-shadow-lg"
+                            : "text-blue-700 hover:text-blue-900 hover:glass-card hover:corp-shadow"
+                        )}
+                      >
+                        <Icon className={cn(
+                          "w-5 h-5 flex-shrink-0",
+                          isActive ? "text-white" : "text-blue-600 group-hover:text-blue-800"
+                        )} />
+                        <div className="flex-1 min-w-0">
+                          <div className={cn(
+                            "font-semibold text-sm tracking-wide",
+                            isActive ? "text-white" : "text-blue-800"
+                          )}>
+                            {item.label}
+                          </div>
+                          <div className={cn(
+                            "text-xs font-medium",
+                            isActive ? "text-white/80" : "text-blue-600/70"
+                          )}>
+                            {item.description}
+                          </div>
+                        </div>
+                      </Link>
+
+                      {/* Admin subitems */}
+                      {item.id === 'admin' && isActive && item.subItems && (
+                        <div className="ml-4 mt-2 space-y-1">
+                          {item.subItems.map((subItem) => {
+                            const SubIcon = subItem.icon;
+                            const isSubActive = location.pathname === subItem.path;
+                            return (
+                              <Link
+                                key={subItem.id}
+                                to={subItem.path}
+                                onClick={() => setSidebarOpen(false)}
+                                className={cn(
+                                  "flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-200 text-xs font-medium",
+                                  isSubActive
+                                    ? "bg-white/20 text-white"
+                                    : "text-white/70 hover:text-white hover:bg-white/10"
+                                )}
+                              >
+                                <SubIcon className="w-4 h-4" />
+                                {subItem.label}
+                              </Link>
+                            );
+                          })}
+                        </div>
                       )}
-                    >
-                      <Icon className={cn(
-                        "w-5 h-5 flex-shrink-0",
-                        isActive ? "text-white" : "text-blue-600 group-hover:text-blue-800"
-                      )} />
-                      <div className="flex-1 min-w-0">
-                        <div className={cn(
-                          "font-semibold text-sm tracking-wide",
-                          isActive ? "text-white" : "text-blue-800"
-                        )}>
-                          {item.label}
-                        </div>
-                        <div className={cn(
-                          "text-xs font-medium",
-                          isActive ? "text-white/80" : "text-blue-600/70"
-                        )}>
-                          {item.description}
-                        </div>
-                      </div>
-                    </Link>
+                    </div>
                   );
                 })}
               </div>
