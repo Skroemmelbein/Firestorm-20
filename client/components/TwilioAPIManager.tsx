@@ -103,12 +103,18 @@ export default function TwilioAPIManager() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold gradient-text">Twilio API Management Center</h2>
-          <p className="text-blue-700/70 font-medium">Organize and monitor all Twilio API integrations</p>
+          <p className="text-blue-700/70 font-medium">Complete registry of all {twilioAPIs.length} Twilio APIs organized by business function</p>
         </div>
-        <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 corp-shadow">
-          <Plus className="w-4 h-4" />
-          Add New API
-        </Button>
+        <div className="flex items-center gap-3">
+          <div className="text-right">
+            <div className="text-2xl font-bold gradient-text">{twilioAPIs.length}</div>
+            <div className="text-xs text-blue-600/70">Total APIs</div>
+          </div>
+          <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 corp-shadow">
+            <Plus className="w-4 h-4" />
+            Add Custom API
+          </Button>
+        </div>
       </div>
 
       {/* Stats Overview */}
