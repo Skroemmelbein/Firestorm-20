@@ -610,7 +610,7 @@ export default function CommCenter() {
                               <div>
                                 <CardTitle className="text-lg">{campaign.name}</CardTitle>
                                 <CardDescription>
-                                  {campaign.scheduledAt && `Scheduled for ${campaign.scheduledAt.toLocaleDateString()}`}
+                                  {campaign.scheduledAt ? `Scheduled for ${campaign.scheduledAt.toLocaleDateString()}` : 'No schedule set'}
                                 </CardDescription>
                               </div>
                             </div>
