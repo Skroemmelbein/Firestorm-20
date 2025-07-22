@@ -209,6 +209,12 @@ export default function Index() {
               ) : (
                 <Badge variant="outline">Text Only</Badge>
               )}
+              <Link to="/integrations">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Settings className="w-4 h-4" />
+                  Integrations
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
