@@ -7,8 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  FileText, 
+import {
+  FileText,
   CreditCard,
   QrCode,
   Wallet,
@@ -29,7 +29,9 @@ import {
   Star,
   Gift,
   Shield,
-  Zap
+  Zap,
+  Clock,
+  AlertTriangle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
