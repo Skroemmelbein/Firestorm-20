@@ -38,13 +38,14 @@ import {
   Zap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { 
-  TWILIO_API_CATEGORIES, 
-  TWILIO_API_VAULT, 
-  TwilioAPIEndpoint, 
+import {
+  TWILIO_API_CATEGORIES,
+  TWILIO_API_VAULT,
+  TwilioAPIEndpoint,
   TwilioAPICategory,
-  TwilioAPITest 
+  TwilioAPITest
 } from "@shared/twilio-api-vault";
+import TwilioAPIManager from "@/components/TwilioAPIManager";
 
 const CATEGORY_ICONS = {
   'TrendingUp': TrendingUp,
