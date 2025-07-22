@@ -7,9 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { 
-  Database, 
-  Upload, 
+import {
+  Database,
+  Upload,
   Download,
   Settings,
   Activity,
@@ -22,7 +22,12 @@ import {
   Clock,
   FileText,
   Zap,
-  ExternalLink
+  ExternalLink,
+  Eye,
+  RefreshCw,
+  AlertTriangle,
+  Layout,
+  ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
