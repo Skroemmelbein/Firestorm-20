@@ -35,92 +35,22 @@ interface TwilioAPI {
   lastUsed: string;
 }
 
-const twilioAPIs: TwilioAPI[] = [
-  {
-    id: 'sms-api',
-    name: 'SMS API',
-    endpoint: '/2010-04-01/Accounts/{AccountSid}/Messages',
-    category: 'billing-communications',
-    subcategory: 'Payment Notifications',
-    businessFunction: 'Payment reminders, failed payment alerts',
-    kpiImpact: 'Payment recovery rate ↑ 34%',
-    costPerUse: 0.0075,
-    priorityLevel: 5,
-    status: 'active',
-    monthlyUsage: 2847,
-    lastUsed: '2 hours ago'
-  },
-  {
-    id: 'verify-api',
-    name: 'Verify API',
-    endpoint: '/v2/Services/{ServiceSid}/Verifications',
-    category: 'authentication-security',
-    subcategory: 'Phone Verification',
-    businessFunction: 'Member account verification, 2FA',
-    kpiImpact: 'Security incidents ↓ 67%',
-    costPerUse: 0.05,
-    priorityLevel: 5,
-    status: 'active',
-    monthlyUsage: 1247,
-    lastUsed: '15 minutes ago'
-  },
-  {
-    id: 'voice-api',
-    name: 'Voice API',
-    endpoint: '/2010-04-01/Accounts/{AccountSid}/Calls',
-    category: 'billing-communications',
-    subcategory: 'Payment Collection',
-    businessFunction: 'Automated payment collection calls',
-    kpiImpact: 'Collection rate ↑ 28%',
-    costPerUse: 0.013,
-    priorityLevel: 4,
-    status: 'testing',
-    monthlyUsage: 567,
-    lastUsed: '1 day ago'
-  },
-  {
-    id: 'flex-api',
-    name: 'Flex API',
-    endpoint: '/v1/Accounts/{AccountSid}/Flex',
-    category: 'customer-support',
-    subcategory: 'Contact Center',
-    businessFunction: 'Customer support and engagement',
-    kpiImpact: 'Support resolution ↑ 45%',
-    costPerUse: 0.15,
-    priorityLevel: 3,
-    status: 'inactive',
-    monthlyUsage: 234,
-    lastUsed: '3 days ago'
-  },
-  {
-    id: 'video-api',
-    name: 'Video API',
-    endpoint: '/v1/Rooms',
-    category: 'premium-services',
-    subcategory: 'Member Consultations',
-    businessFunction: 'Premium member video consultations',
-    kpiImpact: 'Premium conversions ↑ 56%',
-    costPerUse: 0.004,
-    priorityLevel: 3,
-    status: 'active',
-    monthlyUsage: 89,
-    lastUsed: '6 hours ago'
-  },
-  {
-    id: 'insights-api',
-    name: 'Insights API',
-    endpoint: '/v1/Accounts/{AccountSid}/Insights',
-    category: 'analytics-intelligence',
-    subcategory: 'Communication Analytics',
-    businessFunction: 'Communication performance tracking',
-    kpiImpact: 'Campaign efficiency ↑ 23%',
-    costPerUse: 0.001,
-    priorityLevel: 2,
-    status: 'active',
-    monthlyUsage: 1567,
-    lastUsed: '30 minutes ago'
-  }
-];
+import { TWILIO_COMPLETE_API_VAULT, TWILIO_BUSINESS_CATEGORIES } from "../shared/twilio-complete-api-vault";
+
+const twilioAPIs = TWILIO_COMPLETE_API_VAULT.map(api => ({
+  id: api.id,
+  name: api.name,
+  endpoint: api.path,
+  category: api.category,
+  subcategory: api.subcategory,
+  businessFunction: api.businessFunction,
+  kpiImpact: api.kpiImpact,
+  costPerUse: api.costPerUse,
+  priorityLevel: api.priorityLevel,
+  status: api.status,
+  monthlyUsage: api.monthlyUsage,
+  lastUsed: api.lastUsed
+}));
 
 const categories = [
   { 
