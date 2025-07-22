@@ -151,16 +151,16 @@ export const TWILIO_API_CATEGORIES: TwilioAPICategory[] = [
   }
 ];
 
-// Sample API endpoints - this would be populated with the full Twilio API
+// Sample API endpoints - categorized for subscription billing business use
 export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
   {
-    id: 'send-sms',
-    name: 'Send SMS Message',
-    description: 'Send an SMS message to a phone number',
+    id: 'send-marketing-sms',
+    name: 'Send Marketing SMS',
+    description: 'Send promotional SMS message to customer segments',
     method: 'POST',
     path: '/2010-04-01/Accounts/{AccountSid}/Messages.json',
-    category: 'messaging',
-    subcategory: 'sms',
+    category: 'marketing',
+    subcategory: 'campaigns',
     requiredParams: [
       {
         name: 'To',
@@ -214,13 +214,13 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
     documentation: 'https://www.twilio.com/docs/sms/api/message-resource'
   },
   {
-    id: 'make-call',
-    name: 'Make Voice Call',
-    description: 'Initiate an outbound voice call',
+    id: 'payment-reminder',
+    name: 'Send Payment Reminder',
+    description: 'Send automated payment reminder to customers',
     method: 'POST',
-    path: '/2010-04-01/Accounts/{AccountSid}/Calls.json',
-    category: 'voice',
-    subcategory: 'calls',
+    path: '/2010-04-01/Accounts/{AccountSid}/Messages.json',
+    category: 'billing-usage',
+    subcategory: 'payment-reminders',
     requiredParams: [
       {
         name: 'To',
@@ -263,50 +263,90 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
       sid: 'CA1234567890abcdef1234567890abcdef',
       status: 'queued',
       to: '+1234567890',
-      from: '+1987654321'
+      body: 'Your payment of $29.99 is due tomorrow. Pay now to avoid service interruption: [link]'
     },
     pricing: {
-      cost: '$0.013',
-      unit: 'per minute'
+      cost: '$0.0075',
+      unit: 'per message'
     },
-    documentation: 'https://www.twilio.com/docs/voice/api/call-resource'
+    documentation: 'https://www.twilio.com/docs/sms/api/message-resource'
   },
   {
-    id: 'verify-phone',
-    name: 'Start Phone Verification',
-    description: 'Send a verification code to a phone number',
+    id: 'compliance-check',
+    name: 'Check Message Compliance',
+    description: 'Validate message content for regulatory compliance',
+    method: 'POST',
+    path: '/v1/Compliance/Messages/Validate',
+    category: 'compliance',
+    subcategory: 'compliance-check',
+    requiredParams: [
+      {
+        name: 'MessageBody',
+        type: 'string',
+        description: 'Message content to validate',
+        required: true,
+        example: 'Your subscription payment is due'
+      },
+      {
+        name: 'MessageType',
+        type: 'string',
+        description: 'Type of message (marketing, transactional, etc.)',
+        required: true,
+        example: 'billing'
+      }
+    ],
+    optionalParams: [
+      {
+        name: 'Industry',
+        type: 'string',
+        description: 'Industry vertical for compliance rules',
+        required: false,
+        example: 'financial_services'
+      }
+    ],
+    responseExample: {
+      compliant: true,
+      score: 95,
+      warnings: [],
+      recommendations: ['Add opt-out instructions']
+    },
+    pricing: {
+      cost: '$0.005',
+      unit: 'per validation'
+    },
+    documentation: 'https://www.twilio.com/docs/compliance/validation'
+  },
+  {
+    id: 'send-2fa',
+    name: 'Send 2FA Code',
+    description: 'Send two-factor authentication code for account security',
     method: 'POST',
     path: '/v2/Services/{ServiceSid}/Verifications',
-    category: 'verify',
-    subcategory: 'verifications',
+    category: 'authentication',
+    subcategory: 'two-factor',
     requiredParams: [
       {
         name: 'To',
         type: 'string',
-        description: 'Phone number to verify',
+        description: 'Phone number for 2FA code',
         required: true,
         example: '+1234567890'
       },
       {
         name: 'Channel',
         type: 'string',
-        description: 'Verification channel (sms, call, email)',
+        description: 'Delivery channel for code',
         required: true,
         example: 'sms'
       }
     ],
     optionalParams: [
       {
-        name: 'CustomFriendlyName',
-        type: 'string',
-        description: 'Custom name for the verification',
-        required: false
-      },
-      {
-        name: 'CustomMessage',
-        type: 'string',
-        description: 'Custom verification message',
-        required: false
+        name: 'CodeLength',
+        type: 'number',
+        description: 'Length of verification code',
+        required: false,
+        example: 6
       }
     ],
     responseExample: {
@@ -317,49 +357,9 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
     },
     pricing: {
       cost: '$0.05',
-      unit: 'per verification attempt'
+      unit: 'per verification'
     },
     documentation: 'https://www.twilio.com/docs/verify/api/verification'
-  },
-  {
-    id: 'lookup-phone',
-    name: 'Lookup Phone Number',
-    description: 'Get information about a phone number',
-    method: 'GET',
-    path: '/v1/PhoneNumbers/{PhoneNumber}',
-    category: 'lookup',
-    subcategory: 'phone-numbers',
-    requiredParams: [
-      {
-        name: 'PhoneNumber',
-        type: 'string',
-        description: 'Phone number to lookup',
-        required: true,
-        example: '+1234567890'
-      }
-    ],
-    optionalParams: [
-      {
-        name: 'Type',
-        type: 'array',
-        description: 'Additional information to include',
-        required: false,
-        example: ['carrier', 'caller-name']
-      }
-    ],
-    responseExample: {
-      phone_number: '+1234567890',
-      country_code: 'US',
-      carrier: {
-        name: 'Verizon',
-        type: 'mobile'
-      }
-    },
-    pricing: {
-      cost: '$0.005',
-      unit: 'per lookup'
-    },
-    documentation: 'https://www.twilio.com/docs/lookup/api'
   }
 ];
 
