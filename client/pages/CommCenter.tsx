@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   MessageSquare,
@@ -19,7 +18,6 @@ import {
   Settings,
   Play,
   Pause,
-  RotateCcw,
   Eye,
   Edit,
   Trash2,
@@ -30,10 +28,9 @@ import {
   Zap,
   Target,
   BarChart3,
-  Calendar,
   FileText,
   Download,
-  Upload
+  RefreshCw
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
@@ -83,7 +80,7 @@ interface Campaign {
 }
 
 export default function CommCenter() {
-  const [templates, setTemplates] = useState<MessageTemplate[]>([
+  const [templates] = useState<MessageTemplate[]>([
     {
       id: '1',
       name: 'Payment Reminder',
@@ -101,24 +98,14 @@ export default function CommCenter() {
       type: 'email',
       category: 'onboarding',
       subject: 'Welcome to {{company_name}}!',
-      content: 'Welcome {{customer_name}}! Thank you for subscribing to our {{plan_name}} plan. Get started: {{onboarding_link}}',
-      variables: ['customer_name', 'company_name', 'plan_name', 'onboarding_link'],
+      content: 'Welcome {{customer_name}}! Thank you for subscribing to our {{plan_name}} plan.',
+      variables: ['customer_name', 'company_name', 'plan_name'],
       active: true,
       successRate: 92.1
-    },
-    {
-      id: '3',
-      name: 'Failed Payment Recovery',
-      type: 'voice',
-      category: 'billing',
-      content: 'Hello {{customer_name}}, this is a courtesy call regarding your {{company_name}} subscription. We were unable to process your payment. Please call us back at {{support_phone}} to update your payment information.',
-      variables: ['customer_name', 'company_name', 'support_phone'],
-      active: true,
-      successRate: 67.8
     }
   ]);
 
-  const [journeys, setJourneys] = useState<ClientJourney[]>([
+  const [journeys] = useState<ClientJourney[]>([
     {
       id: '1',
       name: 'New Customer Onboarding',
@@ -131,23 +118,10 @@ export default function CommCenter() {
       active: true,
       enrolledCount: 156,
       completionRate: 78.2
-    },
-    {
-      id: '2',
-      name: 'Payment Recovery Sequence',
-      trigger: 'payment_failed',
-      steps: [
-        { id: '1', type: 'sms', templateId: '1', order: 1 },
-        { id: '2', type: 'wait', delay: 72, order: 2 },
-        { id: '3', type: 'voice', templateId: '3', order: 3 }
-      ],
-      active: true,
-      enrolledCount: 43,
-      completionRate: 45.6
     }
   ]);
 
-  const [campaigns, setCampaigns] = useState<Campaign[]>([
+  const [campaigns] = useState<Campaign[]>([
     {
       id: '1',
       name: 'Monthly Newsletter',
@@ -158,33 +132,14 @@ export default function CommCenter() {
       delivered: 2798,
       responded: 312,
       scheduledAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
-    },
-    {
-      id: '2',
-      name: 'Payment Reminder Blast',
-      type: 'sms',
-      status: 'running',
-      audienceSize: 156,
-      sent: 89,
-      delivered: 85,
-      responded: 12
     }
   ]);
 
   const [selectedTemplate, setSelectedTemplate] = useState<MessageTemplate | null>(null);
-  const [newTemplate, setNewTemplate] = useState({
-    name: '',
-    type: 'sms' as const,
-    category: 'billing' as const,
-    subject: '',
-    content: '',
-    variables: [] as string[]
-  });
 
-  const [nmiEvents, setNmiEvents] = useState([
+  const [nmiEvents] = useState([
     { id: '1', event: 'Payment Successful', customerId: 'CUST_001', amount: 29.99, timestamp: new Date() },
-    { id: '2', event: 'Payment Failed', customerId: 'CUST_002', amount: 99.99, timestamp: new Date(Date.now() - 300000) },
-    { id: '3', event: 'Subscription Cancelled', customerId: 'CUST_003', amount: 49.99, timestamp: new Date(Date.now() - 600000) }
+    { id: '2', event: 'Payment Failed', customerId: 'CUST_002', amount: 99.99, timestamp: new Date(Date.now() - 300000) }
   ]);
 
   const getStatusColor = (status: Campaign['status']) => {
@@ -213,17 +168,17 @@ export default function CommCenter() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Communication Center</h1>
-            <p className="text-muted-foreground">Manage Twilio, SendGrid templates and customer journeys</p>
+            <h1 className="text-3xl font-bold gradient-text tracking-tight">Communication Center</h1>
+            <p className="text-blue-700/70 font-medium">Manage Twilio, SendGrid templates and customer journeys</p>
           </div>
           <div className="flex gap-2">
             <Link to="/twilio-vault">
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline" className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50 corp-shadow">
                 <Database className="w-4 h-4" />
                 API Vault
               </Button>
             </Link>
-            <Button className="gap-2">
+            <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 corp-shadow">
               <Target className="w-4 h-4" />
               New Campaign
             </Button>
@@ -232,53 +187,53 @@ export default function CommCenter() {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Templates</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Active Templates</CardTitle>
+              <FileText className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{templates.filter(t => t.active).length}</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="text-2xl font-bold gradient-text">{templates.filter(t => t.active).length}</div>
+              <p className="text-xs text-blue-600 font-medium">
                 {templates.length} total templates
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Running Journeys</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Running Journeys</CardTitle>
+              <Users className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{journeys.filter(j => j.active).length}</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="text-2xl font-bold gradient-text">{journeys.filter(j => j.active).length}</div>
+              <p className="text-xs text-blue-600 font-medium">
                 {journeys.reduce((sum, j) => sum + j.enrolledCount, 0)} customers enrolled
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Messages Sent Today</CardTitle>
-              <Send className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Messages Sent Today</CardTitle>
+              <Send className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">1,247</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="text-2xl font-bold gradient-text">1,247</div>
+              <p className="text-xs text-green-600 font-medium">
                 +23% from yesterday
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Success Rate</CardTitle>
+              <TrendingUp className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">94.2%</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="text-2xl font-bold gradient-text">94.2%</div>
+              <p className="text-xs text-green-600 font-medium">
                 Delivery success rate
               </p>
             </CardContent>
@@ -286,7 +241,7 @@ export default function CommCenter() {
         </div>
 
         <Tabs defaultValue="templates" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-4 glass-card corp-shadow">
             <TabsTrigger value="templates" className="gap-2">
               <FileText className="w-4 h-4" />
               Templates
@@ -308,7 +263,7 @@ export default function CommCenter() {
           {/* Templates Tab */}
           <TabsContent value="templates" className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
+              <Card className="glass-card corp-shadow">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
@@ -332,16 +287,16 @@ export default function CommCenter() {
                         <Card 
                           key={template.id} 
                           className={cn(
-                            "border-border/50 cursor-pointer transition-all hover:shadow-sm",
-                            selectedTemplate?.id === template.id && "ring-2 ring-primary"
+                            "border-border/50 cursor-pointer transition-all hover:shadow-sm corp-shadow",
+                            selectedTemplate?.id === template.id && "ring-2 ring-blue-500"
                           )}
                           onClick={() => setSelectedTemplate(template)}
                         >
                           <CardHeader className="pb-2">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <Icon className="w-4 h-4 text-muted-foreground" />
-                                <CardTitle className="text-sm">{template.name}</CardTitle>
+                                <Icon className="w-4 h-4 text-blue-600" />
+                                <CardTitle className="text-sm text-blue-800">{template.name}</CardTitle>
                               </div>
                               <div className="flex items-center gap-2">
                                 <Badge variant="outline" className="text-xs">
@@ -354,13 +309,13 @@ export default function CommCenter() {
                             </div>
                           </CardHeader>
                           <CardContent className="pt-0">
-                            <p className="text-xs text-muted-foreground line-clamp-2">
+                            <p className="text-xs text-blue-600/70 line-clamp-2">
                               {template.content}
                             </p>
                             {template.successRate && (
                               <div className="flex items-center justify-between mt-2 text-xs">
-                                <span className="text-muted-foreground">Success Rate</span>
-                                <span className="font-medium">{template.successRate}%</span>
+                                <span className="text-blue-600/70">Success Rate</span>
+                                <span className="font-medium text-green-600">{template.successRate}%</span>
                               </div>
                             )}
                           </CardContent>
@@ -371,7 +326,7 @@ export default function CommCenter() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="glass-card corp-shadow">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Edit className="w-5 h-5" />
@@ -420,13 +375,6 @@ export default function CommCenter() {
                         </div>
                       </div>
 
-                      {selectedTemplate.subject && (
-                        <div className="space-y-2">
-                          <Label>Subject Line</Label>
-                          <Input value={selectedTemplate.subject} readOnly />
-                        </div>
-                      )}
-
                       <div className="space-y-2">
                         <Label>Message Content</Label>
                         <Textarea 
@@ -463,7 +411,7 @@ export default function CommCenter() {
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-muted-foreground">
+                    <div className="text-center py-8 text-blue-600/70">
                       <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p>Select a template from the list to edit</p>
                     </div>
@@ -475,7 +423,7 @@ export default function CommCenter() {
 
           {/* Client Journeys Tab */}
           <TabsContent value="journeys" className="space-y-4">
-            <Card>
+            <Card className="glass-card corp-shadow">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
@@ -487,7 +435,7 @@ export default function CommCenter() {
                       Multi-step communication workflows triggered by customer actions
                     </CardDescription>
                   </div>
-                  <Button className="gap-2">
+                  <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600">
                     <Zap className="w-4 h-4" />
                     Create Journey
                   </Button>
@@ -496,7 +444,7 @@ export default function CommCenter() {
               <CardContent>
                 <div className="space-y-4">
                   {journeys.map((journey) => (
-                    <Card key={journey.id} className="border-border/50">
+                    <Card key={journey.id} className="border-border/50 corp-shadow">
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
                           <div>
@@ -507,44 +455,44 @@ export default function CommCenter() {
                               </Badge>
                             </CardTitle>
                             <CardDescription>
-                              Triggered by: <code className="bg-muted px-1 py-0.5 rounded text-xs">{journey.trigger}</code>
+                              Triggered by: <code className="bg-blue-100 px-1 py-0.5 rounded text-xs text-blue-800">{journey.trigger}</code>
                             </CardDescription>
                           </div>
                           <div className="text-right">
-                            <div className="text-sm text-muted-foreground">Completion Rate</div>
-                            <div className="text-xl font-bold">{journey.completionRate}%</div>
+                            <div className="text-sm text-blue-600/70">Completion Rate</div>
+                            <div className="text-xl font-bold gradient-text">{journey.completionRate}%</div>
                           </div>
                         </div>
                       </CardHeader>
                       <CardContent>
                         <div className="grid grid-cols-2 gap-4 mb-4">
                           <div>
-                            <div className="text-sm text-muted-foreground">Enrolled Customers</div>
-                            <div className="font-medium">{journey.enrolledCount}</div>
+                            <div className="text-sm text-blue-600/70">Enrolled Customers</div>
+                            <div className="font-medium text-blue-800">{journey.enrolledCount}</div>
                           </div>
                           <div>
-                            <div className="text-sm text-muted-foreground">Journey Steps</div>
-                            <div className="font-medium">{journey.steps.length}</div>
+                            <div className="text-sm text-blue-600/70">Journey Steps</div>
+                            <div className="font-medium text-blue-800">{journey.steps.length}</div>
                           </div>
                         </div>
 
                         <div className="space-y-2">
-                          <div className="text-sm font-medium">Journey Flow</div>
+                          <div className="text-sm font-medium text-blue-800">Journey Flow</div>
                           <div className="flex items-center gap-2 flex-wrap">
                             {journey.steps.map((step, index) => {
-                              const Icon = step.type === 'wait' ? Clock :
+                              const Icon = step.type === 'wait' ? Clock : 
                                           step.type === 'condition' ? AlertTriangle :
                                           getTypeIcon(step.type as 'sms' | 'email' | 'voice');
                               return (
                                 <div key={step.id} className="flex items-center gap-1">
                                   <Badge variant="outline" className="gap-1">
                                     <Icon className="w-3 h-3" />
-                                    {step.type === 'wait' ? `${step.delay || 0}h` :
-                                     step.type === 'condition' ? 'condition' :
+                                    {step.type === 'wait' ? `${step.delay || 0}h` : 
+                                     step.type === 'condition' ? 'condition' : 
                                      step.type}
                                   </Badge>
                                   {index < journey.steps.length - 1 && (
-                                    <div className="w-4 h-px bg-border" />
+                                    <div className="w-4 h-px bg-blue-200" />
                                   )}
                                 </div>
                               );
@@ -576,7 +524,7 @@ export default function CommCenter() {
 
           {/* Campaigns Tab */}
           <TabsContent value="campaigns" className="space-y-4">
-            <Card>
+            <Card className="glass-card corp-shadow">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
@@ -588,7 +536,7 @@ export default function CommCenter() {
                       One-time and scheduled message campaigns
                     </CardDescription>
                   </div>
-                  <Button className="gap-2">
+                  <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600">
                     <Send className="w-4 h-4" />
                     New Campaign
                   </Button>
@@ -598,17 +546,17 @@ export default function CommCenter() {
                 <div className="space-y-4">
                   {campaigns.map((campaign) => {
                     const Icon = getTypeIcon(campaign.type);
-                    const deliveryRate = campaign.sent > 0 ? (campaign.delivered / campaign.sent * 100).toFixed(1) : 0;
-                    const responseRate = campaign.delivered > 0 ? (campaign.responded / campaign.delivered * 100).toFixed(1) : 0;
+                    const deliveryRate = campaign.sent > 0 ? (campaign.delivered / campaign.sent * 100).toFixed(1) : '0';
+                    const responseRate = campaign.delivered > 0 ? (campaign.responded / campaign.delivered * 100).toFixed(1) : '0';
                     
                     return (
-                      <Card key={campaign.id} className="border-border/50">
+                      <Card key={campaign.id} className="border-border/50 corp-shadow">
                         <CardHeader className="pb-3">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                              <Icon className="w-5 h-5 text-muted-foreground" />
+                              <Icon className="w-5 h-5 text-blue-600" />
                               <div>
-                                <CardTitle className="text-lg">{campaign.name}</CardTitle>
+                                <CardTitle className="text-lg text-blue-800">{campaign.name}</CardTitle>
                                 <CardDescription>
                                   {campaign.scheduledAt ? `Scheduled for ${campaign.scheduledAt.toLocaleDateString()}` : 'No schedule set'}
                                 </CardDescription>
@@ -622,20 +570,20 @@ export default function CommCenter() {
                         <CardContent>
                           <div className="grid grid-cols-4 gap-4 text-sm">
                             <div>
-                              <div className="text-muted-foreground">Audience</div>
-                              <div className="font-medium">{campaign.audienceSize.toLocaleString()}</div>
+                              <div className="text-blue-600/70">Audience</div>
+                              <div className="font-medium text-blue-800">{campaign.audienceSize.toLocaleString()}</div>
                             </div>
                             <div>
-                              <div className="text-muted-foreground">Sent</div>
-                              <div className="font-medium">{campaign.sent.toLocaleString()}</div>
+                              <div className="text-blue-600/70">Sent</div>
+                              <div className="font-medium text-blue-800">{campaign.sent.toLocaleString()}</div>
                             </div>
                             <div>
-                              <div className="text-muted-foreground">Delivery Rate</div>
-                              <div className="font-medium">{deliveryRate}%</div>
+                              <div className="text-blue-600/70">Delivery Rate</div>
+                              <div className="font-medium text-green-600">{deliveryRate}%</div>
                             </div>
                             <div>
-                              <div className="text-muted-foreground">Response Rate</div>
-                              <div className="font-medium">{responseRate}%</div>
+                              <div className="text-blue-600/70">Response Rate</div>
+                              <div className="font-medium text-green-600">{responseRate}%</div>
                             </div>
                           </div>
 
@@ -669,7 +617,7 @@ export default function CommCenter() {
           {/* NMI Feedback Loop Tab */}
           <TabsContent value="nmi-loop" className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
+              <Card className="glass-card corp-shadow">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Zap className="w-5 h-5" />
@@ -682,16 +630,15 @@ export default function CommCenter() {
                 <CardContent>
                   <div className="space-y-3">
                     {nmiEvents.map((event) => (
-                      <div key={event.id} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+                      <div key={event.id} className="flex items-center gap-3 p-3 glass-card rounded-lg">
                         <div className={cn(
                           "w-2 h-2 rounded-full",
                           event.event === 'Payment Successful' && "bg-green-500",
-                          event.event === 'Payment Failed' && "bg-red-500",
-                          event.event === 'Subscription Cancelled' && "bg-yellow-500"
+                          event.event === 'Payment Failed' && "bg-red-500"
                         )} />
                         <div className="flex-1">
-                          <div className="font-medium text-sm">{event.event}</div>
-                          <div className="text-xs text-muted-foreground">
+                          <div className="font-medium text-sm text-blue-800">{event.event}</div>
+                          <div className="text-xs text-blue-600/70">
                             Customer {event.customerId} • ${event.amount} • {event.timestamp.toLocaleTimeString()}
                           </div>
                         </div>
@@ -709,7 +656,7 @@ export default function CommCenter() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="glass-card corp-shadow">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Settings className="w-5 h-5" />
@@ -725,11 +672,11 @@ export default function CommCenter() {
                       <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
                           <CardTitle className="text-sm">Payment Success → Thank You SMS</CardTitle>
-                          <Badge className="bg-green-500/10 text-green-600">Active</Badge>
+                          <Badge className="bg-green-100 text-green-700 border-green-200">Active</Badge>
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0">
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-blue-600/70">
                           Send thank you message immediately after successful payment
                         </p>
                       </CardContent>
@@ -739,31 +686,17 @@ export default function CommCenter() {
                       <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
                           <CardTitle className="text-sm">Payment Failed → Recovery Journey</CardTitle>
-                          <Badge className="bg-green-500/10 text-green-600">Active</Badge>
+                          <Badge className="bg-green-100 text-green-700 border-green-200">Active</Badge>
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0">
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-blue-600/70">
                           Enroll customer in payment recovery journey after failed payment
                         </p>
                       </CardContent>
                     </Card>
 
-                    <Card className="border-border/50">
-                      <CardHeader className="pb-2">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-sm">Subscription Cancelled → Feedback Survey</CardTitle>
-                          <Badge variant="outline">Inactive</Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <p className="text-xs text-muted-foreground">
-                          Send feedback survey 24h after subscription cancellation
-                        </p>
-                      </CardContent>
-                    </Card>
-
-                    <Button className="w-full gap-2">
+                    <Button className="w-full gap-2 bg-gradient-to-r from-blue-600 to-green-600">
                       <Zap className="w-4 h-4" />
                       Create New Rule
                     </Button>
