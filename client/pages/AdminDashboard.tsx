@@ -216,75 +216,325 @@ export default function AdminDashboard() {
 
           {/* Data Uploads Tab */}
           <TabsContent value="uploads" className="space-y-4">
-            <Card>
+            <Card className="glass-card corp-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Database className="w-5 h-5" />
-                  Table Upload Manager
+                  Intelligent Table Upload Manager
                 </CardTitle>
                 <CardDescription>
-                  Upload your tables to structure and sync with Xano and NMI systems
+                  Upload multiple spreadsheets with smart scanning and table joining capabilities
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4">
-                  {uploads.map((upload) => (
-                    <Card key={upload.id} className="border-border/50">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <CardTitle className="text-lg flex items-center gap-2">
-                              <FileText className="w-4 h-4" />
-                              {upload.name}
-                            </CardTitle>
-                            <CardDescription>{upload.description}</CardDescription>
-                          </div>
-                          <StatusBadge status={upload.status} />
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center justify-between">
-                          <div className="text-sm text-muted-foreground">
-                            {upload.recordCount && `${upload.recordCount} records`}
-                            {upload.uploadedAt && ` • Uploaded ${upload.uploadedAt.toLocaleString()}`}
-                          </div>
-                          {upload.status === 'pending' && (
-                            <div>
-                              <input
-                                type="file"
-                                accept=".csv,.json,.xlsx"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) handleFileUpload(upload.id, file);
-                                }}
-                                className="hidden"
-                                id={`upload-${upload.id}`}
-                              />
-                              <label htmlFor={`upload-${upload.id}`}>
-                                <Button variant="outline" size="sm" className="cursor-pointer gap-2">
-                                  <Upload className="w-3 h-3" />
-                                  Upload File
-                                </Button>
-                              </label>
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+              <CardContent className="space-y-6">
+                {/* Step 1: Upload Files */}
+                {uploadStep === 'upload' && (
+                  <div className="space-y-4">
+                    <div className="border-2 border-dashed border-blue-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors">
+                      <input
+                        type="file"
+                        multiple
+                        accept=".csv,.xlsx,.xls,.json"
+                        onChange={(e) => e.target.files && handleMultiFileUpload(e.target.files)}
+                        className="hidden"
+                        id="multi-file-upload"
+                      />
+                      <label htmlFor="multi-file-upload" className="cursor-pointer">
+                        <Upload className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-blue-800 mb-2">Upload Spreadsheets</h3>
+                        <p className="text-blue-600/70 mb-4">Drag and drop or click to select up to 5 files</p>
+                        <p className="text-sm text-blue-600/60">Supports CSV, Excel (.xlsx, .xls), and JSON files</p>
+                      </label>
+                    </div>
 
-                {uploads.every(u => u.status === 'processed') && (
-                  <div className="border-t pt-4">
-                    <Button 
-                      onClick={processToXano} 
-                      disabled={isProcessing}
-                      className="w-full gap-2"
-                      size="lg"
-                    >
-                      <Database className="w-4 h-4" />
-                      {isProcessing ? 'Processing to Xano...' : 'Process All Tables to Xano'}
-                    </Button>
+                    {uploadedFiles.length > 0 && (
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-blue-800">Uploaded Files ({uploadedFiles.length}/5)</h4>
+                        {uploadedFiles.map((file) => (
+                          <div key={file.id} className="flex items-center justify-between p-3 glass-card rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <FileText className="w-5 h-5 text-blue-600" />
+                              <div>
+                                <div className="font-medium text-blue-800">{file.name}</div>
+                                <div className="text-sm text-blue-600/70">
+                                  {(file.size / 1024).toFixed(1)} KB • {file.type || 'Unknown type'}
+                                </div>
+                              </div>
+                            </div>
+                            <Badge className="bg-green-100 text-green-700 border-green-200">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Ready
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Step 2: Scan Question */}
+                {uploadStep === 'scan' && (
+                  <div className="text-center space-y-6">
+                    <div className="space-y-3">
+                      <AlertTriangle className="w-16 h-16 text-blue-500 mx-auto" />
+                      <h3 className="text-xl font-bold text-blue-800">Scan for Unique Identifiers?</h3>
+                      <p className="text-blue-600/70 max-w-md mx-auto">
+                        Would you like me to scan all uploaded files and find common unique identifiers for data joining?
+                      </p>
+                    </div>
+
+                    <div className="flex gap-4 justify-center">
+                      <Button
+                        onClick={scanForUniqueIdentifiers}
+                        className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 corp-shadow"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Yes, Scan Files
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setUploadStep('destination')}
+                        className="gap-2 border-blue-200 text-blue-700"
+                      >
+                        Skip Scanning
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 3: Scan Results & Preview */}
+                {uploadStep === 'preview' && (
+                  <div className="space-y-6">
+                    {isScanning ? (
+                      <div className="text-center py-8">
+                        <RefreshCw className="w-8 h-8 animate-spin text-blue-500 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-blue-800">Scanning Files...</h3>
+                        <p className="text-blue-600/70">Analyzing data structure and identifying common fields</p>
+                      </div>
+                    ) : scanResults && (
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="text-lg font-bold text-blue-800 mb-3">Scan Results</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Card className="p-4">
+                              <h4 className="font-semibold text-blue-700 mb-2">Common Identifiers Found</h4>
+                              <div className="space-y-1">
+                                {scanResults.commonIdentifiers.map((id, index) => (
+                                  <Badge key={index} variant="outline" className="mr-2">
+                                    {id}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </Card>
+
+                            <Card className="p-4">
+                              <h4 className="font-semibold text-blue-700 mb-2">Suggested Joins</h4>
+                              <div className="space-y-2">
+                                {scanResults.suggestedJoins.map((join, index) => (
+                                  <div key={index} className="text-sm">
+                                    <span className="font-medium">{join.column}</span>
+                                    <span className="text-green-600 ml-2">{join.confidence}% confidence</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </Card>
+                          </div>
+                        </div>
+
+                        <div className="text-center space-y-4">
+                          <h3 className="text-lg font-bold text-blue-800">Create Joiner Table?</h3>
+                          <p className="text-blue-600/70">Would you like to create a new joined table with selected columns and rows?</p>
+
+                          <div className="flex gap-4 justify-center">
+                            <Button
+                              onClick={createJoinerTable}
+                              className="gap-2 bg-gradient-to-r from-blue-600 to-green-600"
+                            >
+                              <Layout className="w-4 h-4" />
+                              Yes, Create Joiner Table
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => setUploadStep('destination')}
+                              className="gap-2"
+                            >
+                              Skip to Upload
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Step 4: Joiner Table Creation */}
+                {uploadStep === 'joiner' && joinerTable && (
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-bold text-blue-800 mb-4">Visual Joiner Table Builder</h3>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <Card className="p-4">
+                          <h4 className="font-semibold mb-3">Table Configuration</h4>
+                          <div className="space-y-4">
+                            <div>
+                              <Label>Table Name</Label>
+                              <Input
+                                value={joinerTable.name}
+                                onChange={(e) => setJoinerTable(prev => prev ? {...prev, name: e.target.value} : null)}
+                                placeholder="Enter table name"
+                              />
+                            </div>
+
+                            <div>
+                              <Label>Select Columns to Include</Label>
+                              <div className="space-y-2 max-h-40 overflow-y-auto">
+                                {uploadedFiles.map(file => (
+                                  <div key={file.id}>
+                                    <div className="font-medium text-sm text-blue-700">{file.name}</div>
+                                    {file.preview?.[0]?.map((column: string, index: number) => (
+                                      <label key={index} className="flex items-center gap-2 text-sm ml-4">
+                                        <input type="checkbox" className="rounded" />
+                                        <span>{column}</span>
+                                      </label>
+                                    ))}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+
+                        <Card className="p-4">
+                          <h4 className="font-semibold mb-3">Preview</h4>
+                          <div className="text-sm text-blue-600/70">
+                            <p>Preview of joined table will appear here</p>
+                            <div className="mt-4 p-3 bg-blue-50 rounded border">
+                              <div className="grid grid-cols-3 gap-2 text-xs font-medium">
+                                <div>Column A</div>
+                                <div>Column B</div>
+                                <div>Column C</div>
+                              </div>
+                              <div className="grid grid-cols-3 gap-2 text-xs mt-2">
+                                <div>Sample 1</div>
+                                <div>Data 1</div>
+                                <div>Value 1</div>
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 justify-center">
+                      <Button
+                        onClick={() => setUploadStep('destination')}
+                        className="gap-2 bg-gradient-to-r from-blue-600 to-green-600"
+                      >
+                        <ArrowRight className="w-4 h-4" />
+                        Continue to Destination
+                      </Button>
+                      <Button variant="outline" onClick={() => setUploadStep('preview')}>
+                        Back
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 5: Destination Selection */}
+                {uploadStep === 'destination' && (
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-bold text-blue-800 mb-4">Select Destination</h3>
+
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Card
+                            className={cn(
+                              "p-4 cursor-pointer transition-all border-2",
+                              !createNewTable ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-blue-300"
+                            )}
+                            onClick={() => setCreateNewTable(false)}
+                          >
+                            <div className="flex items-center gap-3">
+                              <Database className="w-6 h-6 text-blue-600" />
+                              <div>
+                                <h4 className="font-semibold">Existing Xano Table</h4>
+                                <p className="text-sm text-blue-600/70">Upload to an existing table</p>
+                              </div>
+                            </div>
+                          </Card>
+
+                          <Card
+                            className={cn(
+                              "p-4 cursor-pointer transition-all border-2",
+                              createNewTable ? "border-green-500 bg-green-50" : "border-gray-200 hover:border-green-300"
+                            )}
+                            onClick={() => setCreateNewTable(true)}
+                          >
+                            <div className="flex items-center gap-3">
+                              <Zap className="w-6 h-6 text-green-600" />
+                              <div>
+                                <h4 className="font-semibold">Create New Table</h4>
+                                <p className="text-sm text-green-600/70">Create new Xano table with API</p>
+                              </div>
+                            </div>
+                          </Card>
+                        </div>
+
+                        {!createNewTable ? (
+                          <div>
+                            <Label>Select Xano Table</Label>
+                            <Select value={selectedXanoTable} onValueChange={setSelectedXanoTable}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Choose existing table" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="customers">Customers</SelectItem>
+                                <SelectItem value="subscriptions">Subscriptions</SelectItem>
+                                <SelectItem value="payments">Payments</SelectItem>
+                                <SelectItem value="billing_history">Billing History</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            <div>
+                              <Label>New Table Name</Label>
+                              <Input
+                                value={newTableName}
+                                onChange={(e) => setNewTableName(e.target.value)}
+                                placeholder="Enter new table name"
+                              />
+                            </div>
+                            <div className="p-3 bg-green-50 rounded border border-green-200">
+                              <p className="text-sm text-green-700">
+                                <CheckCircle className="w-4 h-4 inline mr-1" />
+                                API endpoint will be automatically created: <code>/api/{newTableName}</code>
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 justify-center">
+                      <Button
+                        onClick={finalizeUpload}
+                        disabled={isProcessing || (!createNewTable && !selectedXanoTable) || (createNewTable && !newTableName)}
+                        className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 corp-shadow"
+                      >
+                        {isProcessing ? (
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Upload className="w-4 h-4" />
+                        )}
+                        {isProcessing ? 'Processing...' : 'Upload to Xano'}
+                      </Button>
+                      <Button variant="outline" onClick={() => setUploadStep('upload')}>
+                        Start Over
+                      </Button>
+                    </div>
                   </div>
                 )}
               </CardContent>
