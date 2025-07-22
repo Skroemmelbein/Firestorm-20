@@ -30,10 +30,14 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/merchant" element={<BillingLogic />} />
           <Route path="/billing-kit" element={<ClientBillingKit />} />
           <Route path="/business-overview" element={<BusinessOverview />} />
           <Route path="/billing" element={<BillingLogic />} />
           <Route path="/comm-center" element={<CommCenter />} />
+          <Route path="/members" element={<MemberPortal />} />
+          <Route path="/fulfillment" element={<Fulfillment />} />
+          <Route path="/ai" element={<IntelligentAI />} />
           <Route path="/integrations" element={<Integrations />} />
           <Route path="/twilio-vault" element={<TwilioVault />} />
           <Route path="/settings" element={<Integrations />} />
