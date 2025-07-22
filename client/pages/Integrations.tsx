@@ -187,10 +187,18 @@ export default function Integrations() {
                 <p className="text-sm text-muted-foreground">Connect your backend and communication services</p>
               </div>
             </div>
-            <Button onClick={saveConfig} disabled={saving} className="gap-2">
-              <Settings className="w-4 h-4" />
-              {saving ? 'Saving...' : 'Save & Test'}
-            </Button>
+            <div className="flex gap-2">
+              <RouterLink to="/twilio-vault">
+                <Button variant="outline" className="gap-2">
+                  <Database className="w-4 h-4" />
+                  API Vault
+                </Button>
+              </RouterLink>
+              <Button onClick={saveConfig} disabled={saving} className="gap-2">
+                <Settings className="w-4 h-4" />
+                {saving ? 'Saving...' : 'Save & Test'}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
