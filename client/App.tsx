@@ -7,6 +7,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
+import AdminDashboard from "./pages/AdminDashboard";
+import BillingLogic from "./pages/BillingLogic";
+import CommCenter from "./pages/CommCenter";
 import Integrations from "./pages/Integrations";
 import TwilioVault from "./pages/TwilioVault";
 import NotFound from "./pages/NotFound";
@@ -21,8 +24,12 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/billing" element={<BillingLogic />} />
+          <Route path="/comm-center" element={<CommCenter />} />
           <Route path="/integrations" element={<Integrations />} />
           <Route path="/twilio-vault" element={<TwilioVault />} />
+          <Route path="/settings" element={<Integrations />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
