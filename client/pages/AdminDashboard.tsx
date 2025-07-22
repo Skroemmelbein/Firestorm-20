@@ -43,33 +43,6 @@ interface TableUpload {
 }
 
 export default function AdminDashboard() {
-  const [uploads, setUploads] = useState<TableUpload[]>([
-    {
-      id: 'warchest',
-      name: 'Warchest',
-      description: 'Primary subscription data table',
-      status: 'pending'
-    },
-    {
-      id: 'cards-updated',
-      name: '71 Cards Updated',
-      description: 'Customer payment card information',
-      status: 'pending'
-    },
-    {
-      id: 'billing-transaction',
-      name: 'Last Billing Transaction',
-      description: 'Recent billing transaction records',
-      status: 'pending'
-    },
-    {
-      id: 'nmi-vault',
-      name: 'NMI Vault',
-      description: 'NMI customer vault data',
-      status: 'pending'
-    }
-  ]);
-
   const [isProcessing, setIsProcessing] = useState(false);
   const [systemStats, setSystemStats] = useState({
     totalSubscriptions: 847,
@@ -78,45 +51,7 @@ export default function AdminDashboard() {
     successRate: 94.2
   });
 
-  const handleFileUpload = async (uploadId: string, file: File) => {
-    setUploads(prev => prev.map(upload => 
-      upload.id === uploadId 
-        ? { ...upload, status: 'uploaded', uploadedAt: new Date() }
-        : upload
-    ));
 
-    // Simulate processing
-    setTimeout(() => {
-      setUploads(prev => prev.map(upload => 
-        upload.id === uploadId 
-          ? { ...upload, status: 'processed', recordCount: Math.floor(Math.random() * 1000) + 100 }
-          : upload
-      ));
-    }, 2000);
-  };
-
-  const processToXano = async () => {
-    setIsProcessing(true);
-    // Simulate Xano processing
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    setIsProcessing(false);
-  };
-
-  const StatusBadge = ({ status }: { status: TableUpload['status'] }) => {
-    const config = {
-      pending: { color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20', icon: Clock },
-      uploaded: { color: 'bg-blue-500/10 text-blue-600 border-blue-500/20', icon: Upload },
-      processed: { color: 'bg-green-500/10 text-green-600 border-green-500/20', icon: CheckCircle }
-    };
-    
-    const { color, icon: Icon } = config[status];
-    return (
-      <Badge className={color}>
-        <Icon className="w-3 h-3 mr-1" />
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </Badge>
-    );
-  };
 
   return (
     <AdminLayout>
