@@ -51,6 +51,83 @@ export default function AdminDashboard() {
     successRate: 94.2
   });
 
+  // Upload workflow state
+  const [uploadStep, setUploadStep] = useState<'upload' | 'scan' | 'preview' | 'joiner' | 'destination'>('upload');
+  const [uploadedFiles, setUploadedFiles] = useState<Array<{
+    id: string;
+    name: string;
+    size: number;
+    type: string;
+    preview?: any[];
+  }>>([]);
+  const [scanResults, setScanResults] = useState<{
+    commonIdentifiers: string[];
+    suggestedJoins: Array<{ column: string; confidence: number }>;
+  } | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
+  const [joinerTable, setJoinerTable] = useState<{
+    name: string;
+    columns: string[];
+  } | null>(null);
+  const [createNewTable, setCreateNewTable] = useState(false);
+  const [selectedXanoTable, setSelectedXanoTable] = useState('');
+  const [newTableName, setNewTableName] = useState('');
+
+  // Upload workflow functions
+  const handleMultiFileUpload = async (files: FileList) => {
+    const fileArray = Array.from(files).slice(0, 5); // Limit to 5 files
+    const processedFiles = fileArray.map(file => ({
+      id: Math.random().toString(36).substr(2, 9),
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      preview: null
+    }));
+
+    setUploadedFiles(processedFiles);
+    setUploadStep('scan');
+  };
+
+  const scanForUniqueIdentifiers = async () => {
+    setIsScanning(true);
+    setUploadStep('preview');
+
+    // Simulate scanning process
+    setTimeout(() => {
+      setScanResults({
+        commonIdentifiers: ['customer_id', 'email', 'subscription_id'],
+        suggestedJoins: [
+          { column: 'customer_id', confidence: 95 },
+          { column: 'email', confidence: 87 },
+          { column: 'subscription_id', confidence: 78 }
+        ]
+      });
+      setIsScanning(false);
+    }, 2000);
+  };
+
+  const createJoinerTable = () => {
+    setJoinerTable({
+      name: 'joined_data_table',
+      columns: scanResults?.commonIdentifiers || []
+    });
+    setUploadStep('joiner');
+  };
+
+  const finalizeUpload = async () => {
+    setIsProcessing(true);
+
+    // Simulate upload process
+    setTimeout(() => {
+      setIsProcessing(false);
+      setUploadStep('upload');
+      setUploadedFiles([]);
+      setScanResults(null);
+      setJoinerTable(null);
+      alert('Files uploaded successfully!');
+    }, 3000);
+  };
+
 
 
   return (
