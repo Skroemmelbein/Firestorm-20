@@ -9,12 +9,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  MessageSquare, 
+import {
+  MessageSquare,
   Phone,
   Mail,
   Send,
-  Template,
   Users,
   TrendingUp,
   Settings,
@@ -236,7 +235,7 @@ export default function CommCenter() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Active Templates</CardTitle>
-              <Template className="h-4 w-4 text-muted-foreground" />
+              <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{templates.filter(t => t.active).length}</div>
@@ -289,7 +288,7 @@ export default function CommCenter() {
         <Tabs defaultValue="templates" className="space-y-4">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="templates" className="gap-2">
-              <Template className="w-4 h-4" />
+              <FileText className="w-4 h-4" />
               Templates
             </TabsTrigger>
             <TabsTrigger value="journeys" className="gap-2">
@@ -313,7 +312,7 @@ export default function CommCenter() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
-                      <Template className="w-5 h-5" />
+                      <FileText className="w-5 h-5" />
                       Message Templates
                     </CardTitle>
                     <Button size="sm" className="gap-2">
@@ -465,7 +464,7 @@ export default function CommCenter() {
                     </div>
                   ) : (
                     <div className="text-center py-8 text-muted-foreground">
-                      <Template className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p>Select a template from the list to edit</p>
                     </div>
                   )}
