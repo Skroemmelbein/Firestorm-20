@@ -206,22 +206,26 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 })}
               </div>
 
-              {/* Quick Stats */}
-              <div className="px-4 py-4 border-t border-border/50 mt-auto">
+              {/* System Status */}
+              <div className="px-4 py-4 border-t border-blue-200/50 mt-auto">
                 <div className="space-y-3">
-                  <div className="text-xs font-medium text-muted-foreground">System Status</div>
+                  <div className="text-xs font-semibold text-blue-800 uppercase tracking-wider">System Status</div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Xano</span>
-                      <Badge variant="outline" className="text-xs">Connected</Badge>
+                      <span className="text-blue-700 font-medium">Database</span>
+                      <Badge className="text-xs bg-green-100 text-green-700 border-green-200">Online</Badge>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">NMI</span>
-                      <Badge variant="outline" className="text-xs">Pending</Badge>
+                      <span className="text-blue-700 font-medium">Payment Gateway</span>
+                      <Badge className="text-xs bg-yellow-100 text-yellow-700 border-yellow-200">Standby</Badge>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Twilio</span>
-                      <Badge variant="outline" className="text-xs">Connected</Badge>
+                      <span className="text-blue-700 font-medium">Communications</span>
+                      <Badge className="text-xs bg-green-100 text-green-700 border-green-200">Active</Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-blue-700 font-medium">API Services</span>
+                      <Badge className="text-xs bg-green-100 text-green-700 border-green-200">Running</Badge>
                     </div>
                   </div>
                 </div>
