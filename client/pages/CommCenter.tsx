@@ -532,7 +532,9 @@ export default function CommCenter() {
                           <div className="text-sm font-medium">Journey Flow</div>
                           <div className="flex items-center gap-2 flex-wrap">
                             {journey.steps.map((step, index) => {
-                              const Icon = step.type === 'wait' ? Clock : getTypeIcon(step.type as any);
+                              const Icon = step.type === 'wait' ? Clock :
+                                          step.type === 'condition' ? AlertTriangle :
+                                          getTypeIcon(step.type as 'sms' | 'email' | 'voice');
                               return (
                                 <div key={step.id} className="flex items-center gap-1">
                                   <Badge variant="outline" className="gap-1">
