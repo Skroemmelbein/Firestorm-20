@@ -52,43 +52,21 @@ const twilioAPIs = TWILIO_COMPLETE_API_VAULT.map(api => ({
   lastUsed: api.lastUsed
 }));
 
-const categories = [
-  { 
-    id: 'billing-communications', 
-    name: 'Billing & Payment Communications', 
-    icon: DollarSign,
-    description: 'Payment reminders, collection calls, billing notifications',
-    color: 'text-green-600'
-  },
-  { 
-    id: 'authentication-security', 
-    name: 'Authentication & Security', 
-    icon: Shield,
-    description: 'Phone verification, 2FA, account security',
-    color: 'text-blue-600'
-  },
-  { 
-    id: 'customer-support', 
-    name: 'Customer Support & Engagement', 
-    icon: Users,
-    description: 'Support channels, customer communication',
-    color: 'text-purple-600'
-  },
-  { 
-    id: 'premium-services', 
-    name: 'Premium Member Services', 
-    icon: Video,
-    description: 'Video consultations, premium features',
-    color: 'text-orange-600'
-  },
-  { 
-    id: 'analytics-intelligence', 
-    name: 'Analytics & Intelligence', 
-    icon: BarChart3,
-    description: 'Usage tracking, performance analytics',
-    color: 'text-indigo-600'
-  }
-];
+const iconMap = {
+  Shield,
+  DollarSign,
+  Users,
+  Video,
+  BarChart3
+};
+
+const categories = TWILIO_BUSINESS_CATEGORIES.map(cat => ({
+  id: cat.id,
+  name: cat.name,
+  icon: iconMap[cat.icon as keyof typeof iconMap] || BarChart3,
+  description: cat.description,
+  color: cat.color
+}));
 
 export default function TwilioAPIManager() {
   const [searchTerm, setSearchTerm] = useState('');
