@@ -4,6 +4,7 @@ import { handleDemo } from "./routes/demo";
 import { getIntegrationsConfig, saveIntegrationsConfig } from "./routes/integrations-config";
 import { testXanoConnection } from "./routes/test-xano";
 import { testTwilioConnection } from "./routes/test-twilio";
+import { uploadTwilioAPIs, getUploadedAPIs, clearUploadedAPIs, testTwilioAPI } from "./routes/twilio-vault";
 
 export function createServer() {
   const app = express();
