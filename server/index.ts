@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import { getIntegrationsConfig, saveIntegrationsConfig } from "./routes/integrations-config";
+import { testXanoConnection } from "./routes/test-xano";
+import { testTwilioConnection } from "./routes/test-twilio";
 
 export function createServer() {
   const app = express();
@@ -16,6 +19,12 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Integration routes
+  app.get("/api/integrations/config", getIntegrationsConfig);
+  app.post("/api/integrations/config", saveIntegrationsConfig);
+  app.post("/api/integrations/test/xano", testXanoConnection);
+  app.post("/api/integrations/test/twilio", testTwilioConnection);
 
   return app;
 }
