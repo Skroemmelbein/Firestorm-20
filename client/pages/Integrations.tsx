@@ -7,12 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { 
-  Database, 
-  Phone, 
-  Settings, 
-  CheckCircle, 
-  XCircle, 
+import {
+  Database,
+  Phone,
+  Settings,
+  CheckCircle,
+  XCircle,
   AlertTriangle,
   Copy,
   Eye,
@@ -20,8 +20,10 @@ import {
   Zap,
   MessageSquare,
   Link,
-  Activity
+  Activity,
+  ExternalLink
 } from "lucide-react";
+import { Link as RouterLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface ConnectionStatus {
