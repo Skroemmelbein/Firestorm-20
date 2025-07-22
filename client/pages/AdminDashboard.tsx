@@ -165,27 +165,27 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Monthly Revenue</CardTitle>
+              <DollarSign className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${systemStats.monthlyRevenue.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                +8.2% from last month
+              <div className="text-2xl font-bold gradient-text">${systemStats.monthlyRevenue.toLocaleString()}</div>
+              <p className="text-xs text-green-600 font-medium">
+                ↗ +8.2% from last month
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Success Rate</CardTitle>
+              <TrendingUp className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{systemStats.successRate}%</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="text-2xl font-bold gradient-text">{systemStats.successRate}%</div>
+              <p className="text-xs text-blue-600 font-medium">
                 Payment processing
               </p>
             </CardContent>
@@ -193,7 +193,7 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="uploads" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-3 glass-card corp-shadow">
             <TabsTrigger value="uploads" className="gap-2">
               <Upload className="w-4 h-4" />
               Data Uploads
