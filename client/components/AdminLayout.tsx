@@ -24,6 +24,22 @@ interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
+interface NavigationItem {
+  id: string;
+  label: string;
+  icon: any;
+  path: string;
+  description: string;
+  subItems?: SubNavigationItem[];
+}
+
+interface SubNavigationItem {
+  id: string;
+  label: string;
+  path: string;
+  icon: any;
+}
+
 const navigationItems = [
   {
     id: 'admin',
