@@ -27,5 +27,11 @@ export function createServer() {
   app.post("/api/integrations/test/xano", testXanoConnection);
   app.post("/api/integrations/test/twilio", testTwilioConnection);
 
+  // Twilio API Vault routes
+  app.post("/api/twilio-vault/upload", uploadTwilioAPIs);
+  app.get("/api/twilio-vault/apis", getUploadedAPIs);
+  app.delete("/api/twilio-vault/apis", clearUploadedAPIs);
+  app.post("/api/twilio-vault/test", testTwilioAPI);
+
   return app;
 }
