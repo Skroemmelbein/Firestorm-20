@@ -126,7 +126,7 @@ const navigationItems = [
     description: 'AI-powered insights & automation',
     subItems: [
       { id: 'predictive-analytics', label: 'Predictive Analytics', path: '/business-overview', icon: BarChart3 },
-      { id: 'smart-recommendations', label: 'Smart Recommendations', path: '/ai', icon: Robot },
+      { id: 'smart-recommendations', label: 'Smart Recommendations', path: '/ai', icon: Bot },
       { id: 'automated-workflows', label: 'Automated Workflows', path: '/ai', icon: Zap }
     ]
   }
