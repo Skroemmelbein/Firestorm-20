@@ -43,10 +43,17 @@ import {
 } from "@shared/twilio-api-vault";
 
 const CATEGORY_ICONS = {
-  'MessageSquare': MessageSquare,
-  'Phone': Phone,
-  'Video': Video,
+  'TrendingUp': TrendingUp,
   'Shield': Shield,
+  'CreditCard': CreditCard,
+  'Headphones': Users, // Using Users as fallback for Headphones
+  'UserCheck': CheckCircle, // Using CheckCircle as fallback for UserCheck
+  'Lock': Shield, // Using Shield as fallback for Lock
+  'Phone': Phone,
+  'BarChart3': BarChart3,
+  'Zap': Zap,
+  'MessageSquare': MessageSquare,
+  'Video': Video,
   'Search': Search,
   'Bell': Bell,
   'MessageCircle': MessageCircle,
