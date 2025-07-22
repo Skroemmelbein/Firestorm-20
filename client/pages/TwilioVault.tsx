@@ -8,11 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { 
-  Database, 
-  Search, 
-  Play, 
-  Code, 
+import {
+  Database,
+  Search,
+  Play,
+  Code,
   Book,
   ChevronDown,
   ChevronRight,
@@ -31,7 +31,11 @@ import {
   XCircle,
   Clock,
   DollarSign,
-  ExternalLink
+  ExternalLink,
+  TrendingUp,
+  CreditCard,
+  BarChart3,
+  Zap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
