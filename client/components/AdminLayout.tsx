@@ -30,21 +30,28 @@ const navigationItems = [
     label: 'Admin Dashboard',
     icon: Database,
     path: '/admin',
-    description: 'Overview and API management'
+    description: 'Overview and system management'
   },
   {
-    id: 'billing',
-    label: 'Billing Logic',
+    id: 'billing-kit',
+    label: 'Client Billing Kit',
     icon: CreditCard,
-    path: '/billing',
-    description: 'Subscription billing and NMI'
+    path: '/billing-kit',
+    description: 'Invoices, ID cards & digital wallet'
+  },
+  {
+    id: 'business-overview',
+    label: 'Business Overview',
+    icon: BarChart3,
+    path: '/business-overview',
+    description: 'Analytics, charts & predictions'
   },
   {
     id: 'comm',
     label: 'Comm Center',
     icon: MessageSquare,
     path: '/comm-center',
-    description: 'Twilio, SendGrid & client journeys'
+    description: 'Communication management'
   }
 ];
 
@@ -57,9 +64,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen animate-fade-in">
       {/* Top Header */}
-      <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+      <header className="glass-nav sticky top-0 z-50 animate-slide-up">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
             <Button
@@ -72,12 +79,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </Button>
             
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary via-primary to-primary/80 flex items-center justify-center">
-                <Zap className="w-4 h-4 text-primary-foreground" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 flex items-center justify-center animate-glow">
+                <Zap className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-foreground">RecurFlow Admin</h1>
-                <p className="text-xs text-muted-foreground">Subscription Billing Dashboard</p>
+                <h1 className="text-lg font-bold gradient-text">RecurFlow Pro</h1>
+                <p className="text-xs text-purple-600/70">Client Billing Suite</p>
               </div>
             </div>
           </div>
@@ -106,7 +113,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className="flex">
         {/* Sidebar Navigation */}
         <nav className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 bg-card/95 backdrop-blur-sm border-r border-border/50 transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-0",
+          "fixed inset-y-0 left-0 z-40 w-64 glass-sidebar transform transition-all duration-300 ease-out lg:translate-x-0 lg:static lg:inset-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}>
           <div className="flex flex-col h-full pt-16 lg:pt-0">
@@ -122,10 +129,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       to={item.path}
                       onClick={() => setSidebarOpen(false)}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group",
-                        isActive 
-                          ? "bg-primary text-primary-foreground shadow-sm" 
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                        "flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-300 group transform hover:scale-105",
+                        isActive
+                          ? "glass-card bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg animate-glow"
+                          : "text-purple-700 hover:text-purple-900 hover:glass-card"
                       )}
                     >
                       <Icon className={cn(
