@@ -76,12 +76,14 @@ const navigationItems = [
     id: 'comm-center',
     label: 'COMM CENTER',
     icon: MessageSquare,
-    path: '/comm-center',
-    description: 'Customer communication hub',
+    path: '/marketing-automation',
+    description: 'Fortune 10 Marketing Automation + AI',
     subItems: [
-      { id: 'sms-campaigns', label: 'SMS Campaigns', path: '/comm-center', icon: Phone },
-      { id: 'email-templates', label: 'Email Templates', path: '/comm-center', icon: Mail },
-      { id: 'twilio-config', label: 'Twilio Config', path: '/twilio-vault', icon: Settings }
+      { id: 'marketing-automation', label: 'Marketing Automation', path: '/marketing-automation', icon: Zap },
+      { id: 'campaigns', label: 'Campaign Manager', path: '/comm-center/campaigns', icon: Send },
+      { id: 'ai-responses', label: 'AI Auto-Responses', path: '/comm-center/ai-responses', icon: Bot },
+      { id: 'audience', label: 'Audience Analytics', path: '/comm-center/audience', icon: Users },
+      { id: 'performance', label: 'Performance Insights', path: '/comm-center/analytics', icon: TrendingUp }
     ]
   },
   {
