@@ -1,16 +1,5 @@
 import express from 'express';
 
-// Import clients with error handling
-let getXanoClient: any;
-let getTwilioClient: any;
-
-try {
-  ({ getXanoClient } = await import('../../shared/xano-client.js'));
-  ({ getTwilioClient } = await import('../../shared/twilio-client.js'));
-} catch (importError) {
-  console.warn('Warning: Could not import client modules:', importError);
-}
-
 const router = express.Router();
 
 // Test connections (real, no mocks)
