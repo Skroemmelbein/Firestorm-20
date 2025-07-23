@@ -18,6 +18,7 @@ import MemberPortal from "./pages/MemberPortal";
 import Fulfillment from "./pages/Fulfillment";
 import IntelligentAI from "./pages/IntelligentAI";
 import ChargebackTracker from "./pages/ChargebackTracker";
+import DevOpsCenter from "./pages/DevOpsCenter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
