@@ -1,0 +1,33 @@
+<div id="gpt-chat-box" style="width:100%;max-width:600px;margin:40px auto;border:1px solid #ccc;border-radius:10px;padding:20px;">
+  <h3>💬 GPT Dev Assistant</h3>
+  <textarea id="gpt-input" placeholder="Ask GPT to build or wire logic..." style="width:100%;height:100px;border-radius:8px;margin-bottom:10px;"></textarea>
+  <button onclick="runGPTChat()" style="padding:10px 20px;border:none;border-radius:5px;background:#4B6EF6;color:white;">Run</button>
+  <pre id="gpt-output" style="background:#f6f6f6;border-radius:5px;padding:10px;margin-top:15px;white-space:pre-wrap;"></pre>
+</div>
+
+<script>
+async function runGPTChat() {
+  const prompt = document.getElementById("gpt-input").value;
+  const output = document.getElementById("gpt-output");
+  output.innerText = "Running GPT...";
+
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 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"
+    },
+    body: JSON.stringify({
+      model: "gpt-4",
+      messages: [
+        { role: "system", content: "You are a secure dev assistant for Builder.io, Xano, Twilio, NMI. You respond with HTML/CSS/JS/code that builds live UIs and API logic." },
+        { role: "user", content: prompt }
+      ]
+    })
+  });
+
+  const json = await res.json();
+  const reply = json.choices?.[0]?.message?.content || "No reply.";
+  output.innerText = reply;
+}
+</script>
