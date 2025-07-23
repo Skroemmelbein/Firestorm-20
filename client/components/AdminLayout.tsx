@@ -67,6 +67,7 @@ const navigationItems = [
     subItems: [
       { id: 'nmi-gateway', label: 'NMI Gateway', path: '/billing', icon: CreditCard },
       { id: 'chargeback-tracker', label: 'Chargeback Defense', path: '/chargeback-tracker', icon: Shield },
+      { id: 'devops-center', label: 'DevOps Automation', path: '/devops', icon: Zap },
       { id: 'payment-vault', label: 'Payment Vault', path: '/twilio-vault', icon: Database },
       { id: 'merchant-settings', label: 'Settings', path: '/integrations', icon: Settings }
     ]
