@@ -79,7 +79,7 @@ router.get('/members', async (req, res) => {
   try {
     // Check if Xano is connected, otherwise return mock data
     try {
-      const xano = getXanoClient();
+      const xano = getXanoClientSafe();
       const { page, per_page, search, status, membership_type } = req.query;
 
       const members = await xano.getMembers({
