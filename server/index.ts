@@ -52,7 +52,7 @@ export function createServer() {
   app.post("/api/integrations/config", saveIntegrationsConfig);
 
   // Real API endpoints - NO MOCKS
-  app.use("/api/real", await import("./routes/real-api.js").then(m => m.default));
+  app.use("/api/real", realApiRouter);
 
   // Twilio API Vault routes
   app.post("/api/twilio-vault/upload", uploadTwilioAPIs);
