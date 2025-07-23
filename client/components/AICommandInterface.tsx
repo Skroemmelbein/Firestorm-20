@@ -15,7 +15,7 @@ import {
   VolumeX,
   Zap
 } from "lucide-react";
-import { getOpenAIService } from "@/shared/openai-service";
+import { getOpenAIService } from "../../shared/openai-service";
 
 interface AIResponse {
   content: string;
