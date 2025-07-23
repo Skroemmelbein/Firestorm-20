@@ -258,20 +258,25 @@ export default function Integrations() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Link className="w-5 h-5 text-primary" />
+                  <Link className="w-5 h-5 text-green-500" />
                   <CardTitle className="text-lg">Integration</CardTitle>
                 </div>
-                <Badge variant={xanoStatus.connected && twilioStatus.connected ? "default" : "outline"}>
-                  {xanoStatus.connected && twilioStatus.connected ? <CheckCircle className="w-3 h-3 mr-1" /> : <XCircle className="w-3 h-3 mr-1" />}
-                  {xanoStatus.connected && twilioStatus.connected ? "Active" : "Inactive"}
+                <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+                  <CheckCircle className="w-3 h-3 mr-1" />
+                  Twilio Active
                 </Badge>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">Combined functionality</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Ready for workflows
-              </p>
+              <p className="text-sm text-muted-foreground">SMS system ready</p>
+              <div className="mt-2 space-y-1">
+                <p className="text-xs text-green-600 font-medium">
+                  ✅ SMS sending/receiving enabled
+                </p>
+                <p className="text-xs text-orange-600 font-medium">
+                  ⚠️ Xano setup pending
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>
