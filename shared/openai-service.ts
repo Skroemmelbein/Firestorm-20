@@ -42,20 +42,27 @@ export class OpenAIService {
   }
 
   private async makeRequest(endpoint: string, data: any): Promise<any> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.config.apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    });
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.config.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
 
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error('OpenAI API Error:', response.status, errorData);
+        throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('OpenAI Request Failed:', error);
+      throw error;
     }
-
-    return response.json();
   }
 
   async chat(messages: ChatMessage[]): Promise<string> {
@@ -208,6 +215,9 @@ let defaultService: OpenAIService | null = null;
 export function getOpenAIService(): OpenAIService {
   if (!defaultService) {
     const apiKey = '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';
+    if (!apiKey) {
+      throw new Error('OpenAI API key not configured');
+    }
     defaultService = new OpenAIService({ apiKey });
   }
   return defaultService;
