@@ -210,15 +210,37 @@ export class TwilioClient {
     }
   }
 
-  // Handle Incoming SMS Webhook
+  // Handle Incoming SMS Webhook with AI
   async handleIncomingSMS(webhook: TwilioWebhook): Promise<void> {
     try {
-      // Find member by phone number
+      console.log('📨 Incoming SMS from:', webhook.From, 'Message:', webhook.Body);
+
+      // Use AI Customer Service to handle the message
+      const { getAICustomerService } = await import('./ai-customer-service.js');
+      const aiService = getAICustomerService();
+
+      const result = await aiService.handleIncomingMessage(
+        webhook.From,
+        webhook.Body || '',
+        webhook.MessageSid
+      );
+
+      console.log('🤖 AI Analysis:', {
+        sentiment: result.analysis.sentiment,
+        intent: result.analysis.intent,
+        urgency: result.analysis.urgency,
+        action: result.actionTaken,
+        autoResponse: result.autoResponse ? 'Generated' : 'None'
+      });
+
+    } catch (error) {
+      console.error('Error processing incoming SMS with AI:', error);
+
+      // Fallback: basic logging without AI
       const xano = getXanoClient();
       const members = await xano.getMembers({ search: webhook.From });
       let member = members.data.find(m => m.phone === webhook.From);
 
-      // Log incoming message to Xano
       await this.logCommunicationToXano({
         member_id: member?.id,
         channel: 'sms',
@@ -232,19 +254,6 @@ export class TwilioClient {
         delivered_at: new Date().toISOString(),
         ai_generated: false,
       });
-
-      // TODO: Implement AI auto-response logic here
-      // Check for keywords, intent analysis, etc.
-      
-      console.log('Incoming SMS processed:', {
-        from: webhook.From,
-        to: webhook.To,
-        body: webhook.Body,
-        member: member ? `${member.first_name} ${member.last_name}` : 'Unknown'
-      });
-      
-    } catch (error) {
-      console.error('Error processing incoming SMS:', error);
     }
   }
 
