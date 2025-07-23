@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getOpenAIService } from "@shared/openai-service";
 import type { DevelopmentTask } from "@shared/openai-service";
 import { fileManager } from "@shared/code-executor";
+import AutoSendSMS from "@/components/AutoSendSMS";
 
 interface Message {
   id: string;
