@@ -385,6 +385,31 @@ router.post('/sms/bulk', async (req, res) => {
   }
 });
 
+// Email API
+router.post('/email/send', async (req, res) => {
+  try {
+    const { to, subject, html, text } = req.body;
+
+    // For now, simulate email sending until SendGrid is fully configured
+    console.log('📧 Sending email:', { to, subject });
+
+    // Simulate SendGrid API call
+    const emailResult = {
+      success: true,
+      messageId: `email_${Date.now()}`,
+      to,
+      subject,
+      from: 'noreply@recurflow.com',
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(emailResult);
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ error: 'Failed to send email' });
+  }
+});
+
 // Voice API
 router.post('/voice/call', async (req, res) => {
   try {
