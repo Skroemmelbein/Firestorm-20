@@ -179,7 +179,7 @@ export default function Index() {
             actionType = 'chat';
         }
 
-        return { content: response, task, actionType, code };
+        return { content: response, task, actionType, code, canExecute: !!code };
       } else {
         // Regular conversation
         const response = await openaiService.chatWithContext(userMessage, conversationHistory);
@@ -222,7 +222,9 @@ export default function Index() {
         timestamp: new Date(),
         task: aiResponse.task,
         code: aiResponse.code,
-        actionType: aiResponse.actionType
+        actionType: aiResponse.actionType,
+        canExecute: aiResponse.canExecute,
+        executed: false
       };
 
       setMessages(prev => [...prev, assistantMessage]);
