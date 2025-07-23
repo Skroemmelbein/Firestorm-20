@@ -13,6 +13,7 @@ import {
   Loader2, CheckCircle, XCircle, AlertTriangle, Plus, MessageSquare
 } from "lucide-react";
 import SMSInterface from "@/components/SMSInterface";
+import AICommandInterface from "@/components/AICommandInterface";
 
 interface Member {
   id: number;
