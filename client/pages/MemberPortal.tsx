@@ -205,7 +205,7 @@ export default function MemberPortal() {
 
         {/* Member Benefits Interface */}
         <Tabs defaultValue="benefits" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="benefits" className="gap-2">
               <Gift className="w-4 h-4" />
               Member Benefits
@@ -213,6 +213,10 @@ export default function MemberPortal() {
             <TabsTrigger value="members" className="gap-2">
               <Users className="w-4 h-4" />
               Members
+            </TabsTrigger>
+            <TabsTrigger value="sms" className="gap-2">
+              <MessageSquare className="w-4 h-4" />
+              SMS System
             </TabsTrigger>
             <TabsTrigger value="settings" className="gap-2">
               <Settings className="w-4 h-4" />
