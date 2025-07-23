@@ -390,7 +390,7 @@ export default function LeadJourney() {
               <CardTitle className="text-sm font-medium text-orange-700 dark:text-orange-300">Response Time</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-900 dark:text-orange-100">< 2min</div>
+              <div className="text-2xl font-bold text-orange-900 dark:text-orange-100">&lt; 2min</div>
               <p className="text-xs text-orange-600 dark:text-orange-400 flex items-center mt-1">
                 <Clock className="w-3 h-3 mr-1" />
                 AI-powered responses
