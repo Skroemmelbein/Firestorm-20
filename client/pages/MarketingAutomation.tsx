@@ -558,6 +558,11 @@ export default function MarketingAutomation() {
             </div>
           </TabsContent>
 
+          {/* Test Messages Tab */}
+          <TabsContent value="test" className="space-y-6">
+            <TestMessageInterface />
+          </TabsContent>
+
           {/* Settings Tab */}
           <TabsContent value="settings" className="space-y-6">
             <h2 className="text-xl font-semibold">Marketing Settings</h2>
