@@ -84,7 +84,17 @@ export default function TestMessageInterface() {
         })
       });
 
-      const result = await response.json();
+      let result;
+      try {
+        result = await response.json();
+      } catch (jsonError) {
+        result = {
+          success: false,
+          error: `Response parsing failed: ${jsonError instanceof Error ? jsonError.message : 'Invalid JSON'}`,
+          httpStatus: response.status,
+          httpStatusText: response.statusText
+        };
+      }
 
       setResults(prev => [{
         type: 'sms',
