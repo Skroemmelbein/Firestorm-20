@@ -33,7 +33,7 @@ const App = () => (
       <SiriAssistant />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<AdminDashboard />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/merchant" element={<BillingLogic />} />
           <Route path="/billing-kit" element={<ClientBillingKit />} />
