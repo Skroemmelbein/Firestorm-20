@@ -245,6 +245,83 @@ export default function Index() {
     }
   };
 
+  const executeCode = async (messageId: string, task: DevelopmentTask, code: string) => {
+    setExecutingCode(messageId);
+
+    try {
+      let result;
+      const fileName = task.fileName || generateFileName(task);
+
+      switch (task.target) {
+        case 'component':
+          result = await fileManager.createComponent(fileName.replace('.tsx', ''), code);
+          break;
+        case 'page':
+          result = await fileManager.createPage(fileName.replace('.tsx', ''), code);
+          break;
+        case 'api':
+          result = await fileManager.createAPI(fileName.replace('.ts', ''), code);
+          break;
+        default:
+          result = { success: false, message: 'Unsupported file type' };
+      }
+
+      // Update the message to show execution status
+      setMessages(prev => prev.map(msg =>
+        msg.id === messageId
+          ? { ...msg, executed: true }
+          : msg
+      ));
+
+      // Add result message
+      const resultMessage: Message = {
+        id: Date.now().toString(),
+        type: "system",
+        content: result.success
+          ? `✅ ${result.message}`
+          : `❌ ${result.message}`,
+        timestamp: new Date(),
+        actionType: 'chat'
+      };
+
+      setMessages(prev => [...prev, resultMessage]);
+
+    } catch (error) {
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        type: "system",
+        content: `❌ Failed to execute: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        timestamp: new Date(),
+        actionType: 'chat'
+      };
+
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setExecutingCode(null);
+    }
+  };
+
+  const generateFileName = (task: DevelopmentTask): string => {
+    if (task.fileName) return task.fileName;
+
+    const name = task.details.split(' ').find(word =>
+      !['create', 'add', 'make', 'build', 'component', 'page', 'api'].includes(word.toLowerCase())
+    ) || 'NewFile';
+
+    const cleanName = name.charAt(0).toUpperCase() + name.slice(1).replace(/[^a-zA-Z0-9]/g, '');
+
+    switch (task.target) {
+      case 'component':
+        return `${cleanName}Component.tsx`;
+      case 'page':
+        return `${cleanName}Page.tsx`;
+      case 'api':
+        return `${cleanName}API.ts`;
+      default:
+        return `${cleanName}.tsx`;
+    }
+  };
+
   const handleTextSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleUserMessage(textInput, "text");
