@@ -374,7 +374,7 @@ router.post('/sms/send', async (req, res) => {
 
 router.post('/sms/bulk', async (req, res) => {
   try {
-    const twilio = getTwilioClient();
+    const twilio = getTwilioClientSafe();
     const { messages } = req.body;
     
     const result = await twilio.sendBulkSMS(messages);
