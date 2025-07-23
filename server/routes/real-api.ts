@@ -3,11 +3,30 @@ import express from 'express';
 const router = express.Router();
 
 // Test connections (real, no mocks)
+// Safe client getters
+const getXanoClientSafe = () => {
+  try {
+    const { getXanoClient } = require('../../shared/xano-client');
+    return getXanoClient();
+  } catch (error) {
+    throw new Error('Xano client not initialized. Please configure Xano credentials first.');
+  }
+};
+
+const getTwilioClientSafe = () => {
+  try {
+    const { getTwilioClient } = require('../../shared/twilio-client');
+    return getTwilioClient();
+  } catch (error) {
+    throw new Error('Twilio client not initialized. Please configure Twilio credentials first.');
+  }
+};
+
 router.post('/test/xano', async (req, res) => {
   try {
-    const xano = getXanoClient();
+    const xano = getXanoClientSafe();
     const isConnected = await xano.testConnection();
-    
+
     if (isConnected) {
       res.json({
         connected: true,
@@ -24,7 +43,7 @@ router.post('/test/xano', async (req, res) => {
     console.error("Xano connection test failed:", error);
     res.status(500).json({
       connected: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred"
+      error: error instanceof Error ? error.message : "Xano not configured. Please set up Xano credentials."
     });
   }
 });
