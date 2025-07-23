@@ -41,6 +41,7 @@ const App = () => (
           <Route path="/fulfillment" element={<Fulfillment />} />
           <Route path="/ai" element={<IntelligentAI />} />
           <Route path="/chargeback-tracker" element={<ChargebackTracker />} />
+          <Route path="/devops" element={<DevOpsCenter />} />
           <Route path="/integrations" element={<Integrations />} />
           <Route path="/twilio-vault" element={<TwilioVault />} />
           <Route path="/settings" element={<Integrations />} />
