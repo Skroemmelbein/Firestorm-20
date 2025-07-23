@@ -39,6 +39,8 @@ export default function TestMessageInterface() {
 
   const [sending, setSending] = useState({ sms: false, email: false });
   const [results, setResults] = useState<TestResult[]>([]);
+  const [connectionStatus, setConnectionStatus] = useState<any>(null);
+  const [diagnosing, setDiagnosing] = useState(false);
 
   // Send test SMS
   const sendTestSMS = async () => {
