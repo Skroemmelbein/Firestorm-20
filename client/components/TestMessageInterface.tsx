@@ -42,6 +42,35 @@ export default function TestMessageInterface() {
   const [connectionStatus, setConnectionStatus] = useState<any>(null);
   const [diagnosing, setDiagnosing] = useState(false);
 
+  // Test Twilio connection with diagnostics
+  const runDiagnostics = async () => {
+    setDiagnosing(true);
+    try {
+      const response = await fetch('/api/real/test/twilio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+
+      const result = await response.json();
+      setConnectionStatus({
+        connected: response.ok,
+        httpStatus: response.status,
+        ...result,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      setConnectionStatus({
+        connected: false,
+        error: 'Network connection failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString()
+      });
+    } finally {
+      setDiagnosing(false);
+    }
+  };
+
   // Send test SMS
   const sendTestSMS = async () => {
     setSending(prev => ({ ...prev, sms: true }));
