@@ -202,68 +202,232 @@ export default function MemberPortal() {
           </Card>
         </div>
 
-        {/* Portal Management Sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="glass-card corp-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Layout className="w-5 h-5" />
-                Portal Design
-              </CardTitle>
-              <CardDescription>
-                Customize the member portal appearance and functionality
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 border rounded-lg">
-                  <h4 className="font-semibold text-sm text-blue-800 mb-2">Current Theme</h4>
-                  <Badge className="bg-blue-100 text-blue-700">Corporate Blue</Badge>
-                </div>
-                <div className="p-4 border rounded-lg">
-                  <h4 className="font-semibold text-sm text-blue-800 mb-2">Layout</h4>
-                  <Badge className="bg-green-100 text-green-700">Responsive</Badge>
-                </div>
-              </div>
-              <Button className="w-full gap-2">
-                <Settings className="w-4 h-4" />
-                Customize Portal
-              </Button>
-            </CardContent>
-          </Card>
+        {/* Member Benefits Interface */}
+        <Tabs defaultValue="benefits" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="benefits" className="gap-2">
+              <Gift className="w-4 h-4" />
+              Member Benefits
+            </TabsTrigger>
+            <TabsTrigger value="members" className="gap-2">
+              <Users className="w-4 h-4" />
+              Members
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="gap-2">
+              <Settings className="w-4 h-4" />
+              Portal Settings
+            </TabsTrigger>
+          </TabsList>
 
-          <Card className="glass-card corp-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="w-5 h-5" />
-                Access Control
-              </CardTitle>
-              <CardDescription>
-                Manage member permissions and security settings
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-3">
+          {/* Benefits Tab */}
+          <TabsContent value="benefits">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {benefits.map((benefit) => {
+                const IconComponent = getIconForBenefit(benefit.icon_name);
+                return (
+                  <Card key={benefit.id} className="glass-card corp-shadow hover:shadow-lg transition-shadow">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-lg ${getBenefitColor(benefit.color_theme)}`}>
+                            <IconComponent className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <CardTitle className="text-lg">{benefit.title}</CardTitle>
+                            <Badge variant="outline" className="mt-1">
+                              {benefit.benefit_category}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <p className="text-sm text-muted-foreground">{benefit.description}</p>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Value:</span>
+                          <span className="text-sm text-primary font-semibold">{benefit.value_description}</span>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Type:</span>
+                          <Badge variant="secondary">{benefit.benefit_type}</Badge>
+                        </div>
+
+                        <div className="space-y-1">
+                          <span className="text-sm font-medium">Available to:</span>
+                          <div className="flex flex-wrap gap-1">
+                            {benefit.membership_levels.map((level) => (
+                              <Badge key={level} className="text-xs bg-blue-100 text-blue-700">
+                                {level}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+
+                        {benefit.conditions && (
+                          <div className="pt-2 border-t">
+                            <span className="text-xs text-muted-foreground">
+                              <strong>Conditions:</strong> {benefit.conditions}
+                            </span>
+                          </div>
+                        )}
+
+                        {benefit.usage_limit && (
+                          <div className="flex items-center justify-between pt-2 border-t">
+                            <span className="text-xs text-muted-foreground">Usage limit:</span>
+                            <span className="text-xs font-medium">{benefit.usage_limit} per member</span>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </TabsContent>
+
+          {/* Members Tab */}
+          <TabsContent value="members">
+            <Card className="glass-card corp-shadow">
+              <CardHeader>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Two-Factor Auth</span>
-                  <Badge className="bg-green-100 text-green-700">Enabled</Badge>
+                  <CardTitle>Member Directory</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search members..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-9 w-64"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Session Timeout</span>
-                  <span className="text-sm text-blue-600">30 minutes</span>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {filteredMembers.slice(0, 10).map((member) => (
+                    <div
+                      key={member.id}
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
+                      onClick={() => setSelectedMember(member)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-sm font-semibold text-primary">
+                            {member.first_name[0]}{member.last_name[0]}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="font-medium">{member.first_name} {member.last_name}</div>
+                          <div className="text-sm text-muted-foreground">{member.email}</div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <Badge
+                          className={
+                            member.membership_type === 'enterprise' ? 'bg-purple-100 text-purple-700' :
+                            member.membership_type === 'premium' ? 'bg-blue-100 text-blue-700' :
+                            'bg-gray-100 text-gray-700'
+                          }
+                        >
+                          {member.membership_type}
+                        </Badge>
+                        <div className="text-sm text-muted-foreground">
+                          Score: {member.engagement_score}
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Password Policy</span>
-                  <Badge className="bg-blue-100 text-blue-700">Strong</Badge>
-                </div>
-              </div>
-              <Button variant="outline" className="w-full gap-2">
-                <Key className="w-4 h-4" />
-                Security Settings
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+
+                {filteredMembers.length > 10 && (
+                  <div className="text-center mt-4">
+                    <Button variant="outline">
+                      Load More ({filteredMembers.length - 10} remaining)
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Settings Tab */}
+          <TabsContent value="settings">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="glass-card corp-shadow">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Layout className="w-5 h-5" />
+                    Portal Configuration
+                  </CardTitle>
+                  <CardDescription>
+                    Configure portal appearance and functionality
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 border rounded-lg">
+                      <h4 className="font-semibold text-sm text-blue-800 mb-2">Database</h4>
+                      <Badge className="bg-green-100 text-green-700">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Xano Connected
+                      </Badge>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <h4 className="font-semibold text-sm text-blue-800 mb-2">Benefits</h4>
+                      <Badge className="bg-blue-100 text-blue-700">{benefits.length} Active</Badge>
+                    </div>
+                  </div>
+                  <Button className="w-full gap-2" onClick={loadData}>
+                    <Settings className="w-4 h-4" />
+                    Refresh from Xano
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card corp-shadow">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="w-5 h-5" />
+                    Integration Status
+                  </CardTitle>
+                  <CardDescription>
+                    Real-time connection status
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Xano Database</span>
+                      <Badge className="bg-green-100 text-green-700">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Connected
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Member Records</span>
+                      <span className="text-sm text-blue-600">{members.length} loaded</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Benefits Catalog</span>
+                      <span className="text-sm text-blue-600">{benefits.length} active</span>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="w-full gap-2">
+                    <Key className="w-4 h-4" />
+                    View API Settings
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </AdminLayout>
   );
