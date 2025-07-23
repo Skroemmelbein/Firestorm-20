@@ -151,49 +151,53 @@ export default function MemberPortal() {
           </Alert>
         )}
 
-        {/* Stats */}
+        {/* Stats - Real Data from Xano */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Active Members</CardTitle>
+              <CardTitle className="text-sm font-semibold text-blue-800">Total Members</CardTitle>
               <Users className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold gradient-text">1,247</div>
-              <p className="text-xs text-green-600 font-medium">↗ +15% this month</p>
+              <div className="text-2xl font-bold gradient-text">{members.length.toLocaleString()}</div>
+              <p className="text-xs text-green-600 font-medium">Live from Xano DB</p>
             </CardContent>
           </Card>
 
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Portal Views</CardTitle>
-              <Layout className="h-4 w-4 text-blue-600" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Active Benefits</CardTitle>
+              <Gift className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold gradient-text">8,432</div>
-              <p className="text-xs text-blue-600 font-medium">Last 30 days</p>
+              <div className="text-2xl font-bold gradient-text">{benefits.length}</div>
+              <p className="text-xs text-blue-600 font-medium">Available to members</p>
             </CardContent>
           </Card>
 
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Login Success</CardTitle>
-              <UserCheck className="h-4 w-4 text-green-600" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Premium Members</CardTitle>
+              <Crown className="h-4 w-4 text-purple-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold gradient-text">97.2%</div>
-              <p className="text-xs text-green-600 font-medium">Authentication rate</p>
+              <div className="text-2xl font-bold gradient-text">
+                {members.filter(m => m.membership_type === 'premium' || m.membership_type === 'enterprise').length}
+              </div>
+              <p className="text-xs text-purple-600 font-medium">Premium + Enterprise</p>
             </CardContent>
           </Card>
 
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Access Levels</CardTitle>
-              <Shield className="h-4 w-4 text-blue-600" />
+              <CardTitle className="text-sm font-semibold text-blue-800">Avg Engagement</CardTitle>
+              <Star className="h-4 w-4 text-yellow-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold gradient-text">6</div>
-              <p className="text-xs text-blue-600 font-medium">Permission tiers</p>
+              <div className="text-2xl font-bold gradient-text">
+                {members.length > 0 ? Math.round(members.reduce((sum, m) => sum + m.engagement_score, 0) / members.length) : 0}
+              </div>
+              <p className="text-xs text-yellow-600 font-medium">Engagement score</p>
             </CardContent>
           </Card>
         </div>
