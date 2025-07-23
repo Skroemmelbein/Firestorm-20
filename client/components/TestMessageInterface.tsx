@@ -132,7 +132,7 @@ export default function TestMessageInterface() {
                 <h3 style="margin: 0 0 10px 0; color: #1f2937;">✅ System Status</h3>
                 <ul style="margin: 0; padding-left: 20px;">
                   <li>✅ Twilio SMS: Connected</li>
-                  <li>✅ SendGrid Email: Connected</li>
+                  <li>��� SendGrid Email: Connected</li>
                   <li>✅ OpenAI Integration: Active</li>
                   <li>✅ Marketing Automation: Ready</li>
                 </ul>
@@ -193,11 +193,38 @@ export default function TestMessageInterface() {
               )}
               Send Both Tests
             </Button>
-            <Badge className="bg-green-100 text-green-700">
-              <CheckCircle className="w-3 h-3 mr-1" />
-              Twilio Ready
-            </Badge>
+            <Button onClick={runDiagnostics} disabled={diagnosing} variant="outline" className="gap-2">
+              {diagnosing ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Zap className="w-4 h-4" />
+              )}
+              Test Connection
+            </Button>
           </div>
+
+          {/* Connection Status */}
+          {connectionStatus && (
+            <Alert variant={connectionStatus.connected ? "default" : "destructive"} className="mt-4">
+              {connectionStatus.connected ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+              <AlertDescription>
+                {connectionStatus.connected ? (
+                  <div>
+                    <strong>✅ Twilio Connected</strong>
+                    <div className="text-xs mt-1">Ready to send SMS from +1 (855) 800-0037</div>
+                  </div>
+                ) : (
+                  <div>
+                    <strong>❌ Connection Failed</strong>
+                    <div className="text-xs mt-1">{connectionStatus.error}</div>
+                    {connectionStatus.httpStatus && (
+                      <div className="text-xs mt-1">HTTP Status: {connectionStatus.httpStatus}</div>
+                    )}
+                  </div>
+                )}
+              </AlertDescription>
+            </Alert>
+          )}
         </CardHeader>
       </Card>
 
