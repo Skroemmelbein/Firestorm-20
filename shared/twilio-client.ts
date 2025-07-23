@@ -68,9 +68,26 @@ export class TwilioClient {
       const result = await response.json();
       
       if (!response.ok) {
-        throw new Error(`Twilio API Error ${response.status}: ${result.message || 'Unknown error'}`);
+        // Create detailed error object with Twilio specifics
+        const twilioError = {
+          status: response.status,
+          statusText: response.statusText,
+          code: result.code,
+          message: result.message,
+          more_info: result.more_info,
+          detail: result.detail,
+          url,
+          method,
+          timestamp: new Date().toISOString()
+        };
+
+        console.error('Twilio API Error:', twilioError);
+
+        const error = new Error(result.message || `HTTP ${response.status}: ${response.statusText}`);
+        (error as any).twilioError = twilioError;
+        throw error;
       }
-      
+
       return result;
     } catch (error) {
       console.error('Twilio API Request Failed:', {
