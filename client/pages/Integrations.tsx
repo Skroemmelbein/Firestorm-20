@@ -26,6 +26,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import XanoCredentialsHelper from "@/components/XanoCredentialsHelper";
+import XanoCredentialsFinder from "@/components/XanoCredentialsFinder";
 
 interface ConnectionStatus {
   connected: boolean;
