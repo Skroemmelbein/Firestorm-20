@@ -432,10 +432,48 @@ export default function Index() {
                   <CardContent className={cn("p-4", message.task && "pt-0")}>
                     <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
                     {message.code && (
-                      <div className="mt-3 rounded-lg bg-slate-900 p-4 overflow-x-auto">
-                        <pre className="text-sm text-slate-100">
-                          <code>{message.code}</code>
-                        </pre>
+                      <div className="mt-3 space-y-3">
+                        <div className="rounded-lg bg-slate-900 p-4 overflow-x-auto">
+                          <pre className="text-sm text-slate-100">
+                            <code>{message.code}</code>
+                          </pre>
+                        </div>
+                        {message.canExecute && message.task && (
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => executeCode(message.id, message.task!, message.code!)}
+                              disabled={executingCode === message.id || message.executed}
+                              className="gap-2"
+                            >
+                              {executingCode === message.id ? (
+                                <>
+                                  <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                  Creating...
+                                </>
+                              ) : message.executed ? (
+                                <>
+                                  <div className="w-3 h-3 bg-green-500 rounded-full" />
+                                  Created
+                                </>
+                              ) : (
+                                <>
+                                  <FileText className="w-3 h-3" />
+                                  Create File
+                                </>
+                              )}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => navigator.clipboard.writeText(message.code!)}
+                              className="gap-2"
+                            >
+                              <Copy className="w-3 h-3" />
+                              Copy
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     )}
                     <p className={cn(
