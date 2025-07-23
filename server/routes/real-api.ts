@@ -183,7 +183,7 @@ router.get('/members/:id', async (req, res) => {
 
 router.post('/members', async (req, res) => {
   try {
-    const xano = getXanoClient();
+    const xano = getXanoClientSafe();
     const member = await xano.createMember(req.body);
     res.json(member);
   } catch (error) {
