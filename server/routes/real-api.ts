@@ -194,7 +194,7 @@ router.post('/members', async (req, res) => {
 
 router.patch('/members/:id', async (req, res) => {
   try {
-    const xano = getXanoClient();
+    const xano = getXanoClientSafe();
     const member = await xano.updateMember(parseInt(req.params.id), req.body);
     res.json(member);
   } catch (error) {
