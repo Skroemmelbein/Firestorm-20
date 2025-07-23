@@ -142,6 +142,13 @@ export class TwilioClient {
         dateCreated: result.date_created,
       };
     } catch (error) {
+      // Enhanced error information
+      const errorDetails = {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        twilioError: (error as any).twilioError || null,
+        timestamp: new Date().toISOString()
+      };
+
       // Log failed attempt to Xano
       await this.logCommunicationToXano({
         channel: 'sms',
@@ -151,10 +158,13 @@ export class TwilioClient {
         content: message.body,
         status: 'failed',
         provider: 'twilio',
-        error_message: error instanceof Error ? error.message : 'Unknown error',
+        error_message: errorDetails.message,
       });
-      
-      throw error;
+
+      // Throw enhanced error
+      const enhancedError = new Error(errorDetails.message);
+      (enhancedError as any).details = errorDetails;
+      throw enhancedError;
     }
   }
 
