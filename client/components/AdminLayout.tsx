@@ -66,7 +66,8 @@ const navigationItems = [
     description: 'Payment gateway & merchant accounts',
     subItems: [
       { id: 'nmi-gateway', label: 'NMI Gateway', path: '/billing', icon: CreditCard },
-      { id: 'payment-vault', label: 'Payment Vault', path: '/twilio-vault', icon: Shield },
+      { id: 'chargeback-tracker', label: 'Chargeback Defense', path: '/chargeback-tracker', icon: Shield },
+      { id: 'payment-vault', label: 'Payment Vault', path: '/twilio-vault', icon: Database },
       { id: 'merchant-settings', label: 'Settings', path: '/integrations', icon: Settings }
     ]
   },
