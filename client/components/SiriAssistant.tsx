@@ -173,8 +173,33 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
       }
     } catch (error) {
       console.error('Error generating AI response:', error);
+
+      // Smart fallback responses based on keywords
+      const lowerMessage = userMessage.toLowerCase();
+
+      if (lowerMessage.includes('create') && lowerMessage.includes('component')) {
+        return {
+          content: "I'd love to help you create a component! While I'm reconnecting to my AI brain, can you tell me more details about what this component should do? For example: 'Create a login form with email and password fields'",
+          actionType: 'chat'
+        };
+      }
+
+      if (lowerMessage.includes('fix') || lowerMessage.includes('debug') || lowerMessage.includes('error')) {
+        return {
+          content: "I'm here to help debug! While I'm getting my full AI powers back, can you share the error message or describe what's not working? I can still provide guidance!",
+          actionType: 'chat'
+        };
+      }
+
+      if (lowerMessage.includes('build') || lowerMessage.includes('make')) {
+        return {
+          content: "Exciting! I love building things. While I'm reconnecting, tell me more about what you want to build - a page, component, API, or something else entirely?",
+          actionType: 'chat'
+        };
+      }
+
       return {
-        content: 'I encountered an issue. Let me try to help you anyway! What would you like to build?',
+        content: "I'm having a moment reconnecting to my AI superpowers, but I'm still here! Try asking me to create a component, fix some code, or build something specific. What would you like to work on?",
         actionType: 'chat'
       };
     }
