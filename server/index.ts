@@ -2,9 +2,11 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { getIntegrationsConfig, saveIntegrationsConfig } from "./routes/integrations-config";
-import { testXanoConnection } from "./routes/test-xano";
-import { testTwilioConnection } from "./routes/test-twilio";
 import { uploadTwilioAPIs, getUploadedAPIs, clearUploadedAPIs, testTwilioAPI } from "./routes/twilio-vault";
+
+// Import real integrations - NO MOCKS
+import { initializeXano } from "../shared/xano-client";
+import { initializeTwilio } from "../shared/twilio-client";
 
 export function createServer() {
   const app = express();
