@@ -52,16 +52,13 @@ export class OpenAIService {
         body: JSON.stringify(data)
       });
 
-      // Clone response to avoid "body stream already read" errors
-      const responseClone = response.clone();
-
       if (!response.ok) {
         let errorData;
         try {
-          errorData = await responseClone.json();
+          errorData = await response.json();
         } catch {
           try {
-            errorData = await responseClone.text();
+            errorData = await response.text();
           } catch {
             errorData = `HTTP ${response.status}: ${response.statusText}`;
           }
