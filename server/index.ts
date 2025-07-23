@@ -8,6 +8,7 @@ import realApiRouter from "./routes/real-api";
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
 import { initializeTwilio } from "../shared/twilio-client";
+import { setOpenAIApiKey } from "../shared/openai-service";
 
 export function createServer() {
   const app = express();
