@@ -52,22 +52,20 @@ export class OpenAIService {
         body: JSON.stringify(data)
       });
 
+      // Read the response body once
+      let responseData;
+      try {
+        responseData = await response.json();
+      } catch {
+        responseData = await response.text();
+      }
+
       if (!response.ok) {
-        let errorData;
-        try {
-          errorData = await response.json();
-        } catch {
-          try {
-            errorData = await response.text();
-          } catch {
-            errorData = `HTTP ${response.status}: ${response.statusText}`;
-          }
-        }
-        console.error('OpenAI API Error:', response.status, errorData);
+        console.error('OpenAI API Error:', response.status, responseData);
         throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
       }
 
-      return await response.json();
+      return responseData;
     } catch (error) {
       console.error('OpenAI Request Failed:', error);
       throw error;
