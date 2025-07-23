@@ -54,11 +54,16 @@ export default function TestMessageInterface() {
       });
 
       const result = await response.json();
-      
+
       setResults(prev => [{
         type: 'sms',
         success: result.success || response.ok,
-        details: result,
+        details: {
+          ...result,
+          httpStatus: response.status,
+          httpStatusText: response.statusText,
+          requestData: { to: smsData.phone, body: smsData.message }
+        },
         timestamp: new Date().toISOString()
       }, ...prev]);
 
@@ -66,7 +71,11 @@ export default function TestMessageInterface() {
       setResults(prev => [{
         type: 'sms',
         success: false,
-        details: { error: error instanceof Error ? error.message : 'Failed to send SMS' },
+        details: {
+          error: error instanceof Error ? error.message : 'Failed to send SMS',
+          networkError: true,
+          requestData: { to: smsData.phone, body: smsData.message }
+        },
         timestamp: new Date().toISOString()
       }, ...prev]);
     } finally {
