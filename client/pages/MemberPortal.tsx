@@ -205,11 +205,15 @@ export default function MemberPortal() {
         </div>
 
         {/* Member Benefits Interface */}
-        <Tabs defaultValue="benefits" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="ai" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="ai" className="gap-2">
+              <Star className="w-4 h-4" />
+              AI Commands
+            </TabsTrigger>
             <TabsTrigger value="benefits" className="gap-2">
               <Gift className="w-4 h-4" />
-              Member Benefits
+              Benefits
             </TabsTrigger>
             <TabsTrigger value="members" className="gap-2">
               <Users className="w-4 h-4" />
