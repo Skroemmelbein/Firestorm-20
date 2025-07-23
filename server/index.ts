@@ -49,8 +49,9 @@ export function createServer() {
   // Integration routes
   app.get("/api/integrations/config", getIntegrationsConfig);
   app.post("/api/integrations/config", saveIntegrationsConfig);
-  app.post("/api/integrations/test/xano", testXanoConnection);
-  app.post("/api/integrations/test/twilio", testTwilioConnection);
+
+  // Real API endpoints - NO MOCKS
+  app.use("/api/real", require("./routes/real-api"));
 
   // Twilio API Vault routes
   app.post("/api/twilio-vault/upload", uploadTwilioAPIs);
