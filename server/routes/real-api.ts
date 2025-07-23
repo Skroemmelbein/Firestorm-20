@@ -355,7 +355,7 @@ router.post('/benefits/:id/use', async (req, res) => {
 // SMS API
 router.post('/sms/send', async (req, res) => {
   try {
-    const twilio = getTwilioClient();
+    const twilio = getTwilioClientSafe();
     const { to, body, from, mediaUrl } = req.body;
     
     const result = await twilio.sendSMS({
