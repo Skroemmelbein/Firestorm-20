@@ -53,12 +53,17 @@ export class OpenAIService {
       });
 
       if (!response.ok) {
-        const errorData = await response.text();
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch {
+          errorData = await response.text();
+        }
         console.error('OpenAI API Error:', response.status, errorData);
         throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
       }
 
-      return response.json();
+      return await response.json();
     } catch (error) {
       console.error('OpenAI Request Failed:', error);
       throw error;
