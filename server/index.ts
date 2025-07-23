@@ -30,15 +30,24 @@ export function createServer() {
     console.warn('⚠️  Xano environment variables not found - add to .env file');
   }
 
-  if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
-    initializeTwilio({
-      accountSid: process.env.TWILIO_ACCOUNT_SID,
-      authToken: process.env.TWILIO_AUTH_TOKEN,
-      phoneNumber: process.env.TWILIO_PHONE_NUMBER,
-    });
-    console.log('✅ Twilio client initialized with real credentials');
+  // Initialize Twilio with working credentials
+  const twilioCredentials = {
+    accountSid: process.env.TWILIO_ACCOUNT_SID || 'ACf19a39d865d43659b94a3a2074',
+    authToken: process.env.TWILIO_AUTH_TOKEN || '1f9a48e4dcd9c518889e148fe931e226',
+    phoneNumber: process.env.TWILIO_PHONE_NUMBER || '+18558000037',
+  };
+
+  initializeTwilio(twilioCredentials);
+  console.log('✅ Twilio client initialized with working credentials:', twilioCredentials.phoneNumber);
+
+  // Initialize OpenAI with working credentials
+  if (process.env.OPENAI_API_KEY) {
+    setOpenAIApiKey(process.env.OPENAI_API_KEY);
+    console.log('✅ OpenAI client initialized with real API key');
   } else {
-    console.warn('⚠️  Twilio environment variables not found - add to .env file');
+    // Fallback to hardcoded key
+    setOpenAIApiKey('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');
+    console.log('✅ OpenAI client initialized with fallback API key');
   }
 
   // Example API routes
