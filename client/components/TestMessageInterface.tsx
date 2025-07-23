@@ -352,12 +352,69 @@ export default function TestMessageInterface() {
                     <div className="text-sm text-green-700">
                       ✅ Message sent successfully!
                       {result.details.sid && (
-                        <div className="text-xs mt-1">ID: {result.details.sid}</div>
+                        <div className="text-xs mt-1 font-mono">Twilio SID: {result.details.sid}</div>
+                      )}
+                      {result.details.status && (
+                        <div className="text-xs mt-1">Status: {result.details.status}</div>
+                      )}
+                      {result.details.price && (
+                        <div className="text-xs mt-1">Cost: ${result.details.price}</div>
                       )}
                     </div>
                   ) : (
-                    <div className="text-sm text-red-700">
-                      ❌ {result.details.error}
+                    <div className="text-sm text-red-700 space-y-2">
+                      <div className="font-medium">❌ SMS Failed</div>
+
+                      {/* Network/Connection Error */}
+                      {result.details.networkError && (
+                        <div className="bg-red-100 border border-red-300 rounded p-2 text-xs">
+                          <strong>Network Error:</strong> {result.details.error}
+                        </div>
+                      )}
+
+                      {/* HTTP Status Error */}
+                      {result.details.httpStatus && result.details.httpStatus !== 200 && (
+                        <div className="bg-red-100 border border-red-300 rounded p-2 text-xs">
+                          <strong>HTTP {result.details.httpStatus}:</strong> {result.details.httpStatusText}
+                        </div>
+                      )}
+
+                      {/* Twilio API Error */}
+                      {result.details.error && !result.details.networkError && (
+                        <div className="bg-red-100 border border-red-300 rounded p-2 text-xs">
+                          <strong>Twilio Error:</strong> {result.details.error}
+                        </div>
+                      )}
+
+                      {/* Error Code */}
+                      {result.details.code && (
+                        <div className="bg-orange-100 border border-orange-300 rounded p-2 text-xs">
+                          <strong>Error Code:</strong> {result.details.code}
+                        </div>
+                      )}
+
+                      {/* More Info */}
+                      {result.details.more_info && (
+                        <div className="bg-blue-100 border border-blue-300 rounded p-2 text-xs">
+                          <strong>More Info:</strong> <a href={result.details.more_info} target="_blank" className="underline text-blue-600">Twilio Docs</a>
+                        </div>
+                      )}
+
+                      {/* Request Details */}
+                      {result.details.requestData && (
+                        <details className="bg-gray-100 border border-gray-300 rounded p-2 text-xs">
+                          <summary className="cursor-pointer font-medium">Request Details</summary>
+                          <pre className="mt-2 whitespace-pre-wrap">{JSON.stringify(result.details.requestData, null, 2)}</pre>
+                        </details>
+                      )}
+
+                      {/* Full Error Response */}
+                      {result.details && Object.keys(result.details).length > 2 && (
+                        <details className="bg-gray-100 border border-gray-300 rounded p-2 text-xs">
+                          <summary className="cursor-pointer font-medium">Full Error Response</summary>
+                          <pre className="mt-2 whitespace-pre-wrap">{JSON.stringify(result.details, null, 2)}</pre>
+                        </details>
+                      )}
                     </div>
                   )}
                 </div>
