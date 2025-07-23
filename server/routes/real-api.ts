@@ -50,7 +50,7 @@ router.post('/test/xano', async (req, res) => {
 
 router.post('/test/twilio', async (req, res) => {
   try {
-    const twilio = getTwilioClient();
+    const twilio = getTwilioClientSafe();
     const isConnected = await twilio.testConnection();
     
     if (isConnected) {
