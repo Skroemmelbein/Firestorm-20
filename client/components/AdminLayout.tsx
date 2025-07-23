@@ -21,7 +21,9 @@ import {
   Package,
   Bot,
   Shield,
-  Wallet
+  Wallet,
+  Send,
+  TrendingUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
