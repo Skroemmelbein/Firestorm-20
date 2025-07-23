@@ -362,6 +362,11 @@ export default function MemberPortal() {
             </Card>
           </TabsContent>
 
+          {/* SMS Tab */}
+          <TabsContent value="sms">
+            <SMSInterface />
+          </TabsContent>
+
           {/* Settings Tab */}
           <TabsContent value="settings">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
