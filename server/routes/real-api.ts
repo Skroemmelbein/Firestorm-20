@@ -208,7 +208,7 @@ router.get('/benefits', async (req, res) => {
   try {
     // Check if Xano is connected, otherwise return mock data
     try {
-      const xano = getXanoClient();
+      const xano = getXanoClientSafe();
       const { membership_level, is_active } = req.query;
 
       const benefits = await xano.getBenefits({
