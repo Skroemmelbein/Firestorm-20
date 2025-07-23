@@ -10,8 +10,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Users, Settings, Shield, Layout, UserCheck, Key, Gift, Star,
   Percent, Truck, Headphones, Crown, ChevronRight, Search,
-  Loader2, CheckCircle, XCircle, AlertTriangle, Plus
+  Loader2, CheckCircle, XCircle, AlertTriangle, Plus, MessageSquare
 } from "lucide-react";
+import SMSInterface from "@/components/SMSInterface";
 
 interface Member {
   id: number;
