@@ -168,9 +168,9 @@ export default function MarketingAutomation() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Header */}
+      {/* Header with Toolbar */}
       <div className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center">
@@ -178,7 +178,7 @@ export default function MarketingAutomation() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-foreground">Marketing Automation</h1>
-                <p className="text-sm text-muted-foreground">Fortune 10 Twilio + ChatGPT Marketing Engine</p>
+                <p className="text-sm text-muted-foreground">Real Twilio + AI Integration - No Mock Data</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -188,14 +188,40 @@ export default function MarketingAutomation() {
               </Badge>
               <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
                 <MessageSquare className="w-3 h-3 mr-1" />
-                Twilio Connected
+                SMS Working ✅
               </Badge>
-              <Button className="gap-2">
-                <Plus className="w-4 h-4" />
-                New Campaign
-              </Button>
             </div>
           </div>
+
+          {/* Top Toolbar */}
+          <Tabs defaultValue="campaigns" className="w-full">
+            <TabsList className="grid w-full grid-cols-6 bg-white/50 backdrop-blur">
+              <TabsTrigger value="campaigns" className="gap-2">
+                <Target className="w-4 h-4" />
+                Campaigns
+              </TabsTrigger>
+              <TabsTrigger value="analysis" className="gap-2">
+                <TrendingUp className="w-4 h-4" />
+                Analysis
+              </TabsTrigger>
+              <TabsTrigger value="audience" className="gap-2">
+                <Users className="w-4 h-4" />
+                Audience
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="gap-2">
+                <BarChart className="w-4 h-4" />
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="test" className="gap-2">
+                <MessageSquare className="w-4 h-4" />
+                Test Messages
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="gap-2">
+                <Settings className="w-4 h-4" />
+                Settings
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
       </div>
 
