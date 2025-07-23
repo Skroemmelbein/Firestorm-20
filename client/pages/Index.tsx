@@ -1,17 +1,32 @@
 import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Mic, MicOff, Volume2, VolumeX, Send, Sparkles, Settings } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Mic, MicOff, Volume2, VolumeX, Send, Sparkles, Settings, Code, FileText, Wrench, Lightbulb, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
+import { getOpenAIService } from "@shared/openai-service";
+import type { DevelopmentTask } from "@shared/openai-service";
 
 interface Message {
   id: string;
-  type: "user" | "assistant";
+  type: "user" | "assistant" | "system";
   content: string;
   timestamp: Date;
+  task?: DevelopmentTask;
+  code?: string;
+  actionType?: 'chat' | 'code' | 'explanation' | 'debug';
+}
+
+interface DevelopmentTask {
+  action: 'create' | 'modify' | 'delete' | 'explain' | 'debug';
+  target: 'component' | 'page' | 'api' | 'database' | 'style' | 'function';
+  details: string;
+  code?: string;
+  fileName?: string;
+  framework?: string;
 }
 
 export default function Index() {
@@ -19,8 +34,9 @@ export default function Index() {
     {
       id: "1",
       type: "assistant",
-      content: "Hi! I'm your AI voice assistant. You can speak to me by clicking the microphone button or type your message below. How can I help you today?",
-      timestamp: new Date()
+      content: "Hi! I'm your AI development assistant powered by OpenAI. I can help you:\n\n• Create components and pages\n• Generate and modify code\n• Debug issues\n• Explain complex concepts\n• Build APIs and databases\n\nJust speak naturally or type what you'd like to build!",
+      timestamp: new Date(),
+      actionType: 'chat'
     }
   ]);
   const [isListening, setIsListening] = useState(false);
@@ -28,6 +44,7 @@ export default function Index() {
   const [textInput, setTextInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
+  const [conversationHistory, setConversationHistory] = useState<Array<{ role: 'user' | 'assistant'; content: string }>>([]);
   
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const synthesisRef = useRef<SpeechSynthesis | null>(null);
@@ -122,19 +139,55 @@ export default function Index() {
     }
   };
 
-  const generateAIResponse = async (userMessage: string): Promise<string> => {
-    // Simulate AI processing delay
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
-    
-    const responses = [
-      `I heard you say "${userMessage}". That's interesting! How can I help you further?`,
-      `Thanks for sharing that with me. "${userMessage}" - I'd love to know more about what you're thinking.`,
-      `I understand you mentioned "${userMessage}". What would you like to explore about this topic?`,
-      `That's a great point about "${userMessage}". Is there anything specific you'd like me to help you with?`,
-      `I appreciate you telling me "${userMessage}". How can I assist you today?`
-    ];
-    
-    return responses[Math.floor(Math.random() * responses.length)];
+  const generateAIResponse = async (userMessage: string): Promise<{ content: string; task?: DevelopmentTask; actionType: 'chat' | 'code' | 'explanation' | 'debug'; code?: string }> => {
+    try {
+      const openaiService = getOpenAIService();
+
+      // Try to parse as development task first
+      const task = await openaiService.parseVoiceCommand(userMessage);
+
+      if (task) {
+        // This is a development command
+        let response = '';
+        let code = '';
+        let actionType: 'chat' | 'code' | 'explanation' | 'debug' = 'code';
+
+        switch (task.action) {
+          case 'create':
+          case 'modify':
+            code = await openaiService.generateCode(task, 'React TypeScript project with Tailwind CSS');
+            response = `I'll ${task.action} a ${task.target} for you. Here's the code:`;
+            actionType = 'code';
+            break;
+
+          case 'explain':
+            response = await openaiService.explainCode(task.code || '', task.details);
+            actionType = 'explanation';
+            break;
+
+          case 'debug':
+            response = await openaiService.debugCode(task.code || '', task.details);
+            actionType = 'debug';
+            break;
+
+          default:
+            response = await openaiService.chatWithContext(userMessage, conversationHistory);
+            actionType = 'chat';
+        }
+
+        return { content: response, task, actionType, code };
+      } else {
+        // Regular conversation
+        const response = await openaiService.chatWithContext(userMessage, conversationHistory);
+        return { content: response, actionType: 'chat' };
+      }
+    } catch (error) {
+      console.error('Error generating AI response:', error);
+      return {
+        content: 'I apologize, but I encountered an error processing your request. Please try again or check your OpenAI connection.',
+        actionType: 'chat'
+      };
+    }
   };
 
   const handleUserMessage = async (content: string, source: "voice" | "text") => {
@@ -144,31 +197,49 @@ export default function Index() {
       id: Date.now().toString(),
       type: "user",
       content: content.trim(),
-      timestamp: new Date()
+      timestamp: new Date(),
+      actionType: 'chat'
     };
 
     setMessages(prev => [...prev, userMessage]);
     setTextInput("");
     setIsProcessing(true);
 
+    // Update conversation history
+    setConversationHistory(prev => [...prev, { role: 'user', content: content.trim() }]);
+
     try {
       const aiResponse = await generateAIResponse(content);
-      
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: "assistant",
-        content: aiResponse,
-        timestamp: new Date()
+        content: aiResponse.content,
+        timestamp: new Date(),
+        task: aiResponse.task,
+        code: aiResponse.code,
+        actionType: aiResponse.actionType
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-      
+
+      // Update conversation history
+      setConversationHistory(prev => [...prev, { role: 'assistant', content: aiResponse.content }]);
+
       // Auto-speak AI responses if they came from voice input
       if (source === "voice" && speechSupported) {
-        setTimeout(() => speakText(aiResponse), 500);
+        setTimeout(() => speakText(aiResponse.content), 500);
       }
     } catch (error) {
       console.error("Error generating response:", error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: "system",
+        content: "Sorry, I encountered an error. Please try again.",
+        timestamp: new Date(),
+        actionType: 'chat'
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsProcessing(false);
     }
@@ -197,11 +268,15 @@ export default function Index() {
                 <Sparkles className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Voice Assistant</h1>
-                <p className="text-sm text-muted-foreground">Speak naturally, get intelligent responses</p>
+                <h1 className="text-2xl font-bold text-foreground">AI Development Assistant</h1>
+                <p className="text-sm text-muted-foreground">Voice-powered coding with OpenAI</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="bg-green-500/10 text-green-600 border-green-500/20">
+                <Zap className="w-3 h-3 mr-1" />
+                OpenAI Connected
+              </Badge>
               {speechSupported ? (
                 <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
                   Voice Enabled
@@ -231,27 +306,64 @@ export default function Index() {
                 message.type === "user" ? "justify-end" : "justify-start"
               )}
             >
-              {message.type === "assistant" && (
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary via-primary to-primary/80 flex items-center justify-center flex-shrink-0 mt-1">
-                  <Sparkles className="w-4 h-4 text-primary-foreground" />
+              {(message.type === "assistant" || message.type === "system") && (
+                <div className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1",
+                  message.type === "system"
+                    ? "bg-yellow-500/20 border border-yellow-500/30"
+                    : "bg-gradient-to-br from-primary via-primary to-primary/80"
+                )}>
+                  {message.actionType === 'code' ? (
+                    <Code className="w-4 h-4 text-primary-foreground" />
+                  ) : message.actionType === 'explanation' ? (
+                    <Lightbulb className="w-4 h-4 text-primary-foreground" />
+                  ) : message.actionType === 'debug' ? (
+                    <Wrench className="w-4 h-4 text-primary-foreground" />
+                  ) : (
+                    <Sparkles className="w-4 h-4 text-primary-foreground" />
+                  )}
                 </div>
               )}
-              <Card className={cn(
-                "max-w-[80%] shadow-sm",
-                message.type === "user" 
-                  ? "bg-primary text-primary-foreground border-primary/20" 
-                  : "bg-card border-border/50"
+              <div className={cn(
+                "max-w-[85%] space-y-2",
+                message.type === "user" && "flex flex-col items-end"
               )}>
-                <CardContent className="p-4">
-                  <p className="text-sm leading-relaxed">{message.content}</p>
-                  <p className={cn(
-                    "text-xs mt-2 opacity-70",
-                    message.type === "user" ? "text-primary-foreground/70" : "text-muted-foreground"
-                  )}>
-                    {message.timestamp.toLocaleTimeString()}
-                  </p>
-                </CardContent>
-              </Card>
+                <Card className={cn(
+                  "shadow-sm",
+                  message.type === "user"
+                    ? "bg-primary text-primary-foreground border-primary/20"
+                    : message.type === "system"
+                    ? "bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-700/30"
+                    : "bg-card border-border/50"
+                )}>
+                  {message.task && (
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        {message.actionType === 'code' && <Code className="w-4 h-4" />}
+                        {message.actionType === 'explanation' && <Lightbulb className="w-4 h-4" />}
+                        {message.actionType === 'debug' && <Wrench className="w-4 h-4" />}
+                        {message.task.action} {message.task.target}: {message.task.fileName || message.task.details}
+                      </CardTitle>
+                    </CardHeader>
+                  )}
+                  <CardContent className={cn("p-4", message.task && "pt-0")}>
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                    {message.code && (
+                      <div className="mt-3 rounded-lg bg-slate-900 p-4 overflow-x-auto">
+                        <pre className="text-sm text-slate-100">
+                          <code>{message.code}</code>
+                        </pre>
+                      </div>
+                    )}
+                    <p className={cn(
+                      "text-xs mt-2 opacity-70",
+                      message.type === "user" ? "text-primary-foreground/70" : "text-muted-foreground"
+                    )}>
+                      {message.timestamp.toLocaleTimeString()}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
               {message.type === "user" && (
                 <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
                   <div className="w-4 h-4 rounded-full bg-foreground/70" />
@@ -341,12 +453,20 @@ export default function Index() {
               </Button>
             </form>
 
-            <p className="text-xs text-center text-muted-foreground">
-              {speechSupported 
-                ? "Click the microphone to speak or type your message above. Press Enter to send."
-                : "Speech recognition not supported in this browser. You can still type messages."
-              }
-            </p>
+            <div className="space-y-2">
+              <p className="text-xs text-center text-muted-foreground">
+                {speechSupported
+                  ? "Click the microphone to speak or type your message above. Press Enter to send."
+                  : "Speech recognition not supported in this browser. You can still type messages."
+                }
+              </p>
+              <Alert className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
+                <FileText className="h-4 w-4" />
+                <AlertDescription className="text-xs">
+                  <strong>Try saying:</strong> "Create a login component", "Fix the header styling", "Add an API for users", "Explain this code", "Debug this function"
+                </AlertDescription>
+              </Alert>
+            </div>
           </div>
         </div>
       </div>
