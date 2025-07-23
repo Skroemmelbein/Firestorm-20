@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
+import SiriAssistant from "./components/SiriAssistant";
 import AdminDashboard from "./pages/AdminDashboard";
 import ClientBillingKit from "./pages/ClientBillingKit";
 import BusinessOverview from "./pages/BusinessOverview";
@@ -29,6 +30,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <SiriAssistant />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
