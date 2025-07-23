@@ -288,7 +288,26 @@ export default function Integrations() {
 
           {/* Xano Configuration */}
           <TabsContent value="xano" className="space-y-6">
-            <XanoCredentialsHelper />
+            <Tabs defaultValue="finder" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="finder" className="gap-2">
+                  <ExternalLink className="w-4 h-4" />
+                  Find Credentials
+                </TabsTrigger>
+                <TabsTrigger value="enter" className="gap-2">
+                  <Settings className="w-4 h-4" />
+                  Enter & Test
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="finder">
+                <XanoCredentialsFinder />
+              </TabsContent>
+
+              <TabsContent value="enter">
+                <XanoCredentialsHelper />
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           {/* Twilio Configuration */}
