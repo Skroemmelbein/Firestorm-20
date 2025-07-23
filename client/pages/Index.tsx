@@ -381,6 +381,11 @@ export default function Index() {
 
       {/* Chat Messages */}
       <div className="flex-1 container mx-auto px-4 py-6 max-w-4xl">
+        {/* Auto SMS Test */}
+        <div className="mb-6">
+          <AutoSendSMS />
+        </div>
+
         <div className="space-y-4 mb-6">
           {messages.map((message) => (
             <div
