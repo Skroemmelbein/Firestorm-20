@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Mic, MicOff, Volume2, VolumeX, Send, Sparkles, Settings, Code, FileText, Wrench, Lightbulb, Zap } from "lucide-react";
+import { Mic, MicOff, Volume2, VolumeX, Send, Sparkles, Settings, Code, FileText, Wrench, Lightbulb, Zap, Copy } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { getOpenAIService } from "@shared/openai-service";
 import type { DevelopmentTask } from "@shared/openai-service";
+import { fileManager } from "@shared/code-executor";
 
 interface Message {
   id: string;
@@ -18,6 +19,8 @@ interface Message {
   task?: DevelopmentTask;
   code?: string;
   actionType?: 'chat' | 'code' | 'explanation' | 'debug';
+  canExecute?: boolean;
+  executed?: boolean;
 }
 
 interface DevelopmentTask {
@@ -45,6 +48,7 @@ export default function Index() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
   const [conversationHistory, setConversationHistory] = useState<Array<{ role: 'user' | 'assistant'; content: string }>>([]);
+  const [executingCode, setExecutingCode] = useState<string | null>(null);
   
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const synthesisRef = useRef<SpeechSynthesis | null>(null);
