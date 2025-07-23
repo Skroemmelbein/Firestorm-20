@@ -1,6 +1,6 @@
 import express from 'express';
-import { getXanoClient } from '../../shared/xano-client';
-import { getTwilioClient } from '../../shared/twilio-client';
+import { getXanoClient } from '../../shared/xano-client.js';
+import { getTwilioClient } from '../../shared/twilio-client.js';
 
 const router = express.Router();
 
