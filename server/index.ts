@@ -65,6 +65,9 @@ export function createServer() {
   // Real API endpoints - NO MOCKS
   app.use("/api/real", realApiRouter);
 
+  // Xano automated setup
+  app.use("/api/xano-setup", xanoSetupRouter);
+
   // Twilio API Vault routes
   app.post("/api/twilio-vault/upload", uploadTwilioAPIs);
   app.get("/api/twilio-vault/apis", getUploadedAPIs);
