@@ -319,7 +319,7 @@ router.get('/benefits', async (req, res) => {
 
 router.get('/members/:id/benefits', async (req, res) => {
   try {
-    const xano = getXanoClient();
+    const xano = getXanoClientSafe();
     const benefits = await xano.getMemberBenefits(parseInt(req.params.id));
     res.json(benefits);
   } catch (error) {
