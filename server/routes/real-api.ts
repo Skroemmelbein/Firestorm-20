@@ -357,18 +357,38 @@ router.post('/sms/send', async (req, res) => {
   try {
     const twilio = getTwilioClientSafe();
     const { to, body, from, mediaUrl } = req.body;
-    
+
     const result = await twilio.sendSMS({
       to,
       body,
       from,
       mediaUrl,
     });
-    
+
     res.json(result);
   } catch (error) {
     console.error('Error sending SMS:', error);
-    res.status(500).json({ error: 'Failed to send SMS' });
+
+    // Extract detailed error information
+    const errorResponse: any = {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to send SMS',
+      timestamp: new Date().toISOString()
+    };
+
+    // Add Twilio-specific error details if available
+    if ((error as any).details?.twilioError) {
+      const twilioError = (error as any).details.twilioError;
+      errorResponse.code = twilioError.code;
+      errorResponse.more_info = twilioError.more_info;
+      errorResponse.detail = twilioError.detail;
+      errorResponse.httpStatus = twilioError.status;
+      errorResponse.httpStatusText = twilioError.statusText;
+    }
+
+    // Return appropriate HTTP status
+    const httpStatus = (error as any).details?.twilioError?.status || 500;
+    res.status(httpStatus).json(errorResponse);
   }
 });
 
