@@ -221,11 +221,200 @@ export default function MarketingAutomation() {
                 Settings
               </TabsTrigger>
             </TabsList>
+
+            {/* Tab Content */}
+            <TabsContent value="campaigns" className="mt-6">
+              <CampaignWizard />
+            </TabsContent>
+
+            <TabsContent value="analysis" className="mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-green-700">Total Revenue</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-green-900">$75,720</div>
+                    <p className="text-xs text-green-600 mt-1">+12% from last month</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-blue-700">Messages Sent</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-blue-900">16,312</div>
+                    <p className="text-xs text-blue-600 mt-1">98.7% delivery rate</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-purple-700">Response Rate</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-purple-900">23.4%</div>
+                    <p className="text-xs text-purple-600 mt-1">Above industry avg</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-orange-700">Conversions</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-orange-900">909</div>
+                    <p className="text-xs text-orange-600 mt-1">5.6% conversion rate</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="audience" className="mt-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Audience Segments</CardTitle>
+                    <CardDescription>Manage your customer segments</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <div className="font-medium">Current Clients</div>
+                        <div className="text-sm text-muted-foreground">1,247 contacts</div>
+                      </div>
+                      <Badge>Active</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <div className="font-medium">PPC Leads</div>
+                        <div className="text-sm text-muted-foreground">523 contacts</div>
+                      </div>
+                      <Badge variant="secondary">Growing</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <div className="font-medium">Cancelled Clients</div>
+                        <div className="text-sm text-muted-foreground">892 contacts</div>
+                      </div>
+                      <Badge variant="outline">Inactive</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Segment Performance</CardTitle>
+                    <CardDescription>Response rates by segment</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>Current Clients</span>
+                          <span>34.2%</span>
+                        </div>
+                        <Progress value={34.2} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>PPC Leads</span>
+                          <span>18.7%</span>
+                        </div>
+                        <Progress value={18.7} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>Referrals</span>
+                          <span>45.1%</span>
+                        </div>
+                        <Progress value={45.1} className="h-2" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="analytics" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Campaign Analytics</CardTitle>
+                  <CardDescription>Detailed performance metrics and insights</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-12">
+                    <TrendingUp className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Advanced analytics dashboard coming soon</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="test" className="mt-6">
+              <TestMessageInterface />
+            </TabsContent>
+
+            <TabsContent value="settings" className="mt-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Integration Settings</CardTitle>
+                    <CardDescription>Configure your API connections</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">Twilio SMS</div>
+                        <div className="text-sm text-muted-foreground">+1 (855) 960-0037</div>
+                      </div>
+                      <Badge className="bg-green-100 text-green-700">Connected</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">SendGrid Email</div>
+                        <div className="text-sm text-muted-foreground">Not configured</div>
+                      </div>
+                      <Badge variant="secondary">Setup Required</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">OpenAI Integration</div>
+                        <div className="text-sm text-muted-foreground">GPT-3.5 Turbo</div>
+                      </div>
+                      <Badge className="bg-green-100 text-green-700">Active</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>AI Settings</CardTitle>
+                    <CardDescription>Configure AI response behavior</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label>Auto-respond to inquiries</Label>
+                      <Switch defaultChecked />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label>Sentiment analysis</Label>
+                      <Switch defaultChecked />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label>Lead scoring</Label>
+                      <Switch />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
           </Tabs>
         </div>
       </div>
 
-      {/* Dashboard Metrics */}
+      {/* Real-time Status */}
       <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-700">
