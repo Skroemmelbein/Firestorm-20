@@ -134,7 +134,12 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
   const generateAIResponse = async (userMessage: string): Promise<{ content: string; task?: DevelopmentTask; actionType: 'chat' | 'code' | 'explanation' | 'debug'; code?: string; canExecute?: boolean }> => {
     try {
       const openaiService = getOpenAIService();
-      
+
+      // Prevent multiple concurrent requests
+      if (isProcessing) {
+        return { content: "Please wait, I'm still processing your previous request...", actionType: 'chat' };
+      }
+
       // Try to parse as development task first
       const task = await openaiService.parseVoiceCommand(userMessage);
       
