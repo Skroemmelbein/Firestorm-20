@@ -1,24 +1,155 @@
+import { useState, useEffect } from "react";
 import AdminLayout from "@/components/AdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Settings, Shield, Layout, UserCheck, Key } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Users, Settings, Shield, Layout, UserCheck, Key, Gift, Star,
+  Percent, Truck, Headphones, Crown, ChevronRight, Search,
+  Loader2, CheckCircle, XCircle, AlertTriangle, Plus
+} from "lucide-react";
+
+interface Member {
+  id: number;
+  uuid: string;
+  email: string;
+  phone: string;
+  first_name: string;
+  last_name: string;
+  status: string;
+  membership_type: string;
+  engagement_score: number;
+  lifetime_value: number;
+  created_at: string;
+}
+
+interface MemberBenefit {
+  id: number;
+  uuid: string;
+  title: string;
+  description: string;
+  benefit_type: string;
+  benefit_category: string;
+  value_description: string;
+  conditions?: string;
+  is_active: boolean;
+  membership_levels: string[];
+  sort_order: number;
+  icon_name?: string;
+  color_theme?: string;
+  expires_at?: string;
+  usage_limit?: number;
+}
 
 export default function MemberPortal() {
+  const [members, setMembers] = useState<Member[]>([]);
+  const [benefits, setBenefits] = useState<MemberBenefit[]>([]);
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Load members and benefits from real Xano API
+      const [membersResponse, benefitsResponse] = await Promise.all([
+        fetch('/api/real/members?per_page=50'),
+        fetch('/api/real/benefits?is_active=true')
+      ]);
+
+      if (!membersResponse.ok || !benefitsResponse.ok) {
+        throw new Error('Failed to load data from Xano');
+      }
+
+      const membersData = await membersResponse.json();
+      const benefitsData = await benefitsResponse.json();
+
+      setMembers(membersData.data || []);
+      setBenefits(benefitsData || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load data');
+      console.error('Error loading data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredMembers = members.filter(member =>
+    member.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    member.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    member.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const getIconForBenefit = (iconName?: string) => {
+    switch (iconName) {
+      case 'percent': return Percent;
+      case 'truck': return Truck;
+      case 'headphones': return Headphones;
+      case 'crown': return Crown;
+      case 'star': return Star;
+      default: return Gift;
+    }
+  };
+
+  const getBenefitColor = (colorTheme?: string) => {
+    switch (colorTheme) {
+      case 'green': return 'bg-green-100 text-green-700 border-green-200';
+      case 'blue': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'purple': return 'bg-purple-100 text-purple-700 border-purple-200';
+      case 'orange': return 'bg-orange-100 text-orange-700 border-orange-200';
+      default: return 'bg-gray-100 text-gray-700 border-gray-200';
+    }
+  };
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <span className="ml-2 text-lg">Loading member portal data...</span>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   return (
     <AdminLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold gradient-text tracking-tight">Member Portal Control</h1>
-            <p className="text-blue-700/70 font-medium">Customer portal design and access management</p>
+            <h1 className="text-3xl font-bold gradient-text tracking-tight">Member Portal</h1>
+            <p className="text-blue-700/70 font-medium">Real member benefits from Xano database</p>
           </div>
-          <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 corp-shadow">
-            <Settings className="w-4 h-4" />
-            Portal Settings
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={loadData} variant="outline" className="gap-2">
+              <Settings className="w-4 h-4" />
+              Refresh Data
+            </Button>
+            <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 corp-shadow">
+              <Plus className="w-4 h-4" />
+              Add Benefit
+            </Button>
+          </div>
         </div>
+
+        {error && (
+          <Alert variant="destructive">
+            <XCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
