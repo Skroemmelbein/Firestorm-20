@@ -35,7 +35,7 @@ export function createServer() {
   const twilioCredentials = {
     accountSid: process.env.TWILIO_ACCOUNT_SID || 'AC721cd9c8bf374b3166ce89ab0023d073',
     authToken: process.env.TWILIO_AUTH_TOKEN || '5f2d8be5da1f4b6428348ddb9cdb99bf',
-    phoneNumber: process.env.TWILIO_PHONE_NUMBER || '+18558000037',
+    phoneNumber: process.env.TWILIO_PHONE_NUMBER || '+18559600037',
   };
 
   initializeTwilio(twilioCredentials);
