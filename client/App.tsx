@@ -12,6 +12,7 @@ import ClientBillingKit from "./pages/ClientBillingKit";
 import BusinessOverview from "./pages/BusinessOverview";
 import BillingLogic from "./pages/BillingLogic";
 import CommCenter from "./pages/CommCenter";
+import MarketingAutomation from "./pages/MarketingAutomation";
 import Integrations from "./pages/Integrations";
 import TwilioVault from "./pages/TwilioVault";
 import MemberPortal from "./pages/MemberPortal";
