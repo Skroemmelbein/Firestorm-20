@@ -172,7 +172,7 @@ router.get('/members', async (req, res) => {
 
 router.get('/members/:id', async (req, res) => {
   try {
-    const xano = getXanoClient();
+    const xano = getXanoClientSafe();
     const member = await xano.getMember(parseInt(req.params.id));
     res.json(member);
   } catch (error) {
