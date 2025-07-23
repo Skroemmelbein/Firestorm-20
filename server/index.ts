@@ -4,6 +4,7 @@ import { handleDemo } from "./routes/demo";
 import { getIntegrationsConfig, saveIntegrationsConfig } from "./routes/integrations-config";
 import { uploadTwilioAPIs, getUploadedAPIs, clearUploadedAPIs, testTwilioAPI } from "./routes/twilio-vault";
 import realApiRouter from "./routes/real-api";
+import xanoSetupRouter from "./routes/xano-setup";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
