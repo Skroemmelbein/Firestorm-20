@@ -298,7 +298,7 @@ export function initializeXano(config: XanoConfig): XanoClient {
 
 export function getXanoClient(): XanoClient {
   if (!xanoClient) {
-    throw new Error('Xano client not initialized. Call initializeXano() first.');
+    throw new Error('Xano client not initialized. Please configure Xano credentials first.');
   }
   return xanoClient;
 }
