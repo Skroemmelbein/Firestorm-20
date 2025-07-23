@@ -179,6 +179,14 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
     } catch (error) {
       console.error('Error generating AI response:', error);
 
+      // Enhanced error handling for different error types
+      if (error instanceof Error && error.message.includes('body stream already read')) {
+        return {
+          content: "I encountered a technical issue processing your request. Please try again in a moment.",
+          actionType: 'chat'
+        };
+      }
+
       // Smart fallback responses based on keywords
       const lowerMessage = userMessage.toLowerCase();
 
