@@ -280,6 +280,10 @@ export default function MarketingAutomation() {
               <BarChart className="w-4 h-4" />
               Analytics
             </TabsTrigger>
+            <TabsTrigger value="test" className="gap-2">
+              <Send className="w-4 h-4" />
+              Test Messages
+            </TabsTrigger>
             <TabsTrigger value="settings" className="gap-2">
               <Settings className="w-4 h-4" />
               Settings
