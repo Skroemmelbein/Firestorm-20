@@ -49,8 +49,8 @@ export function createServer() {
       process.env.TWILIO_ACCOUNT_SID || "ACf1f39d9f653df3669fa99343e88b2074",
     authToken:
       process.env.TWILIO_AUTH_TOKEN || "1f9a48e4dcd9c518889e148fe931e226",
-    phoneNumber: process.env.TWILIO_PHONE_NUMBER || "+18559600037",
-    phoneNumber2: process.env.TWILIO_PHONE_NUMBER_2 || "+18557212778",
+    phoneNumber: process.env.TWILIO_PHONE_NUMBER || "+18558600037",
+    phoneNumber2: process.env.TWILIO_PHONE_NUMBER_2 || "+18558600037",
   };
 
   initializeTwilio(twilioCredentials);
