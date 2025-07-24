@@ -1802,9 +1802,155 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
     spacing: { scale: 1.1, radius: 10 },
     effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
     mood: "luxurious"
-  }
+  },
 
-  // Continue with remaining themes (61-100) to be added in follow-up...
+  // CREATIVE SERIES (61-70)
+  {
+    id: "creative-sunset",
+    name: "Creative Sunset",
+    category: "Creative",
+    description: "Vibrant sunset colors for artistic projects",
+    colors: {
+      primary: "#FF6B6B",
+      secondary: "#4ECDC4",
+      accent: "#FFE66D",
+      background: "#2C3E50",
+      surface: "#34495E",
+      text: "#ECF0F1",
+      muted: "#95A5A6",
+      success: "#2ECC71",
+      warning: "#F39C12",
+      error: "#E74C3C"
+    },
+    background: {
+      type: "gradient",
+      primary: "#FF6B6B",
+      secondary: "#4ECDC4",
+      tertiary: "#FFE66D",
+      direction: "45deg",
+      opacity: 0.8
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.1, radius: 16 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "creative"
+  },
+  {
+    id: "creative-neon",
+    name: "Creative Neon",
+    category: "Creative",
+    description: "Electric neon glow effects",
+    colors: {
+      primary: "#00FF41",
+      secondary: "#FF0080",
+      accent: "#00D4FF",
+      background: "#0A0A0A",
+      surface: "#1A1A1A",
+      text: "#FFFFFF",
+      muted: "#888888",
+      success: "#00FF41",
+      warning: "#FFD700",
+      error: "#FF0040"
+    },
+    background: {
+      type: "animated",
+      primary: "#0A0A0A",
+      secondary: "#00FF41",
+      animation: "neon-glow",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "futuristic"
+  },
+  {
+    id: "luxury-royal-gold",
+    name: "Luxury Royal Gold",
+    category: "Luxury",
+    description: "Opulent royal gold finish",
+    colors: {
+      primary: "#FFD700",
+      secondary: "#FFA500",
+      accent: "#FFFF00",
+      background: "#2F1B14",
+      surface: "#8B4513",
+      text: "#FFFAF0",
+      muted: "#DAA520",
+      success: "#228B22",
+      warning: "#FFD700",
+      error: "#DC143C"
+    },
+    background: {
+      type: "animated",
+      primary: "#2F1B14",
+      secondary: "#FFD700",
+      animation: "gold-shimmer",
+      opacity: 0.4
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.2, radius: 12 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "luxurious"
+  },
+  {
+    id: "minimal-zen",
+    name: "Minimal Zen",
+    category: "Minimal",
+    description: "Peaceful zen garden aesthetic",
+    colors: {
+      primary: "#4E342E",
+      secondary: "#6D4C41",
+      accent: "#8D6E63",
+      background: "#F3E5F5",
+      surface: "#FFFFFF",
+      text: "#3E2723",
+      muted: "#795548",
+      success: "#388E3C",
+      warning: "#F57C00",
+      error: "#D32F2F"
+    },
+    background: {
+      type: "pattern",
+      primary: "#F3E5F5",
+      secondary: "#E1BEE7",
+      pattern: "zen-circles",
+      opacity: 0.1
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 16 },
+    effects: { shadows: false, gradients: false, blur: false, animations: false, particles: false },
+    mood: "calm"
+  },
+  {
+    id: "futuristic-cyber",
+    name: "Futuristic Cyber",
+    category: "Futuristic",
+    description: "Cyberpunk neon future theme",
+    colors: {
+      primary: "#00FFFF",
+      secondary: "#FF00FF",
+      accent: "#FFFF00",
+      background: "#0A0A0A",
+      surface: "#1A1A1A",
+      text: "#FFFFFF",
+      muted: "#888888",
+      success: "#00FF00",
+      warning: "#FFAA00",
+      error: "#FF0000"
+    },
+    background: {
+      type: "animated",
+      primary: "#0A0A0A",
+      secondary: "#00FFFF",
+      animation: "cyber-grid",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 2 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "futuristic"
+  }
 ];
 
 // Dynamic background animation CSS generator
