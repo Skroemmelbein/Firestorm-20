@@ -291,7 +291,7 @@ export default function Integrations() {
           onValueChange={setSelectedTab}
           className="space-y-6"
         >
-          <TabsList className="grid w-full grid-cols-4 bg-[#1a1a1a] border border-[#00CED1]/30">
+          <TabsList className="grid w-full grid-cols-5 bg-[#1a1a1a] border border-[#00CED1]/30">
             <TabsTrigger
               value="command"
               className="data-[state=active]:bg-[#00CED1] data-[state=active]:text-black text-white hover:text-[#00CED1] transition-colors"
