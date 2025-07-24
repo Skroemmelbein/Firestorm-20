@@ -574,6 +574,106 @@ export default function TestModule() {
             <StudioFlowBuilder />
           </TabsContent>
 
+          {/* RCS Testing Tab */}
+          <TabsContent value="rcs" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="f10-card">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Network className="w-5 h-5 text-[#8A2BE2]" />
+                    RCS Message Testing
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label className="text-gray-700 font-medium">Recipient Phone</Label>
+                    <Input
+                      placeholder="+18144409068"
+                      className="bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-700 font-medium">RCS Message</Label>
+                    <Textarea
+                      placeholder="Rich RCS message with media support..."
+                      className="bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      rows={3}
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-gray-700 font-medium">Media URL (Optional)</Label>
+                    <Input
+                      placeholder="https://example.com/image.jpg"
+                      className="bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+                  <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium px-4 py-2 rounded-lg transition-colors">
+                    <Send className="w-4 h-4 mr-2" />
+                    Send RCS Message
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="f10-card">
+                <CardHeader>
+                  <CardTitle>RCS Agent Configuration</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-purple-800 mb-2">
+                      📱 RCS Agent Status
+                    </h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-purple-700">Agent ID:</span>
+                        <span className="text-purple-600 font-mono text-xs">rcs:nexusdynamics_3ohzywua_agent</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-purple-700">Status:</span>
+                        <span className="text-green-600 font-medium">✅ Active</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-purple-700">Brand:</span>
+                        <span className="text-purple-600">NexusDynamics</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-blue-800 mb-2">
+                      🔧 RCS Features
+                    </h4>
+                    <ul className="text-sm text-blue-700 space-y-1">
+                      <li>• Rich media messages (images, videos)</li>
+                      <li>• Interactive cards and carousels</li>
+                      <li>• Suggested replies and actions</li>
+                      <li>• Read receipts and typing indicators</li>
+                      <li>• Brand verification</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card className="f10-card">
+              <CardHeader>
+                <CardTitle>RCS Test Results</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8 text-gray-600">
+                  <Network className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>No RCS tests run yet</p>
+                  <div className="mt-4 p-3 bg-purple-50 border border-purple-200 rounded-lg text-left">
+                    <p className="text-sm font-medium text-purple-800">📱 RCS Requirements</p>
+                    <p className="text-xs text-purple-700 mt-1">
+                      RCS requires recipient to have RCS-enabled device and carrier support.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* API Testing Tab */}
           <TabsContent value="api" className="space-y-6">
             <div className="grid grid-cols-2 gap-6">
