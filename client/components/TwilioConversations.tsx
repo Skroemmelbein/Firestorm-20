@@ -191,14 +191,17 @@ export default function TwilioConversations() {
     if (selectedConversation) {
       loadMessages(selectedConversation.sid);
 
-      // Set up auto-refresh every 5 seconds for real-time updates
+      // Set up auto-refresh every 10 seconds for real-time updates (reduced frequency to avoid spam)
       const interval = setInterval(() => {
-        loadMessages(selectedConversation.sid);
-      }, 5000);
+        // Only auto-refresh if no loading is in progress to avoid conflicts
+        if (!isLoading.messages) {
+          loadMessages(selectedConversation.sid);
+        }
+      }, 10000);
 
       return () => clearInterval(interval);
     }
-  }, [selectedConversation]);
+  }, [selectedConversation, isLoading.messages]);
 
   const formatTime = (dateString: string) => {
     if (!dateString) return "Unknown";
