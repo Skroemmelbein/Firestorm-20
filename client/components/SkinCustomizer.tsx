@@ -229,7 +229,7 @@ export default function SkinCustomizer() {
     linkElement.click();
   };
 
-  const updateCustomThemeColor = (colorKey: keyof ThemeConfig['colors'], value: string) => {
+  const updateCustomThemeColor = (colorKey: keyof ComprehensiveTheme['colors'], value: string) => {
     setCustomTheme(prev => ({
       ...prev,
       colors: {
