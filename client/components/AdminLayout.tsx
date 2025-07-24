@@ -141,16 +141,16 @@ const navigationItems = [
         icon: Zap,
       },
       {
+        id: "intelligent-ai",
+        label: "Intelligent AI",
+        path: "/comm-center",
+        icon: Bot,
+      },
+      {
         id: "campaigns",
         label: "Campaign Manager",
         path: "/comm-center/campaigns",
         icon: Send,
-      },
-      {
-        id: "ai-responses",
-        label: "AI Auto-Responses",
-        path: "/comm-center/ai-responses",
-        icon: Bot,
       },
       {
         id: "audience",
@@ -162,6 +162,34 @@ const navigationItems = [
         id: "performance",
         label: "Performance Insights",
         path: "/comm-center/analytics",
+        icon: TrendingUp,
+      },
+    ],
+  },
+  {
+    id: "recurflow",
+    label: "RECURFLOW",
+    icon: Users,
+    path: "/member-portal",
+    description: "Member portal & fulfillment",
+    color: "bg-gradient-to-r from-indigo-500 to-purple-600",
+    subItems: [
+      {
+        id: "dream-portal",
+        label: "Dream Portal",
+        path: "/member-portal",
+        icon: Users,
+      },
+      {
+        id: "frictionless-member",
+        label: "Frictionless Member",
+        path: "/client-portal",
+        icon: Package,
+      },
+      {
+        id: "lead-journey",
+        label: "Lead Journey",
+        path: "/lead-journey",
         icon: TrendingUp,
       },
     ],
