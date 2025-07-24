@@ -38,6 +38,7 @@ interface NavigationItem {
   path: string;
   description: string;
   color?: string;
+  personality?: string;
   subItems?: SubNavigationItem[];
 }
 
