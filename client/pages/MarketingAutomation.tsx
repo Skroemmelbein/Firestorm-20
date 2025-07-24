@@ -664,7 +664,7 @@ export default function MarketingAutomation() {
                   <div className="flex items-center justify-between p-4 border border-[#00E676]/30">
                     <div>
                       <div className="font-bold text-white">TWILIO SMS</div>
-                      <div className="text-sm text-[#FF6A00]">+1 (855) 860-0037</div>
+                      <div className="text-sm text-[#FF6A00]">+1 (855) 960-0037</div>
                     </div>
                     <div className="px-3 py-1 bg-[#00E676]/20 border border-[#00E676]/50 text-[#00E676] text-xs font-bold">
                       CONNECTED
