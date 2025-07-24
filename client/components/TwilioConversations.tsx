@@ -352,7 +352,7 @@ export default function TwilioConversations() {
                         <span>
                           {conversation.participants?.length || 0} participants
                         </span>
-                        <span>{conversation.messagesCount} messages</span>
+                        <span>{conversation.messagesCount || 0} messages</span>
                       </div>
                       {conversation.lastMessage && (
                         <p className="text-xs text-[#b3b3b3] mt-2 truncate">
