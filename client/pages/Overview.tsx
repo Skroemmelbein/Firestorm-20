@@ -55,6 +55,24 @@ interface ModuleData {
 }
 
 export default function Overview() {
+  const navigate = useNavigate();
+
+  // Module route mapping
+  const moduleRoutes = {
+    "firestorm": "/marketing-automation",
+    "dream-portal": "/member-portal",
+    "velocify-hub": "/client-portal",
+    "nexus-sync": "/integrations",
+    "zero-cb-fortress": "/chargeback-tracker"
+  };
+
+  const handleModuleAccess = (moduleId: string) => {
+    const route = moduleRoutes[moduleId as keyof typeof moduleRoutes];
+    if (route) {
+      navigate(route);
+    }
+  };
+
   const [moduleData, setModuleData] = useState<ModuleData[]>([
     {
       id: "firestorm",
