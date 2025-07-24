@@ -661,6 +661,11 @@ export default function AdminDashboard() {
             <XanoTableManager />
           </TabsContent>
 
+          {/* RCS Management Tab */}
+          <TabsContent value="rcs" className="space-y-4">
+            <RCSManager />
+          </TabsContent>
+
           {/* Skin Customizer Tab */}
           <TabsContent value="skin" className="space-y-4">
             <SkinCustomizer />
