@@ -226,5 +226,8 @@ export function createServer() {
   app.post("/api/progress/stop", stopProgressNotifications);
   app.get("/api/progress", getProgress);
 
+  // Twilio SID discovery routes
+  app.use("/api/twilio", twilioSidDiscoveryRouter);
+
   return app;
 }
