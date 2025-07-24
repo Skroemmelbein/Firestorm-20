@@ -33,6 +33,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import XanoCredentialsHelper from "@/components/XanoCredentialsHelper";
 import XanoCredentialsFinder from "@/components/XanoCredentialsFinder";
+import NMIRecurringBilling from "@/components/NMIRecurringBilling";
 
 interface ConnectionStatus {
   connected: boolean;
