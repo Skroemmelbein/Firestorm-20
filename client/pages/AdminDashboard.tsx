@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
+import SendGridTest from "@/components/SendGridTest";
 
 interface TableUpload {
   id: string;
