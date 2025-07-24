@@ -257,7 +257,7 @@ Be helpful and specific about HOW you would accomplish their request.`;
               value={command}
               onChange={(e) => setCommand(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Tell me what to do... (e.g., 'Send a test SMS to 814-440-9968')"
+              placeholder="Tell me what to do... (e.g., 'Send a test SMS to 855-860-0037')"
               className="flex-1"
             />
 
