@@ -186,22 +186,14 @@ export default function TwilioConversations() {
     loadConversations();
   }, []);
 
-  // Auto-refresh messages when conversation is selected
+  // Auto-refresh messages when conversation is selected (DISABLED for now due to API issues)
   useEffect(() => {
     if (selectedConversation) {
-      loadMessages(selectedConversation.sid);
-
-      // Set up auto-refresh every 10 seconds for real-time updates (reduced frequency to avoid spam)
-      const interval = setInterval(() => {
-        // Only auto-refresh if no loading is in progress to avoid conflicts
-        if (!isLoading.messages) {
-          loadMessages(selectedConversation.sid);
-        }
-      }, 10000);
-
-      return () => clearInterval(interval);
+      // Only load messages on manual request to avoid network error spam
+      console.log("Conversation selected:", selectedConversation.friendlyName);
+      // loadMessages(selectedConversation.sid); // Disabled - use manual refresh button instead
     }
-  }, [selectedConversation, isLoading.messages]);
+  }, [selectedConversation]);
 
   const formatTime = (dateString: string) => {
     if (!dateString) return "Unknown";
