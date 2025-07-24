@@ -31,7 +31,7 @@ router.post("/send", async (req, res) => {
         success: false,
         error: `Cannot send SMS to the same number as FROM number (${TWILIO_PHONE_NUMBER}). Please use a different test number.`,
         code: "SAME_FROM_TO_NUMBER",
-        suggestion: "Try using +18144409968 as test number instead"
+        suggestion: "Try using +18559600037 as test number instead"
       });
     }
 
@@ -101,7 +101,7 @@ async function sendTestMessage() {
     console.log("🚀 Sending test message to different test number...");
 
     // Use a different test number - can't send to same as FROM number
-    const formattedPhone = "+18144409968"; // Test number different from FROM
+    const formattedPhone = "+18559600037"; // Test number different from FROM
 
     const response = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
