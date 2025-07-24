@@ -108,5 +108,9 @@ export function createServer() {
   app.delete("/api/twilio-vault/apis", clearUploadedAPIs);
   app.post("/api/twilio-vault/test", testTwilioAPI);
 
+  // SendGrid test routes
+  app.post("/api/test-sendgrid", testSendGrid);
+  app.get("/api/sendgrid-status", getSendGridStatus);
+
   return app;
 }
