@@ -55,18 +55,25 @@ export default function XanoTableManager() {
       const response = await fetch('/api/xano/test-connection', {
         method: 'POST'
       });
-      
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const result = await response.json();
       setIsConnected(result.connected);
       setConnectionDetails(result);
-      
+
       if (!result.connected) {
         console.error('Xano connection failed:', result);
       }
     } catch (error) {
       console.error('Connection test failed:', error);
       setIsConnected(false);
-      setConnectionDetails({ error: 'Connection test failed' });
+      setConnectionDetails({
+        error: 'Connection test failed',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
     } finally {
       setIsLoading(prev => ({ ...prev, connecting: false }));
     }
