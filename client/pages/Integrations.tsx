@@ -281,7 +281,7 @@ export default function Integrations() {
                   ✅ Account: ACf19a39d865d43659b94a3a2074
                 </p>
                 <p className="text-xs text-green-600 font-medium">
-                  ✅ Phone: +1 (855) 800-0037
+                  ✅ Phone: +1 (855) 860-0037
                 </p>
               </div>
             </CardContent>
@@ -390,7 +390,7 @@ export default function Integrations() {
                       Phone Number
                     </h4>
                     <div className="font-mono text-xs text-green-700">
-                      +1 (855) 800-0037
+                      +1 (855) 860-0037
                     </div>
                   </div>
 
