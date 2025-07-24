@@ -23,7 +23,7 @@ renderApp();
 
 // Hot Module Replacement (HMR) - conditionally handle updates
 if (import.meta.hot) {
-  import.meta.hot.accept('./App', () => {
+  import.meta.hot.accept("./App", () => {
     // Re-render the app when App.tsx changes
     renderApp();
   });
