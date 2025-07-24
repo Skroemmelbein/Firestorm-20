@@ -203,12 +203,12 @@ export default function ChargebackTracker() {
               </div>
               <div>
                 <h1 className="text-6xl font-black tracking-wider text-white mb-1">
-                  ZERO CB FORTRESS
+                  CHARGEBACK TRACKER
                 </h1>
                 <div className="flex items-center gap-3">
                   <div className="h-1 w-16 bg-gradient-to-r from-[#DC143C] to-[#FF2D55]"></div>
                   <p className="text-sm font-bold text-[#DC143C] uppercase tracking-widest">
-                    CHARGEBACK DEFENSE MATRIX
+                    Stop Chargebacks & Protect Revenue
                   </p>
                 </div>
               </div>
