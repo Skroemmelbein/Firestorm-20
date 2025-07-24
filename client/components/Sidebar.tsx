@@ -98,6 +98,14 @@ const navigationItems: NavItem[] = [
     icon: Building,
     color: "#FF69B4",
     description: "Payment processing"
+  },
+  {
+    id: "test",
+    label: "Test Module",
+    path: "/test",
+    icon: Target,
+    color: "#00E676",
+    description: "System testing center"
   }
 ];
 
