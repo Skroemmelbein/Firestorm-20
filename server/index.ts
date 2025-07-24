@@ -43,6 +43,12 @@ import {
   getAgentStatus
 } from "./routes/rcs-api";
 import { sendAutomaticNotification } from "./routes/auto-notify";
+import {
+  startProgressNotifications,
+  updateProgress,
+  stopProgressNotifications,
+  getProgress
+} from "./routes/progress-notifier";
 import realApiRouter from "./routes/real-api";
 import xanoSetupRouter from "./routes/xano-setup";
 
