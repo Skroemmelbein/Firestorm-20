@@ -371,36 +371,49 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         className={cn(
                           "relative flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-500 group font-bold text-sm tracking-wide overflow-hidden",
                           isActive
-                            ? `${item.color || 'bg-gradient-to-r from-blue-600 to-green-600'} text-white shadow-2xl border border-white/20`
+                            ? `${item.color || "bg-gradient-to-r from-blue-600 to-green-600"} text-white shadow-2xl border border-white/20`
                             : "text-slate-700 hover:text-slate-900 hover:bg-gradient-to-r hover:from-slate-100 hover:to-white hover:shadow-lg",
                         )}
                       >
                         {/* Personality Effect Overlay */}
                         {isActive && (
-                          <div className={cn(
-                            "absolute inset-0 opacity-20",
-                            item.personality === "explosive-energy" && "bg-gradient-to-r from-yellow-400 to-red-600 animate-pulse",
-                            item.personality === "luxurious-premium" && "bg-gradient-to-r from-purple-400 to-pink-600 animate-pulse",
-                            item.personality === "speed-efficiency" && "bg-gradient-to-r from-cyan-400 to-blue-600 animate-bounce",
-                            item.personality === "data-nexus" && "bg-gradient-to-r from-green-400 to-emerald-600",
-                            item.personality === "fortress-defense" && "bg-gradient-to-r from-amber-400 to-orange-600",
-                          )} />
+                          <div
+                            className={cn(
+                              "absolute inset-0 opacity-20",
+                              item.personality === "explosive-energy" &&
+                                "bg-gradient-to-r from-yellow-400 to-red-600 animate-pulse",
+                              item.personality === "luxurious-premium" &&
+                                "bg-gradient-to-r from-purple-400 to-pink-600 animate-pulse",
+                              item.personality === "speed-efficiency" &&
+                                "bg-gradient-to-r from-cyan-400 to-blue-600 animate-bounce",
+                              item.personality === "data-nexus" &&
+                                "bg-gradient-to-r from-green-400 to-emerald-600",
+                              item.personality === "fortress-defense" &&
+                                "bg-gradient-to-r from-amber-400 to-orange-600",
+                            )}
+                          />
                         )}
 
-                        <div className={cn(
-                          "w-8 h-8 rounded-lg flex items-center justify-center shadow-lg relative z-10",
-                          isActive
-                            ? "bg-white/20 backdrop-blur-sm"
-                            : "bg-gradient-to-br from-slate-200 to-slate-300 group-hover:from-slate-300 group-hover:to-slate-400"
-                        )}>
+                        <div
+                          className={cn(
+                            "w-8 h-8 rounded-lg flex items-center justify-center shadow-lg relative z-10",
+                            isActive
+                              ? "bg-white/20 backdrop-blur-sm"
+                              : "bg-gradient-to-br from-slate-200 to-slate-300 group-hover:from-slate-300 group-hover:to-slate-400",
+                          )}
+                        >
                           <Icon
                             className={cn(
                               "w-4 h-4 relative z-10",
                               isActive
                                 ? "text-white drop-shadow-md"
                                 : "text-slate-600 group-hover:text-slate-800",
-                              item.personality === "explosive-energy" && isActive && "animate-pulse",
-                              item.personality === "speed-efficiency" && isActive && "animate-bounce",
+                              item.personality === "explosive-energy" &&
+                                isActive &&
+                                "animate-pulse",
+                              item.personality === "speed-efficiency" &&
+                                isActive &&
+                                "animate-bounce",
                             )}
                           />
                         </div>
@@ -408,7 +421,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                           <div
                             className={cn(
                               "font-black text-sm tracking-widest uppercase",
-                              isActive ? "text-white drop-shadow-md" : "text-slate-800",
+                              isActive
+                                ? "text-white drop-shadow-md"
+                                : "text-slate-800",
                             )}
                           >
                             {item.label}
@@ -530,7 +545,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         className={cn(
                           "flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium transition-all whitespace-nowrap",
                           isSubActive
-                            ? `${currentSection.color || 'bg-gradient-to-r from-blue-600 to-green-600'} text-white corp-shadow`
+                            ? `${currentSection.color || "bg-gradient-to-r from-blue-600 to-green-600"} text-white corp-shadow`
                             : "text-blue-700 hover:text-blue-900 hover:bg-blue-50",
                         )}
                       >
