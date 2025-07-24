@@ -314,14 +314,14 @@ export default function TwilioConversations() {
             </div>
 
             <div className="space-y-3 max-h-80 overflow-y-auto">
-              {conversations.length === 0 ? (
+              {!conversations || conversations.length === 0 ? (
                 <div className="text-center py-8 text-[#737373]">
                   <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>No conversations yet</p>
                   <p className="text-xs">Create one to start testing</p>
                 </div>
               ) : (
-                conversations.map((conversation) => {
+                (conversations || []).map((conversation) => {
                   const status = getConversationStatus(conversation.state);
                   return (
                     <div
@@ -385,7 +385,7 @@ export default function TwilioConversations() {
               <div className="space-y-4">
                 {/* Messages */}
                 <div className="border border-[#333333] rounded-lg p-4 h-64 overflow-y-auto bg-[#0a0a0a]">
-                  {messages.length === 0 ? (
+                  {!messages || messages.length === 0 ? (
                     <div className="flex items-center justify-center h-full text-[#737373]">
                       {isLoading.messages ? (
                         <div className="flex items-center gap-2">
@@ -398,7 +398,7 @@ export default function TwilioConversations() {
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      {messages.map((message) => (
+                      {(messages || []).map((message) => (
                         <div
                           key={message.sid}
                           className={`flex items-start gap-3 ${
