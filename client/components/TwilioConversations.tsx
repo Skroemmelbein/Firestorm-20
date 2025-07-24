@@ -487,15 +487,15 @@ export default function TwilioConversations() {
               </ul>
             </div>
             <div>
-              <strong className="text-white">Test Flow:</strong>
-              <ul className="text-[#b3b3b3] mt-1 space-y-1">
+              <strong className="text-gray-800">Test Flow:</strong>
+              <ul className="text-gray-700 mt-1 space-y-1">
                 <li>
                   • Your number:{" "}
-                  <span className="text-[#00BFFF]">+18559600037</span>
+                  <span className="text-blue-600 font-medium">+18559600037</span>
                 </li>
                 <li>
                   ��� Test recipient:{" "}
-                  <span className="text-[#32CD32]">+18144409068</span>
+                  <span className="text-green-600 font-medium">+18144409068</span>
                 </li>
                 <li>• Replies will appear automatically</li>
                 <li>• Full conversation history tracked</li>
