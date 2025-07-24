@@ -384,9 +384,9 @@ export default function TwilioConversations() {
             {selectedConversation ? (
               <div className="space-y-4">
                 {/* Messages */}
-                <div className="border border-[#333333] rounded-lg p-4 h-64 overflow-y-auto bg-[#0a0a0a]">
+                <div className="border border-gray-200 rounded-lg p-4 h-64 overflow-y-auto bg-gray-50">
                   {!messages || messages.length === 0 ? (
-                    <div className="flex items-center justify-center h-full text-[#737373]">
+                    <div className="flex items-center justify-center h-full text-gray-600">
                       {isLoading.messages ? (
                         <div className="flex items-center gap-2">
                           <Loader2 className="w-4 h-4 animate-spin" />
@@ -494,7 +494,7 @@ export default function TwilioConversations() {
                   <span className="text-[#00BFFF]">+18559600037</span>
                 </li>
                 <li>
-                  • Test recipient:{" "}
+                  ��� Test recipient:{" "}
                   <span className="text-[#32CD32]">+18144409068</span>
                 </li>
                 <li>• Replies will appear automatically</li>
