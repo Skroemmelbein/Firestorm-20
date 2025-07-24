@@ -11,6 +11,7 @@ import {
   clearUploadedAPIs,
   testTwilioAPI,
 } from "./routes/twilio-vault";
+import { testSendGrid, getSendGridStatus } from "./routes/test-sendgrid";
 import realApiRouter from "./routes/real-api";
 import xanoSetupRouter from "./routes/xano-setup";
 
