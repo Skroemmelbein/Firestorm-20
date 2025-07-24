@@ -22,7 +22,7 @@ export default function AutoSendSMS() {
 
   const sendTestSMS = async () => {
     try {
-      console.log("🚀 Auto-sending test SMS to 814-440-9968...");
+      console.log("🚀 Auto-sending test SMS to 855-860-0037...");
 
       const response = await fetch("/api/real/sms/send", {
         method: "POST",
@@ -30,7 +30,7 @@ export default function AutoSendSMS() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          to: "+18144409968",
+          to: "+18558600037",
           body:
             "🚀 AUTO-TEST from RecurFlow! Your enterprise SMS system is working perfectly. Sent automatically at " +
             new Date().toLocaleString(),
@@ -62,7 +62,7 @@ export default function AutoSendSMS() {
       <CardHeader>
         <CardTitle className="flex items-center gap-3">
           <MessageSquare className="w-6 h-6 text-blue-600" />
-          Auto SMS Test - Sending to 814-440-9968
+          Auto SMS Test - Sending to 855-860-0037
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -71,7 +71,7 @@ export default function AutoSendSMS() {
             <Loader2 className="h-4 w-4 animate-spin" />
             <AlertDescription>
               <strong>Sending SMS...</strong> Test message being sent to +1
-              (814) 440-9968
+              (855) 860-0037
             </AlertDescription>
           </Alert>
         )}
@@ -82,8 +82,8 @@ export default function AutoSendSMS() {
             <AlertDescription>
               <strong>✅ SMS SENT SUCCESSFULLY!</strong>
               <br />
-              Message sent to +1 (814) 440-9968 from your Twilio number +1 (855)
-              800-0037
+              Message sent to +1 (855) 860-0037 from your Twilio number +1 (855)
+              860-0037
               {result.sid && (
                 <>
                   <br />
@@ -109,14 +109,14 @@ export default function AutoSendSMS() {
           <div className="p-3 bg-blue-50 rounded-lg">
             <div className="text-sm font-medium text-blue-800">From Number</div>
             <div className="font-mono text-sm text-blue-600">
-              +1 (855) 800-0037
+              +1 (855) 860-0037
             </div>
           </div>
 
           <div className="p-3 bg-green-50 rounded-lg">
             <div className="text-sm font-medium text-green-800">To Number</div>
             <div className="font-mono text-sm text-green-600">
-              +1 (814) 440-9968
+              +1 (855) 860-0037
             </div>
           </div>
         </div>
