@@ -157,6 +157,76 @@ const modules: Module[] = [
 
 export default function Overview() {
   const navigate = useNavigate();
+  const [testResults, setTestResults] = useState<Record<string, any>>({});
+  const [isTesting, setIsTesting] = useState({
+    sms: false,
+    email: false,
+    voice: false,
+    api: false,
+  });
+
+  const runQuickSMSTest = async () => {
+    setIsTesting(prev => ({ ...prev, sms: true }));
+    try {
+      const response = await fetch("/api/real/sms/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: "+18144409068",
+          body: "Quick test from ECELONX Overview Dashboard",
+        }),
+      });
+
+      const result = await response.json();
+      setTestResults(prev => ({
+        ...prev,
+        sms: {
+          success: response.ok,
+          message: result.message || (response.ok ? "SMS sent successfully!" : "SMS failed"),
+          timestamp: new Date(),
+        },
+      }));
+    } catch (error) {
+      setTestResults(prev => ({
+        ...prev,
+        sms: { success: false, message: "Failed to send SMS", timestamp: new Date() },
+      }));
+    } finally {
+      setIsTesting(prev => ({ ...prev, sms: false }));
+    }
+  };
+
+  const runQuickEmailTest = async () => {
+    setIsTesting(prev => ({ ...prev, email: true }));
+    try {
+      const response = await fetch("/api/sendgrid/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: "shannonfromfieldcentric@gmail.com",
+          subject: "Quick Test from ECELONX Overview",
+          html: "<h1>Test Email</h1><p>This is a quick test from the Overview Dashboard.</p>",
+        }),
+      });
+
+      const result = await response.json();
+      setTestResults(prev => ({
+        ...prev,
+        email: {
+          success: response.ok,
+          message: result.message || (response.ok ? "Email sent successfully!" : "Email failed"),
+          timestamp: new Date(),
+        },
+      }));
+    } catch (error) {
+      setTestResults(prev => ({
+        ...prev,
+        email: { success: false, message: "Failed to send email", timestamp: new Date() },
+      }));
+    } finally {
+      setIsTesting(prev => ({ ...prev, email: false }));
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
