@@ -280,7 +280,7 @@ export default function TwilioConversations() {
             </div>
           </div>
           <div>
-            <Label className="text-[#b3b3b3] text-sm">Initial Message</Label>
+            <Label className="text-gray-700 text-sm font-medium">Initial Message</Label>
             <Textarea
               value={newConversation.initialMessage}
               onChange={(e) =>
@@ -289,7 +289,7 @@ export default function TwilioConversations() {
                   initialMessage: e.target.value,
                 }))
               }
-              className="bg-[#0a0a0a] border-[#333333] text-white text-sm"
+              className="bg-white border-gray-300 text-gray-800 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               rows={2}
               placeholder="Hello! This is a test conversation..."
             />
@@ -300,12 +300,12 @@ export default function TwilioConversations() {
         <div className="grid grid-cols-2 gap-6">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-white">Active Conversations</h3>
+              <h3 className="font-semibold text-gray-800">Active Conversations</h3>
               <Button
                 onClick={loadConversations}
                 disabled={isLoading.conversations}
                 size="sm"
-                className="f10-btn f10-btn-ghost"
+                className="border border-gray-300 text-gray-700 hover:bg-gray-50 bg-white"
               >
                 <RefreshCw
                   className={`w-4 h-4 ${isLoading.conversations ? "animate-spin" : ""}`}
