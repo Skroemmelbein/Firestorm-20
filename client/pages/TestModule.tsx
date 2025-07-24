@@ -83,18 +83,25 @@ export default function TestModule() {
         }),
       });
 
-      console.log(
-        "📱 SMS Response status:",
-        response.status,
-        response.statusText,
-      );
+      console.log("📱 SMS Response status:", response.status, response.statusText);
 
-      let result;
-      let errorMessage;
+      let result = {};
+      let errorMessage = "";
+
+      // Check if response has content before trying to parse
+      const contentType = response.headers.get("content-type");
+      const hasJsonContent = contentType && contentType.includes("application/json");
 
       try {
-        result = await response.json();
-        console.log("📱 SMS Response:", result);
+        if (hasJsonContent) {
+          result = await response.json();
+          console.log("📱 SMS Response:", result);
+        } else {
+          // If no JSON content, read as text
+          const textResult = await response.text();
+          console.log("📱 SMS Response (text):", textResult);
+          result = { message: textResult };
+        }
 
         // Handle specific Twilio errors with helpful messages
         if (response.ok) {
@@ -105,7 +112,7 @@ export default function TestModule() {
           } else if (result.code === 21610) {
             errorMessage = "❌ Recipient unsubscribed. Send 'START' to +18559600037 to re-subscribe.";
           } else {
-            errorMessage = result.message || result.error || "SMS failed to send";
+            errorMessage = result.message || result.error || `SMS failed (${response.status})`;
           }
         }
       } catch (parseError) {
