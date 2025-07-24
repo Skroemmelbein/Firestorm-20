@@ -200,7 +200,7 @@ const SAMPLE_DATA = {
     {
       uuid: "mem_001",
       email: "john.doe@example.com",
-      phone: "+18144409968",
+      phone: "+18558600037",
       first_name: "John",
       last_name: "Doe",
       status: "active",
@@ -212,7 +212,7 @@ const SAMPLE_DATA = {
     {
       uuid: "mem_002",
       email: "sarah.smith@example.com",
-      phone: "+15551234567",
+      phone: "+18558600037",
       first_name: "Sarah",
       last_name: "Smith",
       status: "active",
@@ -224,7 +224,7 @@ const SAMPLE_DATA = {
     {
       uuid: "mem_003",
       email: "mike.wilson@example.com",
-      phone: "+15559876543",
+      phone: "+18558600037",
       first_name: "Mike",
       last_name: "Wilson",
       status: "active",
