@@ -336,7 +336,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         className={cn(
                           "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group font-medium",
                           isActive
-                            ? "glass-card bg-gradient-to-r from-blue-600 to-green-600 text-white corp-shadow-lg"
+                            ? `glass-card ${item.color || 'bg-gradient-to-r from-blue-600 to-green-600'} text-white corp-shadow-lg`
                             : "text-blue-700 hover:text-blue-900 hover:glass-card hover:corp-shadow",
                         )}
                       >
