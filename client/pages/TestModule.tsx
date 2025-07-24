@@ -91,7 +91,9 @@ export default function TestModule() {
 
       let result;
       try {
-        const responseText = await response.text();
+        // Clone the response to avoid "body stream already read" error
+        const responseClone = response.clone();
+        const responseText = await responseClone.text();
         console.log("📱 SMS Raw response:", responseText);
         result = JSON.parse(responseText);
       } catch (parseError) {
@@ -103,14 +105,19 @@ export default function TestModule() {
         };
       }
 
+      // Handle specific Twilio errors with helpful messages
+      let errorMessage = result.message || result.error || (response.ok ? "SMS sent successfully!" : "SMS failed to send");
+      if (result.error && result.error.includes("unsubscribed recipient")) {
+        errorMessage = "❌ Recipient is unsubscribed. They need to text START to +18559600037 to opt-in first.";
+      } else if (result.code === 21610) {
+        errorMessage = "❌ Recipient unsubscribed. Send 'START' to +18559600037 to re-subscribe.";
+      }
+
       setTestResults((prev) => ({
         ...prev,
         sms: {
           success: response.ok,
-          message:
-            result.message ||
-            result.error ||
-            (response.ok ? "SMS sent successfully!" : "SMS failed to send"),
+          message: errorMessage,
           details: {
             ...result,
             status: response.status,
