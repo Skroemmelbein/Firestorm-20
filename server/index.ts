@@ -47,6 +47,12 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  // Debug environment variables
+  console.log("🔍 Debug environment variables:");
+  console.log("XANO_INSTANCE_URL:", process.env.XANO_INSTANCE_URL ? "PRESENT" : "MISSING");
+  console.log("XANO_API_KEY:", process.env.XANO_API_KEY ? "PRESENT" : "MISSING");
+  console.log("XANO_DATABASE_ID:", process.env.XANO_DATABASE_ID ? "PRESENT" : "MISSING");
+
   // Initialize real integrations with environment variables - NO MOCKS
   if (
     process.env.XANO_INSTANCE_URL &&
@@ -61,6 +67,11 @@ export function createServer() {
     console.log("✅ Xano client initialized with real credentials");
   } else {
     console.warn("⚠️  Xano environment variables not found - add to .env file");
+    console.warn("Missing vars:", {
+      XANO_INSTANCE_URL: !process.env.XANO_INSTANCE_URL,
+      XANO_API_KEY: !process.env.XANO_API_KEY,
+      XANO_DATABASE_ID: !process.env.XANO_DATABASE_ID
+    });
   }
 
   // Initialize Twilio with working credentials
