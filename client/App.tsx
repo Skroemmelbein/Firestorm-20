@@ -47,6 +47,9 @@ const App = () => (
             element={<MarketingAutomation />}
           />
           <Route path="/members" element={<MemberPortal />} />
+          <Route path="/member-portal" element={<MemberPortal />} />
+          <Route path="/client-portal" element={<ClientPortal />} />
+          <Route path="/lead-journey" element={<LeadJourney />} />
           <Route path="/fulfillment" element={<Fulfillment />} />
           <Route path="/ai" element={<IntelligentAI />} />
           <Route path="/chargeback-tracker" element={<ChargebackTracker />} />
