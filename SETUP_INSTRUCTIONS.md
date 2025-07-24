@@ -225,7 +225,7 @@ In your Twilio Console:
    ```bash
    curl -X POST http://localhost:8080/api/real/sms/send \
      -H "Content-Type: application/json" \
-     -d '{"to": "+1234567890", "body": "Hello from real integration!"}'
+     -d '{"to": "+18558600037", "body": "Hello from real integration!"}'
    ```
 
 ## 🎯 Step 6: Populate Sample Data
@@ -239,7 +239,7 @@ Add some test data to your Xano tables:
   {
     "uuid": "mem_001",
     "email": "john@example.com",
-    "phone": "+1234567890",
+    "phone": "+18558600037",
     "first_name": "John",
     "last_name": "Doe",
     "status": "active",
@@ -302,7 +302,7 @@ Add some test data to your Xano tables:
 
 - Verify Account SID starts with "AC"
 - Check Auth Token is valid
-- Ensure phone number format: `+1234567890`
+- Ensure phone number format: `+18558600037`
 
 ### Webhook Issues:
 
