@@ -50,7 +50,7 @@ export default function TestModule() {
   const [testResults, setTestResults] = useState<Record<string, TestResult>>({});
 
   const [voiceTest, setVoiceTest] = useState({
-    phone: "+18559600037",
+    phone: "+18144409068",
     message: "Hello, this is a test call from your ECELONX system. All systems are operational."
   });
 
