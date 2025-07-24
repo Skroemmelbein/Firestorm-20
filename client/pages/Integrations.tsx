@@ -316,7 +316,7 @@ export default function Integrations() {
         </div>
 
         <Tabs defaultValue="xano" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="xano" className="gap-2">
               <Database className="w-4 h-4" />
               Xano Setup
@@ -324,6 +324,10 @@ export default function Integrations() {
             <TabsTrigger value="twilio" className="gap-2">
               <Phone className="w-4 h-4" />
               Twilio Setup
+            </TabsTrigger>
+            <TabsTrigger value="nmi" className="gap-2">
+              <CreditCard className="w-4 h-4" />
+              NMI Billing
             </TabsTrigger>
             <TabsTrigger value="workflows" className="gap-2">
               <Activity className="w-4 h-4" />
