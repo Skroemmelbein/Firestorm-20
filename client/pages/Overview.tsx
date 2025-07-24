@@ -166,7 +166,7 @@ export default function Overview() {
   });
 
   const runQuickSMSTest = async () => {
-    setIsTesting((prev) => ({ ...prev, sms: true }));
+    setIsTesting(prev => ({ ...prev, sms: true }));
     try {
       const response = await fetch("/api/real/sms/send", {
         method: "POST",
@@ -178,32 +178,26 @@ export default function Overview() {
       });
 
       const result = await response.json();
-      setTestResults((prev) => ({
+      setTestResults(prev => ({
         ...prev,
         sms: {
           success: response.ok,
-          message:
-            result.message ||
-            (response.ok ? "SMS sent successfully!" : "SMS failed"),
+          message: result.message || (response.ok ? "SMS sent successfully!" : "SMS failed"),
           timestamp: new Date(),
         },
       }));
     } catch (error) {
-      setTestResults((prev) => ({
+      setTestResults(prev => ({
         ...prev,
-        sms: {
-          success: false,
-          message: "Failed to send SMS",
-          timestamp: new Date(),
-        },
+        sms: { success: false, message: "Failed to send SMS", timestamp: new Date() },
       }));
     } finally {
-      setIsTesting((prev) => ({ ...prev, sms: false }));
+      setIsTesting(prev => ({ ...prev, sms: false }));
     }
   };
 
   const runQuickEmailTest = async () => {
-    setIsTesting((prev) => ({ ...prev, email: true }));
+    setIsTesting(prev => ({ ...prev, email: true }));
     try {
       const response = await fetch("/api/sendgrid/test", {
         method: "POST",
@@ -216,27 +210,21 @@ export default function Overview() {
       });
 
       const result = await response.json();
-      setTestResults((prev) => ({
+      setTestResults(prev => ({
         ...prev,
         email: {
           success: response.ok,
-          message:
-            result.message ||
-            (response.ok ? "Email sent successfully!" : "Email failed"),
+          message: result.message || (response.ok ? "Email sent successfully!" : "Email failed"),
           timestamp: new Date(),
         },
       }));
     } catch (error) {
-      setTestResults((prev) => ({
+      setTestResults(prev => ({
         ...prev,
-        email: {
-          success: false,
-          message: "Failed to send email",
-          timestamp: new Date(),
-        },
+        email: { success: false, message: "Failed to send email", timestamp: new Date() },
       }));
     } finally {
-      setIsTesting((prev) => ({ ...prev, email: false }));
+      setIsTesting(prev => ({ ...prev, email: false }));
     }
   };
 
@@ -289,6 +277,145 @@ export default function Overview() {
             <span>Live Sync: Active</span>
           </div>
         </div>
+      </div>
+
+      {/* Quick Testing Section */}
+      <div className="f10-ops-zone">
+        <div className="f10-zone-header mb-6">
+          <div className="flex items-center gap-3">
+            <TestTube className="w-6 h-6 text-[#00E676]" />
+            <h2 className="f10-zone-title text-[#00E676]">Quick System Testing</h2>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {/* SMS Test */}
+          <Card
+            className="cursor-pointer hover:shadow-lg transition-all border-2 border-blue-200/50 bg-gradient-to-br from-blue-50 to-blue-100/50"
+            onClick={runQuickSMSTest}
+          >
+            <CardContent className="p-4 text-center">
+              {isTesting.sms ? (
+                <Loader2 className="w-8 h-8 mx-auto text-blue-600 mb-2 animate-spin" />
+              ) : (
+                <MessageSquare className="w-8 h-8 mx-auto text-blue-600 mb-2" />
+              )}
+              <h3 className="font-semibold text-gray-800 mb-1">SMS Test</h3>
+              <p className="text-xs text-gray-600">Test to +18144409068</p>
+              {testResults.sms && (
+                <Badge
+                  variant={testResults.sms.success ? "default" : "destructive"}
+                  className="mt-2 text-xs"
+                >
+                  {testResults.sms.success ? "Success" : "Failed"}
+                </Badge>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Email Test */}
+          <Card
+            className="cursor-pointer hover:shadow-lg transition-all border-2 border-green-200/50 bg-gradient-to-br from-green-50 to-green-100/50"
+            onClick={runQuickEmailTest}
+          >
+            <CardContent className="p-4 text-center">
+              {isTesting.email ? (
+                <Loader2 className="w-8 h-8 mx-auto text-green-600 mb-2 animate-spin" />
+              ) : (
+                <Mail className="w-8 h-8 mx-auto text-green-600 mb-2" />
+              )}
+              <h3 className="font-semibold text-gray-800 mb-1">Email Test</h3>
+              <p className="text-xs text-gray-600">SendGrid test email</p>
+              {testResults.email && (
+                <Badge
+                  variant={testResults.email.success ? "default" : "destructive"}
+                  className="mt-2 text-xs"
+                >
+                  {testResults.email.success ? "Success" : "Failed"}
+                </Badge>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Voice Test */}
+          <Card className="cursor-pointer hover:shadow-lg transition-all border-2 border-purple-200/50 bg-gradient-to-br from-purple-50 to-purple-100/50">
+            <CardContent className="p-4 text-center">
+              <Phone className="w-8 h-8 mx-auto text-purple-600 mb-2" />
+              <h3 className="font-semibold text-gray-800 mb-1">Voice Test</h3>
+              <p className="text-xs text-gray-600">Twilio voice call</p>
+              <Badge variant="outline" className="mt-2 text-xs">
+                Ready
+              </Badge>
+            </CardContent>
+          </Card>
+
+          {/* Full Test Center */}
+          <Card
+            className="cursor-pointer hover:shadow-lg transition-all border-2 border-red-200/50 bg-gradient-to-br from-red-50 to-red-100/50"
+            onClick={() => navigate("/test")}
+          >
+            <CardContent className="p-4 text-center">
+              <TestTube className="w-8 h-8 mx-auto text-red-600 mb-2" />
+              <h3 className="font-semibold text-gray-800 mb-1">Full Tests</h3>
+              <p className="text-xs text-gray-600">Complete test center</p>
+              <Badge variant="outline" className="mt-2 text-xs">
+                Go to Tests
+              </Badge>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Test Results Display */}
+        {(testResults.sms || testResults.email) && (
+          <Card className="border-2 border-gray-200/50 bg-gradient-to-r from-gray-50 to-gray-100/50 mb-8">
+            <CardHeader>
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Activity className="w-4 h-4" />
+                Recent Test Results
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {testResults.sms && (
+                  <div className="flex items-center justify-between p-2 rounded bg-white/50">
+                    <div className="flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm font-medium">SMS Test</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {testResults.sms.success ? (
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <XCircle className="w-4 h-4 text-red-600" />
+                      )}
+                      <span className="text-xs text-gray-600">
+                        {testResults.sms.timestamp.toLocaleTimeString()}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {testResults.email && (
+                  <div className="flex items-center justify-between p-2 rounded bg-white/50">
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-green-600" />
+                      <span className="text-sm font-medium">Email Test</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {testResults.email.success ? (
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <XCircle className="w-4 h-4 text-red-600" />
+                      )}
+                      <span className="text-xs text-gray-600">
+                        {testResults.email.timestamp.toLocaleTimeString()}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Module Grid */}
