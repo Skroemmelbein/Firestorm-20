@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,33 +11,33 @@
   --f10-surface-elevated: #222222;
   --f10-border: #333333;
   --f10-border-subtle: #2a2a2a;
-  
+
   /* Typography */
   --f10-text-primary: #ffffff;
   --f10-text-secondary: #b3b3b3;
   --f10-text-tertiary: #737373;
   --f10-text-muted: #525252;
-  
+
   /* Module-Specific Accent Colors */
-  --velocify-accent: #00BFFF;
+  --velocify-accent: #00bfff;
   --velocify-accent-dim: #0099cc;
-  --firestorm-accent: #FF4500;
+  --firestorm-accent: #ff4500;
   --firestorm-accent-dim: #cc3600;
-  --dream-portal-accent: #8A2BE2;
+  --dream-portal-accent: #8a2be2;
   --dream-portal-accent-dim: #6a1bb8;
-  --nexus-accent: #00CED1;
+  --nexus-accent: #00ced1;
   --nexus-accent-dim: #00a5a8;
-  --fortress-accent: #32CD32;
+  --fortress-accent: #32cd32;
   --fortress-accent-dim: #28a428;
-  --admin-accent: #FFD700;
+  --admin-accent: #ffd700;
   --admin-accent-dim: #ccac00;
-  
+
   /* Status Colors */
-  --f10-success: #10B981;
-  --f10-warning: #F59E0B;
-  --f10-error: #EF4444;
-  --f10-info: #3B82F6;
-  
+  --f10-success: #10b981;
+  --f10-warning: #f59e0b;
+  --f10-error: #ef4444;
+  --f10-info: #3b82f6;
+
   /* Shadows & Effects */
   --f10-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
   --f10-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6);
@@ -51,9 +51,15 @@
 }
 
 html {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  font-feature-settings: 'cv11', 'ss01';
-  font-variation-settings: 'opsz' 32;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    system-ui,
+    sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  font-variation-settings: "opsz" 32;
   scroll-behavior: smooth;
 }
 
@@ -131,7 +137,7 @@ body {
   border-radius: 8px;
   box-shadow: var(--f10-shadow);
   padding: 1.5rem;
-  transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .f10-card:hover {
@@ -158,7 +164,7 @@ body {
   border: 1px solid transparent;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.15s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   white-space: nowrap;
 }
@@ -258,7 +264,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .f10-metric-card:hover {
@@ -496,7 +502,7 @@ body {
   padding: 1rem;
   max-height: 300px;
   overflow-y: auto;
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
 }
 
 .f10-log-entry {
@@ -549,7 +555,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.025em;
   cursor: pointer;
-  transition: all 0.15s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
 }
 
@@ -572,7 +578,8 @@ body {
 }
 
 @keyframes f10-pulse-subtle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -581,11 +588,11 @@ body {
 }
 
 .f10-animate-fade-in {
-  animation: f10-fade-in 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+  animation: f10-fade-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .f10-animate-pulse {
-  animation: f10-pulse-subtle 2s cubic-bezier(0.4, 0.0, 0.6, 1) infinite;
+  animation: f10-pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* Fortune 10 Environment Status */

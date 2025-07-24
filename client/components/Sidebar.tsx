@@ -22,7 +22,7 @@ import {
   Mail,
   MessageSquare,
   ChevronRight,
-  Command
+  Command,
 } from "lucide-react";
 
 interface NavItem {
@@ -41,7 +41,7 @@ const navigationItems: NavItem[] = [
     path: "/",
     icon: Home,
     color: "#ffffff",
-    description: "Main dashboard"
+    description: "Main dashboard",
   },
   {
     id: "admin",
@@ -49,7 +49,7 @@ const navigationItems: NavItem[] = [
     path: "/admin",
     icon: Shield,
     color: "#FFD700",
-    description: "Upload CSV, manage data"
+    description: "Upload CSV, manage data",
   },
   {
     id: "firestorm",
@@ -57,7 +57,7 @@ const navigationItems: NavItem[] = [
     path: "/marketing-automation",
     icon: Flame,
     color: "#FF6A00",
-    description: "Marketing automation"
+    description: "Marketing automation",
   },
   {
     id: "dream-portal",
@@ -65,7 +65,7 @@ const navigationItems: NavItem[] = [
     path: "/member-portal",
     icon: Brain,
     color: "#8A2BE2",
-    description: "Member management"
+    description: "Member management",
   },
   {
     id: "velocify",
@@ -73,7 +73,7 @@ const navigationItems: NavItem[] = [
     path: "/client-portal",
     icon: Rocket,
     color: "#00BFFF",
-    description: "Client operations"
+    description: "Client operations",
   },
   {
     id: "nexus",
@@ -81,7 +81,7 @@ const navigationItems: NavItem[] = [
     path: "/integrations",
     icon: Network,
     color: "#00CED1",
-    description: "API integrations"
+    description: "API integrations",
   },
   {
     id: "fortress",
@@ -89,7 +89,7 @@ const navigationItems: NavItem[] = [
     path: "/chargeback-tracker",
     icon: CreditCard,
     color: "#32CD32",
-    description: "Chargeback protection"
+    description: "Chargeback protection",
   },
   {
     id: "billing",
@@ -97,7 +97,7 @@ const navigationItems: NavItem[] = [
     path: "/billing",
     icon: Building,
     color: "#FF69B4",
-    description: "Payment processing"
+    description: "Payment processing",
   },
   {
     id: "test",
@@ -105,8 +105,8 @@ const navigationItems: NavItem[] = [
     path: "/test",
     icon: Target,
     color: "#00E676",
-    description: "System testing center"
-  }
+    description: "System testing center",
+  },
 ];
 
 export default function Sidebar() {
@@ -128,7 +128,7 @@ export default function Sidebar() {
       <div
         className={cn(
           "fixed left-0 top-0 h-full bg-[#111111] border-r border-[#333333] z-50 transition-all duration-300",
-          isCollapsed ? "w-16" : "w-72"
+          isCollapsed ? "w-16" : "w-72",
         )}
       >
         {/* Header */}
@@ -143,7 +143,11 @@ export default function Sidebar() {
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="p-2 rounded-lg hover:bg-[#222222] text-white transition-colors"
           >
-            {isCollapsed ? <Menu className="w-4 h-4" /> : <X className="w-4 h-4" />}
+            {isCollapsed ? (
+              <Menu className="w-4 h-4" />
+            ) : (
+              <X className="w-4 h-4" />
+            )}
           </button>
         </div>
 
@@ -152,7 +156,7 @@ export default function Sidebar() {
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
-            
+
             return (
               <button
                 key={item.id}
@@ -160,23 +164,25 @@ export default function Sidebar() {
                 className={cn(
                   "w-full flex items-center gap-3 p-3 rounded-lg transition-all",
                   "hover:bg-[#222222] group",
-                  active && "bg-[#222222] border border-[#333333]"
+                  active && "bg-[#222222] border border-[#333333]",
                 )}
               >
-                <Icon 
+                <Icon
                   className={cn(
                     "w-5 h-5 flex-shrink-0",
-                    active ? "text-white" : "text-[#737373]"
+                    active ? "text-white" : "text-[#737373]",
                   )}
                   style={{ color: active ? item.color : undefined }}
                 />
-                
+
                 {!isCollapsed && (
                   <div className="flex-1 text-left">
-                    <div className={cn(
-                      "font-medium text-sm",
-                      active ? "text-white" : "text-[#b3b3b3]"
-                    )}>
+                    <div
+                      className={cn(
+                        "font-medium text-sm",
+                        active ? "text-white" : "text-[#b3b3b3]",
+                      )}
+                    >
                       {item.label}
                     </div>
                     <div className="text-xs text-[#737373]">
@@ -222,10 +228,12 @@ export default function Sidebar() {
       </div>
 
       {/* Main content spacer */}
-      <div className={cn(
-        "transition-all duration-300",
-        isCollapsed ? "ml-16" : "ml-72"
-      )} />
+      <div
+        className={cn(
+          "transition-all duration-300",
+          isCollapsed ? "ml-16" : "ml-72",
+        )}
+      />
     </>
   );
 }

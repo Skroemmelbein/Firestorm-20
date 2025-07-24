@@ -72,13 +72,13 @@ export default function MemberPortal() {
   const [selectedTab, setSelectedTab] = useState("command");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterTier, setFilterTier] = useState("all");
-  
+
   const [members] = useState<Member[]>([
     {
       id: "M001",
       firstName: "Marcus",
       lastName: "Chen",
-      email: "marcus.chen@example.com", 
+      email: "marcus.chen@example.com",
       phone: "+1 (555) 123-4567",
       tier: "executive",
       status: "active",
@@ -87,14 +87,14 @@ export default function MemberPortal() {
       totalSpend: 125000,
       engagement: 94.8,
       location: "San Francisco, CA",
-      permissions: ["full_access", "admin", "billing"]
+      permissions: ["full_access", "admin", "billing"],
     },
     {
-      id: "M002", 
+      id: "M002",
       firstName: "Sarah",
       lastName: "Rodriguez",
       email: "sarah.rodriguez@example.com",
-      phone: "+1 (555) 987-6543", 
+      phone: "+1 (555) 987-6543",
       tier: "premium",
       status: "active",
       joinDate: new Date("2023-02-20"),
@@ -102,23 +102,23 @@ export default function MemberPortal() {
       totalSpend: 47500,
       engagement: 87.3,
       location: "Austin, TX",
-      permissions: ["member_access", "reports"]
+      permissions: ["member_access", "reports"],
     },
     {
       id: "M003",
       firstName: "David",
-      lastName: "Thompson", 
+      lastName: "Thompson",
       email: "david.thompson@example.com",
       phone: "+1 (555) 456-7890",
       tier: "elite",
-      status: "active", 
+      status: "active",
       joinDate: new Date("2023-03-10"),
       lastActive: new Date("2024-01-15"),
       totalSpend: 89200,
       engagement: 91.7,
       location: "New York, NY",
-      permissions: ["member_access", "advanced_features"]
-    }
+      permissions: ["member_access", "advanced_features"],
+    },
   ]);
 
   const metrics: MemberMetrics = {
@@ -127,7 +127,7 @@ export default function MemberPortal() {
     newThisMonth: 147,
     avgEngagement: 89.4,
     retentionRate: 94.6,
-    premiumMembers: 1829
+    premiumMembers: 1829,
   };
 
   const getTierColor = (tier: string) => {
@@ -175,26 +175,33 @@ export default function MemberPortal() {
     }
   };
 
-  const filteredMembers = members.filter(member => {
-    const matchesSearch = 
+  const filteredMembers = members.filter((member) => {
+    const matchesSearch =
       member.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     const matchesTier = filterTier === "all" || member.tier === filterTier;
-    
+
     return matchesSearch && matchesTier;
   });
 
   return (
     <div className="min-h-screen bg-[#111111] dream-portal-theme">
       {/* DREAM PORTAL Command Header */}
-      <div className="f10-command-header" style={{ background: "linear-gradient(135deg, #1a0f1a 0%, #2d1b2d 100%)" }}>
+      <div
+        className="f10-command-header"
+        style={{
+          background: "linear-gradient(135deg, #1a0f1a 0%, #2d1b2d 100%)",
+        }}
+      >
         <div className="f10-command-title">
           <Brain className="w-8 h-8 text-[#8A2BE2]" />
           <div>
             <h1 className="f10-heading-lg text-white">DREAM PORTAL COMMAND</h1>
-            <p className="f10-command-subtitle">Member Management & Access Control</p>
+            <p className="f10-command-subtitle">
+              Member Management & Access Control
+            </p>
           </div>
         </div>
         <div className="f10-command-status">
@@ -235,7 +242,12 @@ export default function MemberPortal() {
               {metrics.activeMembers.toLocaleString()}
             </div>
             <div className="f10-metric-trend positive">
-              <span>{((metrics.activeMembers/metrics.totalMembers)*100).toFixed(1)}% active</span>
+              <span>
+                {((metrics.activeMembers / metrics.totalMembers) * 100).toFixed(
+                  1,
+                )}
+                % active
+              </span>
             </div>
           </div>
 
@@ -244,9 +256,7 @@ export default function MemberPortal() {
               <span className="f10-metric-title">Engagement Rate</span>
               <Target className="w-4 h-4 text-[#737373]" />
             </div>
-            <div className="f10-metric-value">
-              {metrics.avgEngagement}%
-            </div>
+            <div className="f10-metric-value">{metrics.avgEngagement}%</div>
             <div className="f10-metric-trend positive">
               <span>Above target</span>
             </div>
@@ -257,9 +267,7 @@ export default function MemberPortal() {
               <span className="f10-metric-title">Retention Rate</span>
               <Award className="w-4 h-4 text-[#737373]" />
             </div>
-            <div className="f10-metric-value">
-              {metrics.retentionRate}%
-            </div>
+            <div className="f10-metric-value">{metrics.retentionRate}%</div>
             <div className="f10-metric-trend positive">
               <span>Excellent retention</span>
             </div>
@@ -267,7 +275,11 @@ export default function MemberPortal() {
         </div>
 
         {/* Command Tabs */}
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+        <Tabs
+          value={selectedTab}
+          onValueChange={setSelectedTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-4 bg-[#1a1a1a] border border-[#8A2BE2]/30">
             <TabsTrigger
               value="command"
@@ -303,8 +315,12 @@ export default function MemberPortal() {
           <TabsContent value="command" className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="f10-heading-md text-white">Member Command Center</h2>
-                <p className="f10-text-sm text-[#b3b3b3] mt-1">Manage member access, permissions, and engagement</p>
+                <h2 className="f10-heading-md text-white">
+                  Member Command Center
+                </h2>
+                <p className="f10-text-sm text-[#b3b3b3] mt-1">
+                  Manage member access, permissions, and engagement
+                </p>
               </div>
               <div className="flex gap-3">
                 <Button className="f10-btn f10-btn-secondary">
@@ -347,13 +363,17 @@ export default function MemberPortal() {
               {filteredMembers.map((member) => {
                 const TierIcon = getTierIcon(member.tier);
                 return (
-                  <div key={member.id} className="f10-card hover:accent-glow transition-all">
+                  <div
+                    key={member.id}
+                    className="f10-card hover:accent-glow transition-all"
+                  >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <Avatar className="w-12 h-12">
                           <AvatarImage src={member.avatar} />
                           <AvatarFallback className="bg-[#8A2BE2]/20 text-[#8A2BE2]">
-                            {member.firstName[0]}{member.lastName[0]}
+                            {member.firstName[0]}
+                            {member.lastName[0]}
                           </AvatarFallback>
                         </Avatar>
                         <div>
@@ -366,7 +386,7 @@ export default function MemberPortal() {
                               style={{
                                 backgroundColor: `${getTierColor(member.tier)}20`,
                                 color: getTierColor(member.tier),
-                                borderColor: `${getTierColor(member.tier)}40`
+                                borderColor: `${getTierColor(member.tier)}40`,
                               }}
                             >
                               <TierIcon className="w-3 h-3 mr-1" />
@@ -377,7 +397,7 @@ export default function MemberPortal() {
                               style={{
                                 backgroundColor: `${getStatusColor(member.status)}20`,
                                 color: getStatusColor(member.status),
-                                borderColor: `${getStatusColor(member.status)}40`
+                                borderColor: `${getStatusColor(member.status)}40`,
                               }}
                             >
                               {member.status.toUpperCase()}
@@ -403,13 +423,17 @@ export default function MemberPortal() {
                         <div className="f10-text-sm font-semibold text-[#00E676]">
                           ${member.totalSpend.toLocaleString()}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">TOTAL SPEND</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          TOTAL SPEND
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-[#8A2BE2]">
                           {member.engagement}%
                         </div>
-                        <div className="f10-text-xs text-[#737373]">ENGAGEMENT</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          ENGAGEMENT
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-white">
@@ -421,13 +445,17 @@ export default function MemberPortal() {
                         <div className="f10-text-sm font-semibold text-[#00BFFF]">
                           {member.lastActive.toLocaleDateString()}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">LAST ACTIVE</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          LAST ACTIVE
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-[#737373]">
                           {member.location}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">LOCATION</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          LOCATION
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -440,9 +468,12 @@ export default function MemberPortal() {
           <TabsContent value="access" className="space-y-6">
             <div className="text-center py-12">
               <Shield className="w-16 h-16 mx-auto text-[#8A2BE2] mb-4" />
-              <h3 className="f10-heading-sm text-white mb-2">Access Control System</h3>
+              <h3 className="f10-heading-sm text-white mb-2">
+                Access Control System
+              </h3>
               <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto">
-                Advanced permission management and security controls for member access
+                Advanced permission management and security controls for member
+                access
               </p>
               <Button className="f10-btn accent-bg text-white font-medium mt-6">
                 <Settings className="w-4 h-4 mr-2" />
@@ -455,9 +486,12 @@ export default function MemberPortal() {
           <TabsContent value="analytics" className="space-y-6">
             <div className="text-center py-12">
               <TrendingUp className="w-16 h-16 mx-auto text-[#8A2BE2] mb-4" />
-              <h3 className="f10-heading-sm text-white mb-2">Member Analytics Engine</h3>
+              <h3 className="f10-heading-sm text-white mb-2">
+                Member Analytics Engine
+              </h3>
               <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto">
-                Advanced analytics for member behavior, engagement, and retention insights
+                Advanced analytics for member behavior, engagement, and
+                retention insights
               </p>
               <Button className="f10-btn accent-bg text-white font-medium mt-6">
                 <TrendingUp className="w-4 h-4 mr-2" />
@@ -470,7 +504,9 @@ export default function MemberPortal() {
           <TabsContent value="settings" className="space-y-6">
             <div className="text-center py-12">
               <Settings className="w-16 h-16 mx-auto text-[#8A2BE2] mb-4" />
-              <h3 className="f10-heading-sm text-white mb-2">Portal Configuration</h3>
+              <h3 className="f10-heading-sm text-white mb-2">
+                Portal Configuration
+              </h3>
               <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto">
                 Configure portal settings, member tiers, and system preferences
               </p>

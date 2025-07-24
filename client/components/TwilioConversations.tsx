@@ -60,66 +60,70 @@ interface NewConversation {
 
 export default function TwilioConversations() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [selectedConversation, setSelectedConversation] =
+    useState<Conversation | null>(null);
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [newConversation, setNewConversation] = useState<NewConversation>({
     friendlyName: "Test Conversation",
     participantPhone: "+18144409068",
-    initialMessage: "Hello! This is a test conversation from ECELONX. You can reply to this message."
+    initialMessage:
+      "Hello! This is a test conversation from ECELONX. You can reply to this message.",
   });
-  
+
   const [isLoading, setIsLoading] = useState({
     conversations: false,
     messages: false,
     sending: false,
-    creating: false
+    creating: false,
   });
 
   // Load conversations
   const loadConversations = async () => {
-    setIsLoading(prev => ({ ...prev, conversations: true }));
+    setIsLoading((prev) => ({ ...prev, conversations: true }));
     try {
-      const response = await fetch('/api/conversations');
+      const response = await fetch("/api/conversations");
       if (response.ok) {
         const data = await response.json();
         setConversations(data.conversations || []);
       }
     } catch (error) {
-      console.error('Failed to load conversations:', error);
+      console.error("Failed to load conversations:", error);
     } finally {
-      setIsLoading(prev => ({ ...prev, conversations: false }));
+      setIsLoading((prev) => ({ ...prev, conversations: false }));
     }
   };
 
   // Load messages for selected conversation
   const loadMessages = async (conversationSid: string) => {
-    setIsLoading(prev => ({ ...prev, messages: true }));
+    setIsLoading((prev) => ({ ...prev, messages: true }));
     try {
-      const response = await fetch(`/api/conversations/${conversationSid}/messages`);
+      const response = await fetch(
+        `/api/conversations/${conversationSid}/messages`,
+      );
       if (response.ok) {
         const data = await response.json();
         setMessages(data.messages || []);
       }
     } catch (error) {
-      console.error('Failed to load messages:', error);
+      console.error("Failed to load messages:", error);
     } finally {
-      setIsLoading(prev => ({ ...prev, messages: false }));
+      setIsLoading((prev) => ({ ...prev, messages: false }));
     }
   };
 
   // Create new conversation
   const createConversation = async () => {
-    setIsLoading(prev => ({ ...prev, creating: true }));
+    setIsLoading((prev) => ({ ...prev, creating: true }));
     try {
-      const response = await fetch('/api/conversations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           friendlyName: newConversation.friendlyName,
           participantPhone: newConversation.participantPhone,
-          initialMessage: newConversation.initialMessage
-        })
+          initialMessage: newConversation.initialMessage,
+        }),
       });
 
       if (response.ok) {
@@ -129,39 +133,43 @@ export default function TwilioConversations() {
         setNewConversation({
           friendlyName: "Test Conversation",
           participantPhone: "+18144409068",
-          initialMessage: "Hello! This is a test conversation from ECELONX. You can reply to this message."
+          initialMessage:
+            "Hello! This is a test conversation from ECELONX. You can reply to this message.",
         });
       }
     } catch (error) {
-      console.error('Failed to create conversation:', error);
+      console.error("Failed to create conversation:", error);
     } finally {
-      setIsLoading(prev => ({ ...prev, creating: false }));
+      setIsLoading((prev) => ({ ...prev, creating: false }));
     }
   };
 
   // Send message
   const sendMessage = async () => {
     if (!selectedConversation || !newMessage.trim()) return;
-    
-    setIsLoading(prev => ({ ...prev, sending: true }));
+
+    setIsLoading((prev) => ({ ...prev, sending: true }));
     try {
-      const response = await fetch(`/api/conversations/${selectedConversation.sid}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          body: newMessage,
-          author: 'system'
-        })
-      });
+      const response = await fetch(
+        `/api/conversations/${selectedConversation.sid}/messages`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            body: newMessage,
+            author: "system",
+          }),
+        },
+      );
 
       if (response.ok) {
         setNewMessage("");
         await loadMessages(selectedConversation.sid);
       }
     } catch (error) {
-      console.error('Failed to send message:', error);
+      console.error("Failed to send message:", error);
     } finally {
-      setIsLoading(prev => ({ ...prev, sending: false }));
+      setIsLoading((prev) => ({ ...prev, sending: false }));
     }
   };
 
@@ -174,20 +182,20 @@ export default function TwilioConversations() {
   useEffect(() => {
     if (selectedConversation) {
       loadMessages(selectedConversation.sid);
-      
+
       // Set up auto-refresh every 5 seconds for real-time updates
       const interval = setInterval(() => {
         loadMessages(selectedConversation.sid);
       }, 5000);
-      
+
       return () => clearInterval(interval);
     }
   }, [selectedConversation]);
 
   const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return new Date(dateString).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -215,28 +223,44 @@ export default function TwilioConversations() {
       <CardContent className="space-y-6">
         {/* Create New Conversation */}
         <div className="bg-[#1a1a1a] border border-[#333333] rounded-lg p-4">
-          <h3 className="font-semibold text-white mb-4">Start New Conversation</h3>
+          <h3 className="font-semibold text-white mb-4">
+            Start New Conversation
+          </h3>
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div>
-              <Label className="text-[#b3b3b3] text-sm">Conversation Name</Label>
+              <Label className="text-[#b3b3b3] text-sm">
+                Conversation Name
+              </Label>
               <Input
                 value={newConversation.friendlyName}
-                onChange={(e) => setNewConversation(prev => ({ ...prev, friendlyName: e.target.value }))}
+                onChange={(e) =>
+                  setNewConversation((prev) => ({
+                    ...prev,
+                    friendlyName: e.target.value,
+                  }))
+                }
                 className="bg-[#0a0a0a] border-[#333333] text-white text-sm"
                 placeholder="Test Conversation"
               />
             </div>
             <div>
-              <Label className="text-[#b3b3b3] text-sm">Participant Phone</Label>
+              <Label className="text-[#b3b3b3] text-sm">
+                Participant Phone
+              </Label>
               <Input
                 value={newConversation.participantPhone}
-                onChange={(e) => setNewConversation(prev => ({ ...prev, participantPhone: e.target.value }))}
+                onChange={(e) =>
+                  setNewConversation((prev) => ({
+                    ...prev,
+                    participantPhone: e.target.value,
+                  }))
+                }
                 className="bg-[#0a0a0a] border-[#333333] text-white text-sm"
                 placeholder="+18144409068"
               />
             </div>
             <div className="flex items-end">
-              <Button 
+              <Button
                 onClick={createConversation}
                 disabled={isLoading.creating}
                 className="w-full f10-btn accent-bg text-black font-medium"
@@ -259,7 +283,12 @@ export default function TwilioConversations() {
             <Label className="text-[#b3b3b3] text-sm">Initial Message</Label>
             <Textarea
               value={newConversation.initialMessage}
-              onChange={(e) => setNewConversation(prev => ({ ...prev, initialMessage: e.target.value }))}
+              onChange={(e) =>
+                setNewConversation((prev) => ({
+                  ...prev,
+                  initialMessage: e.target.value,
+                }))
+              }
               className="bg-[#0a0a0a] border-[#333333] text-white text-sm"
               rows={2}
               placeholder="Hello! This is a test conversation..."
@@ -272,16 +301,18 @@ export default function TwilioConversations() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-white">Active Conversations</h3>
-              <Button 
+              <Button
                 onClick={loadConversations}
                 disabled={isLoading.conversations}
                 size="sm"
                 className="f10-btn f10-btn-ghost"
               >
-                <RefreshCw className={`w-4 h-4 ${isLoading.conversations ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`w-4 h-4 ${isLoading.conversations ? "animate-spin" : ""}`}
+                />
               </Button>
             </div>
-            
+
             <div className="space-y-3 max-h-80 overflow-y-auto">
               {conversations.length === 0 ? (
                 <div className="text-center py-8 text-[#737373]">
@@ -298,17 +329,19 @@ export default function TwilioConversations() {
                       onClick={() => setSelectedConversation(conversation)}
                       className={`p-3 border rounded-lg cursor-pointer transition-all ${
                         selectedConversation?.sid === conversation.sid
-                          ? 'border-[#00BFFF] bg-[#00BFFF]/10'
-                          : 'border-[#333333] hover:border-[#555555]'
+                          ? "border-[#00BFFF] bg-[#00BFFF]/10"
+                          : "border-[#333333] hover:border-[#555555]"
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-white text-sm">{conversation.friendlyName}</h4>
+                        <h4 className="font-medium text-white text-sm">
+                          {conversation.friendlyName}
+                        </h4>
                         <Badge
                           style={{
                             backgroundColor: `${status.color}20`,
                             color: status.color,
-                            borderColor: `${status.color}40`
+                            borderColor: `${status.color}40`,
                           }}
                           className="text-xs"
                         >
@@ -316,7 +349,9 @@ export default function TwilioConversations() {
                         </Badge>
                       </div>
                       <div className="flex items-center justify-between text-xs text-[#737373]">
-                        <span>{conversation.participants.length} participants</span>
+                        <span>
+                          {conversation.participants.length} participants
+                        </span>
                         <span>{conversation.messagesCount} messages</span>
                       </div>
                       {conversation.lastMessage && (
@@ -335,7 +370,9 @@ export default function TwilioConversations() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-white">
-                {selectedConversation ? selectedConversation.friendlyName : "Select Conversation"}
+                {selectedConversation
+                  ? selectedConversation.friendlyName
+                  : "Select Conversation"}
               </h3>
               {selectedConversation && (
                 <div className="text-xs text-[#737373]">
@@ -365,27 +402,29 @@ export default function TwilioConversations() {
                         <div
                           key={message.sid}
                           className={`flex items-start gap-3 ${
-                            message.direction === 'outbound' ? 'justify-end' : 'justify-start'
+                            message.direction === "outbound"
+                              ? "justify-end"
+                              : "justify-start"
                           }`}
                         >
                           <div
                             className={`max-w-xs px-3 py-2 rounded-lg ${
-                              message.direction === 'outbound'
-                                ? 'bg-[#00BFFF] text-black'
-                                : 'bg-[#333333] text-white'
+                              message.direction === "outbound"
+                                ? "bg-[#00BFFF] text-black"
+                                : "bg-[#333333] text-white"
                             }`}
                           >
                             <p className="text-sm">{message.body}</p>
                             <div className="flex items-center justify-between mt-1">
                               <span className="text-xs opacity-70">
-                                {message.author || 'system'}
+                                {message.author || "system"}
                               </span>
                               <span className="text-xs opacity-70">
                                 {formatTime(message.dateCreated)}
                               </span>
                             </div>
                           </div>
-                          {message.direction === 'outbound' ? (
+                          {message.direction === "outbound" ? (
                             <Bot className="w-6 h-6 text-[#00BFFF] mt-1" />
                           ) : (
                             <User className="w-6 h-6 text-[#32CD32] mt-1" />
@@ -403,9 +442,11 @@ export default function TwilioConversations() {
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type your message..."
                     className="bg-[#1a1a1a] border-[#333333] text-white"
-                    onKeyPress={(e) => e.key === 'Enter' && !isLoading.sending && sendMessage()}
+                    onKeyPress={(e) =>
+                      e.key === "Enter" && !isLoading.sending && sendMessage()
+                    }
                   />
-                  <Button 
+                  <Button
                     onClick={sendMessage}
                     disabled={isLoading.sending || !newMessage.trim()}
                     className="f10-btn accent-bg text-black"
@@ -422,7 +463,9 @@ export default function TwilioConversations() {
               <div className="border border-[#333333] rounded-lg p-8 text-center text-[#737373]">
                 <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Select a conversation to view messages</p>
-                <p className="text-xs mt-2">Two-way messaging enabled - participants can reply</p>
+                <p className="text-xs mt-2">
+                  Two-way messaging enabled - participants can reply
+                </p>
               </div>
             )}
           </div>
@@ -430,7 +473,9 @@ export default function TwilioConversations() {
 
         {/* Info Panel */}
         <div className="bg-[#1a1a1a] border border-[#00BFFF]/30 rounded-lg p-4">
-          <h4 className="font-semibold text-[#00BFFF] mb-2">📱 Two-Way Messaging Active</h4>
+          <h4 className="font-semibold text-[#00BFFF] mb-2">
+            📱 Two-Way Messaging Active
+          </h4>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <strong className="text-white">How it works:</strong>
@@ -444,8 +489,14 @@ export default function TwilioConversations() {
             <div>
               <strong className="text-white">Test Flow:</strong>
               <ul className="text-[#b3b3b3] mt-1 space-y-1">
-                <li>• Your number: <span className="text-[#00BFFF]">+18559600037</span></li>
-                <li>• Test recipient: <span className="text-[#32CD32]">+18144409068</span></li>
+                <li>
+                  • Your number:{" "}
+                  <span className="text-[#00BFFF]">+18559600037</span>
+                </li>
+                <li>
+                  • Test recipient:{" "}
+                  <span className="text-[#32CD32]">+18144409068</span>
+                </li>
                 <li>• Replies will appear automatically</li>
                 <li>• Full conversation history tracked</li>
               </ul>

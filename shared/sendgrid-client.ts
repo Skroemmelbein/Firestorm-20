@@ -107,11 +107,15 @@ export function initializeSendGrid(config: SendGridConfig): SendGridClient {
 export function getSendGridClient(): SendGridClient {
   if (!sendGridClient) {
     // Try to auto-initialize if we have the API key
-    if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_API_KEY !== "SG.placeholder_key_replace_with_real_sendgrid_api_key") {
+    if (
+      process.env.SENDGRID_API_KEY &&
+      process.env.SENDGRID_API_KEY !==
+        "SG.placeholder_key_replace_with_real_sendgrid_api_key"
+    ) {
       sendGridClient = new SendGridClient({
         apiKey: process.env.SENDGRID_API_KEY,
         fromEmail: "shannonkroemmelbein@gmail.com",
-        fromName: "Shannon Kroemmelbein - ECELONX"
+        fromName: "Shannon Kroemmelbein - ECELONX",
       });
       console.log("✅ SendGrid client auto-initialized");
       return sendGridClient;

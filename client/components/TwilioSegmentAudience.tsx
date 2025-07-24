@@ -76,12 +76,17 @@ export default function TwilioSegmentAudience() {
     {
       id: "SEG001",
       name: "High-Value Enterprise Prospects",
-      description: "Companies with 250+ employees showing premium product interest",
+      description:
+        "Companies with 250+ employees showing premium product interest",
       type: "behavioral",
       status: "active",
       audienceSize: 2847,
       lastUpdated: new Date("2024-01-15T10:30:00"),
-      criteria: ["company_size > 250", "viewed_enterprise_pricing", "demo_requested"],
+      criteria: [
+        "company_size > 250",
+        "viewed_enterprise_pricing",
+        "demo_requested",
+      ],
       conversionRate: 23.4,
       engagementScore: 87.6,
     },
@@ -93,7 +98,11 @@ export default function TwilioSegmentAudience() {
       status: "active",
       audienceSize: 1234,
       lastUpdated: new Date("2024-01-15T09:15:00"),
-      criteria: ["subscription = premium", "login_frequency < 0.3", "support_tickets > 2"],
+      criteria: [
+        "subscription = premium",
+        "login_frequency < 0.3",
+        "support_tickets > 2",
+      ],
       conversionRate: 15.7,
       engagementScore: 34.2,
     },
@@ -105,7 +114,11 @@ export default function TwilioSegmentAudience() {
       status: "building",
       audienceSize: 5692,
       lastUpdated: new Date("2024-01-15T08:45:00"),
-      criteria: ["age_range = 18-25", "mobile_sessions > 80%", "social_referrals > 0"],
+      criteria: [
+        "age_range = 18-25",
+        "mobile_sessions > 80%",
+        "social_referrals > 0",
+      ],
       conversionRate: 31.8,
       engagementScore: 92.4,
     },
@@ -152,9 +165,10 @@ export default function TwilioSegmentAudience() {
 
   const metrics: SegmentMetrics = {
     totalSegments: segments.length,
-    activeAudiences: audiences.filter(a => a.status === 'active').length,
+    activeAudiences: audiences.filter((a) => a.status === "active").length,
     totalContacts: audiences.reduce((sum, a) => sum + a.totalContacts, 0),
-    avgEngagement: segments.reduce((sum, s) => sum + s.engagementScore, 0) / segments.length,
+    avgEngagement:
+      segments.reduce((sum, s) => sum + s.engagementScore, 0) / segments.length,
     dataPointsProcessed: 847293,
     realTimeEvents: 12456,
   };
@@ -242,7 +256,7 @@ export default function TwilioSegmentAudience() {
               style={{
                 backgroundColor: isConnected ? "#10B98120" : "#EF444420",
                 color: isConnected ? "#10B981" : "#EF4444",
-                borderColor: isConnected ? "#10B98140" : "#EF444440"
+                borderColor: isConnected ? "#10B98140" : "#EF444440",
               }}
             >
               {isConnected ? "Connected" : "Setup Required"}
@@ -253,22 +267,25 @@ export default function TwilioSegmentAudience() {
           {!isConnected ? (
             <div className="text-center py-6">
               <Globe className="w-12 h-12 mx-auto text-[#737373] mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">Connect Twilio Segment</h3>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Connect Twilio Segment
+              </h3>
               <p className="text-sm text-[#b3b3b3] mb-4 max-w-md mx-auto">
-                Connect your Twilio Segment workspace to unlock advanced customer segmentation and audience targeting
+                Connect your Twilio Segment workspace to unlock advanced
+                customer segmentation and audience targeting
               </p>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-[#b3b3b3]">Segment Write Key</Label>
-                    <Input 
+                    <Input
                       placeholder="Your Segment write key"
                       className="bg-[#1a1a1a] border-[#333333] text-white"
                     />
                   </div>
                   <div>
                     <Label className="text-[#b3b3b3]">Workspace Token</Label>
-                    <Input 
+                    <Input
                       placeholder="Your workspace access token"
                       className="bg-[#1a1a1a] border-[#333333] text-white"
                     />
@@ -339,7 +356,11 @@ export default function TwilioSegmentAudience() {
       </Card>
 
       {isConnected && (
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+        <Tabs
+          value={selectedTab}
+          onValueChange={setSelectedTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-3 bg-[#1a1a1a] border border-[#FF6A00]/30">
             <TabsTrigger
               value="segments"
@@ -369,7 +390,9 @@ export default function TwilioSegmentAudience() {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="f10-heading-sm text-white">Customer Segments</h3>
-                <p className="f10-text-sm text-[#b3b3b3] mt-1">Real-time behavioral and demographic segments</p>
+                <p className="f10-text-sm text-[#b3b3b3] mt-1">
+                  Real-time behavioral and demographic segments
+                </p>
               </div>
               <div className="flex gap-3">
                 <Button className="f10-btn f10-btn-secondary">
@@ -387,21 +410,26 @@ export default function TwilioSegmentAudience() {
               {segments.map((segment) => {
                 const StatusIcon = getStatusIcon(segment.status);
                 return (
-                  <div key={segment.id} className="f10-card hover:accent-glow transition-all">
+                  <div
+                    key={segment.id}
+                    className="f10-card hover:accent-glow transition-all"
+                  >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="p-2 rounded-lg bg-[#FF6A00]/20">
                           <Target className="w-5 h-5 text-[#FF6A00]" />
                         </div>
                         <div>
-                          <h4 className="f10-text-lg font-semibold text-white">{segment.name}</h4>
+                          <h4 className="f10-text-lg font-semibold text-white">
+                            {segment.name}
+                          </h4>
                           <div className="flex items-center gap-3 mt-1">
                             <div
                               className="f10-status"
                               style={{
                                 backgroundColor: `${getStatusColor(segment.status)}20`,
                                 color: getStatusColor(segment.status),
-                                borderColor: `${getStatusColor(segment.status)}40`
+                                borderColor: `${getStatusColor(segment.status)}40`,
                               }}
                             >
                               <StatusIcon className="w-3 h-3 mr-1" />
@@ -412,7 +440,7 @@ export default function TwilioSegmentAudience() {
                               style={{
                                 backgroundColor: `${getTypeColor(segment.type)}20`,
                                 color: getTypeColor(segment.type),
-                                borderColor: `${getTypeColor(segment.type)}40`
+                                borderColor: `${getTypeColor(segment.type)}40`,
                               }}
                             >
                               {segment.type.toUpperCase()}
@@ -433,32 +461,42 @@ export default function TwilioSegmentAudience() {
                       </div>
                     </div>
 
-                    <p className="f10-text-sm text-[#b3b3b3] mb-4">{segment.description}</p>
+                    <p className="f10-text-sm text-[#b3b3b3] mb-4">
+                      {segment.description}
+                    </p>
 
                     <div className="grid grid-cols-4 gap-6">
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-[#00E676]">
                           {segment.audienceSize.toLocaleString()}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">AUDIENCE SIZE</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          AUDIENCE SIZE
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-[#00BFFF]">
                           {segment.conversionRate}%
                         </div>
-                        <div className="f10-text-xs text-[#737373]">CONVERSION RATE</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          CONVERSION RATE
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-[#FF6A00]">
                           {segment.engagementScore}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">ENGAGEMENT SCORE</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          ENGAGEMENT SCORE
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-white">
                           {segment.lastUpdated.toLocaleTimeString()}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">LAST UPDATED</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          LAST UPDATED
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -472,7 +510,9 @@ export default function TwilioSegmentAudience() {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="f10-heading-sm text-white">Engage Audiences</h3>
-                <p className="f10-text-sm text-[#b3b3b3] mt-1">Activated audiences for multi-channel campaigns</p>
+                <p className="f10-text-sm text-[#b3b3b3] mt-1">
+                  Activated audiences for multi-channel campaigns
+                </p>
               </div>
               <div className="flex gap-3">
                 <Button className="f10-btn f10-btn-secondary">
@@ -491,28 +531,33 @@ export default function TwilioSegmentAudience() {
                 const StatusIcon = getStatusIcon(audience.status);
                 const SourceIcon = getSourceIcon(audience.source);
                 return (
-                  <div key={audience.id} className="f10-card hover:accent-glow transition-all">
+                  <div
+                    key={audience.id}
+                    className="f10-card hover:accent-glow transition-all"
+                  >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="p-2 rounded-lg bg-[#8A2BE2]/20">
                           <SourceIcon className="w-5 h-5 text-[#8A2BE2]" />
                         </div>
                         <div>
-                          <h4 className="f10-text-lg font-semibold text-white">{audience.name}</h4>
+                          <h4 className="f10-text-lg font-semibold text-white">
+                            {audience.name}
+                          </h4>
                           <div className="flex items-center gap-3 mt-1">
                             <div
                               className="f10-status"
                               style={{
                                 backgroundColor: `${getStatusColor(audience.status)}20`,
                                 color: getStatusColor(audience.status),
-                                borderColor: `${getStatusColor(audience.status)}40`
+                                borderColor: `${getStatusColor(audience.status)}40`,
                               }}
                             >
                               <StatusIcon className="w-3 h-3 mr-1" />
                               {audience.status.toUpperCase()}
                             </div>
                             <span className="f10-text-xs text-[#737373]">
-                              {audience.source.replace('_', ' ').toUpperCase()}
+                              {audience.source.replace("_", " ").toUpperCase()}
                             </span>
                           </div>
                         </div>
@@ -527,32 +572,42 @@ export default function TwilioSegmentAudience() {
                       </div>
                     </div>
 
-                    <p className="f10-text-sm text-[#b3b3b3] mb-4">{audience.description}</p>
+                    <p className="f10-text-sm text-[#b3b3b3] mb-4">
+                      {audience.description}
+                    </p>
 
                     <div className="grid grid-cols-4 gap-6 mb-4">
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-[#00E676]">
                           {audience.totalContacts.toLocaleString()}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">TOTAL CONTACTS</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          TOTAL CONTACTS
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-[#00BFFF]">
                           {audience.reachableContacts.toLocaleString()}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">REACHABLE</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          REACHABLE
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-[#FF6A00]">
                           {audience.destinations.length}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">DESTINATIONS</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          DESTINATIONS
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-white">
                           {audience.lastSync.toLocaleTimeString()}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">LAST SYNC</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          LAST SYNC
+                        </div>
                       </div>
                     </div>
 
@@ -576,9 +631,12 @@ export default function TwilioSegmentAudience() {
           <TabsContent value="builder" className="space-y-6">
             <div className="text-center py-12">
               <Brain className="w-16 h-16 mx-auto text-[#FF6A00] mb-4" />
-              <h3 className="f10-heading-sm text-white mb-2">AI-Powered Audience Builder</h3>
+              <h3 className="f10-heading-sm text-white mb-2">
+                AI-Powered Audience Builder
+              </h3>
               <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto mb-6">
-                Use natural language to describe your ideal audience and let AI build the perfect segment
+                Use natural language to describe your ideal audience and let AI
+                build the perfect segment
               </p>
               <div className="max-w-md mx-auto space-y-4">
                 <Input

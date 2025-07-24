@@ -6,25 +6,29 @@ export const testSendGrid: RequestHandler = async (req, res) => {
     if (!process.env.SENDGRID_API_KEY) {
       return res.status(500).json({
         error: "SendGrid API key not configured",
-        message: "Please add SENDGRID_API_KEY to your .env file"
+        message: "Please add SENDGRID_API_KEY to your .env file",
       });
     }
 
-    if (process.env.SENDGRID_API_KEY === "SG.placeholder_key_replace_with_real_sendgrid_api_key") {
+    if (
+      process.env.SENDGRID_API_KEY ===
+      "SG.placeholder_key_replace_with_real_sendgrid_api_key"
+    ) {
       return res.status(500).json({
         error: "SendGrid API key is placeholder",
-        message: "Please replace the placeholder SendGrid API key with a real one"
+        message:
+          "Please replace the placeholder SendGrid API key with a real one",
       });
     }
 
     const sendGridClient = getSendGridClient();
-    
+
     // Test connection first
     const isConnected = await sendGridClient.testConnection();
     if (!isConnected) {
       return res.status(500).json({
         error: "SendGrid connection failed",
-        message: "Unable to connect to SendGrid API. Check your API key."
+        message: "Unable to connect to SendGrid API. Check your API key.",
       });
     }
 
@@ -54,7 +58,7 @@ export const testSendGrid: RequestHandler = async (req, res) => {
             This is an automated test from your ECELONX system.
           </p>
         </div>
-      `
+      `,
     });
 
     res.json({
@@ -63,15 +67,14 @@ export const testSendGrid: RequestHandler = async (req, res) => {
       result: result,
       from: "shannonkroemmelbein@gmail.com",
       to: "shannonkroemmelbein@gmail.com",
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error("SendGrid test error:", error);
     res.status(500).json({
       error: "SendGrid test failed",
       message: error instanceof Error ? error.message : "Unknown error",
-      details: "Check server logs for more information"
+      details: "Check server logs for more information",
     });
   }
 };
@@ -82,15 +85,18 @@ export const getSendGridStatus: RequestHandler = async (req, res) => {
       return res.json({
         configured: false,
         status: "missing_api_key",
-        message: "SendGrid API key not found in environment variables"
+        message: "SendGrid API key not found in environment variables",
       });
     }
 
-    if (process.env.SENDGRID_API_KEY === "SG.placeholder_key_replace_with_real_sendgrid_api_key") {
+    if (
+      process.env.SENDGRID_API_KEY ===
+      "SG.placeholder_key_replace_with_real_sendgrid_api_key"
+    ) {
       return res.json({
         configured: false,
         status: "placeholder_key",
-        message: "SendGrid API key is still a placeholder"
+        message: "SendGrid API key is still a placeholder",
       });
     }
 
@@ -102,16 +108,17 @@ export const getSendGridStatus: RequestHandler = async (req, res) => {
       connected: isConnected,
       status: isConnected ? "operational" : "connection_failed",
       fromEmail: "shannonkroemmelbein@gmail.com",
-      message: isConnected ? "SendGrid is operational" : "SendGrid connection failed"
+      message: isConnected
+        ? "SendGrid is operational"
+        : "SendGrid connection failed",
     });
-
   } catch (error) {
     console.error("SendGrid status check error:", error);
     res.json({
       configured: true,
       connected: false,
       status: "error",
-      message: error instanceof Error ? error.message : "Unknown error"
+      message: error instanceof Error ? error.message : "Unknown error",
     });
   }
 };

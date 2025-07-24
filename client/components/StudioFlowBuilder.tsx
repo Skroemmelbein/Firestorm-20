@@ -6,7 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Brain,
   MessageSquare,
@@ -76,7 +82,7 @@ const WIDGET_TYPES = [
     description: "Entry point for incoming messages, calls, or REST requests",
     icon: Zap,
     color: "#10B981",
-    category: "triggers"
+    category: "triggers",
   },
   {
     type: "say-play",
@@ -84,7 +90,7 @@ const WIDGET_TYPES = [
     description: "Play a message or audio to the caller",
     icon: Volume2,
     color: "#3B82F6",
-    category: "communication"
+    category: "communication",
   },
   {
     type: "send-message",
@@ -92,7 +98,7 @@ const WIDGET_TYPES = [
     description: "Send an SMS or chat message",
     icon: MessageSquare,
     color: "#8B5CF6",
-    category: "communication"
+    category: "communication",
   },
   {
     type: "make-outgoing-call-v2",
@@ -100,7 +106,7 @@ const WIDGET_TYPES = [
     description: "Initiate an outbound phone call",
     icon: Phone,
     color: "#F59E0B",
-    category: "communication"
+    category: "communication",
   },
   {
     type: "gather-input-on-call",
@@ -108,7 +114,7 @@ const WIDGET_TYPES = [
     description: "Collect DTMF or speech input from caller",
     icon: Mic,
     color: "#EF4444",
-    category: "input"
+    category: "input",
   },
   {
     type: "split-based-on",
@@ -116,7 +122,7 @@ const WIDGET_TYPES = [
     description: "Branch flow based on conditions",
     icon: Target,
     color: "#06B6D4",
-    category: "logic"
+    category: "logic",
   },
   {
     type: "set-variables",
@@ -124,7 +130,7 @@ const WIDGET_TYPES = [
     description: "Store data in flow variables",
     icon: Database,
     color: "#84CC16",
-    category: "data"
+    category: "data",
   },
   {
     type: "make-http-request",
@@ -132,7 +138,7 @@ const WIDGET_TYPES = [
     description: "Make API calls to external services",
     icon: Network,
     color: "#F97316",
-    category: "integration"
+    category: "integration",
   },
   {
     type: "run-function",
@@ -140,14 +146,16 @@ const WIDGET_TYPES = [
     description: "Execute Twilio Functions code",
     icon: Code,
     color: "#A855F7",
-    category: "logic"
+    category: "logic",
   },
 ];
 
 export default function StudioFlowBuilder() {
   const [flows, setFlows] = useState<StudioFlow[]>([]);
   const [currentFlow, setCurrentFlow] = useState<StudioFlow | null>(null);
-  const [selectedWidget, setSelectedWidget] = useState<StudioWidget | null>(null);
+  const [selectedWidget, setSelectedWidget] = useState<StudioWidget | null>(
+    null,
+  );
   const [isBuilding, setIsBuilding] = useState(false);
   const [activeTab, setActiveTab] = useState("flows");
 
@@ -164,22 +172,22 @@ export default function StudioFlowBuilder() {
             name: "Trigger",
             type: "trigger",
             properties: {
-              offset: { x: 0, y: 0 }
+              offset: { x: 0, y: 0 },
             },
             transitions: [
               { event: "incomingMessage" },
               { event: "incomingCall" },
-              { event: "incomingRequest" }
+              { event: "incomingRequest" },
             ],
-            position: { x: 100, y: 100 }
-          }
+            position: { x: 100, y: 100 },
+          },
         ],
         initial_state: "Trigger",
         flags: {
-          allow_concurrent_calls: true
+          allow_concurrent_calls: true,
         },
-        description: "A new Studio Flow"
-      }
+        description: "A new Studio Flow",
+      },
     };
     setCurrentFlow(newFlow);
     setIsBuilding(true);
@@ -190,22 +198,22 @@ export default function StudioFlowBuilder() {
   const addWidget = (widgetType: string) => {
     if (!currentFlow) return;
 
-    const widgetInfo = WIDGET_TYPES.find(w => w.type === widgetType);
+    const widgetInfo = WIDGET_TYPES.find((w) => w.type === widgetType);
     const newWidget: StudioWidget = {
       id: `${widgetType}_${Date.now()}`,
       name: `${widgetInfo?.name || widgetType}_${currentFlow.definition.states.length}`,
       type: widgetType,
       properties: getDefaultProperties(widgetType),
       transitions: getDefaultTransitions(widgetType),
-      position: { x: 200 + (currentFlow.definition.states.length * 50), y: 200 }
+      position: { x: 200 + currentFlow.definition.states.length * 50, y: 200 },
     };
 
     setCurrentFlow({
       ...currentFlow,
       definition: {
         ...currentFlow.definition,
-        states: [...currentFlow.definition.states, newWidget]
-      }
+        states: [...currentFlow.definition.states, newWidget],
+      },
     });
   };
 
@@ -215,23 +223,23 @@ export default function StudioFlowBuilder() {
       case "say-play":
         return { say: "Hello, welcome to our service!", loop: 1 };
       case "send-message":
-        return { 
+        return {
           body: "Thank you for contacting us!",
           from: "{{flow.channel.address}}",
-          to: "{{contact.channel.address}}"
+          to: "{{contact.channel.address}}",
         };
       case "make-outgoing-call-v2":
         return {
           from: "{{flow.channel.address}}",
           to: "{{contact.channel.address}}",
           timeout: 30,
-          record: false
+          record: false,
         };
       case "gather-input-on-call":
         return {
           say: "Please enter your selection",
           num_digits: 1,
-          timeout: 5
+          timeout: 5,
         };
       case "split-based-on":
         return { variable: "{{widgets.trigger.parsed_body}}" };
@@ -241,7 +249,7 @@ export default function StudioFlowBuilder() {
         return {
           method: "POST",
           url: "https://your-api-endpoint.com",
-          content_type: "application/json"
+          content_type: "application/json",
         };
       default:
         return {};
@@ -260,19 +268,16 @@ export default function StudioFlowBuilder() {
           { event: "answered" },
           { event: "busy" },
           { event: "noAnswer" },
-          { event: "failed" }
+          { event: "failed" },
         ];
       case "gather-input-on-call":
         return [
           { event: "keypress" },
           { event: "speech" },
-          { event: "timeout" }
+          { event: "timeout" },
         ];
       case "split-based-on":
-        return [
-          { event: "match", condition: "true" },
-          { event: "noMatch" }
-        ];
+        return [{ event: "match", condition: "true" }, { event: "noMatch" }];
       default:
         return [];
     }
@@ -284,64 +289,71 @@ export default function StudioFlowBuilder() {
 
     try {
       setIsBuilding(true);
-      
+
       // Convert our flow format to Twilio Studio format
       const twilioDefinition = {
         description: currentFlow.description,
-        states: currentFlow.definition.states.map(widget => ({
+        states: currentFlow.definition.states.map((widget) => ({
           name: widget.name,
           type: widget.type,
           properties: {
             ...widget.properties,
             offset: {
               x: widget.position.x,
-              y: widget.position.y
-            }
+              y: widget.position.y,
+            },
           },
-          transitions: widget.transitions
+          transitions: widget.transitions,
         })),
         initial_state: currentFlow.definition.initial_state,
-        flags: currentFlow.definition.flags
+        flags: currentFlow.definition.flags,
       };
 
       // API call to create/update flow
-      const response = await fetch('/api/studio-flows', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/studio-flows", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           friendlyName: currentFlow.friendlyName,
           status: currentFlow.status,
-          definition: JSON.stringify(twilioDefinition)
-        })
+          definition: JSON.stringify(twilioDefinition),
+        }),
       });
 
       if (response.ok) {
         const savedFlow = await response.json();
         const updatedFlow = { ...currentFlow, id: savedFlow.sid };
-        setFlows(prev => [...prev.filter(f => f.id !== updatedFlow.id), updatedFlow]);
+        setFlows((prev) => [
+          ...prev.filter((f) => f.id !== updatedFlow.id),
+          updatedFlow,
+        ]);
         setCurrentFlow(updatedFlow);
-        console.log('Flow saved successfully!');
+        console.log("Flow saved successfully!");
       }
     } catch (error) {
-      console.error('Failed to save flow:', error);
+      console.error("Failed to save flow:", error);
     } finally {
       setIsBuilding(false);
     }
   };
 
   const getWidgetIcon = (type: string) => {
-    const widget = WIDGET_TYPES.find(w => w.type === type);
+    const widget = WIDGET_TYPES.find((w) => w.type === type);
     return widget?.icon || Settings;
   };
 
   const getWidgetColor = (type: string) => {
-    const widget = WIDGET_TYPES.find(w => w.type === type);
+    const widget = WIDGET_TYPES.find((w) => w.type === type);
     return widget?.color || "#6B7280";
   };
 
   return (
     <div className="space-y-6">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
         <TabsList className="grid w-full grid-cols-3 bg-[#1a1a1a] border border-[#FF6A00]/30">
           <TabsTrigger
             value="flows"
@@ -371,9 +383,11 @@ export default function StudioFlowBuilder() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="f10-heading-sm text-white">Studio Flows</h3>
-              <p className="f10-text-sm text-[#b3b3b3] mt-1">Create and manage conversation workflows</p>
+              <p className="f10-text-sm text-[#b3b3b3] mt-1">
+                Create and manage conversation workflows
+              </p>
             </div>
-            <Button 
+            <Button
               onClick={createNewFlow}
               className="f10-btn accent-bg text-black font-medium"
             >
@@ -388,9 +402,10 @@ export default function StudioFlowBuilder() {
                 <Brain className="w-16 h-16 mx-auto text-[#FF6A00] mb-4" />
                 <h3 className="f10-heading-sm text-white mb-2">No Flows Yet</h3>
                 <p className="f10-text-sm text-[#b3b3b3] mb-6 max-w-md mx-auto">
-                  Create your first Studio Flow to build automated conversation experiences
+                  Create your first Studio Flow to build automated conversation
+                  experiences
                 </p>
-                <Button 
+                <Button
                   onClick={createNewFlow}
                   className="f10-btn accent-bg text-black font-medium"
                 >
@@ -402,7 +417,10 @@ export default function StudioFlowBuilder() {
           ) : (
             <div className="space-y-4">
               {flows.map((flow) => (
-                <Card key={flow.id} className="f10-card hover:accent-glow transition-all cursor-pointer">
+                <Card
+                  key={flow.id}
+                  className="f10-card hover:accent-glow transition-all cursor-pointer"
+                >
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
@@ -410,14 +428,27 @@ export default function StudioFlowBuilder() {
                           <Brain className="w-5 h-5 text-[#FF6A00]" />
                         </div>
                         <div>
-                          <h4 className="f10-text-lg font-semibold text-white">{flow.friendlyName}</h4>
-                          <p className="f10-text-sm text-[#b3b3b3]">{flow.description}</p>
+                          <h4 className="f10-text-lg font-semibold text-white">
+                            {flow.friendlyName}
+                          </h4>
+                          <p className="f10-text-sm text-[#b3b3b3]">
+                            {flow.description}
+                          </p>
                           <div className="flex items-center gap-3 mt-2">
                             <Badge
                               style={{
-                                backgroundColor: flow.status === 'published' ? "#10B98120" : "#F59E0B20",
-                                color: flow.status === 'published' ? "#10B981" : "#F59E0B",
-                                borderColor: flow.status === 'published' ? "#10B98140" : "#F59E0B40"
+                                backgroundColor:
+                                  flow.status === "published"
+                                    ? "#10B98120"
+                                    : "#F59E0B20",
+                                color:
+                                  flow.status === "published"
+                                    ? "#10B981"
+                                    : "#F59E0B",
+                                borderColor:
+                                  flow.status === "published"
+                                    ? "#10B98140"
+                                    : "#F59E0B40",
                               }}
                             >
                               {flow.status.toUpperCase()}
@@ -432,8 +463,8 @@ export default function StudioFlowBuilder() {
                         <Button size="sm" className="f10-btn f10-btn-ghost">
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           className="f10-btn f10-btn-ghost"
                           onClick={() => {
                             setCurrentFlow(flow);
@@ -460,11 +491,13 @@ export default function StudioFlowBuilder() {
             <Card className="f10-card">
               <CardContent className="text-center py-12">
                 <Settings className="w-16 h-16 mx-auto text-[#737373] mb-4" />
-                <h3 className="f10-heading-sm text-white mb-2">No Flow Selected</h3>
+                <h3 className="f10-heading-sm text-white mb-2">
+                  No Flow Selected
+                </h3>
                 <p className="f10-text-sm text-[#b3b3b3] mb-6">
                   Create a new flow or select an existing one to start building
                 </p>
-                <Button 
+                <Button
                   onClick={createNewFlow}
                   className="f10-btn accent-bg text-black font-medium"
                 >
@@ -478,16 +511,27 @@ export default function StudioFlowBuilder() {
               {/* Widget Palette */}
               <Card className="f10-card">
                 <CardHeader>
-                  <CardTitle className="f10-text-lg text-white">Widget Palette</CardTitle>
+                  <CardTitle className="f10-text-lg text-white">
+                    Widget Palette
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {["triggers", "communication", "input", "logic", "data", "integration"].map(category => (
+                  {[
+                    "triggers",
+                    "communication",
+                    "input",
+                    "logic",
+                    "data",
+                    "integration",
+                  ].map((category) => (
                     <div key={category}>
                       <h4 className="f10-text-sm font-medium text-[#b3b3b3] mb-2 uppercase">
                         {category}
                       </h4>
                       <div className="space-y-2">
-                        {WIDGET_TYPES.filter(w => w.category === category).map(widget => {
+                        {WIDGET_TYPES.filter(
+                          (w) => w.category === category,
+                        ).map((widget) => {
                           const Icon = widget.icon;
                           return (
                             <Button
@@ -495,8 +539,8 @@ export default function StudioFlowBuilder() {
                               onClick={() => addWidget(widget.type)}
                               className="w-full justify-start p-3 h-auto f10-btn f10-btn-ghost hover:accent-glow"
                             >
-                              <Icon 
-                                className="w-4 h-4 mr-3" 
+                              <Icon
+                                className="w-4 h-4 mr-3"
                                 style={{ color: widget.color }}
                               />
                               <div className="text-left">
@@ -521,11 +565,15 @@ export default function StudioFlowBuilder() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle className="f10-text-lg text-white">{currentFlow.friendlyName}</CardTitle>
-                      <p className="f10-text-sm text-[#b3b3b3]">{currentFlow.description}</p>
+                      <CardTitle className="f10-text-lg text-white">
+                        {currentFlow.friendlyName}
+                      </CardTitle>
+                      <p className="f10-text-sm text-[#b3b3b3]">
+                        {currentFlow.description}
+                      </p>
                     </div>
                     <div className="flex gap-2">
-                      <Button 
+                      <Button
                         onClick={saveFlow}
                         disabled={isBuilding}
                         className="f10-btn f10-btn-secondary"
@@ -550,14 +598,14 @@ export default function StudioFlowBuilder() {
                             key={widget.id}
                             onClick={() => setSelectedWidget(widget)}
                             className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                              selectedWidget?.id === widget.id 
-                                ? 'border-[#FF6A00] bg-[#FF6A00]/10' 
-                                : 'border-[#333333] hover:border-[#555555]'
+                              selectedWidget?.id === widget.id
+                                ? "border-[#FF6A00] bg-[#FF6A00]/10"
+                                : "border-[#333333] hover:border-[#555555]"
                             }`}
                           >
                             <div className="flex items-center gap-3">
-                              <Icon 
-                                className="w-5 h-5" 
+                              <Icon
+                                className="w-5 h-5"
                                 style={{ color: getWidgetColor(widget.type) }}
                               />
                               <div className="flex-1">
@@ -568,7 +616,8 @@ export default function StudioFlowBuilder() {
                                   {widget.type}
                                 </div>
                               </div>
-                              {index < currentFlow.definition.states.length - 1 && (
+                              {index <
+                                currentFlow.definition.states.length - 1 && (
                                 <ArrowRight className="w-4 h-4 text-[#737373]" />
                               )}
                             </div>
@@ -587,30 +636,38 @@ export default function StudioFlowBuilder() {
         <TabsContent value="api" className="space-y-6">
           <Card className="f10-card">
             <CardHeader>
-              <CardTitle className="f10-text-lg text-white">Twilio Studio Flow API</CardTitle>
+              <CardTitle className="f10-text-lg text-white">
+                Twilio Studio Flow API
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="f10-text-sm text-[#b3b3b3]">Account SID</Label>
-                  <Input 
+                  <Label className="f10-text-sm text-[#b3b3b3]">
+                    Account SID
+                  </Label>
+                  <Input
                     placeholder="Your Twilio Account SID"
                     className="bg-[#1a1a1a] border-[#333333] text-white"
                   />
                 </div>
                 <div>
-                  <Label className="f10-text-sm text-[#b3b3b3]">Auth Token</Label>
-                  <Input 
+                  <Label className="f10-text-sm text-[#b3b3b3]">
+                    Auth Token
+                  </Label>
+                  <Input
                     type="password"
                     placeholder="Your Twilio Auth Token"
                     className="bg-[#1a1a1a] border-[#333333] text-white"
                   />
                 </div>
               </div>
-              
+
               {currentFlow && (
                 <div>
-                  <Label className="f10-text-sm text-[#b3b3b3]">Flow Definition JSON</Label>
+                  <Label className="f10-text-sm text-[#b3b3b3]">
+                    Flow Definition JSON
+                  </Label>
                   <Textarea
                     value={JSON.stringify(currentFlow.definition, null, 2)}
                     className="bg-[#1a1a1a] border-[#333333] text-white font-mono text-xs h-64"
@@ -618,7 +675,7 @@ export default function StudioFlowBuilder() {
                   />
                 </div>
               )}
-              
+
               <div className="flex gap-2">
                 <Button className="f10-btn f10-btn-secondary">
                   <Download className="w-4 h-4 mr-2" />

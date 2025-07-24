@@ -66,7 +66,7 @@ export default function ChargebackTracker() {
     {
       id: "CB001",
       transactionId: "TXN-2024-001847",
-      amount: 2500.00,
+      amount: 2500.0,
       currency: "USD",
       reason: "Fraudulent Transaction",
       status: "prevented",
@@ -77,9 +77,9 @@ export default function ChargebackTracker() {
       category: "fraud",
     },
     {
-      id: "CB002", 
+      id: "CB002",
       transactionId: "TXN-2024-001832",
-      amount: 1875.50,
+      amount: 1875.5,
       currency: "USD",
       reason: "Processing Error",
       status: "won",
@@ -92,8 +92,8 @@ export default function ChargebackTracker() {
     {
       id: "CB003",
       transactionId: "TXN-2024-001798",
-      amount: 850.00,
-      currency: "USD", 
+      amount: 850.0,
+      currency: "USD",
       reason: "Authorization Dispute",
       status: "disputed",
       riskScore: 6.1,
@@ -171,12 +171,19 @@ export default function ChargebackTracker() {
   return (
     <div className="min-h-screen bg-[#111111] fortress-theme">
       {/* ZERO-CB FORTRESS Command Header */}
-      <div className="f10-command-header" style={{ background: "linear-gradient(135deg, #0a1a0a 0%, #1a2d1a 100%)" }}>
+      <div
+        className="f10-command-header"
+        style={{
+          background: "linear-gradient(135deg, #0a1a0a 0%, #1a2d1a 100%)",
+        }}
+      >
         <div className="f10-command-title">
           <CreditCard className="w-8 h-8 text-[#32CD32]" />
           <div>
             <h1 className="f10-heading-lg text-white">ZERO-CB FORTRESS</h1>
-            <p className="f10-command-subtitle">Chargeback Defense & Revenue Protection</p>
+            <p className="f10-command-subtitle">
+              Chargeback Defense & Revenue Protection
+            </p>
           </div>
         </div>
         <div className="f10-command-status">
@@ -226,9 +233,7 @@ export default function ChargebackTracker() {
               <span className="f10-metric-title">Recovery Rate</span>
               <Target className="w-4 h-4 text-[#737373]" />
             </div>
-            <div className="f10-metric-value">
-              {metrics.recoveryRate}%
-            </div>
+            <div className="f10-metric-value">{metrics.recoveryRate}%</div>
             <div className="f10-metric-trend positive">
               <span>Industry leading</span>
             </div>
@@ -239,9 +244,7 @@ export default function ChargebackTracker() {
               <span className="f10-metric-title">Risk Score</span>
               <Activity className="w-4 h-4 text-[#737373]" />
             </div>
-            <div className="f10-metric-value">
-              {metrics.riskScore}
-            </div>
+            <div className="f10-metric-value">{metrics.riskScore}</div>
             <div className="f10-metric-trend positive">
               <span>Minimal risk</span>
             </div>
@@ -249,7 +252,11 @@ export default function ChargebackTracker() {
         </div>
 
         {/* Command Tabs */}
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+        <Tabs
+          value={selectedTab}
+          onValueChange={setSelectedTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-4 bg-[#1a1a1a] border border-[#32CD32]/30">
             <TabsTrigger
               value="command"
@@ -285,8 +292,12 @@ export default function ChargebackTracker() {
           <TabsContent value="command" className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="f10-heading-md text-white">Chargeback Defense Command</h2>
-                <p className="f10-text-sm text-[#b3b3b3] mt-1">Real-time chargeback monitoring and prevention system</p>
+                <h2 className="f10-heading-md text-white">
+                  Chargeback Defense Command
+                </h2>
+                <p className="f10-text-sm text-[#b3b3b3] mt-1">
+                  Real-time chargeback monitoring and prevention system
+                </p>
               </div>
               <div className="flex gap-3">
                 <Button className="f10-btn f10-btn-secondary">
@@ -305,23 +316,28 @@ export default function ChargebackTracker() {
               {chargebacks.map((chargeback) => {
                 const StatusIcon = getStatusIcon(chargeback.status);
                 const riskInfo = getRiskLevel(chargeback.riskScore);
-                
+
                 return (
-                  <div key={chargeback.id} className="f10-card hover:accent-glow transition-all">
+                  <div
+                    key={chargeback.id}
+                    className="f10-card hover:accent-glow transition-all"
+                  >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="p-2 rounded-lg bg-[#32CD32]/20">
                           <CreditCard className="w-5 h-5 text-[#32CD32]" />
                         </div>
                         <div>
-                          <h3 className="f10-text-lg font-semibold text-white">{chargeback.transactionId}</h3>
+                          <h3 className="f10-text-lg font-semibold text-white">
+                            {chargeback.transactionId}
+                          </h3>
                           <div className="flex items-center gap-3 mt-1">
                             <div
                               className="f10-status"
                               style={{
                                 backgroundColor: `${getStatusColor(chargeback.status)}20`,
                                 color: getStatusColor(chargeback.status),
-                                borderColor: `${getStatusColor(chargeback.status)}40`
+                                borderColor: `${getStatusColor(chargeback.status)}40`,
                               }}
                             >
                               <StatusIcon className="w-3 h-3 mr-1" />
@@ -332,7 +348,7 @@ export default function ChargebackTracker() {
                               style={{
                                 backgroundColor: `${getCategoryColor(chargeback.category)}20`,
                                 color: getCategoryColor(chargeback.category),
-                                borderColor: `${getCategoryColor(chargeback.category)}40`
+                                borderColor: `${getCategoryColor(chargeback.category)}40`,
                               }}
                             >
                               {chargeback.category.toUpperCase()}
@@ -342,7 +358,7 @@ export default function ChargebackTracker() {
                               style={{
                                 backgroundColor: `${riskInfo.color}20`,
                                 color: riskInfo.color,
-                                borderColor: `${riskInfo.color}40`
+                                borderColor: `${riskInfo.color}40`,
                               }}
                             >
                               {riskInfo.level} RISK
@@ -374,19 +390,25 @@ export default function ChargebackTracker() {
                         <div className="f10-text-sm font-semibold text-white">
                           {chargeback.customer}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">CUSTOMER</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          CUSTOMER
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-[#FF6A00]">
                           {chargeback.riskScore}/10
                         </div>
-                        <div className="f10-text-xs text-[#737373]">RISK SCORE</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          RISK SCORE
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-[#00BFFF]">
                           {chargeback.processor}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">PROCESSOR</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          PROCESSOR
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-sm font-semibold text-white">
@@ -411,7 +433,9 @@ export default function ChargebackTracker() {
           <TabsContent value="monitoring" className="space-y-6">
             <div className="text-center py-12">
               <Activity className="w-16 h-16 mx-auto text-[#32CD32] mb-4" />
-              <h3 className="f10-heading-sm text-white mb-2">Advanced Risk Monitoring</h3>
+              <h3 className="f10-heading-sm text-white mb-2">
+                Advanced Risk Monitoring
+              </h3>
               <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto">
                 Real-time risk assessment and fraud detection system
               </p>
@@ -426,9 +450,12 @@ export default function ChargebackTracker() {
           <TabsContent value="analytics" className="space-y-6">
             <div className="text-center py-12">
               <BarChart className="w-16 h-16 mx-auto text-[#32CD32] mb-4" />
-              <h3 className="f10-heading-sm text-white mb-2">Defense Analytics Engine</h3>
+              <h3 className="f10-heading-sm text-white mb-2">
+                Defense Analytics Engine
+              </h3>
               <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto">
-                Advanced analytics for chargeback patterns and prevention optimization
+                Advanced analytics for chargeback patterns and prevention
+                optimization
               </p>
               <Button className="f10-btn accent-bg text-black font-medium mt-6">
                 <BarChart className="w-4 h-4 mr-2" />
@@ -441,9 +468,12 @@ export default function ChargebackTracker() {
           <TabsContent value="settings" className="space-y-6">
             <div className="text-center py-12">
               <Settings className="w-16 h-16 mx-auto text-[#32CD32] mb-4" />
-              <h3 className="f10-heading-sm text-white mb-2">Protection Configuration</h3>
+              <h3 className="f10-heading-sm text-white mb-2">
+                Protection Configuration
+              </h3>
               <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto">
-                Configure defense rules, risk thresholds, and automated responses
+                Configure defense rules, risk thresholds, and automated
+                responses
               </p>
               <Button className="f10-btn accent-bg text-black font-medium mt-6">
                 <Settings className="w-4 h-4 mr-2" />
