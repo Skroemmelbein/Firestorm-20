@@ -54,7 +54,7 @@ export const ALL_TWILIO_APIS: TwilioAPIEndpoint[] = [
     lastUsed: '15 minutes ago',
     documentation: 'https://www.twilio.com/docs/verify/api',
     requiredParams: [
-      { name: 'To', type: 'string', description: 'Phone number to verify', example: '+1234567890' },
+      { name: 'To', type: 'string', description: 'Phone number to verify', example: '+18558600037' },
       { name: 'Channel', type: 'string', description: 'Verification method', example: 'sms' }
     ],
     optionalParams: [
@@ -104,7 +104,7 @@ export const ALL_TWILIO_APIS: TwilioAPIEndpoint[] = [
     lastUsed: '8 minutes ago',
     documentation: 'https://www.twilio.com/docs/lookup/api',
     requiredParams: [
-      { name: 'PhoneNumber', type: 'string', description: 'Phone number to lookup', example: '+1234567890' }
+      { name: 'PhoneNumber', type: 'string', description: 'Phone number to lookup', example: '+18558600037' }
     ],
     optionalParams: [
       { name: 'Type', type: 'string', description: 'Lookup type', example: 'carrier' }
@@ -292,7 +292,7 @@ export const ALL_TWILIO_APIS: TwilioAPIEndpoint[] = [
     lastUsed: '2 hours ago',
     documentation: 'https://www.twilio.com/docs/sms/api/message-resource',
     requiredParams: [
-      { name: 'To', type: 'string', description: 'Recipient phone number', example: '+1234567890' },
+      { name: 'To', type: 'string', description: 'Recipient phone number', example: '+18558600037' },
       { name: 'From', type: 'string', description: 'Twilio phone number', example: '+1987654321' },
       { name: 'Body', type: 'string', description: 'Message content', example: 'Payment due reminder' }
     ],
@@ -319,7 +319,7 @@ export const ALL_TWILIO_APIS: TwilioAPIEndpoint[] = [
     lastUsed: '1 day ago',
     documentation: 'https://www.twilio.com/docs/voice/api/call-resource',
     requiredParams: [
-      { name: 'To', type: 'string', description: 'Phone number to call', example: '+1234567890' },
+      { name: 'To', type: 'string', description: 'Phone number to call', example: '+18558600037' },
       { name: 'From', type: 'string', description: 'Twilio phone number', example: '+1987654321' },
       { name: 'Url', type: 'string', description: 'TwiML URL for call flow' }
     ],
@@ -346,7 +346,7 @@ export const ALL_TWILIO_APIS: TwilioAPIEndpoint[] = [
     lastUsed: '4 hours ago',
     documentation: 'https://www.twilio.com/docs/whatsapp/api',
     requiredParams: [
-      { name: 'To', type: 'string', description: 'WhatsApp number', example: 'whatsapp:+1234567890' },
+      { name: 'To', type: 'string', description: 'WhatsApp number', example: 'whatsapp:+18558600037' },
       { name: 'From', type: 'string', description: 'WhatsApp Business number', example: 'whatsapp:+1987654321' },
       { name: 'Body', type: 'string', description: 'Message content' }
     ],
@@ -998,7 +998,7 @@ export const ALL_TWILIO_APIS: TwilioAPIEndpoint[] = [
     category: 'premium-services',
     subcategory: 'Track Management',
     businessFunction: 'Fine-grained control of premium video features',
-    kpiImpact: 'Video quality ↑ 89%, User control ↑ 67%',
+    kpiImpact: 'Video quality ↑ 89%, User control ��� 67%',
     costPerUse: 0.00,
     priorityLevel: 2,
     status: 'active',
