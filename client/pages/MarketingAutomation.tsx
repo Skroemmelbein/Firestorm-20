@@ -257,7 +257,7 @@ export default function MarketingAutomation() {
             </div>
           </div>
 
-          <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6 hover:border-[#FF6A00] transition-colors">
+          <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6 hover:border-[#FF6A00] transition-colors supreme-pulse">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xs font-bold text-[#FF6A00] uppercase tracking-wider">
                 CONVERSIONS
@@ -269,13 +269,13 @@ export default function MarketingAutomation() {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-full h-1 bg-[#1E1E22]">
-                <div className="w-[65%] h-full bg-[#FF6A00]"></div>
+                <div className="w-[65%] h-full bg-[#FF6A00] energy-wave"></div>
               </div>
               <span className="text-xs text-[#FF6A00] font-bold">+18.2%</span>
             </div>
           </div>
 
-          <div className="bg-[#1E1E22] border border-[#FF2D55]/30 p-6 hover:border-[#FF2D55] transition-colors">
+          <div className="bg-[#1E1E22] border border-[#FF2D55]/30 p-6 hover:border-[#FF2D55] transition-colors supreme-glow">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xs font-bold text-[#FF2D55] uppercase tracking-wider">
                 RESPONSE RATE
@@ -287,13 +287,13 @@ export default function MarketingAutomation() {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-full h-1 bg-[#1E1E22]">
-                <div className="w-[72%] h-full bg-[#FF2D55]"></div>
+                <div className="w-[72%] h-full bg-[#FF2D55] supreme-shimmer"></div>
               </div>
               <span className="text-xs text-[#FF2D55] font-bold">AI-DRIVEN</span>
             </div>
           </div>
 
-          <div className="bg-[#1E1E22] border border-[#FFD700]/30 p-6 hover:border-[#FFD700] transition-colors">
+          <div className="bg-[#1E1E22] border border-[#FFD700]/30 p-6 hover:border-[#FFD700] transition-colors supreme-float">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xs font-bold text-[#FFD700] uppercase tracking-wider">
                 ACTIVE OPERATIONS
