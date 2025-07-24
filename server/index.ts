@@ -197,5 +197,11 @@ export function createServer() {
   // Auto-notification route
   app.post("/api/auto-notify", sendAutomaticNotification);
 
+  // Progress notification routes
+  app.post("/api/progress/start", startProgressNotifications);
+  app.post("/api/progress/update", updateProgress);
+  app.post("/api/progress/stop", stopProgressNotifications);
+  app.get("/api/progress", getProgress);
+
   return app;
 }
