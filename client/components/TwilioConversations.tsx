@@ -415,7 +415,12 @@ export default function TwilioConversations() {
                           <span>Loading messages...</span>
                         </div>
                       ) : (
-                        <span>No messages yet</span>
+                        <div className="text-center">
+                          <span>No messages loaded</span>
+                          <p className="text-xs mt-2 text-gray-500">
+                            Click "Load Messages" above or use regular SMS testing instead
+                          </p>
+                        </div>
                       )}
                     </div>
                   ) : (
