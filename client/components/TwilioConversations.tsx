@@ -228,7 +228,7 @@ export default function TwilioConversations() {
           </h3>
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div>
-              <Label className="text-[#b3b3b3] text-sm">
+              <Label className="text-gray-700 text-sm font-medium">
                 Conversation Name
               </Label>
               <Input
@@ -239,12 +239,12 @@ export default function TwilioConversations() {
                     friendlyName: e.target.value,
                   }))
                 }
-                className="bg-[#0a0a0a] border-[#333333] text-white text-sm"
+                className="bg-white border-gray-300 text-gray-800 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 placeholder="Test Conversation"
               />
             </div>
             <div>
-              <Label className="text-[#b3b3b3] text-sm">
+              <Label className="text-gray-700 text-sm font-medium">
                 Participant Phone
               </Label>
               <Input
@@ -255,7 +255,7 @@ export default function TwilioConversations() {
                     participantPhone: e.target.value,
                   }))
                 }
-                className="bg-[#0a0a0a] border-[#333333] text-white text-sm"
+                className="bg-white border-gray-300 text-gray-800 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 placeholder="+18144409068"
               />
             </div>
@@ -480,7 +480,7 @@ export default function TwilioConversations() {
             <div>
               <strong className="text-white">How it works:</strong>
               <ul className="text-[#b3b3b3] mt-1 space-y-1">
-                <li>�� Start a conversation with a participant</li>
+                <li>• Start a conversation with a participant</li>
                 <li>• Send messages from this interface</li>
                 <li>• Participant can reply via SMS</li>
                 <li>• All messages appear in real-time</li>
