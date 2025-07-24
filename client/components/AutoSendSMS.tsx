@@ -71,7 +71,7 @@ export default function AutoSendSMS() {
             <Loader2 className="h-4 w-4 animate-spin" />
             <AlertDescription>
               <strong>Sending SMS...</strong> Test message being sent to +1
-              (855) 860-0037
+              (855) 960-0037
             </AlertDescription>
           </Alert>
         )}
@@ -82,7 +82,7 @@ export default function AutoSendSMS() {
             <AlertDescription>
               <strong>✅ SMS SENT SUCCESSFULLY!</strong>
               <br />
-              Message sent to +1 (855) 860-0037 from your Twilio number +1 (855)
+              Message sent to +1 (855) 960-0037 from your Twilio number +1 (855)
               860-0037
               {result.sid && (
                 <>
@@ -109,14 +109,14 @@ export default function AutoSendSMS() {
           <div className="p-3 bg-blue-50 rounded-lg">
             <div className="text-sm font-medium text-blue-800">From Number</div>
             <div className="font-mono text-sm text-blue-600">
-              +1 (855) 860-0037
+              +1 (855) 960-0037
             </div>
           </div>
 
           <div className="p-3 bg-green-50 rounded-lg">
             <div className="text-sm font-medium text-green-800">To Number</div>
             <div className="font-mono text-sm text-green-600">
-              +1 (855) 860-0037
+              +1 (855) 960-0037
             </div>
           </div>
         </div>
