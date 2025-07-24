@@ -309,8 +309,12 @@ export default function SkinCustomizer() {
 
           {/* Preset Themes */}
           <TabsContent value="themes" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {DEFAULT_THEMES.map((theme) => (
+            <div className="mb-4">
+              <h4 className="font-semibold text-white mb-2">🎨 {COMPREHENSIVE_THEMES.length} Professional Themes Available</h4>
+              <p className="text-sm text-[#b3b3b3]">Choose from Executive Command, Velocify Ops, FIRESTORM, Dream Portal, Nexus Sync, Zero-CB Fortress, Creative, Minimal, Futuristic, and Luxury categories</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-96 overflow-y-auto">
+              {COMPREHENSIVE_THEMES.map((theme) => (
                 <Card
                   key={theme.id}
                   className={cn(
