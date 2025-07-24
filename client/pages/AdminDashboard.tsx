@@ -28,7 +28,8 @@ import {
   RefreshCw,
   AlertTriangle,
   Layout,
-  ArrowRight
+  ArrowRight,
+  Palette
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
