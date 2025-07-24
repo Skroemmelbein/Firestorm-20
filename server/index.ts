@@ -25,6 +25,11 @@ import {
   sendConversationMessage,
   handleConversationWebhook
 } from "./routes/conversations-api";
+import {
+  createAllTables,
+  getTableSchemas,
+  testXanoConnection
+} from "./routes/xano-table-setup";
 import realApiRouter from "./routes/real-api";
 import xanoSetupRouter from "./routes/xano-setup";
 
