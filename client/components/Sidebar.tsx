@@ -127,7 +127,7 @@ export default function Sidebar() {
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed left-0 top-0 h-full backdrop-blur-md border-r border-white/40 shadow-2xl z-50 transition-all duration-300",
+          "fixed left-0 top-0 h-full backdrop-blur-md border-r border-white/40 shadow-2xl z-50 transition-all duration-300 flex flex-col",
           isCollapsed ? "w-16" : "w-72",
         )}
         style={{
@@ -158,7 +158,7 @@ export default function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <div className="p-4 space-y-2">
+        <div className="p-4 space-y-2 flex-1 overflow-y-auto pb-24">
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
@@ -207,8 +207,8 @@ export default function Sidebar() {
 
         {/* Quick Actions */}
         {!isCollapsed && (
-          <div className="absolute bottom-4 left-4 right-4">
-            <div className="bg-white/40 border border-white/50 rounded-lg p-4 backdrop-blur-sm shadow-lg">
+          <div className="p-4 mt-auto">
+            <div className="bg-white/40 border border-white/50 rounded-lg p-3 backdrop-blur-sm shadow-lg">
               <div className="text-xs text-gray-900 uppercase font-semibold mb-2">
                 Quick Actions
               </div>
