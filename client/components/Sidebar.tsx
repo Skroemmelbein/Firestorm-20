@@ -138,16 +138,16 @@ export default function Sidebar() {
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#333333]">
+        <div className="flex items-center justify-between p-4 border-b border-white/20" style={{backdropFilter: 'blur(10px)'}}>
           {!isCollapsed && (
             <div className="flex items-center gap-2">
               <Command className="w-6 h-6 text-[#00BFFF]" />
-              <span className="text-white font-bold text-lg">ECELONX</span>
+              <span className="text-gray-800 font-bold text-lg drop-shadow-sm">ECELONX</span>
             </div>
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-lg hover:bg-[#222222] text-white transition-colors"
+            className="p-2 rounded-lg hover:bg-white/20 text-gray-800 transition-colors backdrop-blur-sm"
           >
             {isCollapsed ? (
               <Menu className="w-4 h-4" />
@@ -168,15 +168,15 @@ export default function Sidebar() {
                 key={item.id}
                 onClick={() => handleNavigation(item.path)}
                 className={cn(
-                  "w-full flex items-center gap-3 p-3 rounded-lg transition-all",
-                  "hover:bg-[#222222] group",
-                  active && "bg-[#222222] border border-[#333333]",
+                  "w-full flex items-center gap-3 p-3 rounded-lg transition-all backdrop-blur-sm",
+                  "hover:bg-white/20 group",
+                  active && "bg-white/30 border border-white/30 shadow-lg",
                 )}
               >
                 <Icon
                   className={cn(
                     "w-5 h-5 flex-shrink-0",
-                    active ? "text-white" : "text-[#737373]",
+                    active ? "text-gray-800" : "text-gray-600",
                   )}
                   style={{ color: active ? item.color : undefined }}
                 />
@@ -186,19 +186,19 @@ export default function Sidebar() {
                     <div
                       className={cn(
                         "font-medium text-sm",
-                        active ? "text-white" : "text-[#b3b3b3]",
+                        active ? "text-gray-800 font-semibold" : "text-gray-700",
                       )}
                     >
                       {item.label}
                     </div>
-                    <div className="text-xs text-[#737373]">
+                    <div className="text-xs text-gray-600">
                       {item.description}
                     </div>
                   </div>
                 )}
 
                 {!isCollapsed && active && (
-                  <ChevronRight className="w-4 h-4 text-[#737373]" />
+                  <ChevronRight className="w-4 h-4 text-gray-600" />
                 )}
               </button>
             );
@@ -208,21 +208,21 @@ export default function Sidebar() {
         {/* Quick Actions */}
         {!isCollapsed && (
           <div className="absolute bottom-4 left-4 right-4">
-            <div className="bg-[#222222] border border-[#333333] rounded-lg p-4">
-              <div className="text-xs text-[#737373] uppercase font-medium mb-2">
+            <div className="bg-white/20 border border-white/30 rounded-lg p-4 backdrop-blur-sm shadow-lg">
+              <div className="text-xs text-gray-700 uppercase font-medium mb-2">
                 Quick Actions
               </div>
               <div className="space-y-2">
                 <button
                   onClick={() => navigate("/admin")}
-                  className="w-full flex items-center gap-2 p-2 rounded text-sm text-[#b3b3b3] hover:text-white hover:bg-[#333333] transition-colors"
+                  className="w-full flex items-center gap-2 p-2 rounded text-sm text-gray-700 hover:text-gray-900 hover:bg-white/20 transition-colors backdrop-blur-sm"
                 >
                   <Upload className="w-4 h-4" />
                   Upload CSV
                 </button>
                 <button
                   onClick={() => navigate("/integrations")}
-                  className="w-full flex items-center gap-2 p-2 rounded text-sm text-[#b3b3b3] hover:text-white hover:bg-[#333333] transition-colors"
+                  className="w-full flex items-center gap-2 p-2 rounded text-sm text-gray-700 hover:text-gray-900 hover:bg-white/20 transition-colors backdrop-blur-sm"
                 >
                   <Settings className="w-4 h-4" />
                   Settings
