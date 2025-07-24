@@ -383,6 +383,13 @@ export default function TestModule() {
               Studio Flows
             </TabsTrigger>
             <TabsTrigger
+              value="rcs"
+              className="data-[state=active]:bg-[#00E676] data-[state=active]:text-black text-white hover:text-[#00E676] transition-colors"
+            >
+              <Network className="w-4 h-4 mr-2" />
+              RCS Testing
+            </TabsTrigger>
+            <TabsTrigger
               value="api"
               className="data-[state=active]:bg-[#00E676] data-[state=active]:text-black text-white hover:text-[#00E676] transition-colors"
             >
@@ -467,7 +474,7 @@ export default function TestModule() {
                       <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p>No SMS tests run yet</p>
                       <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-left">
-                        <p className="text-sm font-medium text-blue-800">📱 SMS Subscription Required</p>
+                        <p className="text-sm font-medium text-blue-800">���� SMS Subscription Required</p>
                         <p className="text-xs text-blue-700 mt-1">
                           If you get an "unsubscribed" error, text <strong>START</strong> to <strong>+18559600037</strong> first.
                         </p>
