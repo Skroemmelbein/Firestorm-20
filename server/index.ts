@@ -17,6 +17,7 @@ import xanoSetupRouter from "./routes/xano-setup";
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
 import { initializeTwilio } from "../shared/twilio-client";
+import { initializeSendGrid } from "../shared/sendgrid-client";
 import { setOpenAIApiKey } from "../shared/openai-service";
 
 export function createServer() {
