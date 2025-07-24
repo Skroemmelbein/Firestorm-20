@@ -80,7 +80,7 @@ export class TwilioClient {
         result = {
           message: "Failed to parse response",
           error: parseError.message,
-          rawResponse: responseText
+          rawResponse: responseText,
         };
       }
 

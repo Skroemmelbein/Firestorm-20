@@ -59,11 +59,11 @@ export default function Overview() {
 
   // Module route mapping
   const moduleRoutes = {
-    "firestorm": "/marketing-automation",
+    firestorm: "/marketing-automation",
     "dream-portal": "/member-portal",
     "velocify-hub": "/client-portal",
     "nexus-sync": "/integrations",
-    "zero-cb-fortress": "/chargeback-tracker"
+    "zero-cb-fortress": "/chargeback-tracker",
   };
 
   const handleModuleAccess = (moduleId: string) => {
@@ -379,8 +379,8 @@ export default function Overview() {
                 className="group relative bg-gradient-to-br from-[#1E1E22] to-[#2A2A2E] border-2 border-transparent hover:border-[#FF6A00] transition-all duration-300 cursor-pointer p-6 supreme-glow kanban-card"
                 style={{
                   borderTopColor: module.color,
-                  borderTopWidth: '6px',
-                  boxShadow: `0 4px 20px ${module.color}20, 0 0 40px ${module.color}10`
+                  borderTopWidth: "6px",
+                  boxShadow: `0 4px 20px ${module.color}20, 0 0 40px ${module.color}10`,
                 }}
               >
                 {/* Hover overlay effect */}
@@ -393,11 +393,36 @@ export default function Overview() {
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      {module.id === "firestorm" && <Flame className="w-6 h-6" style={{ color: module.color }} />}
-                      {module.id === "dream-portal" && <Crown className="w-6 h-6" style={{ color: module.color }} />}
-                      {module.id === "velocify-hub" && <Rocket className="w-6 h-6" style={{ color: module.color }} />}
-                      {module.id === "nexus-sync" && <Database className="w-6 h-6" style={{ color: module.color }} />}
-                      {module.id === "zero-cb-fortress" && <Shield className="w-6 h-6" style={{ color: module.color }} />}
+                      {module.id === "firestorm" && (
+                        <Flame
+                          className="w-6 h-6"
+                          style={{ color: module.color }}
+                        />
+                      )}
+                      {module.id === "dream-portal" && (
+                        <Crown
+                          className="w-6 h-6"
+                          style={{ color: module.color }}
+                        />
+                      )}
+                      {module.id === "velocify-hub" && (
+                        <Rocket
+                          className="w-6 h-6"
+                          style={{ color: module.color }}
+                        />
+                      )}
+                      {module.id === "nexus-sync" && (
+                        <Database
+                          className="w-6 h-6"
+                          style={{ color: module.color }}
+                        />
+                      )}
+                      {module.id === "zero-cb-fortress" && (
+                        <Shield
+                          className="w-6 h-6"
+                          style={{ color: module.color }}
+                        />
+                      )}
                       <h3 className="text-xl font-black text-white uppercase tracking-wide">
                         {module.name}
                       </h3>
@@ -407,7 +432,9 @@ export default function Overview() {
                     </p>
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-[#00E676] animate-pulse"></div>
-                      <span className="text-xs font-bold text-[#00E676] uppercase">ONLINE</span>
+                      <span className="text-xs font-bold text-[#00E676] uppercase">
+                        ONLINE
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -415,7 +442,11 @@ export default function Overview() {
                 {/* KPI Grid */}
                 <div className="grid grid-cols-1 gap-4 mb-6">
                   {module.kpis.map((kpi) => (
-                    <div key={kpi.id} className="bg-[#2A2A2E]/50 p-3 border-l-2" style={{ borderLeftColor: kpi.color }}>
+                    <div
+                      key={kpi.id}
+                      className="bg-[#2A2A2E]/50 p-3 border-l-2"
+                      style={{ borderLeftColor: kpi.color }}
+                    >
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-gray-300 uppercase tracking-wide">
                           {kpi.label}
@@ -428,7 +459,7 @@ export default function Overview() {
                             className="text-xs font-bold px-2 py-1 rounded"
                             style={{
                               color: kpi.color,
-                              backgroundColor: `${kpi.color}20`
+                              backgroundColor: `${kpi.color}20`,
                             }}
                           >
                             {kpi.change}
@@ -445,7 +476,7 @@ export default function Overview() {
                     className="w-full p-4 text-center font-black uppercase tracking-wider text-black transition-all duration-300 group-hover:shadow-lg"
                     style={{
                       background: `linear-gradient(135deg, ${module.color}, ${module.color}CC)`,
-                      transform: 'translateY(0)',
+                      transform: "translateY(0)",
                     }}
                   >
                     <div className="flex items-center justify-center gap-2">

@@ -31,7 +31,7 @@ router.post("/send", async (req, res) => {
         success: false,
         error: `Cannot send SMS to the same number as FROM number (${TWILIO_PHONE_NUMBER}). Please use a different test number.`,
         code: "SAME_FROM_TO_NUMBER",
-        suggestion: "Try using +18559600037 as test number instead"
+        suggestion: "Try using +18559600037 as test number instead",
       });
     }
 
@@ -58,7 +58,10 @@ router.post("/send", async (req, res) => {
       result = JSON.parse(responseText);
     } catch (parseError) {
       console.error("❌ Failed to parse Twilio response:", parseError);
-      result = { message: "Failed to parse response", error: parseError.message };
+      result = {
+        message: "Failed to parse response",
+        error: parseError.message,
+      };
     }
 
     if (response.ok) {
@@ -126,7 +129,10 @@ async function sendTestMessage() {
       result = JSON.parse(responseText);
     } catch (parseError) {
       console.error("❌ Failed to parse test SMS response:", parseError);
-      result = { message: "Failed to parse response", error: parseError.message };
+      result = {
+        message: "Failed to parse response",
+        error: parseError.message,
+      };
     }
 
     if (response.ok) {
