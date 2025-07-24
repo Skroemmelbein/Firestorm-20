@@ -188,5 +188,8 @@ export function createServer() {
   app.get("/api/rcs/agent/:agentId/status", getAgentStatus);
   app.post("/api/rcs/webhook", handleWebhook);
 
+  // Auto-notification route
+  app.post("/api/auto-notify", sendAutomaticNotification);
+
   return app;
 }
