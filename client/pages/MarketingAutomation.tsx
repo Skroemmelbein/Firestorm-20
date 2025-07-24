@@ -276,6 +276,11 @@ export default function MarketingAutomation() {
             </TabsTrigger>
           </TabsList>
 
+          {/* Campaign Builder Tab */}
+          <TabsContent value="builder" className="space-y-6">
+            <CampaignBuilder />
+          </TabsContent>
+
           {/* Campaign Command Tab */}
           <TabsContent value="command" className="space-y-6">
             <div className="flex items-center justify-between">
