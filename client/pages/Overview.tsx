@@ -1,531 +1,341 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import AdminLayout from "@/components/AdminLayout";
+import { cn } from "@/lib/utils";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import {
-  Zap,
-  Users,
-  Package,
-  Database,
   Shield,
-  Settings,
-  TrendingUp,
-  MessageSquare,
-  Bot,
-  Send,
-  Clock,
-  DollarSign,
-  Target,
-  BarChart3,
-  Activity,
-  AlertTriangle,
   Flame,
-  Crown,
-  Rocket,
   Brain,
+  Rocket,
+  Network,
+  CreditCard,
   Command,
+  Activity,
+  ChevronRight,
+  Building,
+  Zap,
 } from "lucide-react";
 
-interface ModuleKPI {
-  id: string;
-  label: string;
-  value: string | number;
-  change: string;
-  trend: "up" | "down" | "neutral";
-  color: string;
-}
-
-interface ModuleData {
+interface Module {
   id: string;
   name: string;
   description: string;
+  path: string;
+  icon: React.ComponentType<any>;
   color: string;
-  personality: string;
-  status: "optimal" | "warning" | "critical";
-  kpis: ModuleKPI[];
+  bgGradient: string;
+  status: "operational" | "maintenance" | "offline";
+  metrics?: {
+    primary: string;
+    secondary: string;
+  };
 }
+
+const modules: Module[] = [
+  {
+    id: "admin",
+    name: "ADMIN COMMAND CENTER",
+    description: "Data Management • CSV Upload • System Control",
+    path: "/admin",
+    icon: Shield,
+    color: "#FFD700",
+    bgGradient: "from-yellow-500/10 to-amber-600/10",
+    status: "operational",
+    metrics: {
+      primary: "Database Active",
+      secondary: "Upload Ready"
+    }
+  },
+  {
+    id: "firestorm",
+    name: "FIRESTORM",
+    description: "Marketing Automation • Campaign Control • Lead Processing",
+    path: "/marketing-automation",
+    icon: Flame,
+    color: "#FF6A00",
+    bgGradient: "from-orange-500/10 to-red-600/10",
+    status: "operational",
+    metrics: {
+      primary: "12 Active Campaigns",
+      secondary: "98.7% Delivery Rate"
+    }
+  },
+  {
+    id: "dream-portal",
+    name: "DREAM PORTAL COMMAND",
+    description: "Member Management • Portal Access • User Control",
+    path: "/member-portal",
+    icon: Brain,
+    color: "#8A2BE2",
+    bgGradient: "from-purple-500/10 to-violet-600/10",
+    status: "operational",
+    metrics: {
+      primary: "2,847 Active Members",
+      secondary: "99.2% Uptime"
+    }
+  },
+  {
+    id: "velocify",
+    name: "VELOCIFY OPS COMMAND",
+    description: "Client Operations • Fulfillment • Performance Tracking",
+    path: "/client-portal",
+    icon: Rocket,
+    color: "#00BFFF",
+    bgGradient: "from-blue-500/10 to-cyan-600/10",
+    status: "operational",
+    metrics: {
+      primary: "1.9min Avg Fulfillment",
+      secondary: "97.8% Efficiency"
+    }
+  },
+  {
+    id: "nexus",
+    name: "NEXUS SYNC",
+    description: "API Integration • Data Flow • System Connectivity",
+    path: "/integrations",
+    icon: Network,
+    color: "#00CED1",
+    bgGradient: "from-cyan-500/10 to-teal-600/10",
+    status: "operational",
+    metrics: {
+      primary: "16 Active APIs",
+      secondary: "All Systems Sync"
+    }
+  },
+  {
+    id: "fortress",
+    name: "ZERO-CB FORTRESS",
+    description: "Chargeback Protection • Revenue Defense • Risk Management",
+    path: "/chargeback-tracker",
+    icon: CreditCard,
+    color: "#32CD32",
+    bgGradient: "from-green-500/10 to-emerald-600/10",
+    status: "operational",
+    metrics: {
+      primary: "0.3% Chargeback Rate",
+      secondary: "$2.1M Protected"
+    }
+  },
+  {
+    id: "billing",
+    name: "BILLING LOGIC",
+    description: "Payment Processing • Revenue Management • Financial Control",
+    path: "/billing",
+    icon: Building,
+    color: "#FF69B4",
+    bgGradient: "from-pink-500/10 to-rose-600/10",
+    status: "operational",
+    metrics: {
+      primary: "$847K Monthly",
+      secondary: "99.6% Success Rate"
+    }
+  },
+  {
+    id: "devops",
+    name: "DEVOPS COMMAND",
+    description: "System Operations • Monitoring • Infrastructure Control",
+    path: "/devops",
+    icon: Activity,
+    color: "#FF4500",
+    bgGradient: "from-red-500/10 to-orange-600/10",
+    status: "operational",
+    metrics: {
+      primary: "99.9% Uptime",
+      secondary: "All Systems Green"
+    }
+  }
+];
 
 export default function Overview() {
   const navigate = useNavigate();
 
-  // Module route mapping
-  const moduleRoutes = {
-    firestorm: "/marketing-automation",
-    "dream-portal": "/member-portal",
-    "velocify-hub": "/client-portal",
-    "nexus-sync": "/integrations",
-    "zero-cb-fortress": "/chargeback-tracker",
-  };
-
-  const handleModuleAccess = (moduleId: string) => {
-    const route = moduleRoutes[moduleId as keyof typeof moduleRoutes];
-    if (route) {
-      navigate(route);
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "operational":
+        return "#10B981";
+      case "maintenance":
+        return "#F59E0B";
+      case "offline":
+        return "#EF4444";
+      default:
+        return "#6B7280";
     }
   };
 
-  const [moduleData, setModuleData] = useState<ModuleData[]>([
-    {
-      id: "firestorm",
-      name: "FIRESTORM",
-      description: "TACTICAL MARKETING ENGINE",
-      color: "#FF6A00",
-      personality: "explosive-warfare",
-      status: "optimal",
-      kpis: [
-        {
-          id: "campaigns",
-          label: "ACTIVE OPERATIONS",
-          value: 12,
-          change: "+3",
-          trend: "up",
-          color: "#FF6A00",
-        },
-        {
-          id: "messages",
-          label: "MESSAGES DEPLOYED",
-          value: "16.3K",
-          change: "+18%",
-          trend: "up",
-          color: "#FF2D55",
-        },
-        {
-          id: "conversion",
-          label: "CONVERSION RATE",
-          value: "23.4%",
-          change: "+5.2%",
-          trend: "up",
-          color: "#00E676",
-        },
-      ],
-    },
-    {
-      id: "dream-portal",
-      name: "DREAM PORTAL",
-      description: "PREMIUM MEMBER COMMAND",
-      color: "#8A2BE2",
-      personality: "elite-luxury",
-      status: "optimal",
-      kpis: [
-        {
-          id: "members",
-          label: "ACTIVE MEMBERS",
-          value: "1,247",
-          change: "+89",
-          trend: "up",
-          color: "#8A2BE2",
-        },
-        {
-          id: "satisfaction",
-          label: "SATISFACTION RATE",
-          value: "94.8%",
-          change: "+2.1%",
-          trend: "up",
-          color: "#FF69B4",
-        },
-        {
-          id: "engagement",
-          label: "ENGAGEMENT SCORE",
-          value: "87.3%",
-          change: "+12%",
-          trend: "up",
-          color: "#4169E1",
-        },
-      ],
-    },
-    {
-      id: "velocify-hub",
-      name: "VELOCIFY HUB",
-      description: "ULTRA-EFFICIENT FULFILLMENT",
-      color: "#00CED1",
-      personality: "speed-precision",
-      status: "optimal",
-      kpis: [
-        {
-          id: "velocity",
-          label: "AVG FULFILLMENT",
-          value: "2.3min",
-          change: "-45sec",
-          trend: "up",
-          color: "#00CED1",
-        },
-        {
-          id: "orders",
-          label: "ORDERS PROCESSED",
-          value: "892",
-          change: "+156",
-          trend: "up",
-          color: "#1E90FF",
-        },
-        {
-          id: "efficiency",
-          label: "EFFICIENCY RATE",
-          value: "98.7%",
-          change: "+3.2%",
-          trend: "up",
-          color: "#4682B4",
-        },
-      ],
-    },
-    {
-      id: "nexus-sync",
-      name: "NEXUS SYNC",
-      description: "DATA INTELLIGENCE HUB",
-      color: "#00E676",
-      personality: "data-nexus",
-      status: "optimal",
-      kpis: [
-        {
-          id: "syncs",
-          label: "DATA SYNCS",
-          value: "45.2K",
-          change: "+892",
-          trend: "up",
-          color: "#00E676",
-        },
-        {
-          id: "uptime",
-          label: "SYSTEM UPTIME",
-          value: "99.97%",
-          change: "+0.02%",
-          trend: "up",
-          color: "#20B2AA",
-        },
-        {
-          id: "integrations",
-          label: "LIVE INTEGRATIONS",
-          value: 8,
-          change: "+2",
-          trend: "up",
-          color: "#32CD32",
-        },
-      ],
-    },
-    {
-      id: "zero-cb-fortress",
-      name: "ZERO CB FORTRESS",
-      description: "CHARGEBACK DEFENSE MATRIX",
-      color: "#DC143C",
-      personality: "fortress-defense",
-      status: "optimal",
-      kpis: [
-        {
-          id: "blocked",
-          label: "THREATS BLOCKED",
-          value: "156",
-          change: "+12",
-          trend: "up",
-          color: "#DC143C",
-        },
-        {
-          id: "rate",
-          label: "DEFENSE RATE",
-          value: "97.8%",
-          change: "+1.2%",
-          trend: "up",
-          color: "#B22222",
-        },
-        {
-          id: "saved",
-          label: "REVENUE PROTECTED",
-          value: "$45.2K",
-          change: "+$8.9K",
-          trend: "up",
-          color: "#8B0000",
-        },
-      ],
-    },
-  ]);
-
-  const systemOverview = {
-    totalRevenue: 847200,
-    activeUsers: 8934,
-    systemUptime: 99.97,
-    threatsBlocked: 2847,
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "operational":
+        return "OPERATIONAL";
+      case "maintenance":
+        return "MAINTENANCE";
+      case "offline":
+        return "OFFLINE";
+      default:
+        return "UNKNOWN";
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FF6A00]/5 via-[#8A2BE2]/5 via-[#00CED1]/5 via-[#00E676]/5 to-[#DC143C]/5 text-white matrix-effect">
-      {/* Command Center Header */}
-      <div className="border-b border-[#FF6A00]/20 bg-black/90 backdrop-blur-xl p-8">
-        <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-[#111111]">
+      {/* Command Header */}
+      <div className="f10-command-header">
+        <div className="f10-command-title">
+          <Command className="w-8 h-8 text-[#00BFFF]" />
           <div>
-            <h1 className="text-5xl font-black tracking-wider text-white mb-2">
-              ECELONX COMMAND CENTER
-            </h1>
-            <div className="flex items-center gap-4">
-              <div className="h-1 w-20 bg-gradient-to-r from-[#FF6A00] to-[#FF2D55]"></div>
-              <p className="text-sm font-bold text-[#FF6A00] uppercase tracking-widest">
-                ELITE GLOBAL OPERATIONS MATRIX
-              </p>
-            </div>
+            <h1 className="f10-heading-lg text-white">ECELONX COMMAND CENTER</h1>
+            <p className="f10-command-subtitle">Unified Operations Dashboard</p>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="bg-[#1E1E22] border border-[#00E676]/30 px-4 py-2">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-[#00E676] animate-pulse"></div>
-                <span className="text-xs font-bold text-[#00E676]">
-                  ALL SYSTEMS OPERATIONAL
-                </span>
-              </div>
-            </div>
-            <div className="bg-[#1E1E22] border border-[#FF6A00]/30 px-4 py-2">
-              <div className="flex items-center gap-2">
-                <Activity className="w-3 h-3 text-[#FF6A00]" />
-                <span className="text-xs font-bold text-white">
-                  {systemOverview.systemUptime}% UPTIME
-                </span>
-              </div>
-            </div>
+        </div>
+        <div className="f10-command-status">
+          <div className="f10-env-status">
+            <div className="f10-status-dot"></div>
+            <span>All Systems Operational</span>
+          </div>
+          <div className="f10-env-status">
+            <Zap className="w-4 h-4" />
+            <span>Live Sync: Active</span>
           </div>
         </div>
       </div>
 
-      {/* Global Metrics Dashboard */}
-      <div className="p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-[#1E1E22] border border-[#00E676]/30 p-6 hover:border-[#00E676] transition-colors tactical-hover">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-bold text-[#00E676] uppercase tracking-wider">
-                TOTAL REVENUE
-              </h3>
-              <DollarSign className="w-4 h-4 text-[#00E676]" />
-            </div>
-            <div className="text-3xl font-black text-white mb-2">
-              ${systemOverview.totalRevenue.toLocaleString()}
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-full h-1 bg-[#1E1E22]">
-                <div className="w-[78%] h-full bg-[#00E676]"></div>
-              </div>
-              <span className="text-xs text-[#00E676] font-bold">+23.4%</span>
-            </div>
-          </div>
-
-          <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6 hover:border-[#FF6A00] transition-colors tactical-hover">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-bold text-[#FF6A00] uppercase tracking-wider">
-                ACTIVE USERS
-              </h3>
-              <Users className="w-4 h-4 text-[#FF6A00]" />
-            </div>
-            <div className="text-3xl font-black text-white mb-2">
-              {systemOverview.activeUsers.toLocaleString()}
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-full h-1 bg-[#1E1E22]">
-                <div className="w-[65%] h-full bg-[#FF6A00]"></div>
-              </div>
-              <span className="text-xs text-[#FF6A00] font-bold">+12.8%</span>
-            </div>
-          </div>
-
-          <div className="bg-[#1E1E22] border border-[#FF2D55]/30 p-6 hover:border-[#FF2D55] transition-colors tactical-hover">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-bold text-[#FF2D55] uppercase tracking-wider">
-                SYSTEM HEALTH
-              </h3>
-              <Activity className="w-4 h-4 text-[#FF2D55]" />
-            </div>
-            <div className="text-3xl font-black text-white mb-2">
-              {systemOverview.systemUptime}%
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-full h-1 bg-[#1E1E22]">
-                <div className="w-[99%] h-full bg-[#FF2D55]"></div>
-              </div>
-              <span className="text-xs text-[#FF2D55] font-bold">OPTIMAL</span>
-            </div>
-          </div>
-
-          <div className="bg-[#1E1E22] border border-[#DC143C]/30 p-6 hover:border-[#DC143C] transition-colors tactical-hover">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-bold text-[#DC143C] uppercase tracking-wider">
-                THREATS BLOCKED
-              </h3>
-              <Shield className="w-4 h-4 text-[#DC143C]" />
-            </div>
-            <div className="text-3xl font-black text-white mb-2">
-              {systemOverview.threatsBlocked.toLocaleString()}
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-full h-1 bg-[#1E1E22]">
-                <div className="w-[92%] h-full bg-[#DC143C]"></div>
-              </div>
-              <span className="text-xs text-[#DC143C] font-bold">+15.6%</span>
-            </div>
-          </div>
+      {/* Module Grid */}
+      <div className="f10-ops-zone">
+        <div className="f10-zone-header">
+          <h2 className="f10-zone-title">Command Modules</h2>
         </div>
 
-        {/* Module Status Grid */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-black text-white uppercase tracking-wide mb-6">
-            MODULE OPERATIONS STATUS
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {moduleData.map((module) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {modules.map((module) => {
+            const Icon = module.icon;
+            return (
               <div
                 key={module.id}
-                onClick={() => handleModuleAccess(module.id)}
-                className="group relative bg-gradient-to-br from-[#1E1E22] to-[#2A2A2E] border-2 border-transparent hover:border-[#FF6A00] transition-all duration-300 cursor-pointer p-6 supreme-glow kanban-card"
+                onClick={() => navigate(module.path)}
+                className={cn(
+                  "f10-card cursor-pointer group",
+                  `bg-gradient-to-br ${module.bgGradient}`,
+                  "hover:border-opacity-100 transition-all duration-200"
+                )}
                 style={{
-                  borderTopColor: module.color,
-                  borderTopWidth: "6px",
-                  boxShadow: `0 4px 20px ${module.color}20, 0 0 40px ${module.color}10`,
+                  borderColor: `${module.color}40`
                 }}
               >
-                {/* Hover overlay effect */}
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"
-                  style={{ backgroundColor: module.color }}
-                />
-
                 {/* Module Header */}
-                <div className="flex items-start justify-between mb-6">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      {module.id === "firestorm" && (
-                        <Flame
-                          className="w-6 h-6"
-                          style={{ color: module.color }}
-                        />
-                      )}
-                      {module.id === "dream-portal" && (
-                        <Crown
-                          className="w-6 h-6"
-                          style={{ color: module.color }}
-                        />
-                      )}
-                      {module.id === "velocify-hub" && (
-                        <Rocket
-                          className="w-6 h-6"
-                          style={{ color: module.color }}
-                        />
-                      )}
-                      {module.id === "nexus-sync" && (
-                        <Database
-                          className="w-6 h-6"
-                          style={{ color: module.color }}
-                        />
-                      )}
-                      {module.id === "zero-cb-fortress" && (
-                        <Shield
-                          className="w-6 h-6"
-                          style={{ color: module.color }}
-                        />
-                      )}
-                      <h3 className="text-xl font-black text-white uppercase tracking-wide">
-                        {module.name}
-                      </h3>
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div 
+                      className="p-2 rounded-lg"
+                      style={{ backgroundColor: `${module.color}20` }}
+                    >
+                      <Icon 
+                        className="w-6 h-6" 
+                        style={{ color: module.color }}
+                      />
                     </div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
-                      {module.description}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-[#00E676] animate-pulse"></div>
-                      <span className="text-xs font-bold text-[#00E676] uppercase">
-                        ONLINE
+                    <div className="f10-status" style={{ 
+                      backgroundColor: `${getStatusColor(module.status)}20`,
+                      color: getStatusColor(module.status),
+                      borderColor: `${getStatusColor(module.status)}40`
+                    }}>
+                      {getStatusLabel(module.status)}
+                    </div>
+                  </div>
+                  <ChevronRight 
+                    className="w-5 h-5 text-[#737373] group-hover:text-white group-hover:translate-x-1 transition-all"
+                  />
+                </div>
+
+                {/* Module Title */}
+                <h3 className="f10-text-lg font-semibold text-white mb-2">
+                  {module.name}
+                </h3>
+
+                {/* Module Description */}
+                <p className="f10-text-sm text-[#b3b3b3] mb-4 leading-relaxed">
+                  {module.description}
+                </p>
+
+                {/* Module Metrics */}
+                {module.metrics && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="f10-text-xs text-[#737373]">Primary</span>
+                      <span 
+                        className="f10-text-xs font-medium"
+                        style={{ color: module.color }}
+                      >
+                        {module.metrics.primary}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="f10-text-xs text-[#737373]">Status</span>
+                      <span className="f10-text-xs font-medium text-[#b3b3b3]">
+                        {module.metrics.secondary}
                       </span>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* KPI Grid */}
-                <div className="grid grid-cols-1 gap-4 mb-6">
-                  {module.kpis.map((kpi) => (
-                    <div
-                      key={kpi.id}
-                      className="bg-[#2A2A2E]/50 p-3 border-l-2"
-                      style={{ borderLeftColor: kpi.color }}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-gray-300 uppercase tracking-wide">
-                          {kpi.label}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg font-black text-white">
-                            {kpi.value}
-                          </span>
-                          <span
-                            className="text-xs font-bold px-2 py-1 rounded"
-                            style={{
-                              color: kpi.color,
-                              backgroundColor: `${kpi.color}20`,
-                            }}
-                          >
-                            {kpi.change}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Action Area */}
-                <div className="mt-auto">
-                  <div
-                    className="w-full p-4 text-center font-black uppercase tracking-wider text-black transition-all duration-300 group-hover:shadow-lg"
-                    style={{
-                      background: `linear-gradient(135deg, ${module.color}, ${module.color}CC)`,
-                      transform: "translateY(0)",
-                    }}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      <Command className="w-4 h-4" />
-                      LAUNCH MODULE
-                    </div>
-                    <div className="text-xs mt-1 opacity-80">
-                      Click anywhere to access
-                    </div>
-                  </div>
-                </div>
+                {/* Hover Effect Border */}
+                <div 
+                  className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                  style={{
+                    border: `1px solid ${module.color}`,
+                    boxShadow: `0 0 20px ${module.color}20`
+                  }}
+                />
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
-        {/* Real-Time Activity Feed */}
-        <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6">
-          <h3 className="text-lg font-black text-[#FF6A00] uppercase mb-6">
-            REAL-TIME ACTIVITY FEED
-          </h3>
-          <div className="space-y-3 font-mono text-sm">
-            <div className="flex items-center gap-3">
-              <span className="text-[#00E676] font-bold">[FIRESTORM]</span>
-              <span className="text-white">
-                Campaign "HOLIDAY SURGE" deployed to 15.4K targets
-              </span>
-              <span className="text-gray-400">2 mins ago</span>
+        {/* System Overview */}
+        <div className="mt-12">
+          <div className="f10-zone-header">
+            <h2 className="f10-zone-title">System Overview</h2>
+          </div>
+
+          <div className="f10-grid-4">
+            <div className="f10-metric-card">
+              <div className="f10-metric-header">
+                <span className="f10-metric-title">Total Modules</span>
+                <Activity className="w-4 h-4 text-[#737373]" />
+              </div>
+              <div className="f10-metric-value">{modules.length}</div>
+              <div className="f10-metric-trend positive">
+                <span>All operational</span>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[#8A2BE2] font-bold">[DREAM PORTAL]</span>
-              <span className="text-white">
-                89 new premium members onboarded
-              </span>
-              <span className="text-gray-400">5 mins ago</span>
+
+            <div className="f10-metric-card">
+              <div className="f10-metric-header">
+                <span className="f10-metric-title">System Health</span>
+                <div className="f10-status-dot"></div>
+              </div>
+              <div className="f10-metric-value">100%</div>
+              <div className="f10-metric-trend positive">
+                <span>Optimal performance</span>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[#00CED1] font-bold">[VELOCIFY HUB]</span>
-              <span className="text-white">
-                Order fulfillment rate optimized to 98.7%
-              </span>
-              <span className="text-gray-400">8 mins ago</span>
+
+            <div className="f10-metric-card">
+              <div className="f10-metric-header">
+                <span className="f10-metric-title">Active Sessions</span>
+                <Network className="w-4 h-4 text-[#737373]" />
+              </div>
+              <div className="f10-metric-value">247</div>
+              <div className="f10-metric-trend positive">
+                <span>+12% from last hour</span>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[#DC143C] font-bold">[FORTRESS]</span>
-              <span className="text-white">
-                12 chargeback threats neutralized
-              </span>
-              <span className="text-gray-400">12 mins ago</span>
+
+            <div className="f10-metric-card">
+              <div className="f10-metric-header">
+                <span className="f10-metric-title">Response Time</span>
+                <Zap className="w-4 h-4 text-[#737373]" />
+              </div>
+              <div className="f10-metric-value">45ms</div>
+              <div className="f10-metric-trend positive">
+                <span>Lightning fast</span>
+              </div>
             </div>
           </div>
         </div>
