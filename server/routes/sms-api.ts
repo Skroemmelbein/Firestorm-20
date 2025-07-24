@@ -41,7 +41,15 @@ router.post("/send", async (req, res) => {
       },
     );
 
-    const result = await response.json();
+    // Clone response to avoid "body stream already read" error
+    const responseText = await response.text();
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error("❌ Failed to parse Twilio response:", parseError);
+      result = { message: "Failed to parse response", error: parseError.message };
+    }
 
     if (response.ok) {
       console.log(`✅ SMS sent successfully! SID: ${result.sid}`);
