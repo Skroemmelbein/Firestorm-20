@@ -169,8 +169,8 @@ export default function MemberPortal() {
             <h1 className="text-4xl font-black bg-gradient-to-r from-purple-600 via-pink-500 to-blue-500 bg-clip-text text-transparent tracking-widest">
               DREAM PORTAL
             </h1>
-            <p className="text-blue-700/70 font-medium">
-              Real member benefits from Xano database
+            <p className="text-purple-600/80 font-bold uppercase tracking-wide">
+              ✨ Premium Member Experience Platform ✨
             </p>
           </div>
           <div className="flex gap-2">
