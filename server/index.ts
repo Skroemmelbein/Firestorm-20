@@ -42,6 +42,7 @@ import {
   handleWebhook,
   getAgentStatus
 } from "./routes/rcs-api";
+import { sendAutomaticNotification } from "./routes/auto-notify";
 import realApiRouter from "./routes/real-api";
 import xanoSetupRouter from "./routes/xano-setup";
 
