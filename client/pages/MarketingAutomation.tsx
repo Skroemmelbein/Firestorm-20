@@ -38,6 +38,7 @@ import {
 import TwilioSegmentAudience from "@/components/TwilioSegmentAudience";
 import CampaignBuilder from "@/components/CampaignBuilder";
 import EmailTemplateDesigner from "@/components/EmailTemplateDesigner";
+import SMSTemplateLibrary from "@/components/SMSTemplateLibrary";
 
 interface Campaign {
   id: string;
