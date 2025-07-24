@@ -519,6 +519,11 @@ export default function Integrations() {
             </div>
           </TabsContent>
 
+          {/* SID Vault Tab */}
+          <TabsContent value="sid-vault" className="space-y-6">
+            <TwilioSIDVault />
+          </TabsContent>
+
           {/* System Config Tab */}
           <TabsContent value="settings" className="space-y-6">
             <div className="text-center py-12">
