@@ -373,6 +373,76 @@ export default function MarketingAutomation() {
             </TabsTrigger>
           </TabsList>
 
+          {/* AI Studio Flows Tab */}
+          <TabsContent value="studio-flows" className="space-y-6">
+            <TwilioStudioBuilder />
+          </TabsContent>
+
+          {/* Lead Journeys Tab */}
+          <TabsContent value="journeys" className="space-y-6">
+            <div className="flex items-center gap-4 mb-6">
+              <Brain className="w-8 h-8 text-[#FF6A00]" />
+              <h2 className="text-2xl font-black text-white uppercase tracking-wide">LEAD JOURNEY MAPPING</h2>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              <div className="bg-[#1E1E22] border border-[#00E676]/30 p-6">
+                <h3 className="text-lg font-black text-[#00E676] uppercase mb-4">ACTIVE JOURNEYS</h3>
+                <div className="text-4xl font-black text-white mb-2">12</div>
+                <div className="text-xs text-gray-400 uppercase">CONVERSION PATHS</div>
+              </div>
+
+              <div className="bg-[#1E1E22] border border-[#FFD700]/30 p-6">
+                <h3 className="text-lg font-black text-[#FFD700] uppercase mb-4">CONVERSION RATE</h3>
+                <div className="text-4xl font-black text-white mb-2">34.7%</div>
+                <div className="text-xs text-gray-400 uppercase">AVERAGE ACROSS JOURNEYS</div>
+              </div>
+
+              <div className="bg-[#1E1E22] border border-[#FF2D55]/30 p-6">
+                <h3 className="text-lg font-black text-[#FF2D55] uppercase mb-4">JOURNEY TIME</h3>
+                <div className="text-4xl font-black text-white mb-2">4.2d</div>
+                <div className="text-xs text-gray-400 uppercase">AVERAGE TO CONVERSION</div>
+              </div>
+            </div>
+
+            <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-8">
+              <h3 className="text-xl font-black text-[#FF6A00] uppercase mb-6">CUSTOMER JOURNEY FLOW</h3>
+              <div className="flex items-center justify-between">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#00E676] to-[#32CD32] flex items-center justify-center mb-3">
+                    <Users className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-sm font-bold text-white">AWARENESS</div>
+                  <div className="text-xs text-gray-400">2,847 leads</div>
+                </div>
+                <ArrowRight className="w-6 h-6 text-[#FF6A00]" />
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#FFD700] to-[#FFA500] flex items-center justify-center mb-3">
+                    <Eye className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-sm font-bold text-white">INTEREST</div>
+                  <div className="text-xs text-gray-400">1,234 engaged</div>
+                </div>
+                <ArrowRight className="w-6 h-6 text-[#FF6A00]" />
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#FF6A00] to-[#FF2D55] flex items-center justify-center mb-3">
+                    <Target className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-sm font-bold text-white">CONSIDERATION</div>
+                  <div className="text-xs text-gray-400">567 prospects</div>
+                </div>
+                <ArrowRight className="w-6 h-6 text-[#FF6A00]" />
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#8A2BE2] to-[#FF69B4] flex items-center justify-center mb-3">
+                    <DollarSign className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-sm font-bold text-white">CONVERSION</div>
+                  <div className="text-xs text-gray-400">198 customers</div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
           {/* Tactical Operations Tab */}
           <TabsContent value="campaigns" className="space-y-6">
             <div className="flex items-center justify-between">
