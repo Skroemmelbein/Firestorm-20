@@ -127,9 +127,15 @@ export default function Sidebar() {
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed left-0 top-0 h-full bg-[#111111] border-r border-[#333333] z-50 transition-all duration-300",
+          "fixed left-0 top-0 h-full backdrop-blur-xl bg-gradient-to-b from-purple-200/30 via-red-200/20 to-green-200/30 border-r border-white/20 shadow-xl z-50 transition-all duration-300",
           isCollapsed ? "w-16" : "w-72",
         )}
+        style={{
+          background: 'linear-gradient(180deg, rgba(196, 181, 253, 0.3) 0%, rgba(252, 165, 165, 0.2) 50%, rgba(167, 243, 208, 0.3) 100%)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        }}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-[#333333]">
