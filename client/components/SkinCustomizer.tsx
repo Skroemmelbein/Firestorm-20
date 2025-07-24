@@ -178,8 +178,8 @@ const DEFAULT_THEMES: ThemeConfig[] = [
 ];
 
 export default function SkinCustomizer() {
-  const [selectedTheme, setSelectedTheme] = useState<ThemeConfig>(DEFAULT_THEMES[0]);
-  const [customTheme, setCustomTheme] = useState<ThemeConfig>(DEFAULT_THEMES[0]);
+  const [selectedTheme, setSelectedTheme] = useState<ComprehensiveTheme>(COMPREHENSIVE_THEMES[0]);
+  const [customTheme, setCustomTheme] = useState<ComprehensiveTheme>(COMPREHENSIVE_THEMES[0]);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [isApplying, setIsApplying] = useState(false);
   const [currentTab, setCurrentTab] = useState("themes");
