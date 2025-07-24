@@ -165,7 +165,7 @@ export default function SMSInterface() {
             <div className="space-y-1">
               <div className="text-sm font-medium">Phone Number</div>
               <div className="font-mono text-xs text-muted-foreground">
-                +1 (855) 860-0037
+                +1 (855) 960-0037
               </div>
             </div>
             <Button
