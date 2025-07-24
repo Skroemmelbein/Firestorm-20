@@ -239,7 +239,7 @@ export default function MarketingAutomation() {
       <div className="container mx-auto px-6 py-8">
         {/* Critical Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-[#1E1E22] border border-[#00E676]/30 p-6 hover:border-[#00E676] transition-colors">
+          <div className="bg-[#1E1E22] border border-[#00E676]/30 p-6 hover:border-[#00E676] transition-colors supreme-float">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xs font-bold text-[#00E676] uppercase tracking-wider">
                 TOTAL REVENUE
