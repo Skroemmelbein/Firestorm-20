@@ -202,13 +202,17 @@ export default function MarketingAutomation() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+              <Badge className="bg-gradient-to-r from-red-500 to-orange-500 text-white border-orange-400 shadow-lg animate-pulse">
                 <Bot className="w-3 h-3 mr-1" />
-                AI Active
+                AI IGNITED 🔥
               </Badge>
-              <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
+              <Badge className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white border-yellow-400 shadow-lg">
                 <MessageSquare className="w-3 h-3 mr-1" />
-                SMS Working ✅
+                SMS BLASTING ⚡
+              </Badge>
+              <Badge className="bg-gradient-to-r from-yellow-500 to-red-500 text-white border-red-400 shadow-lg animate-bounce">
+                <Zap className="w-3 h-3 mr-1" />
+                FULL THROTTLE 🚀
               </Badge>
             </div>
           </div>
