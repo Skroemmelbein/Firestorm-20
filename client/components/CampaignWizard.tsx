@@ -62,7 +62,7 @@ export default function CampaignWizard() {
     startTime: "",
     endTime: "",
     message: "",
-    fromNumber: "+18559600037",
+    fromNumber: "+18558600037",
     estimatedReach: 0,
     estimatedCost: 0,
   });
@@ -175,8 +175,8 @@ export default function CampaignWizard() {
   ];
 
   const phoneNumbers = [
-    { number: "+18559600037", name: "Primary Marketing", active: true },
-    { number: "+18557212778", name: "Support Line", active: true },
+    { number: "+18558600037", name: "Primary Marketing", active: true },
+    { number: "+18558600037", name: "Support Line", active: true },
   ];
 
   // Calculate estimates based on selections
