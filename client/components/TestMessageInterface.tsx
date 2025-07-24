@@ -33,7 +33,7 @@ interface TestResult {
 
 export default function TestMessageInterface() {
   const [smsData, setSmsData] = useState({
-    phone: "+18559600037",
+    phone: "+18144409968",
     message:
       "🚀 Test SMS from RecurFlow! Your marketing automation is working perfectly.",
   });
