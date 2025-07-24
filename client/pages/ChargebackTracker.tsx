@@ -48,9 +48,11 @@ import {
   Phone,
   Calendar,
   DollarSign,
+  Crosshair,
+  Swords,
+  Command,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import AdminLayout from "@/components/AdminLayout";
 
 interface Chargeback {
   id: string;
@@ -101,14 +103,14 @@ export default function ChargebackTracker() {
       transactionId: "80595924716",
       customerId: "CUST_002",
       customerName: "Sarah Johnson",
-      amount: 59.99,
-      disputeCode: "75",
-      disputeReason: "Transaction Not Recognized",
-      dateDisputed: new Date("2024-08-14"),
-      dueDate: new Date("2024-08-28"),
+      amount: 299.99,
+      disputeCode: "62",
+      disputeReason: "Duplicate Processing",
+      dateDisputed: new Date("2024-08-18"),
+      dueDate: new Date("2024-09-01"),
       status: "new",
-      priority: "medium",
-      evidenceStatus: "partial",
+      priority: "critical",
+      evidenceStatus: "none",
       autoResponse: false,
       winProbability: 78,
     },
@@ -117,718 +119,475 @@ export default function ChargebackTracker() {
       transactionId: "80595924717",
       customerId: "CUST_003",
       customerName: "Mike Chen",
-      amount: 129.99,
-      disputeCode: "41",
-      disputeReason: "Cancelled Recurring Transaction",
-      dateDisputed: new Date("2024-08-13"),
-      dueDate: new Date("2024-08-27"),
+      amount: 149.99,
+      disputeCode: "13",
+      disputeReason: "Credit Not Processed",
+      dateDisputed: new Date("2024-08-20"),
+      dueDate: new Date("2024-09-03"),
       status: "responded",
-      priority: "low",
+      priority: "medium",
       evidenceStatus: "complete",
       autoResponse: true,
-      winProbability: 85,
+      winProbability: 87,
     },
   ]);
 
-  const [stats] = useState<ChargebackStats>({
-    thisMonth: 0.58,
-    thisQuarter: 0.61,
-    ytd: 0.54,
-    winRate: 87.3,
-    avgResponseTime: 2.4,
-    totalDisputed: 12450.87,
+  const [stats, setStats] = useState<ChargebackStats>({
+    thisMonth: 23,
+    thisQuarter: 67,
+    ytd: 234,
+    winRate: 89.2,
+    avgResponseTime: 2.3,
+    totalDisputed: 45280,
   });
 
-  const [selectedChargeback, setSelectedChargeback] =
-    useState<Chargeback | null>(null);
-  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [selectedTab, setSelectedTab] = useState("dashboard");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredChargebacks = chargebacks.filter((cb) => {
     const matchesStatus = filterStatus === "all" || cb.status === filterStatus;
-    const matchesSearch =
+    const matchesSearch = 
       cb.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cb.transactionId.includes(searchTerm) ||
-      cb.disputeReason.toLowerCase().includes(searchTerm.toLowerCase());
+      cb.id.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesStatus && matchesSearch;
   });
 
-  const getStatusColor = (status: Chargeback["status"]) => {
-    const colors = {
-      new: "bg-blue-100 text-blue-700 border-blue-200",
-      investigating: "bg-yellow-100 text-yellow-700 border-yellow-200",
-      responded: "bg-purple-100 text-purple-700 border-purple-200",
-      won: "bg-green-100 text-green-700 border-green-200",
-      lost: "bg-red-100 text-red-700 border-red-200",
-      expired: "bg-gray-100 text-gray-700 border-gray-200",
-    };
-    return colors[status];
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "new": return "#FF2D55";
+      case "investigating": return "#FFD700";
+      case "responded": return "#00CED1";
+      case "won": return "#00E676";
+      case "lost": return "#DC143C";
+      case "expired": return "#808080";
+      default: return "#FF6A00";
+    }
   };
 
-  const getPriorityColor = (priority: Chargeback["priority"]) => {
-    const colors = {
-      low: "bg-green-100 text-green-700",
-      medium: "bg-yellow-100 text-yellow-700",
-      high: "bg-orange-100 text-orange-700",
-      critical: "bg-red-100 text-red-700",
-    };
-    return colors[priority];
-  };
-
-  const generateAutoRebuttal = (chargeback: Chargeback) => {
-    // This would integrate with your rebuttal template system
-    console.log(`Generating auto-rebuttal for ${chargeback.id}`);
-  };
-
-  const daysUntilDue = (dueDate: Date) => {
-    const today = new Date();
-    const diffTime = dueDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "critical": return "#DC143C";
+      case "high": return "#FF2D55";
+      case "medium": return "#FFD700";
+      case "low": return "#00E676";
+      default: return "#FF6A00";
+    }
   };
 
   return (
-    <AdminLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold gradient-text tracking-tight">
-              Chargeback Defense Center
-            </h1>
-            <p className="text-blue-700/70 font-medium">
-              Automated chargeback response and dispute management
-            </p>
+    <div className="min-h-screen bg-[#0F0F10] text-white">
+      {/* Fortress Command Header */}
+      <div className="border-b border-[#DC143C]/20 bg-black/90 backdrop-blur-xl">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div className="relative">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#DC143C] via-[#B22222] to-[#8B0000] flex items-center justify-center border border-[#DC143C]/30 shadow-2xl shadow-[#DC143C]/20">
+                  <Shield className="w-10 h-10 text-white" />
+                </div>
+                <div className="absolute inset-0 bg-[#DC143C]/20 animate-pulse border border-[#DC143C]/50"></div>
+              </div>
+              <div>
+                <h1 className="text-6xl font-black tracking-wider text-white mb-1">
+                  ZERO CB FORTRESS
+                </h1>
+                <div className="flex items-center gap-3">
+                  <div className="h-1 w-16 bg-gradient-to-r from-[#DC143C] to-[#FF2D55]"></div>
+                  <p className="text-sm font-bold text-[#DC143C] uppercase tracking-widest">
+                    CHARGEBACK DEFENSE MATRIX
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="bg-[#1E1E22] border border-[#00E676]/30 px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-[#00E676] animate-pulse"></div>
+                  <span className="text-xs font-bold text-[#00E676]">FORTRESS ACTIVE</span>
+                </div>
+              </div>
+              <div className="bg-[#1E1E22] border border-[#DC143C]/30 px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <Crosshair className="w-3 h-3 text-[#DC143C]" />
+                  <span className="text-xs font-bold text-white">{stats.winRate}% WIN RATE</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="gap-2 border-blue-200 text-blue-700"
+        </div>
+      </div>
+
+      {/* Defense Matrix Dashboard */}
+      <div className="container mx-auto px-6 py-8">
+        {/* Critical Metrics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-[#1E1E22] border border-[#DC143C]/30 p-6 hover:border-[#DC143C] transition-colors">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold text-[#DC143C] uppercase tracking-wider">
+                THREATS THIS MONTH
+              </h3>
+              <AlertTriangle className="w-4 h-4 text-[#DC143C]" />
+            </div>
+            <div className="text-3xl font-black text-white mb-2">
+              {stats.thisMonth}
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-full h-1 bg-[#1E1E22]">
+                <div className="w-[65%] h-full bg-[#DC143C]"></div>
+              </div>
+              <span className="text-xs text-[#DC143C] font-bold">-23%</span>
+            </div>
+          </div>
+
+          <div className="bg-[#1E1E22] border border-[#00E676]/30 p-6 hover:border-[#00E676] transition-colors">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold text-[#00E676] uppercase tracking-wider">
+                DEFENSE SUCCESS RATE
+              </h3>
+              <Shield className="w-4 h-4 text-[#00E676]" />
+            </div>
+            <div className="text-3xl font-black text-white mb-2">
+              {stats.winRate}%
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-full h-1 bg-[#1E1E22]">
+                <div className="w-[89%] h-full bg-[#00E676]"></div>
+              </div>
+              <span className="text-xs text-[#00E676] font-bold">+5.2%</span>
+            </div>
+          </div>
+
+          <div className="bg-[#1E1E22] border border-[#FFD700]/30 p-6 hover:border-[#FFD700] transition-colors">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold text-[#FFD700] uppercase tracking-wider">
+                AVG RESPONSE TIME
+              </h3>
+              <Clock className="w-4 h-4 text-[#FFD700]" />
+            </div>
+            <div className="text-3xl font-black text-white mb-2">
+              {stats.avgResponseTime}h
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-full h-1 bg-[#1E1E22]">
+                <div className="w-[45%] h-full bg-[#FFD700]"></div>
+              </div>
+              <span className="text-xs text-[#FFD700] font-bold">-1.2h</span>
+            </div>
+          </div>
+
+          <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6 hover:border-[#FF6A00] transition-colors">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold text-[#FF6A00] uppercase tracking-wider">
+                REVENUE PROTECTED
+              </h3>
+              <DollarSign className="w-4 h-4 text-[#FF6A00]" />
+            </div>
+            <div className="text-3xl font-black text-white mb-2">
+              ${stats.totalDisputed.toLocaleString()}
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-full h-1 bg-[#1E1E22]">
+                <div className="w-[78%] h-full bg-[#FF6A00]"></div>
+              </div>
+              <span className="text-xs text-[#FF6A00] font-bold">+12%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Command Center Tabs */}
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5 bg-[#1E1E22] border border-[#DC143C]/30 p-1">
+            <TabsTrigger 
+              value="dashboard" 
+              className="data-[state=active]:bg-[#DC143C] data-[state=active]:text-white text-white hover:text-[#DC143C] transition-colors"
             >
-              <Upload className="w-4 h-4" />
-              Import Disputes
-            </Button>
-            <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 corp-shadow">
-              <Zap className="w-4 h-4" />
-              Auto-Respond All
-            </Button>
-          </div>
-        </div>
-
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-          <Card className="glass-card corp-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">
-                This Month
-              </CardTitle>
-              <TrendingDown className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold gradient-text">
-                {stats.thisMonth}%
-              </div>
-              <p className="text-xs text-green-600 font-medium">
-                Chargeback ratio
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card corp-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">
-                Win Rate
-              </CardTitle>
-              <Target className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold gradient-text">
-                {stats.winRate}%
-              </div>
-              <p className="text-xs text-green-600 font-medium">Disputes won</p>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card corp-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">
-                Response Time
-              </CardTitle>
-              <Clock className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold gradient-text">
-                {stats.avgResponseTime}
-              </div>
-              <p className="text-xs text-blue-600 font-medium">Avg days</p>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card corp-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">
-                Active Cases
-              </CardTitle>
-              <AlertTriangle className="h-4 w-4 text-yellow-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold gradient-text">
-                {
-                  chargebacks.filter((cb) =>
-                    ["new", "investigating"].includes(cb.status),
-                  ).length
-                }
-              </div>
-              <p className="text-xs text-yellow-600 font-medium">
-                Need attention
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card corp-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">
-                Auto-Response
-              </CardTitle>
-              <Zap className="h-4 w-4 text-purple-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold gradient-text">
-                {chargebacks.filter((cb) => cb.autoResponse).length}
-              </div>
-              <p className="text-xs text-purple-600 font-medium">Automated</p>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card corp-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">
-                Total Disputed
-              </CardTitle>
-              <DollarSign className="h-4 w-4 text-red-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold gradient-text">
-                ${stats.totalDisputed.toLocaleString()}
-              </div>
-              <p className="text-xs text-red-600 font-medium">This month</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Tabs defaultValue="dashboard" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4 glass-card corp-shadow">
-            <TabsTrigger value="dashboard" className="gap-2">
-              <Shield className="w-4 h-4" />
-              Dashboard
+              <Shield className="w-4 h-4 mr-2" />
+              FORTRESS COMMAND
             </TabsTrigger>
-            <TabsTrigger value="cases" className="gap-2">
-              <FileText className="w-4 h-4" />
-              Active Cases
+            <TabsTrigger 
+              value="threats" 
+              className="data-[state=active]:bg-[#DC143C] data-[state=active]:text-white text-white hover:text-[#DC143C] transition-colors"
+            >
+              <Crosshair className="w-4 h-4 mr-2" />
+              ACTIVE THREATS
             </TabsTrigger>
-            <TabsTrigger value="evidence" className="gap-2">
-              <Database className="w-4 h-4" />
-              Evidence Vault
+            <TabsTrigger 
+              value="evidence" 
+              className="data-[state=active]:bg-[#DC143C] data-[state=active]:text-white text-white hover:text-[#DC143C] transition-colors"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              EVIDENCE VAULT
             </TabsTrigger>
-            <TabsTrigger value="automation" className="gap-2">
-              <Zap className="w-4 h-4" />
-              Automation
+            <TabsTrigger 
+              value="analytics" 
+              className="data-[state=active]:bg-[#DC143C] data-[state=active]:text-white text-white hover:text-[#DC143C] transition-colors"
+            >
+              <Target className="w-4 h-4 mr-2" />
+              BATTLE ANALYTICS
+            </TabsTrigger>
+            <TabsTrigger 
+              value="settings" 
+              className="data-[state=active]:bg-[#DC143C] data-[state=active]:text-white text-white hover:text-[#DC143C] transition-colors"
+            >
+              <Gavel className="w-4 h-4 mr-2" />
+              DEFENSE CONFIG
             </TabsTrigger>
           </TabsList>
 
-          {/* Dashboard Tab */}
-          <TabsContent value="dashboard" className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="lg:col-span-2 glass-card corp-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5" />
-                    Chargeback Trends
-                  </CardTitle>
-                  <CardDescription>
-                    Monthly chargeback ratios and performance
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-3 gap-4 text-center">
+          {/* Active Threats Tab */}
+          <TabsContent value="threats" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-black text-white uppercase tracking-wide">ACTIVE THREAT MATRIX</h2>
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline" 
+                  className="border-[#DC143C]/50 text-[#DC143C] hover:bg-[#DC143C] hover:text-white transition-colors"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  FILTER THREATS
+                </Button>
+                <Button className="bg-gradient-to-r from-[#DC143C] to-[#FF2D55] text-white font-bold hover:from-[#FF2D55] hover:to-[#DC143C] transition-all">
+                  <Swords className="w-4 h-4 mr-2" />
+                  LAUNCH COUNTERATTACK
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {filteredChargebacks.map((chargeback) => (
+                <div
+                  key={chargeback.id}
+                  className="bg-[#1E1E22] border border-[#DC143C]/30 p-6 hover:border-[#DC143C] transition-all hover:shadow-lg hover:shadow-[#DC143C]/20"
+                >
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                      <div 
+                        className="w-3 h-3"
+                        style={{
+                          backgroundColor: getPriorityColor(chargeback.priority),
+                          boxShadow: `0 0 10px ${getPriorityColor(chargeback.priority)}50`
+                        }}
+                      />
                       <div>
-                        <div className="text-sm text-blue-600/70">
-                          This Month
-                        </div>
-                        <div className="text-xl font-bold text-blue-800">
-                          {stats.thisMonth}%
-                        </div>
-                        <div className="w-full bg-blue-100 rounded-full h-2 mt-2">
-                          <div
-                            className="bg-gradient-to-r from-blue-600 to-green-600 h-2 rounded-full"
-                            style={{ width: `${stats.thisMonth * 10}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-blue-600/70">
-                          This Quarter
-                        </div>
-                        <div className="text-xl font-bold text-blue-800">
-                          {stats.thisQuarter}%
-                        </div>
-                        <div className="w-full bg-blue-100 rounded-full h-2 mt-2">
-                          <div
-                            className="bg-gradient-to-r from-blue-600 to-green-600 h-2 rounded-full"
-                            style={{ width: `${stats.thisQuarter * 10}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-blue-600/70">YTD</div>
-                        <div className="text-xl font-bold text-blue-800">
-                          {stats.ytd}%
-                        </div>
-                        <div className="w-full bg-blue-100 rounded-full h-2 mt-2">
-                          <div
-                            className="bg-gradient-to-r from-blue-600 to-green-600 h-2 rounded-full"
-                            style={{ width: `${stats.ytd * 10}%` }}
-                          ></div>
+                        <h3 className="text-xl font-black text-white uppercase tracking-wide">
+                          THREAT ID: {chargeback.id}
+                        </h3>
+                        <div className="flex items-center gap-4 mt-2">
+                          <div 
+                            className="px-3 py-1 border text-xs font-bold uppercase"
+                            style={{
+                              backgroundColor: `${getStatusColor(chargeback.status)}20`,
+                              borderColor: `${getStatusColor(chargeback.status)}50`,
+                              color: getStatusColor(chargeback.status)
+                            }}
+                          >
+                            {chargeback.status}
+                          </div>
+                          <div 
+                            className="px-3 py-1 border text-xs font-bold uppercase"
+                            style={{
+                              backgroundColor: `${getPriorityColor(chargeback.priority)}20`,
+                              borderColor: `${getPriorityColor(chargeback.priority)}50`,
+                              color: getPriorityColor(chargeback.priority)
+                            }}
+                          >
+                            {chargeback.priority} PRIORITY
+                          </div>
+                          {chargeback.autoResponse && (
+                            <div className="px-3 py-1 bg-[#00E676]/20 border border-[#00E676]/50 text-[#00E676] text-xs font-bold uppercase">
+                              AUTO DEFENSE
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
-
-                    <Alert className="border-green-200 bg-green-50">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      <AlertTitle className="text-green-800">
-                        Excellent Performance
-                      </AlertTitle>
-                      <AlertDescription className="text-green-700">
-                        All ratios are well below 1% threshold. Automated
-                        defense system is performing optimally.
-                      </AlertDescription>
-                    </Alert>
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="border-[#DC143C]/50 text-[#DC143C] hover:bg-[#DC143C] hover:text-white"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="border-[#DC143C]/50 text-[#DC143C] hover:bg-[#DC143C] hover:text-white"
+                      >
+                        <Gavel className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
 
-              <Card className="glass-card corp-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="w-5 h-5" />
-                    Urgent Actions
-                  </CardTitle>
-                  <CardDescription>
-                    Cases requiring immediate attention
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-6 gap-6 mb-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-[#DC143C]">
+                        ${chargeback.amount}
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        DISPUTED AMOUNT
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-[#FFD700]">
+                        {chargeback.disputeCode}
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        THREAT CODE
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-[#00E676]">
+                        {chargeback.winProbability}%
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        WIN PROBABILITY
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-[#FF6A00]">
+                        {Math.floor((chargeback.dueDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}d
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        TIME REMAINING
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-white">
+                        {chargeback.customerName.split(' ')[0]}
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        TARGET NAME
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-[#00CED1]">
+                        {chargeback.evidenceStatus.toUpperCase()}
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        EVIDENCE STATUS
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="space-y-3">
-                    {chargebacks
-                      .filter((cb) => daysUntilDue(cb.dueDate) <= 3)
-                      .map((chargeback) => (
-                        <div
-                          key={chargeback.id}
-                          className="p-3 glass-card rounded-lg border-l-4 border-l-red-500"
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="font-semibold text-blue-800">
-                              {chargeback.customerName}
-                            </span>
-                            <Badge className="bg-red-100 text-red-700">
-                              {daysUntilDue(chargeback.dueDate)}d left
-                            </Badge>
-                          </div>
-                          <div className="text-sm text-blue-600/70">
-                            ${chargeback.amount} • {chargeback.disputeReason}
-                          </div>
-                          <div className="flex gap-2 mt-2">
-                            <Button size="sm" className="text-xs">
-                              <Zap className="w-3 h-3 mr-1" />
-                              Auto-Respond
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-bold text-white">THREAT REASON</span>
+                      <span className="text-sm text-[#DC143C] font-bold">{chargeback.disputeReason}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-bold text-white">TRANSACTION ID</span>
+                      <span className="text-sm text-white font-mono">{chargeback.transactionId}</span>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              ))}
             </div>
           </TabsContent>
 
-          {/* Active Cases Tab */}
-          <TabsContent value="cases" className="space-y-4">
-            <Card className="glass-card corp-shadow">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <FileText className="w-5 h-5" />
-                      Chargeback Cases
-                    </CardTitle>
-                    <CardDescription>
-                      Manage all active and historical disputes
-                    </CardDescription>
+          {/* Dashboard Tab */}
+          <TabsContent value="dashboard" className="space-y-6">
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">FORTRESS OVERVIEW</h2>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-[#1E1E22] border border-[#DC143C]/30 p-6">
+                <h3 className="text-lg font-black text-[#DC143C] uppercase mb-6">THREAT DISTRIBUTION</h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-bold text-white">NEW THREATS</span>
+                    <span className="text-lg font-black text-[#FF2D55]">12</span>
                   </div>
-                  <div className="flex gap-2">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-600 w-4 h-4" />
-                      <Input
-                        placeholder="Search cases..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 w-64"
-                      />
-                    </div>
-                    <Select
-                      value={filterStatus}
-                      onValueChange={setFilterStatus}
-                    >
-                      <SelectTrigger className="w-32">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="new">New</SelectItem>
-                        <SelectItem value="investigating">
-                          Investigating
-                        </SelectItem>
-                        <SelectItem value="responded">Responded</SelectItem>
-                        <SelectItem value="won">Won</SelectItem>
-                        <SelectItem value="lost">Lost</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="w-full h-2 bg-[#1E1E22]">
+                    <div className="w-[52%] h-full bg-[#FF2D55]"></div>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-bold text-white">UNDER INVESTIGATION</span>
+                    <span className="text-lg font-black text-[#FFD700]">8</span>
+                  </div>
+                  <div className="w-full h-2 bg-[#1E1E22]">
+                    <div className="w-[35%] h-full bg-[#FFD700]"></div>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-bold text-white">DEFENDED</span>
+                    <span className="text-lg font-black text-[#00E676]">3</span>
+                  </div>
+                  <div className="w-full h-2 bg-[#1E1E22]">
+                    <div className="w-[13%] h-full bg-[#00E676]"></div>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {filteredChargebacks.map((chargeback) => (
-                    <Card
-                      key={chargeback.id}
-                      className={cn(
-                        "border-border/50 cursor-pointer transition-all hover:shadow-sm corp-shadow",
-                        selectedChargeback?.id === chargeback.id &&
-                          "ring-2 ring-blue-500",
-                      )}
-                      onClick={() => setSelectedChargeback(chargeback)}
-                    >
-                      <CardContent className="pt-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <span className="font-semibold text-blue-800">
-                                {chargeback.customerName}
-                              </span>
-                              <Badge
-                                className={getStatusColor(chargeback.status)}
-                              >
-                                {chargeback.status}
-                              </Badge>
-                              <Badge
-                                className={getPriorityColor(
-                                  chargeback.priority,
-                                )}
-                              >
-                                {chargeback.priority}
-                              </Badge>
-                              {chargeback.autoResponse && (
-                                <Badge className="bg-purple-100 text-purple-700">
-                                  <Zap className="w-3 h-3 mr-1" />
-                                  Auto
-                                </Badge>
-                              )}
-                            </div>
+              </div>
 
-                            <div className="grid grid-cols-4 gap-4 text-sm">
-                              <div>
-                                <span className="text-blue-600/70">
-                                  Amount:
-                                </span>
-                                <div className="font-medium text-blue-800">
-                                  ${chargeback.amount}
-                                </div>
-                              </div>
-                              <div>
-                                <span className="text-blue-600/70">
-                                  Dispute Code:
-                                </span>
-                                <div className="font-medium text-blue-800">
-                                  {chargeback.disputeCode}
-                                </div>
-                              </div>
-                              <div>
-                                <span className="text-blue-600/70">
-                                  Win Probability:
-                                </span>
-                                <div className="font-medium text-green-600">
-                                  {chargeback.winProbability}%
-                                </div>
-                              </div>
-                              <div>
-                                <span className="text-blue-600/70">
-                                  Due Date:
-                                </span>
-                                <div className="font-medium text-blue-800">
-                                  {daysUntilDue(chargeback.dueDate)} days
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="mt-2 text-sm text-blue-600/70">
-                              <strong>Reason:</strong>{" "}
-                              {chargeback.disputeReason} •
-                              <strong> Transaction:</strong>{" "}
-                              {chargeback.transactionId}
-                            </div>
-                          </div>
-
-                          <div className="flex gap-2 ml-4">
-                            <Button size="sm" variant="outline">
-                              <Eye className="w-3 h-3" />
-                            </Button>
-                            <Button size="sm" className="gap-1">
-                              <Gavel className="w-3 h-3" />
-                              Respond
-                            </Button>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+              <div className="bg-[#1E1E22] border border-[#00E676]/30 p-6">
+                <h3 className="text-lg font-black text-[#00E676] uppercase mb-6">DEFENSE EFFECTIVENESS</h3>
+                <div className="text-center">
+                  <div className="text-6xl font-black text-white mb-4">{stats.winRate}%</div>
+                  <div className="text-sm text-gray-400 uppercase mb-4">OVERALL WIN RATE</div>
+                  <div className="px-4 py-2 bg-[#00E676]/20 border border-[#00E676]/50 text-[#00E676] text-xs font-bold uppercase">
+                    +5.2% THIS QUARTER
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
 
           {/* Evidence Vault Tab */}
-          <TabsContent value="evidence" className="space-y-4">
-            <Card className="glass-card corp-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Database className="w-5 h-5" />
-                  Evidence Management System
-                </CardTitle>
-                <CardDescription>
-                  Automated evidence collection and rebuttal packet generation
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <Card className="p-4 border-blue-200 bg-blue-50">
-                    <div className="flex items-center gap-3 mb-2">
-                      <UserCheck className="w-5 h-5 text-blue-600" />
-                      <span className="font-semibold text-blue-800">
-                        Identity & Auth
-                      </span>
-                    </div>
-                    <ul className="text-sm space-y-1 text-blue-700">
-                      <li>✅ Signed agreements</li>
-                      <li>✅ IP address logs</li>
-                      <li>✅ Device fingerprints</li>
-                      <li>✅ Plaid verification</li>
-                      <li>✅ 3DS authentication</li>
-                    </ul>
-                  </Card>
-
-                  <Card className="p-4 border-green-200 bg-green-50">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Mail className="w-5 h-5 text-green-600" />
-                      <span className="font-semibold text-green-800">
-                        Fulfillment
-                      </span>
-                    </div>
-                    <ul className="text-sm space-y-1 text-green-700">
-                      <li>✅ Welcome emails</li>
-                      <li>✅ Service delivery</li>
-                      <li>✅ Usage logs</li>
-                      <li>✅ Access records</li>
-                      <li>✅ Terms acceptance</li>
-                    </ul>
-                  </Card>
-
-                  <Card className="p-4 border-purple-200 bg-purple-50">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Phone className="w-5 h-5 text-purple-600" />
-                      <span className="font-semibold text-purple-800">
-                        Communication
-                      </span>
-                    </div>
-                    <ul className="text-sm space-y-1 text-purple-700">
-                      <li>✅ SMS notifications</li>
-                      <li>✅ Email threads</li>
-                      <li>✅ Support tickets</li>
-                      <li>✅ Call recordings</li>
-                      <li>✅ Chat transcripts</li>
-                    </ul>
-                  </Card>
-
-                  <Card className="p-4 border-orange-200 bg-orange-50">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Gavel className="w-5 h-5 text-orange-600" />
-                      <span className="font-semibold text-orange-800">
-                        Legal Framework
-                      </span>
-                    </div>
-                    <ul className="text-sm space-y-1 text-orange-700">
-                      <li>✅ Visa regulations</li>
-                      <li>✅ Mastercard rules</li>
-                      <li>✅ E-SIGN compliance</li>
-                      <li>✅ NACHA standards</li>
-                      <li>✅ State laws</li>
-                    </ul>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
+          <TabsContent value="evidence" className="space-y-6">
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">EVIDENCE VAULT</h2>
+            <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6">
+              <div className="text-center py-12">
+                <FileText className="w-12 h-12 mx-auto text-[#FF6A00] mb-4" />
+                <p className="text-white">Evidence management system coming online</p>
+              </div>
+            </div>
           </TabsContent>
 
-          {/* Automation Tab */}
-          <TabsContent value="automation" className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="glass-card corp-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Zap className="w-5 h-5" />
-                    Auto-Response Rules
-                  </CardTitle>
-                  <CardDescription>
-                    Configure automated chargeback responses
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <Card className="border-green-200 bg-green-50 p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-semibold text-green-800">
-                          High-Evidence Cases
-                        </span>
-                        <Badge className="bg-green-100 text-green-700">
-                          Active
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-green-700 mb-3">
-                        Auto-respond to disputes with 90%+ evidence completeness
-                      </p>
-                      <div className="text-xs text-green-600">
-                        Last 30 days: 47 cases • 94% win rate
-                      </div>
-                    </Card>
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">BATTLE ANALYTICS</h2>
+            <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6">
+              <div className="text-center py-12">
+                <Target className="w-12 h-12 mx-auto text-[#FF6A00] mb-4" />
+                <p className="text-white">Advanced analytics dashboard deploying</p>
+              </div>
+            </div>
+          </TabsContent>
 
-                    <Card className="border-blue-200 bg-blue-50 p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-semibold text-blue-800">
-                          Friendly Fraud Detection
-                        </span>
-                        <Badge className="bg-blue-100 text-blue-700">
-                          Active
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-blue-700 mb-3">
-                        Auto-escalate suspected friendly fraud cases
-                      </p>
-                      <div className="text-xs text-blue-600">
-                        Detection accuracy: 87% • False positives: 3%
-                      </div>
-                    </Card>
-
-                    <Card className="border-purple-200 bg-purple-50 p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-semibold text-purple-800">
-                          Template Selection
-                        </span>
-                        <Badge className="bg-purple-100 text-purple-700">
-                          Active
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-purple-700 mb-3">
-                        AI selects optimal rebuttal template based on dispute
-                        code
-                      </p>
-                      <div className="text-xs text-purple-600">
-                        Template accuracy: 96% • Manual overrides: 8%
-                      </div>
-                    </Card>
+          {/* Settings Tab */}
+          <TabsContent value="settings" className="space-y-6">
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">DEFENSE CONFIGURATION</h2>
+            
+            <div className="grid gap-6">
+              <div className="bg-[#1E1E22] border border-[#DC143C]/30 p-6">
+                <h3 className="text-lg font-black text-[#DC143C] uppercase mb-4">AUTO-DEFENSE SYSTEM</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-white">AUTOMATIC RESPONSE</span>
+                    <div className="px-3 py-1 bg-[#00E676]/20 border border-[#00E676]/50 text-[#00E676] text-xs font-bold">
+                      ENABLED
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card className="glass-card corp-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Target className="w-5 h-5" />
-                    Success Metrics
-                  </CardTitle>
-                  <CardDescription>
-                    Automated defense system performance
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-blue-800">
-                          Overall Win Rate
-                        </span>
-                        <span className="text-lg font-bold text-green-600">
-                          87.3%
-                        </span>
-                      </div>
-                      <div className="w-full bg-blue-100 rounded-full h-3">
-                        <div
-                          className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full"
-                          style={{ width: "87.3%" }}
-                        ></div>
-                      </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-white">THREAT MONITORING</span>
+                    <div className="px-3 py-1 bg-[#00E676]/20 border border-[#00E676]/50 text-[#00E676] text-xs font-bold">
+                      ACTIVE
                     </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-blue-800">
-                          Auto-Response Rate
-                        </span>
-                        <span className="text-lg font-bold text-blue-600">
-                          76%
-                        </span>
-                      </div>
-                      <div className="w-full bg-blue-100 rounded-full h-3">
-                        <div
-                          className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full"
-                          style={{ width: "76%" }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-blue-800">
-                          Evidence Collection
-                        </span>
-                        <span className="text-lg font-bold text-purple-600">
-                          94%
-                        </span>
-                      </div>
-                      <div className="w-full bg-blue-100 rounded-full h-3">
-                        <div
-                          className="bg-gradient-to-r from-purple-500 to-purple-600 h-3 rounded-full"
-                          style={{ width: "94%" }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    <Alert className="border-blue-200 bg-blue-50">
-                      <Zap className="h-4 w-4 text-blue-600" />
-                      <AlertTitle className="text-blue-800">
-                        AI Enhancement Ready
-                      </AlertTitle>
-                      <AlertDescription className="text-blue-700">
-                        System has learned from 500+ cases. Ready for advanced
-                        ML deployment.
-                      </AlertDescription>
-                    </Alert>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-white">ALERT NOTIFICATIONS</span>
+                    <div className="px-3 py-1 bg-[#00E676]/20 border border-[#00E676]/50 text-[#00E676] text-xs font-bold">
+                      ENABLED
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
       </div>
-    </AdminLayout>
+    </div>
   );
 }
