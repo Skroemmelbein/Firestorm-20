@@ -1,7 +1,7 @@
 // Send test SMS immediately
 const sendTestSMS = async () => {
   try {
-    console.log("🚀 Sending test SMS to 814-440-9968...");
+    console.log("🚀 Sending test SMS to 855-860-0037...");
 
     const response = await fetch(
       "https://c57c3ee55ba54f0c81c1553aa0f19682-161e9f22b0c34c888a2e08047.fly.dev/api/real/sms/send",
@@ -11,7 +11,7 @@ const sendTestSMS = async () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          to: "+18144409968",
+          to: "+18558600037",
           body:
             "🚀 Test SMS from RecurFlow! Your enterprise SMS system is working perfectly. Sent at " +
             new Date().toLocaleString() +
@@ -24,8 +24,8 @@ const sendTestSMS = async () => {
 
     if (result.success || response.ok) {
       console.log("✅ SMS SENT SUCCESSFULLY!");
-      console.log("📱 To: +1 (814) 440-9968");
-      console.log("📞 From: +1 (855) 800-0037");
+      console.log("📱 To: +1 (855) 860-0037");
+      console.log("📞 From: +1 (855) 860-0037");
       console.log("💌 Message ID:", result.sid);
       console.log("⏰ Sent at:", new Date().toLocaleString());
       console.log("📋 Status:", result.status || "Delivered");
