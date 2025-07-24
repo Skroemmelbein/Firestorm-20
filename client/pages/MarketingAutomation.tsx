@@ -289,6 +289,11 @@ export default function MarketingAutomation() {
             <CampaignBuilder />
           </TabsContent>
 
+          {/* Email Templates Tab */}
+          <TabsContent value="email-templates" className="space-y-6">
+            <EmailTemplateDesigner />
+          </TabsContent>
+
           {/* Campaign Command Tab */}
           <TabsContent value="command" className="space-y-6">
             <div className="flex items-center justify-between">
