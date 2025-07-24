@@ -22,6 +22,7 @@ import DevOpsCenter from "./pages/DevOpsCenter";
 import ClientPortal from "./pages/ClientPortal";
 import LeadJourney from "./pages/LeadJourney";
 import Overview from "./pages/Overview";
+import TestModule from "./pages/TestModule";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
