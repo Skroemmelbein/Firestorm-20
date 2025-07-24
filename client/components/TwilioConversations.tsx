@@ -108,9 +108,13 @@ export default function TwilioConversations() {
       if (response.ok) {
         const data = await response.json();
         setMessages(data.messages || []);
+      } else {
+        console.error("Failed to load messages:", response.status, response.statusText);
+        setMessages([]);
       }
     } catch (error) {
-      console.error("Failed to load messages:", error);
+      console.error("Failed to load messages - network error:", error);
+      setMessages([]);
     } finally {
       setIsLoading((prev) => ({ ...prev, messages: false }));
     }
