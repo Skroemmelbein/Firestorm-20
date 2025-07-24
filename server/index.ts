@@ -126,5 +126,11 @@ export function createServer() {
   app.post("/api/test-sendgrid", testSendGrid);
   app.get("/api/sendgrid-status", getSendGridStatus);
 
+  // Studio Flow routes
+  app.post("/api/studio-flows", createStudioFlow);
+  app.get("/api/studio-flows", getStudioFlows);
+  app.post("/api/studio-flows/:flowSid", updateStudioFlow);
+  app.post("/api/test-twilio-connection", testTwilioConnection);
+
   return app;
 }
