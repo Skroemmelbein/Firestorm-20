@@ -639,6 +639,11 @@ export default function AdminDashboard() {
             </div>
           </TabsContent>
 
+          {/* SendGrid Email Tab */}
+          <TabsContent value="sendgrid" className="space-y-4">
+            <SendGridTest />
+          </TabsContent>
+
           {/* Activity Tab */}
           <TabsContent value="activity" className="space-y-4">
             <Card>
