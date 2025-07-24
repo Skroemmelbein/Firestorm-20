@@ -213,7 +213,7 @@ export default function TwilioConversations() {
   };
 
   return (
-    <Card className="f10-card">
+    <Card className="border-2 border-blue-200/50 bg-gradient-to-br from-white to-blue-50/30">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-[#00BFFF]" />
@@ -222,8 +222,8 @@ export default function TwilioConversations() {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Create New Conversation */}
-        <div className="bg-[#1a1a1a] border border-[#333333] rounded-lg p-4">
-          <h3 className="font-semibold text-white mb-4">
+        <div className="bg-white/80 border border-gray-200 rounded-lg p-4 shadow-sm">
+          <h3 className="font-semibold text-gray-800 mb-4">
             Start New Conversation
           </h3>
           <div className="grid grid-cols-3 gap-4 mb-4">
@@ -480,7 +480,7 @@ export default function TwilioConversations() {
             <div>
               <strong className="text-white">How it works:</strong>
               <ul className="text-[#b3b3b3] mt-1 space-y-1">
-                <li>• Start a conversation with a participant</li>
+                <li>�� Start a conversation with a participant</li>
                 <li>• Send messages from this interface</li>
                 <li>• Participant can reply via SMS</li>
                 <li>• All messages appear in real-time</li>
