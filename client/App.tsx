@@ -35,7 +35,7 @@ export default function App() {
         <Sonner />
         <SiriAssistant />
         <BrowserRouter>
-          <div className="flex min-h-screen bg-[#111111]">
+          <div className="flex min-h-screen bg-gradient-to-br from-white to-red-50">
             <Sidebar />
             <main className="flex-1 overflow-auto">
               <Routes>
@@ -43,10 +43,7 @@ export default function App() {
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/merchant" element={<BillingLogic />} />
                 <Route path="/billing-kit" element={<ClientBillingKit />} />
-                <Route
-                  path="/business-overview"
-                  element={<BusinessOverview />}
-                />
+                <Route path="/business-overview" element={<BusinessOverview />} />
                 <Route path="/billing" element={<BillingLogic />} />
                 <Route path="/comm-center" element={<CommCenter />} />
                 <Route
@@ -59,10 +56,7 @@ export default function App() {
                 <Route path="/lead-journey" element={<LeadJourney />} />
                 <Route path="/fulfillment" element={<Fulfillment />} />
                 <Route path="/ai" element={<IntelligentAI />} />
-                <Route
-                  path="/chargeback-tracker"
-                  element={<ChargebackTracker />}
-                />
+                <Route path="/chargeback-tracker" element={<ChargebackTracker />} />
                 <Route path="/devops" element={<DevOpsCenter />} />
                 <Route path="/integrations" element={<Integrations />} />
                 <Route path="/twilio-vault" element={<TwilioVault />} />
