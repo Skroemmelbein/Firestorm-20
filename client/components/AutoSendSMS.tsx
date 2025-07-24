@@ -22,7 +22,7 @@ export default function AutoSendSMS() {
 
   const sendTestSMS = async () => {
     try {
-      console.log("🚀 Auto-sending test SMS to 855-860-0037...");
+      console.log("🚀 Auto-sending test SMS to 855-960-0037...");
 
       const response = await fetch("/api/real/sms/send", {
         method: "POST",
@@ -62,7 +62,7 @@ export default function AutoSendSMS() {
       <CardHeader>
         <CardTitle className="flex items-center gap-3">
           <MessageSquare className="w-6 h-6 text-blue-600" />
-          Auto SMS Test - Sending to 855-860-0037
+          Auto SMS Test - Sending to 855-960-0037
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
