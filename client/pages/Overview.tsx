@@ -376,7 +376,7 @@ export default function Overview() {
               <div
                 key={module.id}
                 onClick={() => handleModuleAccess(module.id)}
-                className="group relative bg-gradient-to-br from-[#1E1E22] to-[#2A2A2E] border-2 border-transparent hover:border-[#FF6A00] transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-2xl p-6 supreme-glow"
+                className="group relative bg-gradient-to-br from-[#1E1E22] to-[#2A2A2E] border-2 border-transparent hover:border-[#FF6A00] transition-all duration-300 cursor-pointer p-6 supreme-glow kanban-card"
                 style={{
                   borderTopColor: module.color,
                   borderTopWidth: '6px',
