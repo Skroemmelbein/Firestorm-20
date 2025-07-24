@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  TrendingDown, 
-  Users, 
-  Mail, 
-  MessageCircle, 
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  BarChart3,
+  TrendingUp,
+  TrendingDown,
+  Users,
+  Mail,
+  MessageCircle,
   DollarSign,
   Activity,
   Target,
@@ -18,22 +24,44 @@ import {
   Clock,
   Filter,
   Download,
-  RefreshCw
-} from 'lucide-react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+  RefreshCw,
+} from "lucide-react";
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 interface MetricCardProps {
   title: string;
   value: string | number;
   change: number;
   icon: React.ReactNode;
-  format?: 'number' | 'currency' | 'percentage';
+  format?: "number" | "currency" | "percentage";
 }
 
-const MetricCard: React.FC<MetricCardProps> = ({ title, value, change, icon, format = 'number' }) => {
+const MetricCard: React.FC<MetricCardProps> = ({
+  title,
+  value,
+  change,
+  icon,
+  format = "number",
+}) => {
   const formatValue = (val: string | number) => {
-    if (format === 'currency') return `$${val}`;
-    if (format === 'percentage') return `${val}%`;
+    if (format === "currency") return `$${val}`;
+    if (format === "percentage") return `${val}%`;
     return val;
   };
 
@@ -51,13 +79,18 @@ const MetricCard: React.FC<MetricCardProps> = ({ title, value, change, icon, for
             ) : (
               <TrendingDown className="h-4 w-4 text-red-500" />
             )}
-            <span className={`text-xs ${change > 0 ? 'text-green-500' : 'text-red-500'}`}>
-              {change > 0 ? '+' : ''}{change}%
+            <span
+              className={`text-xs ${change > 0 ? "text-green-500" : "text-red-500"}`}
+            >
+              {change > 0 ? "+" : ""}
+              {change}%
             </span>
           </div>
         </div>
         <div className="mt-4">
-          <p className="text-2xl font-bold text-gray-900">{formatValue(value)}</p>
+          <p className="text-2xl font-bold text-gray-900">
+            {formatValue(value)}
+          </p>
         </div>
       </CardContent>
     </Card>
@@ -65,34 +98,118 @@ const MetricCard: React.FC<MetricCardProps> = ({ title, value, change, icon, for
 };
 
 export default function AnalyticsDashboard() {
-  const [timeRange, setTimeRange] = useState('7d');
+  const [timeRange, setTimeRange] = useState("7d");
   const [refreshing, setRefreshing] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState(new Date().toLocaleTimeString());
+  const [lastUpdated, setLastUpdated] = useState(
+    new Date().toLocaleTimeString(),
+  );
 
   // Sample data for charts
   const performanceData = [
-    { date: '2024-01-01', opens: 1240, clicks: 320, conversions: 45, revenue: 2250 },
-    { date: '2024-01-02', opens: 1380, clicks: 380, conversions: 52, revenue: 2600 },
-    { date: '2024-01-03', opens: 1560, clicks: 420, conversions: 61, revenue: 3050 },
-    { date: '2024-01-04', opens: 1320, clicks: 340, conversions: 48, revenue: 2400 },
-    { date: '2024-01-05', opens: 1680, clicks: 480, conversions: 68, revenue: 3400 },
-    { date: '2024-01-06', opens: 1890, clicks: 520, conversions: 74, revenue: 3700 },
-    { date: '2024-01-07', opens: 2100, clicks: 580, conversions: 82, revenue: 4100 }
+    {
+      date: "2024-01-01",
+      opens: 1240,
+      clicks: 320,
+      conversions: 45,
+      revenue: 2250,
+    },
+    {
+      date: "2024-01-02",
+      opens: 1380,
+      clicks: 380,
+      conversions: 52,
+      revenue: 2600,
+    },
+    {
+      date: "2024-01-03",
+      opens: 1560,
+      clicks: 420,
+      conversions: 61,
+      revenue: 3050,
+    },
+    {
+      date: "2024-01-04",
+      opens: 1320,
+      clicks: 340,
+      conversions: 48,
+      revenue: 2400,
+    },
+    {
+      date: "2024-01-05",
+      opens: 1680,
+      clicks: 480,
+      conversions: 68,
+      revenue: 3400,
+    },
+    {
+      date: "2024-01-06",
+      opens: 1890,
+      clicks: 520,
+      conversions: 74,
+      revenue: 3700,
+    },
+    {
+      date: "2024-01-07",
+      opens: 2100,
+      clicks: 580,
+      conversions: 82,
+      revenue: 4100,
+    },
   ];
 
   const channelData = [
-    { name: 'Email', value: 45, color: '#0066FF' },
-    { name: 'SMS', value: 25, color: '#00D4FF' },
-    { name: 'Social', value: 20, color: '#FF6B6B' },
-    { name: 'Push', value: 10, color: '#4ECDC4' }
+    { name: "Email", value: 45, color: "#0066FF" },
+    { name: "SMS", value: 25, color: "#00D4FF" },
+    { name: "Social", value: 20, color: "#FF6B6B" },
+    { name: "Push", value: 10, color: "#4ECDC4" },
   ];
 
   const campaignPerformance = [
-    { name: 'Black Friday Sale', sent: 15000, opened: 7200, clicked: 1800, converted: 270, roi: 485, status: 'active' },
-    { name: 'Product Launch', sent: 8500, opened: 4250, clicked: 1062, converted: 148, roi: 312, status: 'completed' },
-    { name: 'Welcome Series', sent: 12000, opened: 6600, clicked: 1320, converted: 198, roi: 267, status: 'active' },
-    { name: 'Re-engagement', sent: 5000, opened: 1500, clicked: 300, converted: 30, roi: 120, status: 'paused' },
-    { name: 'Holiday Special', sent: 20000, opened: 11000, clicked: 2200, converted: 440, roi: 620, status: 'active' }
+    {
+      name: "Black Friday Sale",
+      sent: 15000,
+      opened: 7200,
+      clicked: 1800,
+      converted: 270,
+      roi: 485,
+      status: "active",
+    },
+    {
+      name: "Product Launch",
+      sent: 8500,
+      opened: 4250,
+      clicked: 1062,
+      converted: 148,
+      roi: 312,
+      status: "completed",
+    },
+    {
+      name: "Welcome Series",
+      sent: 12000,
+      opened: 6600,
+      clicked: 1320,
+      converted: 198,
+      roi: 267,
+      status: "active",
+    },
+    {
+      name: "Re-engagement",
+      sent: 5000,
+      opened: 1500,
+      clicked: 300,
+      converted: 30,
+      roi: 120,
+      status: "paused",
+    },
+    {
+      name: "Holiday Special",
+      sent: 20000,
+      opened: 11000,
+      clicked: 2200,
+      converted: 440,
+      roi: 620,
+      status: "active",
+    },
   ];
 
   const realtimeMetrics = {
@@ -103,7 +220,7 @@ export default function AnalyticsDashboard() {
     revenue: 12450,
     openRate: 28.5,
     clickRate: 6.8,
-    conversionRate: 2.1
+    conversionRate: 2.1,
   };
 
   const handleRefresh = () => {
@@ -129,7 +246,9 @@ export default function AnalyticsDashboard() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-[#0066FF] to-[#00D4FF] bg-clip-text text-transparent">
             FIRESTORM Analytics
           </h1>
-          <p className="text-gray-600">Real-time campaign performance and insights</p>
+          <p className="text-gray-600">
+            Real-time campaign performance and insights
+          </p>
         </div>
         <div className="flex items-center space-x-4">
           <Badge variant="outline" className="text-xs">
@@ -142,7 +261,9 @@ export default function AnalyticsDashboard() {
             disabled={refreshing}
             className="border-[#0066FF]/20"
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
           <Button size="sm" className="bg-[#0066FF] hover:bg-[#0066FF]/90">
@@ -203,7 +324,9 @@ export default function AnalyticsDashboard() {
                   <BarChart3 className="h-5 w-5 text-[#0066FF]" />
                   <span>Performance Trend</span>
                 </CardTitle>
-                <CardDescription>Campaign performance over time</CardDescription>
+                <CardDescription>
+                  Campaign performance over time
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -212,9 +335,30 @@ export default function AnalyticsDashboard() {
                     <XAxis dataKey="date" stroke="#666" />
                     <YAxis stroke="#666" />
                     <Tooltip />
-                    <Area type="monotone" dataKey="opens" stackId="1" stroke="#0066FF" fill="#0066FF" fillOpacity={0.3} />
-                    <Area type="monotone" dataKey="clicks" stackId="1" stroke="#00D4FF" fill="#00D4FF" fillOpacity={0.3} />
-                    <Area type="monotone" dataKey="conversions" stackId="1" stroke="#FF6B6B" fill="#FF6B6B" fillOpacity={0.3} />
+                    <Area
+                      type="monotone"
+                      dataKey="opens"
+                      stackId="1"
+                      stroke="#0066FF"
+                      fill="#0066FF"
+                      fillOpacity={0.3}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="clicks"
+                      stackId="1"
+                      stroke="#00D4FF"
+                      fill="#00D4FF"
+                      fillOpacity={0.3}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="conversions"
+                      stackId="1"
+                      stroke="#FF6B6B"
+                      fill="#FF6B6B"
+                      fillOpacity={0.3}
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -270,7 +414,12 @@ export default function AnalyticsDashboard() {
                   <YAxis stroke="#666" />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="revenue" stroke="#0066FF" strokeWidth={3} />
+                  <Line
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="#0066FF"
+                    strokeWidth={3}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
@@ -282,7 +431,9 @@ export default function AnalyticsDashboard() {
           <Card className="border-[#0066FF]/20">
             <CardHeader>
               <CardTitle>Campaign Performance</CardTitle>
-              <CardDescription>Detailed performance metrics for all campaigns</CardDescription>
+              <CardDescription>
+                Detailed performance metrics for all campaigns
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
@@ -302,15 +453,33 @@ export default function AnalyticsDashboard() {
                     {campaignPerformance.map((campaign, index) => (
                       <tr key={index} className="border-b border-gray-100">
                         <td className="p-3 font-medium">{campaign.name}</td>
-                        <td className="p-3">{campaign.sent.toLocaleString()}</td>
-                        <td className="p-3">{campaign.opened.toLocaleString()}</td>
-                        <td className="p-3">{campaign.clicked.toLocaleString()}</td>
-                        <td className="p-3">{campaign.converted.toLocaleString()}</td>
-                        <td className="p-3 font-medium text-green-600">{campaign.roi}%</td>
                         <td className="p-3">
-                          <Badge 
-                            variant={campaign.status === 'active' ? 'default' : campaign.status === 'completed' ? 'secondary' : 'outline'}
-                            className={campaign.status === 'active' ? 'bg-[#0066FF]' : ''}
+                          {campaign.sent.toLocaleString()}
+                        </td>
+                        <td className="p-3">
+                          {campaign.opened.toLocaleString()}
+                        </td>
+                        <td className="p-3">
+                          {campaign.clicked.toLocaleString()}
+                        </td>
+                        <td className="p-3">
+                          {campaign.converted.toLocaleString()}
+                        </td>
+                        <td className="p-3 font-medium text-green-600">
+                          {campaign.roi}%
+                        </td>
+                        <td className="p-3">
+                          <Badge
+                            variant={
+                              campaign.status === "active"
+                                ? "default"
+                                : campaign.status === "completed"
+                                  ? "secondary"
+                                  : "outline"
+                            }
+                            className={
+                              campaign.status === "active" ? "bg-[#0066FF]" : ""
+                            }
                           >
                             {campaign.status}
                           </Badge>
@@ -357,7 +526,9 @@ export default function AnalyticsDashboard() {
           <Card className="border-[#0066FF]/20">
             <CardHeader>
               <CardTitle>Channel Performance Comparison</CardTitle>
-              <CardDescription>Compare performance across all marketing channels</CardDescription>
+              <CardDescription>
+                Compare performance across all marketing channels
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={400}>
@@ -379,32 +550,47 @@ export default function AnalyticsDashboard() {
             <Card className="border-[#0066FF]/20">
               <CardHeader>
                 <CardTitle>Audience Engagement</CardTitle>
-                <CardDescription>Engagement levels by audience segment</CardDescription>
+                <CardDescription>
+                  Engagement levels by audience segment
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">High Value Customers</span>
+                    <span className="text-sm font-medium">
+                      High Value Customers
+                    </span>
                     <span className="text-sm text-green-600">92% engaged</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-500 h-2 rounded-full" style={{width: '92%'}}></div>
+                    <div
+                      className="bg-green-500 h-2 rounded-full"
+                      style={{ width: "92%" }}
+                    ></div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">New Subscribers</span>
                     <span className="text-sm text-blue-600">78% engaged</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-500 h-2 rounded-full" style={{width: '78%'}}></div>
+                    <div
+                      className="bg-blue-500 h-2 rounded-full"
+                      style={{ width: "78%" }}
+                    ></div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Inactive Users</span>
-                    <span className="text-sm text-orange-600">34% re-engaged</span>
+                    <span className="text-sm text-orange-600">
+                      34% re-engaged
+                    </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-orange-500 h-2 rounded-full" style={{width: '34%'}}></div>
+                    <div
+                      className="bg-orange-500 h-2 rounded-full"
+                      style={{ width: "34%" }}
+                    ></div>
                   </div>
                 </div>
               </CardContent>
@@ -413,7 +599,9 @@ export default function AnalyticsDashboard() {
             <Card className="border-[#0066FF]/20">
               <CardHeader>
                 <CardTitle>Demographics</CardTitle>
-                <CardDescription>Audience breakdown by key demographics</CardDescription>
+                <CardDescription>
+                  Audience breakdown by key demographics
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -512,7 +700,10 @@ export default function AnalyticsDashboard() {
                       <span className="text-sm">78%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-[#0066FF] h-2 rounded-full" style={{width: '78%'}}></div>
+                      <div
+                        className="bg-[#0066FF] h-2 rounded-full"
+                        style={{ width: "78%" }}
+                      ></div>
                     </div>
                   </div>
                   <div>
@@ -521,7 +712,10 @@ export default function AnalyticsDashboard() {
                       <span className="text-sm">95%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-green-500 h-2 rounded-full" style={{width: '95%'}}></div>
+                      <div
+                        className="bg-green-500 h-2 rounded-full"
+                        style={{ width: "95%" }}
+                      ></div>
                     </div>
                   </div>
                 </div>

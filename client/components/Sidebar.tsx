@@ -131,18 +131,24 @@ export default function Sidebar() {
           isCollapsed ? "w-16" : "w-72",
         )}
         style={{
-          background: 'linear-gradient(180deg, rgba(196, 181, 253, 0.3) 0%, rgba(252, 165, 165, 0.2) 50%, rgba(167, 243, 208, 0.3) 100%)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+          background:
+            "linear-gradient(180deg, rgba(196, 181, 253, 0.3) 0%, rgba(252, 165, 165, 0.2) 50%, rgba(167, 243, 208, 0.3) 100%)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/20" style={{backdropFilter: 'blur(10px)'}}>
+        <div
+          className="flex items-center justify-between p-4 border-b border-white/20"
+          style={{ backdropFilter: "blur(10px)" }}
+        >
           {!isCollapsed && (
             <div className="flex items-center gap-2">
               <Command className="w-6 h-6 text-[#00BFFF]" />
-              <span className="text-gray-800 font-bold text-lg drop-shadow-sm">ECELONX</span>
+              <span className="text-gray-800 font-bold text-lg drop-shadow-sm">
+                ECELONX
+              </span>
             </div>
           )}
           <button
@@ -186,7 +192,9 @@ export default function Sidebar() {
                     <div
                       className={cn(
                         "font-medium text-sm",
-                        active ? "text-gray-800 font-semibold" : "text-gray-700",
+                        active
+                          ? "text-gray-800 font-semibold"
+                          : "text-gray-700",
                       )}
                     >
                       {item.label}

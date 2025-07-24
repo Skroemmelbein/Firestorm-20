@@ -81,7 +81,7 @@ export default function MarketingAutomation() {
       lastRun: new Date("2024-01-15"),
     },
     {
-      id: "2", 
+      id: "2",
       name: "Weekly Performance Brief",
       type: "email",
       status: "active",
@@ -114,7 +114,7 @@ export default function MarketingAutomation() {
     {
       id: "2",
       name: "Customer Retention Engine",
-      status: "active", 
+      status: "active",
       steps: [],
       subscribers: 3291,
       conversions: 721,
@@ -154,12 +154,19 @@ export default function MarketingAutomation() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-red-50 firestorm-theme">
       {/* FIRESTORM Command Header */}
-      <div className="f10-command-header" style={{ background: "linear-gradient(135deg, #1a0a00 0%, #2d1600 100%)" }}>
+      <div
+        className="f10-command-header"
+        style={{
+          background: "linear-gradient(135deg, #1a0a00 0%, #2d1600 100%)",
+        }}
+      >
         <div className="f10-command-title">
           <Flame className="w-8 h-8 text-[#FF6A00]" />
           <div>
             <h1 className="f10-heading-lg text-white">FIRESTORM</h1>
-            <p className="f10-command-subtitle">Marketing Automation Command Center</p>
+            <p className="f10-command-subtitle">
+              Marketing Automation Command Center
+            </p>
           </div>
         </div>
         <div className="f10-command-status">
@@ -183,7 +190,7 @@ export default function MarketingAutomation() {
               <Flame className="w-4 h-4 text-[#FF6A00]" />
             </div>
             <div className="f10-metric-value text-[#FF6A00]">
-              {campaigns.filter(c => c.status === 'active').length}
+              {campaigns.filter((c) => c.status === "active").length}
             </div>
             <div className="f10-metric-trend positive">
               <TrendingUp className="w-3 h-3" />
@@ -210,7 +217,11 @@ export default function MarketingAutomation() {
               <Target className="w-4 h-4 text-[#737373]" />
             </div>
             <div className="f10-metric-value">
-              {(campaigns.reduce((sum, c) => sum + c.engagement, 0) / campaigns.length).toFixed(1)}%
+              {(
+                campaigns.reduce((sum, c) => sum + c.engagement, 0) /
+                campaigns.length
+              ).toFixed(1)}
+              %
             </div>
             <div className="f10-metric-trend positive">
               <span>Above target</span>
@@ -223,7 +234,11 @@ export default function MarketingAutomation() {
               <Zap className="w-4 h-4 text-[#737373]" />
             </div>
             <div className="f10-metric-value">
-              {(campaigns.reduce((sum, c) => sum + c.conversion, 0) / campaigns.length).toFixed(1)}%
+              {(
+                campaigns.reduce((sum, c) => sum + c.conversion, 0) /
+                campaigns.length
+              ).toFixed(1)}
+              %
             </div>
             <div className="f10-metric-trend positive">
               <span>Optimized</span>
@@ -232,7 +247,11 @@ export default function MarketingAutomation() {
         </div>
 
         {/* Command Tabs */}
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+        <Tabs
+          value={selectedTab}
+          onValueChange={setSelectedTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-8 bg-[#1a1a1a] border border-[#FF6A00]/30">
             <TabsTrigger
               value="builder"
@@ -311,8 +330,12 @@ export default function MarketingAutomation() {
           <TabsContent value="command" className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="f10-heading-md text-white">Campaign Command Center</h2>
-                <p className="f10-text-sm text-[#b3b3b3] mt-1">Deploy, monitor, and control marketing operations</p>
+                <h2 className="f10-heading-md text-white">
+                  Campaign Command Center
+                </h2>
+                <p className="f10-text-sm text-[#b3b3b3] mt-1">
+                  Deploy, monitor, and control marketing operations
+                </p>
               </div>
               <div className="flex gap-3">
                 <Button className="f10-btn f10-btn-secondary">
@@ -330,21 +353,26 @@ export default function MarketingAutomation() {
               {campaigns.map((campaign) => {
                 const TypeIcon = getTypeIcon(campaign.type);
                 return (
-                  <div key={campaign.id} className="f10-card hover:accent-glow transition-all">
+                  <div
+                    key={campaign.id}
+                    className="f10-card hover:accent-glow transition-all"
+                  >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="p-2 rounded-lg bg-[#FF6A00]/20">
                           <TypeIcon className="w-5 h-5 text-[#FF6A00]" />
                         </div>
                         <div>
-                          <h3 className="f10-text-lg font-semibold text-white">{campaign.name}</h3>
+                          <h3 className="f10-text-lg font-semibold text-white">
+                            {campaign.name}
+                          </h3>
                           <div className="flex items-center gap-3 mt-1">
                             <div
                               className="f10-status"
                               style={{
                                 backgroundColor: `${getStatusColor(campaign.status)}20`,
                                 color: getStatusColor(campaign.status),
-                                borderColor: `${getStatusColor(campaign.status)}40`
+                                borderColor: `${getStatusColor(campaign.status)}40`,
                               }}
                             >
                               {campaign.status.toUpperCase()}
@@ -363,7 +391,7 @@ export default function MarketingAutomation() {
                           <Eye className="w-4 h-4" />
                         </Button>
                         <Button size="sm" className="f10-btn f10-btn-ghost">
-                          {campaign.status === 'active' ? (
+                          {campaign.status === "active" ? (
                             <Pause className="w-4 h-4" />
                           ) : (
                             <Play className="w-4 h-4" />
@@ -383,19 +411,25 @@ export default function MarketingAutomation() {
                         <div className="f10-text-base font-semibold text-[#00BFFF]">
                           {campaign.engagement}%
                         </div>
-                        <div className="f10-text-xs text-[#737373]">ENGAGEMENT</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          ENGAGEMENT
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-base font-semibold text-[#FF6A00]">
                           {campaign.conversion}%
                         </div>
-                        <div className="f10-text-xs text-[#737373]">CONVERSION</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          CONVERSION
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="f10-text-base font-semibold text-white">
                           {campaign.lastRun.toLocaleDateString()}
                         </div>
-                        <div className="f10-text-xs text-[#737373]">LAST RUN</div>
+                        <div className="f10-text-xs text-[#737373]">
+                          LAST RUN
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -413,8 +447,12 @@ export default function MarketingAutomation() {
           <TabsContent value="studio" className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="f10-heading-md text-white">Studio Flow Builder</h2>
-                <p className="f10-text-sm text-[#b3b3b3] mt-1">Create AI-powered conversation flows</p>
+                <h2 className="f10-heading-md text-white">
+                  Studio Flow Builder
+                </h2>
+                <p className="f10-text-sm text-[#b3b3b3] mt-1">
+                  Create AI-powered conversation flows
+                </p>
               </div>
               <Button className="f10-btn accent-bg text-black font-medium">
                 <Plus className="w-4 h-4 mr-2" />
@@ -424,20 +462,25 @@ export default function MarketingAutomation() {
 
             <div className="space-y-4">
               {flows.map((flow) => (
-                <div key={flow.id} className="f10-card hover:accent-glow transition-all">
+                <div
+                  key={flow.id}
+                  className="f10-card hover:accent-glow transition-all"
+                >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-4">
                       <div className="p-2 rounded-lg bg-[#8A2BE2]/20">
                         <Brain className="w-5 h-5 text-[#8A2BE2]" />
                       </div>
                       <div>
-                        <h3 className="f10-text-lg font-semibold text-white">{flow.name}</h3>
+                        <h3 className="f10-text-lg font-semibold text-white">
+                          {flow.name}
+                        </h3>
                         <div
                           className="f10-status mt-1"
                           style={{
                             backgroundColor: `${getStatusColor(flow.status)}20`,
                             color: getStatusColor(flow.status),
-                            borderColor: `${getStatusColor(flow.status)}40`
+                            borderColor: `${getStatusColor(flow.status)}40`,
                           }}
                         >
                           {flow.status.toUpperCase()}
@@ -452,13 +495,17 @@ export default function MarketingAutomation() {
                       <div className="f10-text-base font-semibold text-[#00BFFF]">
                         {flow.subscribers.toLocaleString()}
                       </div>
-                      <div className="f10-text-xs text-[#737373]">SUBSCRIBERS</div>
+                      <div className="f10-text-xs text-[#737373]">
+                        SUBSCRIBERS
+                      </div>
                     </div>
                     <div className="text-center">
                       <div className="f10-text-base font-semibold text-[#00E676]">
                         {flow.conversions}
                       </div>
-                      <div className="f10-text-xs text-[#737373]">CONVERSIONS</div>
+                      <div className="f10-text-xs text-[#737373]">
+                        CONVERSIONS
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -470,9 +517,12 @@ export default function MarketingAutomation() {
           <TabsContent value="journeys" className="space-y-6">
             <div className="text-center py-12">
               <Rocket className="w-16 h-16 mx-auto text-[#FF6A00] mb-4" />
-              <h3 className="f10-heading-sm text-white mb-2">Lead Journey Engine</h3>
+              <h3 className="f10-heading-sm text-white mb-2">
+                Lead Journey Engine
+              </h3>
               <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto">
-                Advanced lead journey mapping and automation system coming online
+                Advanced lead journey mapping and automation system coming
+                online
               </p>
               <Button className="f10-btn accent-bg text-black font-medium mt-6">
                 <Settings className="w-4 h-4 mr-2" />
@@ -485,9 +535,12 @@ export default function MarketingAutomation() {
           <TabsContent value="intel" className="space-y-6">
             <div className="text-center py-12">
               <BarChart className="w-16 h-16 mx-auto text-[#FF6A00] mb-4" />
-              <h3 className="f10-heading-sm text-white mb-2">Campaign Intelligence</h3>
+              <h3 className="f10-heading-sm text-white mb-2">
+                Campaign Intelligence
+              </h3>
               <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto">
-                Advanced analytics and AI-powered insights for campaign optimization
+                Advanced analytics and AI-powered insights for campaign
+                optimization
               </p>
               <Button className="f10-btn accent-bg text-black font-medium mt-6">
                 <Brain className="w-4 h-4 mr-2" />
