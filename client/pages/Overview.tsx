@@ -371,93 +371,91 @@ export default function Overview() {
           <h2 className="text-2xl font-black text-white uppercase tracking-wide mb-6">
             MODULE OPERATIONS STATUS
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
             {moduleData.map((module) => (
               <div
                 key={module.id}
-                className="bg-[#1E1E22] border-2 border-transparent hover:border-[#FF6A00]/50 transition-all tactical-hover p-6"
+                onClick={() => handleModuleAccess(module.id)}
+                className="group relative bg-gradient-to-br from-[#1E1E22] to-[#2A2A2E] border-2 border-transparent hover:border-[#FF6A00] transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-2xl p-6 supreme-glow"
                 style={{
-                  borderLeftColor: module.color,
-                  borderLeftWidth: "4px",
+                  borderTopColor: module.color,
+                  borderTopWidth: '6px',
+                  boxShadow: `0 4px 20px ${module.color}20, 0 0 40px ${module.color}10`
                 }}
               >
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h3 className="text-xl font-black text-white uppercase tracking-wide mb-1">
-                      {module.name}
-                    </h3>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                {/* Hover overlay effect */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"
+                  style={{ backgroundColor: module.color }}
+                />
+
+                {/* Module Header */}
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      {module.id === "firestorm" && <Flame className="w-6 h-6" style={{ color: module.color }} />}
+                      {module.id === "dream-portal" && <Crown className="w-6 h-6" style={{ color: module.color }} />}
+                      {module.id === "velocify-hub" && <Rocket className="w-6 h-6" style={{ color: module.color }} />}
+                      {module.id === "nexus-sync" && <Database className="w-6 h-6" style={{ color: module.color }} />}
+                      {module.id === "zero-cb-fortress" && <Shield className="w-6 h-6" style={{ color: module.color }} />}
+                      <h3 className="text-xl font-black text-white uppercase tracking-wide">
+                        {module.name}
+                      </h3>
+                    </div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
                       {module.description}
                     </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {module.id === "firestorm" && (
-                      <Flame
-                        className="w-5 h-5"
-                        style={{ color: module.color }}
-                      />
-                    )}
-                    {module.id === "dream-portal" && (
-                      <Crown
-                        className="w-5 h-5"
-                        style={{ color: module.color }}
-                      />
-                    )}
-                    {module.id === "velocify-hub" && (
-                      <Rocket
-                        className="w-5 h-5"
-                        style={{ color: module.color }}
-                      />
-                    )}
-                    {module.id === "nexus-sync" && (
-                      <Database
-                        className="w-5 h-5"
-                        style={{ color: module.color }}
-                      />
-                    )}
-                    {module.id === "zero-cb-fortress" && (
-                      <Shield
-                        className="w-5 h-5"
-                        style={{ color: module.color }}
-                      />
-                    )}
-                    <div className="px-2 py-1 bg-[#00E676]/20 border border-[#00E676]/50">
-                      <span className="text-xs font-bold text-[#00E676] uppercase">
-                        OPERATIONAL
-                      </span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-[#00E676] animate-pulse"></div>
+                      <span className="text-xs font-bold text-[#00E676] uppercase">ONLINE</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                {/* KPI Grid */}
+                <div className="grid grid-cols-1 gap-4 mb-6">
                   {module.kpis.map((kpi) => (
-                    <div
-                      key={kpi.id}
-                      className="flex items-center justify-between"
-                    >
-                      <span className="text-sm font-bold text-white uppercase tracking-wide">
-                        {kpi.label}
-                      </span>
-                      <div className="flex items-center gap-3">
-                        <span className="text-lg font-black text-white">
-                          {kpi.value}
+                    <div key={kpi.id} className="bg-[#2A2A2E]/50 p-3 border-l-2" style={{ borderLeftColor: kpi.color }}>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-gray-300 uppercase tracking-wide">
+                          {kpi.label}
                         </span>
-                        <span
-                          className="text-xs font-bold"
-                          style={{ color: kpi.color }}
-                        >
-                          {kpi.change}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg font-black text-white">
+                            {kpi.value}
+                          </span>
+                          <span
+                            className="text-xs font-bold px-2 py-1 rounded"
+                            style={{
+                              color: kpi.color,
+                              backgroundColor: `${kpi.color}20`
+                            }}
+                          >
+                            {kpi.change}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-gray-700">
-                  <Button className="w-full bg-gradient-to-r from-[#FF6A00] to-[#FF2D55] text-black font-bold hover:from-[#FF2D55] hover:to-[#FF6A00] transition-all">
-                    <Command className="w-4 h-4 mr-2" />
-                    ACCESS MODULE
-                  </Button>
+                {/* Action Area */}
+                <div className="mt-auto">
+                  <div
+                    className="w-full p-4 text-center font-black uppercase tracking-wider text-black transition-all duration-300 group-hover:shadow-lg"
+                    style={{
+                      background: `linear-gradient(135deg, ${module.color}, ${module.color}CC)`,
+                      transform: 'translateY(0)',
+                    }}
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <Command className="w-4 h-4" />
+                      LAUNCH MODULE
+                    </div>
+                    <div className="text-xs mt-1 opacity-80">
+                      Click anywhere to access
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
