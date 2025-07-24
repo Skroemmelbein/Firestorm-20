@@ -255,28 +255,25 @@ export default function TestModule() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30">
       {/* Test Module Header */}
       <div
-        className="f10-command-header"
-        style={{
-          background: "linear-gradient(135deg, #1a1a0a 0%, #2d2d1a 100%)",
-        }}
+        className="f10-command-header bg-white/80 backdrop-blur-sm border-b border-gray-200"
       >
         <div className="f10-command-title">
           <TestTube className="w-8 h-8 text-[#00E676]" />
           <div>
-            <h1 className="f10-heading-lg text-white">TEST MODULE</h1>
-            <p className="f10-command-subtitle">
+            <h1 className="f10-heading-lg text-gray-800">TEST MODULE</h1>
+            <p className="text-gray-600 text-sm italic">
               System Testing & Validation Center
             </p>
           </div>
         </div>
         <div className="f10-command-status">
           <div className="f10-env-status">
-            <div className="f10-status-dot"></div>
-            <span>All Test Systems Ready</span>
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span className="text-gray-700">All Test Systems Ready</span>
           </div>
           <div className="f10-env-status">
-            <Activity className="w-4 h-4" />
-            <span>Real-Time Testing: Active</span>
+            <Activity className="w-4 h-4 text-gray-700" />
+            <span className="text-gray-700">Real-Time Testing: Active</span>
           </div>
         </div>
       </div>
