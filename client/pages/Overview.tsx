@@ -167,7 +167,7 @@ export default function Overview() {
   });
 
   const runQuickSMSTest = async () => {
-    setIsTesting(prev => ({ ...prev, sms: true }));
+    setIsTesting((prev) => ({ ...prev, sms: true }));
     try {
       const response = await fetch("/api/real/sms/send", {
         method: "POST",
@@ -181,14 +181,18 @@ export default function Overview() {
       const result = await response.json();
 
       // Handle specific Twilio errors
-      let errorMessage = result.message || (response.ok ? "SMS sent successfully!" : "SMS failed");
+      let errorMessage =
+        result.message ||
+        (response.ok ? "SMS sent successfully!" : "SMS failed");
       if (result.error && result.error.includes("unsubscribed recipient")) {
-        errorMessage = "Recipient is unsubscribed. They need to text START to opt-in first.";
+        errorMessage =
+          "Recipient is unsubscribed. They need to text START to opt-in first.";
       } else if (result.code === 21610) {
-        errorMessage = "Recipient unsubscribed. Send START to +18559600037 to re-subscribe.";
+        errorMessage =
+          "Recipient unsubscribed. Send START to +18559600037 to re-subscribe.";
       }
 
-      setTestResults(prev => ({
+      setTestResults((prev) => ({
         ...prev,
         sms: {
           success: response.ok,
@@ -197,17 +201,21 @@ export default function Overview() {
         },
       }));
     } catch (error) {
-      setTestResults(prev => ({
+      setTestResults((prev) => ({
         ...prev,
-        sms: { success: false, message: "Failed to send SMS", timestamp: new Date() },
+        sms: {
+          success: false,
+          message: "Failed to send SMS",
+          timestamp: new Date(),
+        },
       }));
     } finally {
-      setIsTesting(prev => ({ ...prev, sms: false }));
+      setIsTesting((prev) => ({ ...prev, sms: false }));
     }
   };
 
   const runQuickEmailTest = async () => {
-    setIsTesting(prev => ({ ...prev, email: true }));
+    setIsTesting((prev) => ({ ...prev, email: true }));
     try {
       const response = await fetch("/api/sendgrid/test", {
         method: "POST",
@@ -220,21 +228,27 @@ export default function Overview() {
       });
 
       const result = await response.json();
-      setTestResults(prev => ({
+      setTestResults((prev) => ({
         ...prev,
         email: {
           success: response.ok,
-          message: result.message || (response.ok ? "Email sent successfully!" : "Email failed"),
+          message:
+            result.message ||
+            (response.ok ? "Email sent successfully!" : "Email failed"),
           timestamp: new Date(),
         },
       }));
     } catch (error) {
-      setTestResults(prev => ({
+      setTestResults((prev) => ({
         ...prev,
-        email: { success: false, message: "Failed to send email", timestamp: new Date() },
+        email: {
+          success: false,
+          message: "Failed to send email",
+          timestamp: new Date(),
+        },
       }));
     } finally {
-      setIsTesting(prev => ({ ...prev, email: false }));
+      setIsTesting((prev) => ({ ...prev, email: false }));
     }
   };
 
@@ -294,7 +308,9 @@ export default function Overview() {
         <div className="f10-zone-header mb-6">
           <div className="flex items-center gap-3">
             <TestTube className="w-6 h-6 text-[#00E676]" />
-            <h2 className="f10-zone-title text-[#00E676]">Quick System Testing</h2>
+            <h2 className="f10-zone-title text-[#00E676]">
+              Quick System Testing
+            </h2>
           </div>
         </div>
 
@@ -338,7 +354,9 @@ export default function Overview() {
               <p className="text-xs text-gray-600">SendGrid test email</p>
               {testResults.email && (
                 <Badge
-                  variant={testResults.email.success ? "default" : "destructive"}
+                  variant={
+                    testResults.email.success ? "default" : "destructive"
+                  }
                   className="mt-2 text-xs"
                 >
                   {testResults.email.success ? "Success" : "Failed"}

@@ -87,7 +87,11 @@ export default function TwilioConversations() {
         const data = await response.json();
         setConversations(data.conversations || []);
       } else {
-        console.error("Failed to load conversations:", response.status, response.statusText);
+        console.error(
+          "Failed to load conversations:",
+          response.status,
+          response.statusText,
+        );
         setConversations([]);
       }
     } catch (error) {
@@ -109,7 +113,11 @@ export default function TwilioConversations() {
         const data = await response.json();
         setMessages(data.messages || []);
       } else {
-        console.error("Failed to load messages:", response.status, response.statusText);
+        console.error(
+          "Failed to load messages:",
+          response.status,
+          response.statusText,
+        );
         setMessages([]);
       }
     } catch (error) {
@@ -233,11 +241,13 @@ export default function TwilioConversations() {
             ⚠️ Twilio Conversations API Required
           </h4>
           <p className="text-sm text-orange-700 mb-2">
-            This feature requires Twilio Conversations API to be enabled on your account.
-            If you see network errors, use the regular SMS testing tabs instead.
+            This feature requires Twilio Conversations API to be enabled on your
+            account. If you see network errors, use the regular SMS testing tabs
+            instead.
           </p>
           <div className="text-xs text-orange-600">
-            <strong>Alternative:</strong> Use SMS Testing tab for simple outbound SMS testing without conversations.
+            <strong>Alternative:</strong> Use SMS Testing tab for simple
+            outbound SMS testing without conversations.
           </div>
         </div>
 
@@ -300,7 +310,9 @@ export default function TwilioConversations() {
             </div>
           </div>
           <div>
-            <Label className="text-gray-700 text-sm font-medium">Initial Message</Label>
+            <Label className="text-gray-700 text-sm font-medium">
+              Initial Message
+            </Label>
             <Textarea
               value={newConversation.initialMessage}
               onChange={(e) =>
@@ -320,7 +332,9 @@ export default function TwilioConversations() {
         <div className="grid grid-cols-2 gap-6">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-800">Active Conversations</h3>
+              <h3 className="font-semibold text-gray-800">
+                Active Conversations
+              </h3>
               <Button
                 onClick={loadConversations}
                 disabled={isLoading.conversations}
@@ -340,9 +354,12 @@ export default function TwilioConversations() {
                   <p>No conversations yet</p>
                   <p className="text-xs">Create one to start testing</p>
                   <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-left">
-                    <p className="text-sm font-medium text-yellow-800">⚠️ Twilio Conversations Setup</p>
+                    <p className="text-sm font-medium text-yellow-800">
+                      ⚠️ Twilio Conversations Setup
+                    </p>
                     <p className="text-xs text-yellow-700 mt-1">
-                      If you see network errors, ensure your Twilio account has Conversations API enabled.
+                      If you see network errors, ensure your Twilio account has
+                      Conversations API enabled.
                     </p>
                   </div>
                 </div>
@@ -432,7 +449,8 @@ export default function TwilioConversations() {
                         <div className="text-center">
                           <span>No messages loaded</span>
                           <p className="text-xs mt-2 text-gray-500">
-                            Click "Load Messages" above or use regular SMS testing instead
+                            Click "Load Messages" above or use regular SMS
+                            testing instead
                           </p>
                         </div>
                       )}
@@ -532,11 +550,15 @@ export default function TwilioConversations() {
               <ul className="text-gray-700 mt-1 space-y-1">
                 <li>
                   • Your number:{" "}
-                  <span className="text-blue-600 font-medium">+18559600037</span>
+                  <span className="text-blue-600 font-medium">
+                    +18559600037
+                  </span>
                 </li>
                 <li>
                   ��� Test recipient:{" "}
-                  <span className="text-green-600 font-medium">+18144409068</span>
+                  <span className="text-green-600 font-medium">
+                    +18144409068
+                  </span>
                 </li>
                 <li>• Replies will appear automatically</li>
                 <li>• Full conversation history tracked</li>

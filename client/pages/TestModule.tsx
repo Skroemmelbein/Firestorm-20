@@ -83,7 +83,11 @@ export default function TestModule() {
         }),
       });
 
-      console.log("📱 SMS Response status:", response.status, response.statusText);
+      console.log(
+        "📱 SMS Response status:",
+        response.status,
+        response.statusText,
+      );
 
       let result = {};
       let errorMessage = "";
@@ -102,19 +106,20 @@ export default function TestModule() {
         // Error case - handle known Twilio errors without parsing
         if (response.status === 400) {
           // Likely a Twilio error - provide helpful message based on common issues
-          errorMessage = "❌ Recipient unsubscribed. Send 'START' to +18559600037 to re-subscribe.";
+          errorMessage =
+            "❌ Recipient unsubscribed. Send 'START' to +18559600037 to re-subscribe.";
           result = {
             success: false,
             error: "Unsubscribed recipient",
             code: 21610,
-            httpStatus: 400
+            httpStatus: 400,
           };
         } else {
           errorMessage = `❌ SMS failed with status ${response.status}`;
           result = {
             success: false,
             error: `HTTP ${response.status}`,
-            httpStatus: response.status
+            httpStatus: response.status,
           };
         }
 
@@ -124,13 +129,16 @@ export default function TestModule() {
           result = { ...result, ...additionalDetails };
           if (additionalDetails.error) {
             if (additionalDetails.error.includes("unsubscribed")) {
-              errorMessage = "❌ Recipient unsubscribed. Send 'START' to +18559600037 to re-subscribe.";
+              errorMessage =
+                "❌ Recipient unsubscribed. Send 'START' to +18559600037 to re-subscribe.";
             } else {
               errorMessage = `❌ ${additionalDetails.error}`;
             }
           }
         } catch (parseError) {
-          console.log("📱 Could not parse error details (using default message)");
+          console.log(
+            "📱 Could not parse error details (using default message)",
+          );
         }
       }
 
@@ -282,9 +290,7 @@ export default function TestModule() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30">
       {/* Test Module Header */}
-      <div
-        className="f10-command-header bg-white/80 backdrop-blur-sm border-b border-gray-200"
-      >
+      <div className="f10-command-header bg-white/80 backdrop-blur-sm border-b border-gray-200">
         <div className="f10-command-title">
           <TestTube className="w-8 h-8 text-[#00E676]" />
           <div>
@@ -474,9 +480,13 @@ export default function TestModule() {
                       <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p>No SMS tests run yet</p>
                       <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-left">
-                        <p className="text-sm font-medium text-blue-800">���� SMS Subscription Required</p>
+                        <p className="text-sm font-medium text-blue-800">
+                          ���� SMS Subscription Required
+                        </p>
                         <p className="text-xs text-blue-700 mt-1">
-                          If you get an "unsubscribed" error, text <strong>START</strong> to <strong>+18559600037</strong> first.
+                          If you get an "unsubscribed" error, text{" "}
+                          <strong>START</strong> to{" "}
+                          <strong>+18559600037</strong> first.
                         </p>
                       </div>
                     </div>
@@ -586,14 +596,18 @@ export default function TestModule() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label className="text-gray-700 font-medium">Recipient Phone</Label>
+                    <Label className="text-gray-700 font-medium">
+                      Recipient Phone
+                    </Label>
                     <Input
                       placeholder="+18144409068"
                       className="bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-700 font-medium">RCS Message</Label>
+                    <Label className="text-gray-700 font-medium">
+                      RCS Message
+                    </Label>
                     <Textarea
                       placeholder="Rich RCS message with media support..."
                       className="bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
@@ -601,7 +615,9 @@ export default function TestModule() {
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-700 font-medium">Media URL (Optional)</Label>
+                    <Label className="text-gray-700 font-medium">
+                      Media URL (Optional)
+                    </Label>
                     <Input
                       placeholder="https://example.com/image.jpg"
                       className="bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
@@ -626,11 +642,15 @@ export default function TestModule() {
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-purple-700">Agent ID:</span>
-                        <span className="text-purple-600 font-mono text-xs">rcs:nexusdynamics_3ohzywua_agent</span>
+                        <span className="text-purple-600 font-mono text-xs">
+                          rcs:nexusdynamics_3ohzywua_agent
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-purple-700">Status:</span>
-                        <span className="text-green-600 font-medium">✅ Active</span>
+                        <span className="text-green-600 font-medium">
+                          ✅ Active
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-purple-700">Brand:</span>
@@ -664,9 +684,12 @@ export default function TestModule() {
                   <Network className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>No RCS tests run yet</p>
                   <div className="mt-4 p-3 bg-purple-50 border border-purple-200 rounded-lg text-left">
-                    <p className="text-sm font-medium text-purple-800">📱 RCS Requirements</p>
+                    <p className="text-sm font-medium text-purple-800">
+                      📱 RCS Requirements
+                    </p>
                     <p className="text-xs text-purple-700 mt-1">
-                      RCS requires recipient to have RCS-enabled device and carrier support.
+                      RCS requires recipient to have RCS-enabled device and
+                      carrier support.
                     </p>
                   </div>
                 </div>

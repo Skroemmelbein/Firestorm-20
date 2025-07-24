@@ -12,27 +12,31 @@ export const scanEnvironmentCredentials: RequestHandler = async (req, res) => {
     // Scan environment variables for common credential patterns
     const envVars = process.env;
     const credentialPatterns = [
-      { pattern: /.*API.*KEY.*/i, type: 'api_key', service: 'Unknown API' },
-      { pattern: /.*AUTH.*TOKEN.*/i, type: 'auth_token', service: 'Authentication' },
-      { pattern: /.*SECRET.*/i, type: 'environment', service: 'Application' },
-      { pattern: /.*PASSWORD.*/i, type: 'database', service: 'Database' },
-      { pattern: /.*WEBHOOK.*/i, type: 'webhook', service: 'Webhook' },
-      { pattern: /.*CLIENT.*ID.*/i, type: 'oauth', service: 'OAuth' },
-      { pattern: /.*CLIENT.*SECRET.*/i, type: 'oauth', service: 'OAuth' },
-      { pattern: /.*DATABASE.*URL.*/i, type: 'database', service: 'Database' },
-      { pattern: /.*DB.*URL.*/i, type: 'database', service: 'Database' },
-      { pattern: /.*TWILIO.*/i, type: 'integration', service: 'Twilio' },
-      { pattern: /.*SENDGRID.*/i, type: 'integration', service: 'SendGrid' },
-      { pattern: /.*OPENAI.*/i, type: 'integration', service: 'OpenAI' },
-      { pattern: /.*XANO.*/i, type: 'integration', service: 'Xano' },
-      { pattern: /.*STRIPE.*/i, type: 'integration', service: 'Stripe' },
-      { pattern: /.*AWS.*/i, type: 'integration', service: 'AWS' },
-      { pattern: /.*GOOGLE.*/i, type: 'integration', service: 'Google' },
-      { pattern: /.*GITHUB.*/i, type: 'integration', service: 'GitHub' },
+      { pattern: /.*API.*KEY.*/i, type: "api_key", service: "Unknown API" },
+      {
+        pattern: /.*AUTH.*TOKEN.*/i,
+        type: "auth_token",
+        service: "Authentication",
+      },
+      { pattern: /.*SECRET.*/i, type: "environment", service: "Application" },
+      { pattern: /.*PASSWORD.*/i, type: "database", service: "Database" },
+      { pattern: /.*WEBHOOK.*/i, type: "webhook", service: "Webhook" },
+      { pattern: /.*CLIENT.*ID.*/i, type: "oauth", service: "OAuth" },
+      { pattern: /.*CLIENT.*SECRET.*/i, type: "oauth", service: "OAuth" },
+      { pattern: /.*DATABASE.*URL.*/i, type: "database", service: "Database" },
+      { pattern: /.*DB.*URL.*/i, type: "database", service: "Database" },
+      { pattern: /.*TWILIO.*/i, type: "integration", service: "Twilio" },
+      { pattern: /.*SENDGRID.*/i, type: "integration", service: "SendGrid" },
+      { pattern: /.*OPENAI.*/i, type: "integration", service: "OpenAI" },
+      { pattern: /.*XANO.*/i, type: "integration", service: "Xano" },
+      { pattern: /.*STRIPE.*/i, type: "integration", service: "Stripe" },
+      { pattern: /.*AWS.*/i, type: "integration", service: "AWS" },
+      { pattern: /.*GOOGLE.*/i, type: "integration", service: "Google" },
+      { pattern: /.*GITHUB.*/i, type: "integration", service: "GitHub" },
     ];
 
     for (const [key, value] of Object.entries(envVars)) {
-      if (!value || typeof value !== 'string') continue;
+      if (!value || typeof value !== "string") continue;
 
       // Skip common non-credential environment variables
       const skipPatterns = [
@@ -49,7 +53,7 @@ export const scanEnvironmentCredentials: RequestHandler = async (req, res) => {
         /^TZ$/i,
       ];
 
-      if (skipPatterns.some(pattern => pattern.test(key))) {
+      if (skipPatterns.some((pattern) => pattern.test(key))) {
         continue;
       }
 
@@ -58,23 +62,36 @@ export const scanEnvironmentCredentials: RequestHandler = async (req, res) => {
         if (pattern.test(key)) {
           // Determine more specific service based on key name
           let detectedService = service;
-          if (key.toLowerCase().includes('twilio')) detectedService = 'Twilio';
-          else if (key.toLowerCase().includes('sendgrid')) detectedService = 'SendGrid';
-          else if (key.toLowerCase().includes('openai')) detectedService = 'OpenAI';
-          else if (key.toLowerCase().includes('xano')) detectedService = 'Xano';
-          else if (key.toLowerCase().includes('stripe')) detectedService = 'Stripe';
-          else if (key.toLowerCase().includes('aws')) detectedService = 'AWS';
-          else if (key.toLowerCase().includes('google')) detectedService = 'Google';
-          else if (key.toLowerCase().includes('github')) detectedService = 'GitHub';
-          else if (key.toLowerCase().includes('vercel')) detectedService = 'Vercel';
-          else if (key.toLowerCase().includes('netlify')) detectedService = 'Netlify';
+          if (key.toLowerCase().includes("twilio")) detectedService = "Twilio";
+          else if (key.toLowerCase().includes("sendgrid"))
+            detectedService = "SendGrid";
+          else if (key.toLowerCase().includes("openai"))
+            detectedService = "OpenAI";
+          else if (key.toLowerCase().includes("xano")) detectedService = "Xano";
+          else if (key.toLowerCase().includes("stripe"))
+            detectedService = "Stripe";
+          else if (key.toLowerCase().includes("aws")) detectedService = "AWS";
+          else if (key.toLowerCase().includes("google"))
+            detectedService = "Google";
+          else if (key.toLowerCase().includes("github"))
+            detectedService = "GitHub";
+          else if (key.toLowerCase().includes("vercel"))
+            detectedService = "Vercel";
+          else if (key.toLowerCase().includes("netlify"))
+            detectedService = "Netlify";
 
           // Determine environment based on key or value patterns
-          let environment = 'production';
-          if (key.toLowerCase().includes('dev') || key.toLowerCase().includes('development')) {
-            environment = 'development';
-          } else if (key.toLowerCase().includes('test') || key.toLowerCase().includes('staging')) {
-            environment = 'staging';
+          let environment = "production";
+          if (
+            key.toLowerCase().includes("dev") ||
+            key.toLowerCase().includes("development")
+          ) {
+            environment = "development";
+          } else if (
+            key.toLowerCase().includes("test") ||
+            key.toLowerCase().includes("staging")
+          ) {
+            environment = "staging";
           }
 
           discovered.push({
@@ -86,13 +103,13 @@ export const scanEnvironmentCredentials: RequestHandler = async (req, res) => {
             description: `Environment variable: ${key}`,
             environment: environment,
             dateAdded: new Date().toISOString(),
-            status: 'active',
+            status: "active",
             isEncrypted: false,
-            tags: ['auto-discovered', 'environment'],
+            tags: ["auto-discovered", "environment"],
             metadata: {
-              source: 'environment',
+              source: "environment",
               originalKey: key,
-            }
+            },
           });
           break; // Found a match, don't check other patterns
         }
@@ -102,29 +119,31 @@ export const scanEnvironmentCredentials: RequestHandler = async (req, res) => {
     // Add some common credential locations that might be missing
     const commonCredentials = [
       {
-        name: 'Database Connection String',
-        type: 'database',
-        service: 'Database',
-        placeholder: 'postgres://username:password@host:port/database',
-        description: 'Primary database connection string'
+        name: "Database Connection String",
+        type: "database",
+        service: "Database",
+        placeholder: "postgres://username:password@host:port/database",
+        description: "Primary database connection string",
       },
       {
-        name: 'JWT Secret',
-        type: 'environment',
-        service: 'Authentication',
-        placeholder: 'your-jwt-secret-key',
-        description: 'Secret key for JWT token signing'
+        name: "JWT Secret",
+        type: "environment",
+        service: "Authentication",
+        placeholder: "your-jwt-secret-key",
+        description: "Secret key for JWT token signing",
       },
       {
-        name: 'Encryption Key',
-        type: 'environment',
-        service: 'Security',
-        placeholder: 'your-encryption-key',
-        description: 'Application encryption key'
+        name: "Encryption Key",
+        type: "environment",
+        service: "Security",
+        placeholder: "your-encryption-key",
+        description: "Application encryption key",
       },
     ];
 
-    console.log(`✅ Environment scan complete! Found ${discovered.length} potential credentials`);
+    console.log(
+      `✅ Environment scan complete! Found ${discovered.length} potential credentials`,
+    );
 
     res.json({
       success: true,
@@ -144,12 +163,12 @@ export const scanEnvironmentCredentials: RequestHandler = async (req, res) => {
       },
       timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error("Environment credential scan failed:", error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : "Failed to scan environment",
+      error:
+        error instanceof Error ? error.message : "Failed to scan environment",
       timestamp: new Date().toISOString(),
     });
   }

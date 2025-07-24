@@ -24,21 +24,23 @@ export const discoverTwilioSIDs: RequestHandler = async (req, res) => {
 
     // Discover Phone Numbers
     try {
-      const phoneNumbers = await twilio.incomingPhoneNumbers.list({ limit: 50 });
+      const phoneNumbers = await twilio.incomingPhoneNumbers.list({
+        limit: 50,
+      });
       phoneNumbers.forEach((number: any) => {
         discovered.push({
           id: Date.now().toString() + Math.random(),
           name: `Phone Number ${number.phoneNumber}`,
           sid: number.sid,
-          type: 'phone',
-          description: `Phone: ${number.phoneNumber}, Friendly Name: ${number.friendlyName || 'N/A'}`,
+          type: "phone",
+          description: `Phone: ${number.phoneNumber}, Friendly Name: ${number.friendlyName || "N/A"}`,
           dateAdded: new Date().toISOString(),
-          status: 'active',
+          status: "active",
           additionalInfo: {
             phoneNumber: number.phoneNumber,
             friendlyName: number.friendlyName,
             capabilities: number.capabilities,
-          }
+          },
         });
       });
       console.log(`📱 Found ${phoneNumbers.length} phone numbers`);
@@ -54,14 +56,14 @@ export const discoverTwilioSIDs: RequestHandler = async (req, res) => {
           id: Date.now().toString() + Math.random(),
           name: `Messaging Service: ${service.friendlyName}`,
           sid: service.sid,
-          type: 'service',
+          type: "service",
           description: `Messaging Service: ${service.friendlyName}`,
           dateAdded: new Date().toISOString(),
-          status: 'active',
+          status: "active",
           additionalInfo: {
             friendlyName: service.friendlyName,
             inboundRequestUrl: service.inboundRequestUrl,
-          }
+          },
         });
       });
       console.log(`💬 Found ${services.length} messaging services`);
@@ -77,15 +79,15 @@ export const discoverTwilioSIDs: RequestHandler = async (req, res) => {
           id: Date.now().toString() + Math.random(),
           name: `Studio Flow: ${flow.friendlyName}`,
           sid: flow.sid,
-          type: 'flow',
+          type: "flow",
           description: `Studio Flow: ${flow.friendlyName}, Status: ${flow.status}`,
           dateAdded: new Date().toISOString(),
-          status: flow.status === 'published' ? 'active' : 'inactive',
+          status: flow.status === "published" ? "active" : "inactive",
           additionalInfo: {
             friendlyName: flow.friendlyName,
             status: flow.status,
             revision: flow.revision,
-          }
+          },
         });
       });
       console.log(`🧠 Found ${flows.length} studio flows`);
@@ -95,21 +97,23 @@ export const discoverTwilioSIDs: RequestHandler = async (req, res) => {
 
     // Discover Conversations
     try {
-      const conversations = await twilio.conversations.v1.conversations.list({ limit: 50 });
+      const conversations = await twilio.conversations.v1.conversations.list({
+        limit: 50,
+      });
       conversations.forEach((conversation: any) => {
         discovered.push({
           id: Date.now().toString() + Math.random(),
           name: `Conversation: ${conversation.friendlyName || conversation.sid}`,
           sid: conversation.sid,
-          type: 'conversation',
-          description: `Conversation: ${conversation.friendlyName || 'Unnamed'}, State: ${conversation.state}`,
+          type: "conversation",
+          description: `Conversation: ${conversation.friendlyName || "Unnamed"}, State: ${conversation.state}`,
           dateAdded: new Date().toISOString(),
-          status: conversation.state === 'active' ? 'active' : 'inactive',
+          status: conversation.state === "active" ? "active" : "inactive",
           additionalInfo: {
             friendlyName: conversation.friendlyName,
             state: conversation.state,
             dateCreated: conversation.dateCreated,
-          }
+          },
         });
       });
       console.log(`💬 Found ${conversations.length} conversations`);
@@ -119,20 +123,22 @@ export const discoverTwilioSIDs: RequestHandler = async (req, res) => {
 
     // Discover TaskRouter Workspaces
     try {
-      const workspaces = await twilio.taskrouter.v1.workspaces.list({ limit: 50 });
+      const workspaces = await twilio.taskrouter.v1.workspaces.list({
+        limit: 50,
+      });
       workspaces.forEach((workspace: any) => {
         discovered.push({
           id: Date.now().toString() + Math.random(),
           name: `Workspace: ${workspace.friendlyName}`,
           sid: workspace.sid,
-          type: 'workspace',
+          type: "workspace",
           description: `TaskRouter Workspace: ${workspace.friendlyName}`,
           dateAdded: new Date().toISOString(),
-          status: 'active',
+          status: "active",
           additionalInfo: {
             friendlyName: workspace.friendlyName,
             prioritizeQueueOrder: workspace.prioritizeQueueOrder,
-          }
+          },
         });
       });
       console.log(`🏢 Found ${workspaces.length} workspaces`);
@@ -148,14 +154,14 @@ export const discoverTwilioSIDs: RequestHandler = async (req, res) => {
           id: Date.now().toString() + Math.random(),
           name: `Sync Service: ${service.friendlyName || service.sid}`,
           sid: service.sid,
-          type: 'other',
-          description: `Sync Service: ${service.friendlyName || 'Unnamed'}`,
+          type: "other",
+          description: `Sync Service: ${service.friendlyName || "Unnamed"}`,
           dateAdded: new Date().toISOString(),
-          status: 'active',
+          status: "active",
           additionalInfo: {
             friendlyName: service.friendlyName,
             reachabilityWebhooksEnabled: service.reachabilityWebhooksEnabled,
-          }
+          },
         });
       });
       console.log(`🔄 Found ${syncServices.length} sync services`);
@@ -178,7 +184,6 @@ export const discoverTwilioSIDs: RequestHandler = async (req, res) => {
       },
       timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error("Twilio SID discovery failed:", error);
     res.status(500).json({
