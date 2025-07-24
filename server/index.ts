@@ -12,6 +12,12 @@ import {
   testTwilioAPI,
 } from "./routes/twilio-vault";
 import { testSendGrid, getSendGridStatus } from "./routes/test-sendgrid";
+import {
+  createStudioFlow,
+  getStudioFlows,
+  updateStudioFlow,
+  testTwilioConnection
+} from "./routes/studio-flows";
 import realApiRouter from "./routes/real-api";
 import xanoSetupRouter from "./routes/xano-setup";
 
