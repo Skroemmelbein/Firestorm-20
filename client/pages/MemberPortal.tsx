@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import AdminLayout from "@/components/AdminLayout";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,559 +7,481 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
+  Brain,
   Users,
-  Settings,
-  Shield,
-  Layout,
-  UserCheck,
-  Key,
-  Gift,
-  Star,
-  Percent,
-  Truck,
-  Headphones,
   Crown,
-  ChevronRight,
-  Search,
-  Loader2,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
+  Shield,
+  Star,
+  Activity,
+  Clock,
+  TrendingUp,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  Eye,
+  Edit,
   Plus,
-  MessageSquare,
+  Search,
+  Filter,
+  Download,
+  Upload,
+  Settings,
+  Command,
+  Zap,
+  Target,
+  Award,
+  CheckCircle,
+  AlertTriangle,
+  UserPlus,
+  UserMinus,
 } from "lucide-react";
-import SMSInterface from "@/components/SMSInterface";
-import AICommandInterface from "@/components/AICommandInterface";
 
 interface Member {
-  id: number;
-  uuid: string;
+  id: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
-  first_name: string;
-  last_name: string;
-  status: string;
-  membership_type: string;
-  engagement_score: number;
-  lifetime_value: number;
-  created_at: string;
+  tier: "basic" | "premium" | "elite" | "executive";
+  status: "active" | "inactive" | "pending" | "suspended";
+  joinDate: Date;
+  lastActive: Date;
+  totalSpend: number;
+  engagement: number;
+  avatar?: string;
+  location: string;
+  permissions: string[];
 }
 
-interface MemberBenefit {
-  id: number;
-  uuid: string;
-  title: string;
-  description: string;
-  benefit_type: string;
-  benefit_category: string;
-  value_description: string;
-  conditions?: string;
-  is_active: boolean;
-  membership_levels: string[];
-  sort_order: number;
-  icon_name?: string;
-  color_theme?: string;
-  expires_at?: string;
-  usage_limit?: number;
+interface MemberMetrics {
+  totalMembers: number;
+  activeMembers: number;
+  newThisMonth: number;
+  avgEngagement: number;
+  retentionRate: number;
+  premiumMembers: number;
 }
 
 export default function MemberPortal() {
-  const [members, setMembers] = useState<Member[]>([]);
-  const [benefits, setBenefits] = useState<MemberBenefit[]>([]);
-  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTab, setSelectedTab] = useState("command");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterTier, setFilterTier] = useState("all");
+  
+  const [members] = useState<Member[]>([
+    {
+      id: "M001",
+      firstName: "Marcus",
+      lastName: "Chen",
+      email: "marcus.chen@example.com", 
+      phone: "+1 (555) 123-4567",
+      tier: "executive",
+      status: "active",
+      joinDate: new Date("2023-01-15"),
+      lastActive: new Date("2024-01-15"),
+      totalSpend: 125000,
+      engagement: 94.8,
+      location: "San Francisco, CA",
+      permissions: ["full_access", "admin", "billing"]
+    },
+    {
+      id: "M002", 
+      firstName: "Sarah",
+      lastName: "Rodriguez",
+      email: "sarah.rodriguez@example.com",
+      phone: "+1 (555) 987-6543", 
+      tier: "premium",
+      status: "active",
+      joinDate: new Date("2023-02-20"),
+      lastActive: new Date("2024-01-14"),
+      totalSpend: 47500,
+      engagement: 87.3,
+      location: "Austin, TX",
+      permissions: ["member_access", "reports"]
+    },
+    {
+      id: "M003",
+      firstName: "David",
+      lastName: "Thompson", 
+      email: "david.thompson@example.com",
+      phone: "+1 (555) 456-7890",
+      tier: "elite",
+      status: "active", 
+      joinDate: new Date("2023-03-10"),
+      lastActive: new Date("2024-01-15"),
+      totalSpend: 89200,
+      engagement: 91.7,
+      location: "New York, NY",
+      permissions: ["member_access", "advanced_features"]
+    }
+  ]);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  const metrics: MemberMetrics = {
+    totalMembers: 2847,
+    activeMembers: 2691,
+    newThisMonth: 147,
+    avgEngagement: 89.4,
+    retentionRate: 94.6,
+    premiumMembers: 1829
+  };
 
-  const loadData = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Load members and benefits from real Xano API
-      const [membersResponse, benefitsResponse] = await Promise.all([
-        fetch("/api/real/members?per_page=50"),
-        fetch("/api/real/benefits?is_active=true"),
-      ]);
-
-      if (!membersResponse.ok || !benefitsResponse.ok) {
-        throw new Error("Failed to load data from Xano");
-      }
-
-      const membersData = await membersResponse.json();
-      const benefitsData = await benefitsResponse.json();
-
-      setMembers(membersData.data || []);
-      setBenefits(benefitsData || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load data");
-      console.error("Error loading data:", err);
-    } finally {
-      setLoading(false);
+  const getTierColor = (tier: string) => {
+    switch (tier) {
+      case "executive":
+        return "#FFD700";
+      case "elite":
+        return "#8A2BE2";
+      case "premium":
+        return "#00CED1";
+      case "basic":
+        return "#32CD32";
+      default:
+        return "#6B7280";
     }
   };
 
-  const filteredMembers = members.filter(
-    (member) =>
-      member.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.email.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+        return "#10B981";
+      case "inactive":
+        return "#6B7280";
+      case "pending":
+        return "#F59E0B";
+      case "suspended":
+        return "#EF4444";
+      default:
+        return "#6B7280";
+    }
+  };
 
-  const getIconForBenefit = (iconName?: string) => {
-    switch (iconName) {
-      case "percent":
-        return Percent;
-      case "truck":
-        return Truck;
-      case "headphones":
-        return Headphones;
-      case "crown":
+  const getTierIcon = (tier: string) => {
+    switch (tier) {
+      case "executive":
         return Crown;
-      case "star":
+      case "elite":
         return Star;
+      case "premium":
+        return Shield;
+      case "basic":
+        return Users;
       default:
-        return Gift;
+        return Users;
     }
   };
 
-  const getBenefitColor = (colorTheme?: string) => {
-    switch (colorTheme) {
-      case "green":
-        return "bg-green-100 text-green-700 border-green-200";
-      case "blue":
-        return "bg-blue-100 text-blue-700 border-blue-200";
-      case "purple":
-        return "bg-purple-100 text-purple-700 border-purple-200";
-      case "orange":
-        return "bg-orange-100 text-orange-700 border-orange-200";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
-    }
-  };
-
-  if (loading) {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <span className="ml-2 text-lg">Loading member portal data...</span>
-        </div>
-      </AdminLayout>
-    );
-  }
+  const filteredMembers = members.filter(member => {
+    const matchesSearch = 
+      member.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.email.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesTier = filterTier === "all" || member.tier === filterTier;
+    
+    return matchesSearch && matchesTier;
+  });
 
   return (
-    <AdminLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-[#111111] dream-portal-theme">
+      {/* DREAM PORTAL Command Header */}
+      <div className="f10-command-header" style={{ background: "linear-gradient(135deg, #1a0f1a 0%, #2d1b2d 100%)" }}>
+        <div className="f10-command-title">
+          <Brain className="w-8 h-8 text-[#8A2BE2]" />
           <div>
-            <h1 className="text-4xl font-black bg-gradient-to-r from-purple-600 via-pink-500 to-blue-500 bg-clip-text text-transparent tracking-widest">
-              DREAM PORTAL
-            </h1>
-            <p className="text-purple-600/80 font-bold uppercase tracking-wide">
-              ✨ Premium Member Experience Platform ✨
-            </p>
+            <h1 className="f10-heading-lg text-white">DREAM PORTAL COMMAND</h1>
+            <p className="f10-command-subtitle">Member Management & Access Control</p>
           </div>
-          <div className="flex gap-2">
-            <Button onClick={loadData} variant="outline" className="gap-2">
-              <Settings className="w-4 h-4" />
-              Refresh Data
-            </Button>
-            <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600 corp-shadow">
-              <Plus className="w-4 h-4" />
-              Add Benefit
-            </Button>
+        </div>
+        <div className="f10-command-status">
+          <div className="f10-env-status">
+            <div className="f10-status-dot"></div>
+            <span>{metrics.activeMembers} Members Online</span>
+          </div>
+          <div className="f10-env-status">
+            <Activity className="w-4 h-4" />
+            <span>Portal Status: Operational</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="f10-ops-zone">
+        {/* Command Metrics */}
+        <div className="f10-grid-4 mb-8">
+          <div className="f10-metric-card">
+            <div className="f10-metric-header">
+              <span className="f10-metric-title">Total Members</span>
+              <Users className="w-4 h-4 text-[#8A2BE2]" />
+            </div>
+            <div className="f10-metric-value text-[#8A2BE2]">
+              {metrics.totalMembers.toLocaleString()}
+            </div>
+            <div className="f10-metric-trend positive">
+              <TrendingUp className="w-3 h-3" />
+              <span>+{metrics.newThisMonth} this month</span>
+            </div>
+          </div>
+
+          <div className="f10-metric-card">
+            <div className="f10-metric-header">
+              <span className="f10-metric-title">Active Members</span>
+              <Activity className="w-4 h-4 text-[#737373]" />
+            </div>
+            <div className="f10-metric-value">
+              {metrics.activeMembers.toLocaleString()}
+            </div>
+            <div className="f10-metric-trend positive">
+              <span>{((metrics.activeMembers/metrics.totalMembers)*100).toFixed(1)}% active</span>
+            </div>
+          </div>
+
+          <div className="f10-metric-card">
+            <div className="f10-metric-header">
+              <span className="f10-metric-title">Engagement Rate</span>
+              <Target className="w-4 h-4 text-[#737373]" />
+            </div>
+            <div className="f10-metric-value">
+              {metrics.avgEngagement}%
+            </div>
+            <div className="f10-metric-trend positive">
+              <span>Above target</span>
+            </div>
+          </div>
+
+          <div className="f10-metric-card">
+            <div className="f10-metric-header">
+              <span className="f10-metric-title">Retention Rate</span>
+              <Award className="w-4 h-4 text-[#737373]" />
+            </div>
+            <div className="f10-metric-value">
+              {metrics.retentionRate}%
+            </div>
+            <div className="f10-metric-trend positive">
+              <span>Excellent retention</span>
+            </div>
           </div>
         </div>
 
-        {error && (
-          <Alert variant="destructive">
-            <XCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-
-        {/* Stats - Real Data from Xano */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="glass-card corp-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">
-                Total Members
-              </CardTitle>
-              <Users className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold gradient-text">
-                {members.length.toLocaleString()}
-              </div>
-              <p className="text-xs text-green-600 font-medium">
-                Live from Xano DB
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card corp-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">
-                Active Benefits
-              </CardTitle>
-              <Gift className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold gradient-text">
-                {benefits.length}
-              </div>
-              <p className="text-xs text-blue-600 font-medium">
-                Available to members
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card corp-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">
-                Premium Members
-              </CardTitle>
-              <Crown className="h-4 w-4 text-purple-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold gradient-text">
-                {
-                  members.filter(
-                    (m) =>
-                      m.membership_type === "premium" ||
-                      m.membership_type === "enterprise",
-                  ).length
-                }
-              </div>
-              <p className="text-xs text-purple-600 font-medium">
-                Premium + Enterprise
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card corp-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">
-                Avg Engagement
-              </CardTitle>
-              <Star className="h-4 w-4 text-yellow-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold gradient-text">
-                {members.length > 0
-                  ? Math.round(
-                      members.reduce((sum, m) => sum + m.engagement_score, 0) /
-                        members.length,
-                    )
-                  : 0}
-              </div>
-              <p className="text-xs text-yellow-600 font-medium">
-                Engagement score
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Member Benefits Interface */}
-        <Tabs defaultValue="ai" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="ai" className="gap-2">
-              <Star className="w-4 h-4" />
-              AI Commands
+        {/* Command Tabs */}
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 bg-[#1a1a1a] border border-[#8A2BE2]/30">
+            <TabsTrigger
+              value="command"
+              className="data-[state=active]:bg-[#8A2BE2] data-[state=active]:text-white text-white hover:text-[#8A2BE2] transition-colors"
+            >
+              <Command className="w-4 h-4 mr-2" />
+              Member Command
             </TabsTrigger>
-            <TabsTrigger value="benefits" className="gap-2">
-              <Gift className="w-4 h-4" />
-              Benefits
+            <TabsTrigger
+              value="access"
+              className="data-[state=active]:bg-[#8A2BE2] data-[state=active]:text-white text-white hover:text-[#8A2BE2] transition-colors"
+            >
+              <Shield className="w-4 h-4 mr-2" />
+              Access Control
             </TabsTrigger>
-            <TabsTrigger value="members" className="gap-2">
-              <Users className="w-4 h-4" />
-              Members
+            <TabsTrigger
+              value="analytics"
+              className="data-[state=active]:bg-[#8A2BE2] data-[state=active]:text-white text-white hover:text-[#8A2BE2] transition-colors"
+            >
+              <TrendingUp className="w-4 h-4 mr-2" />
+              Member Analytics
             </TabsTrigger>
-            <TabsTrigger value="sms" className="gap-2">
-              <MessageSquare className="w-4 h-4" />
-              SMS System
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-2">
-              <Settings className="w-4 h-4" />
+            <TabsTrigger
+              value="settings"
+              className="data-[state=active]:bg-[#8A2BE2] data-[state=active]:text-white text-white hover:text-[#8A2BE2] transition-colors"
+            >
+              <Settings className="w-4 h-4 mr-2" />
               Portal Settings
             </TabsTrigger>
           </TabsList>
 
-          {/* AI Commands Tab */}
-          <TabsContent value="ai">
-            <AICommandInterface />
-          </TabsContent>
+          {/* Member Command Tab */}
+          <TabsContent value="command" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="f10-heading-md text-white">Member Command Center</h2>
+                <p className="f10-text-sm text-[#b3b3b3] mt-1">Manage member access, permissions, and engagement</p>
+              </div>
+              <div className="flex gap-3">
+                <Button className="f10-btn f10-btn-secondary">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export Data
+                </Button>
+                <Button className="f10-btn accent-bg text-white font-medium">
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Add Member
+                </Button>
+              </div>
+            </div>
 
-          {/* Benefits Tab */}
-          <TabsContent value="benefits">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {benefits.map((benefit) => {
-                const IconComponent = getIconForBenefit(benefit.icon_name);
+            {/* Search and Filter Controls */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-3 w-4 h-4 text-[#737373]" />
+                <Input
+                  placeholder="Search members..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 bg-[#1a1a1a] border-[#333333] text-white"
+                />
+              </div>
+              <select
+                value={filterTier}
+                onChange={(e) => setFilterTier(e.target.value)}
+                className="px-4 py-2 bg-[#1a1a1a] border border-[#333333] rounded-lg text-white"
+              >
+                <option value="all">All Tiers</option>
+                <option value="executive">Executive</option>
+                <option value="elite">Elite</option>
+                <option value="premium">Premium</option>
+                <option value="basic">Basic</option>
+              </select>
+            </div>
+
+            {/* Member List */}
+            <div className="space-y-4">
+              {filteredMembers.map((member) => {
+                const TierIcon = getTierIcon(member.tier);
                 return (
-                  <Card
-                    key={benefit.id}
-                    className="glass-card corp-shadow hover:shadow-lg transition-shadow"
-                  >
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`p-2 rounded-lg ${getBenefitColor(benefit.color_theme)}`}
-                          >
-                            <IconComponent className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <CardTitle className="text-lg">
-                              {benefit.title}
-                            </CardTitle>
-                            <Badge variant="outline" className="mt-1">
-                              {benefit.benefit_category}
-                            </Badge>
+                  <div key={member.id} className="f10-card hover:accent-glow transition-all">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <Avatar className="w-12 h-12">
+                          <AvatarImage src={member.avatar} />
+                          <AvatarFallback className="bg-[#8A2BE2]/20 text-[#8A2BE2]">
+                            {member.firstName[0]}{member.lastName[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <h3 className="f10-text-lg font-semibold text-white">
+                            {member.firstName} {member.lastName}
+                          </h3>
+                          <div className="flex items-center gap-3 mt-1">
+                            <div
+                              className="f10-status"
+                              style={{
+                                backgroundColor: `${getTierColor(member.tier)}20`,
+                                color: getTierColor(member.tier),
+                                borderColor: `${getTierColor(member.tier)}40`
+                              }}
+                            >
+                              <TierIcon className="w-3 h-3 mr-1" />
+                              {member.tier.toUpperCase()}
+                            </div>
+                            <div
+                              className="f10-status"
+                              style={{
+                                backgroundColor: `${getStatusColor(member.status)}20`,
+                                color: getStatusColor(member.status),
+                                borderColor: `${getStatusColor(member.status)}40`
+                              }}
+                            >
+                              {member.status.toUpperCase()}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <p className="text-sm text-muted-foreground">
-                        {benefit.description}
-                      </p>
-
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Value:</span>
-                          <span className="text-sm text-primary font-semibold">
-                            {benefit.value_description}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Type:</span>
-                          <Badge variant="secondary">
-                            {benefit.benefit_type}
-                          </Badge>
-                        </div>
-
-                        <div className="space-y-1">
-                          <span className="text-sm font-medium">
-                            Available to:
-                          </span>
-                          <div className="flex flex-wrap gap-1">
-                            {benefit.membership_levels.map((level) => (
-                              <Badge
-                                key={level}
-                                className="text-xs bg-blue-100 text-blue-700"
-                              >
-                                {level}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-
-                        {benefit.conditions && (
-                          <div className="pt-2 border-t">
-                            <span className="text-xs text-muted-foreground">
-                              <strong>Conditions:</strong> {benefit.conditions}
-                            </span>
-                          </div>
-                        )}
-
-                        {benefit.usage_limit && (
-                          <div className="flex items-center justify-between pt-2 border-t">
-                            <span className="text-xs text-muted-foreground">
-                              Usage limit:
-                            </span>
-                            <span className="text-xs font-medium">
-                              {benefit.usage_limit} per member
-                            </span>
-                          </div>
-                        )}
+                      <div className="flex items-center gap-2">
+                        <Button size="sm" className="f10-btn f10-btn-ghost">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" className="f10-btn f10-btn-ghost">
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" className="f10-btn f10-btn-ghost">
+                          <Mail className="w-4 h-4" />
+                        </Button>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+
+                    <div className="grid grid-cols-5 gap-6">
+                      <div className="text-center">
+                        <div className="f10-text-sm font-semibold text-[#00E676]">
+                          ${member.totalSpend.toLocaleString()}
+                        </div>
+                        <div className="f10-text-xs text-[#737373]">TOTAL SPEND</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="f10-text-sm font-semibold text-[#8A2BE2]">
+                          {member.engagement}%
+                        </div>
+                        <div className="f10-text-xs text-[#737373]">ENGAGEMENT</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="f10-text-sm font-semibold text-white">
+                          {member.joinDate.toLocaleDateString()}
+                        </div>
+                        <div className="f10-text-xs text-[#737373]">JOINED</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="f10-text-sm font-semibold text-[#00BFFF]">
+                          {member.lastActive.toLocaleDateString()}
+                        </div>
+                        <div className="f10-text-xs text-[#737373]">LAST ACTIVE</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="f10-text-sm font-semibold text-[#737373]">
+                          {member.location}
+                        </div>
+                        <div className="f10-text-xs text-[#737373]">LOCATION</div>
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>
           </TabsContent>
 
-          {/* Members Tab */}
-          <TabsContent value="members">
-            <Card className="glass-card corp-shadow">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>Member Directory</CardTitle>
-                  <div className="flex items-center gap-2">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        placeholder="Search members..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-9 w-64"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {filteredMembers.slice(0, 10).map((member) => (
-                    <div
-                      key={member.id}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                      onClick={() => setSelectedMember(member)}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-sm font-semibold text-primary">
-                            {member.first_name[0]}
-                            {member.last_name[0]}
-                          </span>
-                        </div>
-                        <div>
-                          <div className="font-medium">
-                            {member.first_name} {member.last_name}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            {member.email}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <Badge
-                          className={
-                            member.membership_type === "enterprise"
-                              ? "bg-purple-100 text-purple-700"
-                              : member.membership_type === "premium"
-                                ? "bg-blue-100 text-blue-700"
-                                : "bg-gray-100 text-gray-700"
-                          }
-                        >
-                          {member.membership_type}
-                        </Badge>
-                        <div className="text-sm text-muted-foreground">
-                          Score: {member.engagement_score}
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {filteredMembers.length > 10 && (
-                  <div className="text-center mt-4">
-                    <Button variant="outline">
-                      Load More ({filteredMembers.length - 10} remaining)
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+          {/* Access Control Tab */}
+          <TabsContent value="access" className="space-y-6">
+            <div className="text-center py-12">
+              <Shield className="w-16 h-16 mx-auto text-[#8A2BE2] mb-4" />
+              <h3 className="f10-heading-sm text-white mb-2">Access Control System</h3>
+              <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto">
+                Advanced permission management and security controls for member access
+              </p>
+              <Button className="f10-btn accent-bg text-white font-medium mt-6">
+                <Settings className="w-4 h-4 mr-2" />
+                Configure Access
+              </Button>
+            </div>
           </TabsContent>
 
-          {/* SMS Tab */}
-          <TabsContent value="sms">
-            <SMSInterface />
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="text-center py-12">
+              <TrendingUp className="w-16 h-16 mx-auto text-[#8A2BE2] mb-4" />
+              <h3 className="f10-heading-sm text-white mb-2">Member Analytics Engine</h3>
+              <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto">
+                Advanced analytics for member behavior, engagement, and retention insights
+              </p>
+              <Button className="f10-btn accent-bg text-white font-medium mt-6">
+                <TrendingUp className="w-4 h-4 mr-2" />
+                View Analytics
+              </Button>
+            </div>
           </TabsContent>
 
           {/* Settings Tab */}
-          <TabsContent value="settings">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="glass-card corp-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Layout className="w-5 h-5" />
-                    Portal Configuration
-                  </CardTitle>
-                  <CardDescription>
-                    Configure portal appearance and functionality
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 border rounded-lg">
-                      <h4 className="font-semibold text-sm text-blue-800 mb-2">
-                        Database
-                      </h4>
-                      <Badge className="bg-green-100 text-green-700">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        Xano Connected
-                      </Badge>
-                    </div>
-                    <div className="p-4 border rounded-lg">
-                      <h4 className="font-semibold text-sm text-blue-800 mb-2">
-                        Benefits
-                      </h4>
-                      <Badge className="bg-blue-100 text-blue-700">
-                        {benefits.length} Active
-                      </Badge>
-                    </div>
-                  </div>
-                  <Button className="w-full gap-2" onClick={loadData}>
-                    <Settings className="w-4 h-4" />
-                    Refresh from Xano
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="glass-card corp-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="w-5 h-5" />
-                    Integration Status
-                  </CardTitle>
-                  <CardDescription>Real-time connection status</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Xano Database</span>
-                      <Badge className="bg-green-100 text-green-700">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        Connected
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        Member Records
-                      </span>
-                      <span className="text-sm text-blue-600">
-                        {members.length} loaded
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        Benefits Catalog
-                      </span>
-                      <span className="text-sm text-blue-600">
-                        {benefits.length} active
-                      </span>
-                    </div>
-                  </div>
-                  <Button variant="outline" className="w-full gap-2">
-                    <Key className="w-4 h-4" />
-                    View API Settings
-                  </Button>
-                </CardContent>
-              </Card>
+          <TabsContent value="settings" className="space-y-6">
+            <div className="text-center py-12">
+              <Settings className="w-16 h-16 mx-auto text-[#8A2BE2] mb-4" />
+              <h3 className="f10-heading-sm text-white mb-2">Portal Configuration</h3>
+              <p className="f10-text-sm text-[#b3b3b3] max-w-md mx-auto">
+                Configure portal settings, member tiers, and system preferences
+              </p>
+              <Button className="f10-btn accent-bg text-white font-medium mt-6">
+                <Settings className="w-4 h-4 mr-2" />
+                Portal Settings
+              </Button>
             </div>
           </TabsContent>
         </Tabs>
       </div>
-    </AdminLayout>
+    </div>
   );
 }
