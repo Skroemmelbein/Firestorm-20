@@ -21,7 +21,7 @@ XANO_DATABASE_ID=your_database_id
 # Twilio Configuration
 TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 TWILIO_AUTH_TOKEN=your_real_auth_token_here
-TWILIO_PHONE_NUMBER=+1234567890
+TWILIO_PHONE_NUMBER=+18558600037
 
 # Application
 NODE_ENV=development
