@@ -184,7 +184,11 @@ export default function SkinCustomizer() {
   const [currentTab, setCurrentTab] = useState("themes");
 
   useEffect(() => {
-    setCustomTheme(selectedTheme);
+    try {
+      setCustomTheme(selectedTheme);
+    } catch (error) {
+      console.error('Error setting custom theme:', error);
+    }
   }, [selectedTheme]);
 
   const applyTheme = async (theme: ThemeConfig) => {
