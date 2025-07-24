@@ -179,7 +179,7 @@ export const TWILIO_COMPLETE_API_VAULT: TwilioAPIEndpoint[] = [
     documentation: 'https://www.twilio.com/docs/sms/api/message-resource',
     requiredParams: [
       { name: 'To', type: 'string', description: 'Recipient phone number', example: '+18558600037' },
-      { name: 'From', type: 'string', description: 'Twilio phone number', example: '+1987654321' },
+      { name: 'From', type: 'string', description: 'Twilio phone number', example: '+18558600037' },
       { name: 'Body', type: 'string', description: 'Message content', example: 'Payment due reminder' }
     ],
     optionalParams: [
@@ -206,7 +206,7 @@ export const TWILIO_COMPLETE_API_VAULT: TwilioAPIEndpoint[] = [
     documentation: 'https://www.twilio.com/docs/voice/api/call-resource',
     requiredParams: [
       { name: 'To', type: 'string', description: 'Phone number to call', example: '+18558600037' },
-      { name: 'From', type: 'string', description: 'Twilio phone number', example: '+1987654321' },
+      { name: 'From', type: 'string', description: 'Twilio phone number', example: '+18558600037' },
       { name: 'Url', type: 'string', description: 'TwiML URL for call flow' }
     ],
     optionalParams: [
@@ -233,7 +233,7 @@ export const TWILIO_COMPLETE_API_VAULT: TwilioAPIEndpoint[] = [
     documentation: 'https://www.twilio.com/docs/whatsapp/api',
     requiredParams: [
       { name: 'To', type: 'string', description: 'WhatsApp number', example: 'whatsapp:+18558600037' },
-      { name: 'From', type: 'string', description: 'WhatsApp Business number', example: 'whatsapp:+1987654321' },
+      { name: 'From', type: 'string', description: 'WhatsApp Business number', example: 'whatsapp:+18558600037' },
       { name: 'Body', type: 'string', description: 'Message content' }
     ],
     optionalParams: [
