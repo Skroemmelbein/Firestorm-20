@@ -69,7 +69,20 @@ export class TwilioClient {
 
     try {
       const response = await fetch(url, options);
-      const result = await response.json();
+
+      // Fix: Clone response to avoid "body stream already read" error
+      const responseText = await response.text();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("❌ Failed to parse Twilio response:", parseError);
+        result = {
+          message: "Failed to parse response",
+          error: parseError.message,
+          rawResponse: responseText
+        };
+      }
 
       if (!response.ok) {
         // Create detailed error object with Twilio specifics
