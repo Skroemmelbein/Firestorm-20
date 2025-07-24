@@ -124,7 +124,7 @@ export default function Overview() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F0F10] text-white">
+    <div className="min-h-screen bg-gradient-to-br from-[#FF6A00]/5 via-[#8A2BE2]/5 via-[#00CED1]/5 via-[#00E676]/5 to-[#DC143C]/5 text-white matrix-effect">
       {/* Command Center Header */}
       <div className="border-b border-[#FF6A00]/20 bg-black/90 backdrop-blur-xl p-8">
         <div className="flex items-center justify-between">
