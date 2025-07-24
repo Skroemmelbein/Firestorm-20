@@ -175,7 +175,7 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
         type: 'string',
         description: 'Your Twilio phone number',
         required: true,
-        example: '+1987654321'
+        example: '+18558600037'
       },
       {
         name: 'Body',
@@ -204,7 +204,7 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
       sid: 'SM1234567890abcdef1234567890abcdef',
       status: 'queued',
       to: '+18558600037',
-      from: '+1987654321',
+      from: '+18558600037',
       body: 'Hello from Twilio!'
     },
     pricing: {
@@ -234,7 +234,7 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
         type: 'string',
         description: 'Your Twilio phone number',
         required: true,
-        example: '+1987654321'
+        example: '+18558600037'
       },
       {
         name: 'Url',
