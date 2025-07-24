@@ -252,7 +252,7 @@ export default function TestModule() {
   );
 
   return (
-    <div className="min-h-screen bg-[#111111]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30">
       {/* Test Module Header */}
       <div
         className="f10-command-header"
