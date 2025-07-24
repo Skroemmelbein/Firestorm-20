@@ -333,6 +333,10 @@ export default function TestModule() {
 
           {/* SMS Testing Tab */}
           <TabsContent value="sms" className="space-y-6">
+            {/* Two-Way Conversations */}
+            <TwilioConversations />
+
+            {/* One-Way SMS Testing */}
             <div className="grid grid-cols-2 gap-6">
               <Card className="f10-card">
                 <CardHeader>
