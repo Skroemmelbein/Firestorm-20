@@ -89,7 +89,7 @@ export default function SendGridTest() {
   };
 
   // Auto-check status on mount
-  React.useEffect(() => {
+  useEffect(() => {
     checkStatus();
   }, []);
 
