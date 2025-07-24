@@ -25,6 +25,16 @@ router.post("/send", async (req, res) => {
       ? to
       : `+1${to.replace(/\D/g, "")}`;
 
+    // Validate: FROM and TO cannot be the same
+    if (formattedPhone === TWILIO_PHONE_NUMBER) {
+      return res.status(400).json({
+        success: false,
+        error: `Cannot send SMS to the same number as FROM number (${TWILIO_PHONE_NUMBER}). Please use a different test number.`,
+        code: "SAME_FROM_TO_NUMBER",
+        suggestion: "Try using +18144409968 as test number instead"
+      });
+    }
+
     const response = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
       {
