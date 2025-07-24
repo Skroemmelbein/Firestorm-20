@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "@/components/AdminLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -57,9 +63,30 @@ export default function Overview() {
       personality: "explosive-warfare",
       status: "optimal",
       kpis: [
-        { id: "campaigns", label: "ACTIVE OPERATIONS", value: 12, change: "+3", trend: "up", color: "#FF6A00" },
-        { id: "messages", label: "MESSAGES DEPLOYED", value: "16.3K", change: "+18%", trend: "up", color: "#FF2D55" },
-        { id: "conversion", label: "CONVERSION RATE", value: "23.4%", change: "+5.2%", trend: "up", color: "#00E676" },
+        {
+          id: "campaigns",
+          label: "ACTIVE OPERATIONS",
+          value: 12,
+          change: "+3",
+          trend: "up",
+          color: "#FF6A00",
+        },
+        {
+          id: "messages",
+          label: "MESSAGES DEPLOYED",
+          value: "16.3K",
+          change: "+18%",
+          trend: "up",
+          color: "#FF2D55",
+        },
+        {
+          id: "conversion",
+          label: "CONVERSION RATE",
+          value: "23.4%",
+          change: "+5.2%",
+          trend: "up",
+          color: "#00E676",
+        },
       ],
     },
     {
@@ -70,9 +97,30 @@ export default function Overview() {
       personality: "elite-luxury",
       status: "optimal",
       kpis: [
-        { id: "members", label: "ACTIVE MEMBERS", value: "1,247", change: "+89", trend: "up", color: "#8A2BE2" },
-        { id: "satisfaction", label: "SATISFACTION RATE", value: "94.8%", change: "+2.1%", trend: "up", color: "#FF69B4" },
-        { id: "engagement", label: "ENGAGEMENT SCORE", value: "87.3%", change: "+12%", trend: "up", color: "#4169E1" },
+        {
+          id: "members",
+          label: "ACTIVE MEMBERS",
+          value: "1,247",
+          change: "+89",
+          trend: "up",
+          color: "#8A2BE2",
+        },
+        {
+          id: "satisfaction",
+          label: "SATISFACTION RATE",
+          value: "94.8%",
+          change: "+2.1%",
+          trend: "up",
+          color: "#FF69B4",
+        },
+        {
+          id: "engagement",
+          label: "ENGAGEMENT SCORE",
+          value: "87.3%",
+          change: "+12%",
+          trend: "up",
+          color: "#4169E1",
+        },
       ],
     },
     {
@@ -83,9 +131,30 @@ export default function Overview() {
       personality: "speed-precision",
       status: "optimal",
       kpis: [
-        { id: "velocity", label: "AVG FULFILLMENT", value: "2.3min", change: "-45sec", trend: "up", color: "#00CED1" },
-        { id: "orders", label: "ORDERS PROCESSED", value: "892", change: "+156", trend: "up", color: "#1E90FF" },
-        { id: "efficiency", label: "EFFICIENCY RATE", value: "98.7%", change: "+3.2%", trend: "up", color: "#4682B4" },
+        {
+          id: "velocity",
+          label: "AVG FULFILLMENT",
+          value: "2.3min",
+          change: "-45sec",
+          trend: "up",
+          color: "#00CED1",
+        },
+        {
+          id: "orders",
+          label: "ORDERS PROCESSED",
+          value: "892",
+          change: "+156",
+          trend: "up",
+          color: "#1E90FF",
+        },
+        {
+          id: "efficiency",
+          label: "EFFICIENCY RATE",
+          value: "98.7%",
+          change: "+3.2%",
+          trend: "up",
+          color: "#4682B4",
+        },
       ],
     },
     {
@@ -96,9 +165,30 @@ export default function Overview() {
       personality: "data-nexus",
       status: "optimal",
       kpis: [
-        { id: "syncs", label: "DATA SYNCS", value: "45.2K", change: "+892", trend: "up", color: "#00E676" },
-        { id: "uptime", label: "SYSTEM UPTIME", value: "99.97%", change: "+0.02%", trend: "up", color: "#20B2AA" },
-        { id: "integrations", label: "LIVE INTEGRATIONS", value: 8, change: "+2", trend: "up", color: "#32CD32" },
+        {
+          id: "syncs",
+          label: "DATA SYNCS",
+          value: "45.2K",
+          change: "+892",
+          trend: "up",
+          color: "#00E676",
+        },
+        {
+          id: "uptime",
+          label: "SYSTEM UPTIME",
+          value: "99.97%",
+          change: "+0.02%",
+          trend: "up",
+          color: "#20B2AA",
+        },
+        {
+          id: "integrations",
+          label: "LIVE INTEGRATIONS",
+          value: 8,
+          change: "+2",
+          trend: "up",
+          color: "#32CD32",
+        },
       ],
     },
     {
@@ -109,9 +199,30 @@ export default function Overview() {
       personality: "fortress-defense",
       status: "optimal",
       kpis: [
-        { id: "blocked", label: "THREATS BLOCKED", value: "156", change: "+12", trend: "up", color: "#DC143C" },
-        { id: "rate", label: "DEFENSE RATE", value: "97.8%", change: "+1.2%", trend: "up", color: "#B22222" },
-        { id: "saved", label: "REVENUE PROTECTED", value: "$45.2K", change: "+$8.9K", trend: "up", color: "#8B0000" },
+        {
+          id: "blocked",
+          label: "THREATS BLOCKED",
+          value: "156",
+          change: "+12",
+          trend: "up",
+          color: "#DC143C",
+        },
+        {
+          id: "rate",
+          label: "DEFENSE RATE",
+          value: "97.8%",
+          change: "+1.2%",
+          trend: "up",
+          color: "#B22222",
+        },
+        {
+          id: "saved",
+          label: "REVENUE PROTECTED",
+          value: "$45.2K",
+          change: "+$8.9K",
+          trend: "up",
+          color: "#8B0000",
+        },
       ],
     },
   ]);
@@ -143,13 +254,17 @@ export default function Overview() {
             <div className="bg-[#1E1E22] border border-[#00E676]/30 px-4 py-2">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-[#00E676] animate-pulse"></div>
-                <span className="text-xs font-bold text-[#00E676]">ALL SYSTEMS OPERATIONAL</span>
+                <span className="text-xs font-bold text-[#00E676]">
+                  ALL SYSTEMS OPERATIONAL
+                </span>
               </div>
             </div>
             <div className="bg-[#1E1E22] border border-[#FF6A00]/30 px-4 py-2">
               <div className="flex items-center gap-2">
                 <Activity className="w-3 h-3 text-[#FF6A00]" />
-                <span className="text-xs font-bold text-white">{systemOverview.systemUptime}% UPTIME</span>
+                <span className="text-xs font-bold text-white">
+                  {systemOverview.systemUptime}% UPTIME
+                </span>
               </div>
             </div>
           </div>
@@ -242,7 +357,10 @@ export default function Overview() {
               <div
                 key={module.id}
                 className="bg-[#1E1E22] border-2 border-transparent hover:border-[#FF6A00]/50 transition-all tactical-hover p-6"
-                style={{ borderLeftColor: module.color, borderLeftWidth: '4px' }}
+                style={{
+                  borderLeftColor: module.color,
+                  borderLeftWidth: "4px",
+                }}
               >
                 <div className="flex items-center justify-between mb-6">
                   <div>
@@ -254,20 +372,50 @@ export default function Overview() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    {module.id === "firestorm" && <Flame className="w-5 h-5" style={{ color: module.color }} />}
-                    {module.id === "dream-portal" && <Crown className="w-5 h-5" style={{ color: module.color }} />}
-                    {module.id === "velocify-hub" && <Rocket className="w-5 h-5" style={{ color: module.color }} />}
-                    {module.id === "nexus-sync" && <Database className="w-5 h-5" style={{ color: module.color }} />}
-                    {module.id === "zero-cb-fortress" && <Shield className="w-5 h-5" style={{ color: module.color }} />}
+                    {module.id === "firestorm" && (
+                      <Flame
+                        className="w-5 h-5"
+                        style={{ color: module.color }}
+                      />
+                    )}
+                    {module.id === "dream-portal" && (
+                      <Crown
+                        className="w-5 h-5"
+                        style={{ color: module.color }}
+                      />
+                    )}
+                    {module.id === "velocify-hub" && (
+                      <Rocket
+                        className="w-5 h-5"
+                        style={{ color: module.color }}
+                      />
+                    )}
+                    {module.id === "nexus-sync" && (
+                      <Database
+                        className="w-5 h-5"
+                        style={{ color: module.color }}
+                      />
+                    )}
+                    {module.id === "zero-cb-fortress" && (
+                      <Shield
+                        className="w-5 h-5"
+                        style={{ color: module.color }}
+                      />
+                    )}
                     <div className="px-2 py-1 bg-[#00E676]/20 border border-[#00E676]/50">
-                      <span className="text-xs font-bold text-[#00E676] uppercase">OPERATIONAL</span>
+                      <span className="text-xs font-bold text-[#00E676] uppercase">
+                        OPERATIONAL
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   {module.kpis.map((kpi) => (
-                    <div key={kpi.id} className="flex items-center justify-between">
+                    <div
+                      key={kpi.id}
+                      className="flex items-center justify-between"
+                    >
                       <span className="text-sm font-bold text-white uppercase tracking-wide">
                         {kpi.label}
                       </span>
@@ -275,7 +423,7 @@ export default function Overview() {
                         <span className="text-lg font-black text-white">
                           {kpi.value}
                         </span>
-                        <span 
+                        <span
                           className="text-xs font-bold"
                           style={{ color: kpi.color }}
                         >
@@ -287,9 +435,7 @@ export default function Overview() {
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-gray-700">
-                  <Button 
-                    className="w-full bg-gradient-to-r from-[#FF6A00] to-[#FF2D55] text-black font-bold hover:from-[#FF2D55] hover:to-[#FF6A00] transition-all"
-                  >
+                  <Button className="w-full bg-gradient-to-r from-[#FF6A00] to-[#FF2D55] text-black font-bold hover:from-[#FF2D55] hover:to-[#FF6A00] transition-all">
                     <Command className="w-4 h-4 mr-2" />
                     ACCESS MODULE
                   </Button>
@@ -301,26 +447,36 @@ export default function Overview() {
 
         {/* Real-Time Activity Feed */}
         <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6">
-          <h3 className="text-lg font-black text-[#FF6A00] uppercase mb-6">REAL-TIME ACTIVITY FEED</h3>
+          <h3 className="text-lg font-black text-[#FF6A00] uppercase mb-6">
+            REAL-TIME ACTIVITY FEED
+          </h3>
           <div className="space-y-3 font-mono text-sm">
             <div className="flex items-center gap-3">
               <span className="text-[#00E676] font-bold">[FIRESTORM]</span>
-              <span className="text-white">Campaign "HOLIDAY SURGE" deployed to 15.4K targets</span>
+              <span className="text-white">
+                Campaign "HOLIDAY SURGE" deployed to 15.4K targets
+              </span>
               <span className="text-gray-400">2 mins ago</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-[#8A2BE2] font-bold">[DREAM PORTAL]</span>
-              <span className="text-white">89 new premium members onboarded</span>
+              <span className="text-white">
+                89 new premium members onboarded
+              </span>
               <span className="text-gray-400">5 mins ago</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-[#00CED1] font-bold">[VELOCIFY HUB]</span>
-              <span className="text-white">Order fulfillment rate optimized to 98.7%</span>
+              <span className="text-white">
+                Order fulfillment rate optimized to 98.7%
+              </span>
               <span className="text-gray-400">8 mins ago</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-[#DC143C] font-bold">[FORTRESS]</span>
-              <span className="text-white">12 chargeback threats neutralized</span>
+              <span className="text-white">
+                12 chargeback threats neutralized
+              </span>
               <span className="text-gray-400">12 mins ago</span>
             </div>
           </div>

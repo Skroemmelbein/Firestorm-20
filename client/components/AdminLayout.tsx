@@ -359,7 +359,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   <User className="w-4 h-4 text-white" />
                 </div>
                 <div className="hidden sm:block">
-                  <div className="text-xs font-bold text-cyan-300 uppercase tracking-wide">Shannon</div>
+                  <div className="text-xs font-bold text-cyan-300 uppercase tracking-wide">
+                    Shannon
+                  </div>
                   <div className="text-xs text-slate-400">Admin</div>
                 </div>
               </div>

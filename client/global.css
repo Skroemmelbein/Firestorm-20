@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -46,7 +46,7 @@
     --input: 0 0% 12%;
     --ring: 24 100% 50%;
 
-    --radius: 0.0rem; /* Sharp edges - no rounded corners */
+    --radius: 0rem; /* Sharp edges - no rounded corners */
 
     /* Sidebar - Command Center Style */
     --sidebar-background: 0 0% 0%; /* Pure black */
@@ -95,14 +95,20 @@
   /* Fortune 10 Typography - Professional and Compressed */
   * {
     @apply border-border;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      system-ui,
+      sans-serif;
   }
 
   /* Mission Control Body */
   body {
     @apply text-foreground min-h-screen;
-    background: #0F0F10; /* Solid obsidian black */
-    color: #FFFFFF;
+    background: #0f0f10; /* Solid obsidian black */
+    color: #ffffff;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-weight: 500; /* More authoritative than 400 */
@@ -180,19 +186,21 @@
 
   /* Progress Bars - Terminal Style */
   .progress-terminal {
-    background: #1E1E22;
+    background: #1e1e22;
     height: 2px;
   }
 
   .progress-terminal .progress-fill {
-    background: linear-gradient(90deg, #FF6A00, #FF2D55);
+    background: linear-gradient(90deg, #ff6a00, #ff2d55);
     height: 100%;
     transition: width 0.3s ease;
   }
 
   /* Data Grid - Bloomberg Terminal Inspired */
   .data-grid {
-    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-family:
+      "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+      "Courier New", monospace;
     font-size: 0.875rem;
     line-height: 1.2;
   }
@@ -212,28 +220,64 @@
 
 /* Module-Specific Themes */
 .firestorm-theme {
-  background: linear-gradient(135deg, #FF6A00 0%, #FF2D55 25%, #DC143C 50%, #B22222 75%, #8B0000 100%);
+  background: linear-gradient(
+    135deg,
+    #ff6a00 0%,
+    #ff2d55 25%,
+    #dc143c 50%,
+    #b22222 75%,
+    #8b0000 100%
+  );
 }
 
 .dream-portal-theme {
-  background: linear-gradient(135deg, #8A2BE2 0%, #9932CC 25%, #FF69B4 50%, #FF1493 75%, #4169E1 100%);
+  background: linear-gradient(
+    135deg,
+    #8a2be2 0%,
+    #9932cc 25%,
+    #ff69b4 50%,
+    #ff1493 75%,
+    #4169e1 100%
+  );
 }
 
 .velocify-theme {
-  background: linear-gradient(135deg, #00CED1 0%, #1E90FF 25%, #4682B4 50%, #5F9EA0 75%, #4682B4 100%);
+  background: linear-gradient(
+    135deg,
+    #00ced1 0%,
+    #1e90ff 25%,
+    #4682b4 50%,
+    #5f9ea0 75%,
+    #4682b4 100%
+  );
 }
 
 .nexus-theme {
-  background: linear-gradient(135deg, #00E676 0%, #32CD32 25%, #20B2AA 50%, #00FA9A 75%, #90EE90 100%);
+  background: linear-gradient(
+    135deg,
+    #00e676 0%,
+    #32cd32 25%,
+    #20b2aa 50%,
+    #00fa9a 75%,
+    #90ee90 100%
+  );
 }
 
 .fortress-theme {
-  background: linear-gradient(135deg, #DC143C 0%, #B22222 25%, #8B0000 50%, #A0522D 75%, #CD853F 100%);
+  background: linear-gradient(
+    135deg,
+    #dc143c 0%,
+    #b22222 25%,
+    #8b0000 50%,
+    #a0522d 75%,
+    #cd853f 100%
+  );
 }
 
 /* Supreme Animations */
 @keyframes supreme-float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) rotateX(0deg);
     box-shadow: 0 10px 30px rgba(255, 106, 0, 0.3);
   }
@@ -248,18 +292,22 @@
 }
 
 @keyframes supreme-pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     box-shadow: 0 0 20px rgba(255, 106, 0, 0.3);
   }
   50% {
     transform: scale(1.05);
-    box-shadow: 0 0 40px rgba(255, 106, 0, 0.8), 0 0 80px rgba(255, 106, 0, 0.4);
+    box-shadow:
+      0 0 40px rgba(255, 106, 0, 0.8),
+      0 0 80px rgba(255, 106, 0, 0.4);
   }
 }
 
 @keyframes supreme-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow:
       0 0 20px rgba(255, 106, 0, 0.4),
       0 0 40px rgba(255, 106, 0, 0.2),
@@ -301,7 +349,8 @@
 }
 
 @keyframes energy-wave {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -336,18 +385,18 @@
 .energy-wave {
   background: linear-gradient(
     45deg,
-    #FF6A00,
-    #FF2D55,
-    #FF6A00,
-    #FF2D55,
-    #FF6A00
+    #ff6a00,
+    #ff2d55,
+    #ff6a00,
+    #ff2d55,
+    #ff6a00
   );
   background-size: 400% 400%;
   animation: energy-wave 3s ease infinite;
 }
 
 .matrix-effect::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -366,7 +415,8 @@
 
 /* Command Center Keyframes */
 @keyframes pulse-orange {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 5px rgba(255, 106, 0, 0.3);
   }
   50% {
@@ -417,12 +467,18 @@
 
 /* Terminal-style typing effect */
 @keyframes terminal-cursor {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
 }
 
 .terminal-cursor::after {
-  content: '▎';
-  color: #FF6A00;
+  content: "▎";
+  color: #ff6a00;
   animation: terminal-cursor 1s infinite;
 }

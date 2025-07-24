@@ -177,20 +177,29 @@ export default function ClientPortal() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "#00E676";
-      case "trial": return "#FFD700";
-      case "suspended": return "#FF6A00";
-      case "cancelled": return "#FF2D55";
-      default: return "#00CED1";
+      case "active":
+        return "#00E676";
+      case "trial":
+        return "#FFD700";
+      case "suspended":
+        return "#FF6A00";
+      case "cancelled":
+        return "#FF2D55";
+      default:
+        return "#00CED1";
     }
   };
 
   const getTierColor = (tier: string) => {
     switch (tier) {
-      case "enterprise": return "#8A2BE2";
-      case "professional": return "#00CED1";
-      case "basic": return "#32CD32";
-      default: return "#FF6A00";
+      case "enterprise":
+        return "#8A2BE2";
+      case "professional":
+        return "#00CED1";
+      case "basic":
+        return "#32CD32";
+      default:
+        return "#FF6A00";
     }
   };
 
@@ -223,13 +232,17 @@ export default function ClientPortal() {
               <div className="bg-[#1E1E22] border border-[#00E676]/30 px-4 py-2">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-[#00E676] animate-pulse"></div>
-                  <span className="text-xs font-bold text-[#00E676]">VELOCITY OPTIMAL</span>
+                  <span className="text-xs font-bold text-[#00E676]">
+                    VELOCITY OPTIMAL
+                  </span>
                 </div>
               </div>
               <div className="bg-[#1E1E22] border border-[#00CED1]/30 px-4 py-2">
                 <div className="flex items-center gap-2">
                   <Gauge className="w-3 h-3 text-[#00CED1]" />
-                  <span className="text-xs font-bold text-white">{systemMetrics.avgFulfillmentTime}min AVG</span>
+                  <span className="text-xs font-bold text-white">
+                    {systemMetrics.avgFulfillmentTime}min AVG
+                  </span>
                 </div>
               </div>
             </div>
@@ -251,7 +264,9 @@ export default function ClientPortal() {
             <div className="text-3xl font-black text-white mb-2">
               {systemMetrics.totalClients}
             </div>
-            <div className="text-xs text-[#00E676] font-bold">ENTERPRISE GRADE</div>
+            <div className="text-xs text-[#00E676] font-bold">
+              ENTERPRISE GRADE
+            </div>
           </div>
 
           <div className="bg-[#1E1E22] border border-[#00CED1]/30 p-6 hover:border-[#00CED1] transition-colors">
@@ -277,7 +292,9 @@ export default function ClientPortal() {
             <div className="text-3xl font-black text-white mb-2">
               {systemMetrics.avgFulfillmentTime}min
             </div>
-            <div className="text-xs text-[#FFD700] font-bold">LIGHTNING FAST</div>
+            <div className="text-xs text-[#FFD700] font-bold">
+              LIGHTNING FAST
+            </div>
           </div>
 
           <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6 hover:border-[#FF6A00] transition-colors">
@@ -308,38 +325,42 @@ export default function ClientPortal() {
         </div>
 
         {/* Command Center Tabs */}
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+        <Tabs
+          value={selectedTab}
+          onValueChange={setSelectedTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-5 bg-[#1E1E22] border border-[#00CED1]/30 p-1">
-            <TabsTrigger 
-              value="dashboard" 
+            <TabsTrigger
+              value="dashboard"
               className="data-[state=active]:bg-[#00CED1] data-[state=active]:text-black text-white hover:text-[#00CED1] transition-colors"
             >
               <Gauge className="w-4 h-4 mr-2" />
               VELOCITY COMMAND
             </TabsTrigger>
-            <TabsTrigger 
-              value="clients" 
+            <TabsTrigger
+              value="clients"
               className="data-[state=active]:bg-[#00CED1] data-[state=active]:text-black text-white hover:text-[#00CED1] transition-colors"
             >
               <Building className="w-4 h-4 mr-2" />
               CLIENT MATRIX
             </TabsTrigger>
-            <TabsTrigger 
-              value="fulfillment" 
+            <TabsTrigger
+              value="fulfillment"
               className="data-[state=active]:bg-[#00CED1] data-[state=active]:text-black text-white hover:text-[#00CED1] transition-colors"
             >
               <Rocket className="w-4 h-4 mr-2" />
               FULFILLMENT OPS
             </TabsTrigger>
-            <TabsTrigger 
-              value="analytics" 
+            <TabsTrigger
+              value="analytics"
               className="data-[state=active]:bg-[#00CED1] data-[state=active]:text-black text-white hover:text-[#00CED1] transition-colors"
             >
               <BarChart className="w-4 h-4 mr-2" />
               VELOCITY ANALYTICS
             </TabsTrigger>
-            <TabsTrigger 
-              value="settings" 
+            <TabsTrigger
+              value="settings"
               className="data-[state=active]:bg-[#00CED1] data-[state=active]:text-black text-white hover:text-[#00CED1] transition-colors"
             >
               <Settings className="w-4 h-4 mr-2" />
@@ -350,10 +371,12 @@ export default function ClientPortal() {
           {/* Client Matrix Tab */}
           <TabsContent value="clients" className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-black text-white uppercase tracking-wide">CLIENT MATRIX</h2>
+              <h2 className="text-2xl font-black text-white uppercase tracking-wide">
+                CLIENT MATRIX
+              </h2>
               <div className="flex gap-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="border-[#00CED1]/50 text-[#00CED1] hover:bg-[#00CED1] hover:text-black transition-colors"
                 >
                   <Eye className="w-4 h-4 mr-2" />
@@ -374,11 +397,11 @@ export default function ClientPortal() {
                 >
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
-                      <div 
+                      <div
                         className="w-3 h-3"
                         style={{
                           backgroundColor: getStatusColor(client.accountStatus),
-                          boxShadow: `0 0 10px ${getStatusColor(client.accountStatus)}50`
+                          boxShadow: `0 0 10px ${getStatusColor(client.accountStatus)}50`,
                         }}
                       />
                       <div>
@@ -386,22 +409,22 @@ export default function ClientPortal() {
                           {client.companyName}
                         </h3>
                         <div className="flex items-center gap-4 mt-2">
-                          <div 
+                          <div
                             className="px-3 py-1 border text-xs font-bold uppercase"
                             style={{
                               backgroundColor: `${getStatusColor(client.accountStatus)}20`,
                               borderColor: `${getStatusColor(client.accountStatus)}50`,
-                              color: getStatusColor(client.accountStatus)
+                              color: getStatusColor(client.accountStatus),
                             }}
                           >
                             {client.accountStatus}
                           </div>
-                          <div 
+                          <div
                             className="px-3 py-1 border text-xs font-bold uppercase"
                             style={{
                               backgroundColor: `${getTierColor(client.subscriptionTier)}20`,
                               borderColor: `${getTierColor(client.subscriptionTier)}50`,
-                              color: getTierColor(client.subscriptionTier)
+                              color: getTierColor(client.subscriptionTier),
                             }}
                           >
                             {client.subscriptionTier}
@@ -413,15 +436,15 @@ export default function ClientPortal() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         variant="outline"
                         className="border-[#00CED1]/50 text-[#00CED1] hover:bg-[#00CED1] hover:text-black"
                       >
                         <Eye className="w-4 h-4" />
                       </Button>
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         variant="outline"
                         className="border-[#00CED1]/50 text-[#00CED1] hover:bg-[#00CED1] hover:text-black"
                       >
@@ -483,15 +506,19 @@ export default function ClientPortal() {
 
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-bold text-white">FULFILLMENT VELOCITY</span>
+                      <span className="text-sm font-bold text-white">
+                        FULFILLMENT VELOCITY
+                      </span>
                       <span className="text-sm font-bold text-[#00CED1]">
                         {client.fulfillmentMetrics.efficiencyRate}% EFFICIENCY
                       </span>
                     </div>
                     <div className="w-full h-1 bg-[#1E1E22]">
-                      <div 
+                      <div
                         className="h-full bg-[#00CED1]"
-                        style={{ width: `${client.fulfillmentMetrics.efficiencyRate}%` }}
+                        style={{
+                          width: `${client.fulfillmentMetrics.efficiencyRate}%`,
+                        }}
                       />
                     </div>
                   </div>
@@ -502,31 +529,47 @@ export default function ClientPortal() {
 
           {/* Dashboard Tab */}
           <TabsContent value="dashboard" className="space-y-6">
-            <h2 className="text-2xl font-black text-white uppercase tracking-wide">VELOCITY OVERVIEW</h2>
-            
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">
+              VELOCITY OVERVIEW
+            </h2>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-[#1E1E22] border border-[#00CED1]/30 p-6">
-                <h3 className="text-lg font-black text-[#00CED1] uppercase mb-6">PROCESSING VELOCITY</h3>
+                <h3 className="text-lg font-black text-[#00CED1] uppercase mb-6">
+                  PROCESSING VELOCITY
+                </h3>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-bold text-white">ULTRA-FAST (&lt;1min)</span>
-                    <span className="text-lg font-black text-[#00E676]">45%</span>
+                    <span className="text-sm font-bold text-white">
+                      ULTRA-FAST (&lt;1min)
+                    </span>
+                    <span className="text-lg font-black text-[#00E676]">
+                      45%
+                    </span>
                   </div>
                   <div className="w-full h-2 bg-[#1E1E22]">
                     <div className="w-[45%] h-full bg-[#00E676]"></div>
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-bold text-white">RAPID (1-3min)</span>
-                    <span className="text-lg font-black text-[#00CED1]">38%</span>
+                    <span className="text-sm font-bold text-white">
+                      RAPID (1-3min)
+                    </span>
+                    <span className="text-lg font-black text-[#00CED1]">
+                      38%
+                    </span>
                   </div>
                   <div className="w-full h-2 bg-[#1E1E22]">
                     <div className="w-[38%] h-full bg-[#00CED1]"></div>
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-bold text-white">STANDARD (3-5min)</span>
-                    <span className="text-lg font-black text-[#FFD700]">17%</span>
+                    <span className="text-sm font-bold text-white">
+                      STANDARD (3-5min)
+                    </span>
+                    <span className="text-lg font-black text-[#FFD700]">
+                      17%
+                    </span>
                   </div>
                   <div className="w-full h-2 bg-[#1E1E22]">
                     <div className="w-[17%] h-full bg-[#FFD700]"></div>
@@ -535,10 +578,16 @@ export default function ClientPortal() {
               </div>
 
               <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6">
-                <h3 className="text-lg font-black text-[#FF6A00] uppercase mb-6">SYSTEM EFFICIENCY</h3>
+                <h3 className="text-lg font-black text-[#FF6A00] uppercase mb-6">
+                  SYSTEM EFFICIENCY
+                </h3>
                 <div className="text-center">
-                  <div className="text-6xl font-black text-white mb-4">{systemMetrics.systemEfficiency}%</div>
-                  <div className="text-sm text-gray-400 uppercase mb-4">OVERALL EFFICIENCY</div>
+                  <div className="text-6xl font-black text-white mb-4">
+                    {systemMetrics.systemEfficiency}%
+                  </div>
+                  <div className="text-sm text-gray-400 uppercase mb-4">
+                    OVERALL EFFICIENCY
+                  </div>
                   <div className="px-4 py-2 bg-[#FF6A00]/20 border border-[#FF6A00]/50 text-[#FF6A00] text-xs font-bold uppercase">
                     +3.2% THIS MONTH
                   </div>
@@ -549,48 +598,66 @@ export default function ClientPortal() {
 
           {/* Fulfillment Ops Tab */}
           <TabsContent value="fulfillment" className="space-y-6">
-            <h2 className="text-2xl font-black text-white uppercase tracking-wide">FULFILLMENT OPERATIONS</h2>
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">
+              FULFILLMENT OPERATIONS
+            </h2>
             <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6">
               <div className="text-center py-12">
                 <Rocket className="w-12 h-12 mx-auto text-[#FF6A00] mb-4" />
-                <p className="text-white">Advanced fulfillment operations dashboard deploying</p>
+                <p className="text-white">
+                  Advanced fulfillment operations dashboard deploying
+                </p>
               </div>
             </div>
           </TabsContent>
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
-            <h2 className="text-2xl font-black text-white uppercase tracking-wide">VELOCITY ANALYTICS</h2>
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">
+              VELOCITY ANALYTICS
+            </h2>
             <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6">
               <div className="text-center py-12">
                 <BarChart className="w-12 h-12 mx-auto text-[#FF6A00] mb-4" />
-                <p className="text-white">Advanced velocity analytics coming online</p>
+                <p className="text-white">
+                  Advanced velocity analytics coming online
+                </p>
               </div>
             </div>
           </TabsContent>
 
           {/* Settings Tab */}
           <TabsContent value="settings" className="space-y-6">
-            <h2 className="text-2xl font-black text-white uppercase tracking-wide">SYSTEM CONFIGURATION</h2>
-            
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">
+              SYSTEM CONFIGURATION
+            </h2>
+
             <div className="grid gap-6">
               <div className="bg-[#1E1E22] border border-[#00CED1]/30 p-6">
-                <h3 className="text-lg font-black text-[#00CED1] uppercase mb-4">VELOCITY OPTIMIZATION</h3>
+                <h3 className="text-lg font-black text-[#00CED1] uppercase mb-4">
+                  VELOCITY OPTIMIZATION
+                </h3>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-white">AUTO-ACCELERATION</span>
+                    <span className="font-bold text-white">
+                      AUTO-ACCELERATION
+                    </span>
                     <div className="px-3 py-1 bg-[#00E676]/20 border border-[#00E676]/50 text-[#00E676] text-xs font-bold">
                       ENABLED
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-white">PRIORITY PROCESSING</span>
+                    <span className="font-bold text-white">
+                      PRIORITY PROCESSING
+                    </span>
                     <div className="px-3 py-1 bg-[#00E676]/20 border border-[#00E676]/50 text-[#00E676] text-xs font-bold">
                       ACTIVE
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-white">VELOCITY MONITORING</span>
+                    <span className="font-bold text-white">
+                      VELOCITY MONITORING
+                    </span>
                     <div className="px-3 py-1 bg-[#00E676]/20 border border-[#00E676]/50 text-[#00E676] text-xs font-bold">
                       REAL-TIME
                     </div>
