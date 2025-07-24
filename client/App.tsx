@@ -25,42 +25,42 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <SiriAssistant />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Overview />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/merchant" element={<BillingLogic />} />
-          <Route path="/billing-kit" element={<ClientBillingKit />} />
-          <Route path="/business-overview" element={<BusinessOverview />} />
-          <Route path="/billing" element={<BillingLogic />} />
-          <Route path="/comm-center" element={<CommCenter />} />
-          <Route
-            path="/marketing-automation"
-            element={<MarketingAutomation />}
-          />
-          <Route path="/members" element={<MemberPortal />} />
-          <Route path="/member-portal" element={<MemberPortal />} />
-          <Route path="/client-portal" element={<ClientPortal />} />
-          <Route path="/lead-journey" element={<LeadJourney />} />
-          <Route path="/fulfillment" element={<Fulfillment />} />
-          <Route path="/ai" element={<IntelligentAI />} />
-          <Route path="/chargeback-tracker" element={<ChargebackTracker />} />
-          <Route path="/devops" element={<DevOpsCenter />} />
-          <Route path="/integrations" element={<Integrations />} />
-          <Route path="/twilio-vault" element={<TwilioVault />} />
-          <Route path="/settings" element={<Integrations />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
-
-createRoot(document.getElementById("root")!).render(<App />);
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <SiriAssistant />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Overview />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/merchant" element={<BillingLogic />} />
+            <Route path="/billing-kit" element={<ClientBillingKit />} />
+            <Route path="/business-overview" element={<BusinessOverview />} />
+            <Route path="/billing" element={<BillingLogic />} />
+            <Route path="/comm-center" element={<CommCenter />} />
+            <Route
+              path="/marketing-automation"
+              element={<MarketingAutomation />}
+            />
+            <Route path="/members" element={<MemberPortal />} />
+            <Route path="/member-portal" element={<MemberPortal />} />
+            <Route path="/client-portal" element={<ClientPortal />} />
+            <Route path="/lead-journey" element={<LeadJourney />} />
+            <Route path="/fulfillment" element={<Fulfillment />} />
+            <Route path="/ai" element={<IntelligentAI />} />
+            <Route path="/chargeback-tracker" element={<ChargebackTracker />} />
+            <Route path="/devops" element={<DevOpsCenter />} />
+            <Route path="/integrations" element={<Integrations />} />
+            <Route path="/twilio-vault" element={<TwilioVault />} />
+            <Route path="/settings" element={<Integrations />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
