@@ -227,6 +227,20 @@ export default function TwilioConversations() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* API Status Banner */}
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+          <h4 className="font-semibold text-orange-800 mb-2">
+            ⚠️ Twilio Conversations API Required
+          </h4>
+          <p className="text-sm text-orange-700 mb-2">
+            This feature requires Twilio Conversations API to be enabled on your account.
+            If you see network errors, use the regular SMS testing tabs instead.
+          </p>
+          <div className="text-xs text-orange-600">
+            <strong>Alternative:</strong> Use SMS Testing tab for simple outbound SMS testing without conversations.
+          </div>
+        </div>
+
         {/* Create New Conversation */}
         <div className="bg-white/80 border border-gray-200 rounded-lg p-4 shadow-sm">
           <h3 className="font-semibold text-gray-800 mb-4">
