@@ -263,7 +263,7 @@ export default function TwilioConversations() {
               <Button
                 onClick={createConversation}
                 disabled={isLoading.creating}
-                className="w-full f10-btn accent-bg text-black font-medium"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
               >
                 {isLoading.creating ? (
                   <>
