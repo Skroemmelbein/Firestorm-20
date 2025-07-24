@@ -655,6 +655,11 @@ export default function AdminDashboard() {
             <XanoTableManager />
           </TabsContent>
 
+          {/* Skin Customizer Tab */}
+          <TabsContent value="skin" className="space-y-4">
+            <SkinCustomizer />
+          </TabsContent>
+
           {/* SendGrid Email Tab */}
           <TabsContent value="sendgrid" className="space-y-4">
             <SendGridTest />
