@@ -193,11 +193,11 @@ export default function MarketingAutomation() {
         <div className="container mx-auto px-6 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
-              <div className="relative">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#FF6A00] via-[#FF2D55] to-[#FF6A00] flex items-center justify-center border border-[#FF6A00]/30 shadow-2xl shadow-[#FF6A00]/20">
+              <div className="relative supreme-float">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#FF6A00] via-[#FF2D55] to-[#FF6A00] flex items-center justify-center border border-[#FF6A00]/30 shadow-2xl shadow-[#FF6A00]/20 supreme-pulse">
                   <Flame className="w-10 h-10 text-white" />
                 </div>
-                <div className="absolute inset-0 bg-[#FF6A00]/20 animate-pulse border border-[#FF6A00]/50"></div>
+                <div className="absolute inset-0 bg-[#FF6A00]/20 energy-wave border border-[#FF6A00]/50"></div>
               </div>
               <div>
                 <h1 className="text-6xl font-black tracking-wider text-white mb-1">
