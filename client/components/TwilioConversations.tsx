@@ -350,7 +350,7 @@ export default function TwilioConversations() {
                       </div>
                       <div className="flex items-center justify-between text-xs text-[#737373]">
                         <span>
-                          {conversation.participants.length} participants
+                          {conversation.participants?.length || 0} participants
                         </span>
                         <span>{conversation.messagesCount} messages</span>
                       </div>
