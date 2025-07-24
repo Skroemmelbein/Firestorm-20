@@ -187,7 +187,7 @@ export default function MarketingAutomation() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F0F10] text-white">
+    <div className="min-h-screen firestorm-theme text-white supreme-glow">
       {/* Command Center Header */}
       <div className="border-b border-[#FF6A00]/20 bg-black/90 backdrop-blur-xl">
         <div className="container mx-auto px-6 py-8">
