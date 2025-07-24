@@ -267,17 +267,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Top Header */}
       <header className="glass-nav sticky top-0 z-50 animate-slide-up corp-shadow">
         {/* Top Brand Bar */}
-        <div className="flex items-center justify-between px-4 py-2 border-b border-blue-200/30">
+        <div className="flex items-center justify-between px-4 py-2 border-b border-slate-200/30 bg-gradient-to-r from-slate-900 to-zinc-900">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-blue-600 via-blue-700 to-green-600 flex items-center justify-center corp-shadow">
-              <Zap className="w-4 h-4 text-white" />
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 flex items-center justify-center shadow-xl">
+              <Zap className="w-5 h-5 text-white animate-pulse" />
             </div>
             <div>
-              <h1 className="text-lg font-bold gradient-text tracking-tight">
-                RecurFlow Enterprise
+              <h1 className="text-xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider">
+                ECELONX
               </h1>
-              <p className="text-xs text-blue-600/70 font-medium">
-                Business Management Platform
+              <p className="text-xs text-cyan-300/80 font-bold uppercase tracking-widest">
+                Elite Business Command Platform
               </p>
             </div>
           </div>
