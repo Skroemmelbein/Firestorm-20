@@ -193,7 +193,10 @@ export default function TwilioConversations() {
   }, [selectedConversation]);
 
   const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString([], {
+    if (!dateString) return "Unknown";
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Invalid";
+    return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
     });
