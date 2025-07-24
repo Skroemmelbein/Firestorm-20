@@ -118,7 +118,7 @@ export default function SMSInterface() {
 
   // Quick test message
   const sendTestMessage = async () => {
-    setPhoneNumber("+18559600037"); // Default test number
+    setPhoneNumber("+18144409968"); // Default test number
     setMessage(
       "🚀 Hello from RecurFlow! Your SMS system is working perfectly. Sent at " +
         new Date().toLocaleTimeString(),
