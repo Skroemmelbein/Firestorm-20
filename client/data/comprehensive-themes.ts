@@ -1,5 +1,11 @@
 export interface BackgroundConfig {
-  type: 'solid' | 'gradient' | 'pattern' | 'animated' | 'particle' | 'geometric';
+  type:
+    | "solid"
+    | "gradient"
+    | "pattern"
+    | "animated"
+    | "particle"
+    | "geometric";
   primary: string;
   secondary?: string;
   tertiary?: string;
@@ -43,7 +49,15 @@ export interface ComprehensiveTheme {
     animations: boolean;
     particles: boolean;
   };
-  mood: 'professional' | 'creative' | 'energetic' | 'calm' | 'luxurious' | 'minimal' | 'futuristic' | 'corporate';
+  mood:
+    | "professional"
+    | "creative"
+    | "energetic"
+    | "calm"
+    | "luxurious"
+    | "minimal"
+    | "futuristic"
+    | "corporate";
 }
 
 export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
@@ -52,10 +66,11 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
     id: "fortune-10-gold",
     name: "Fortune 10 Gold Command",
     category: "Executive Command",
-    description: "Ultimate executive control center with Tesla/Palantir aesthetics",
+    description:
+      "Ultimate executive control center with Tesla/Palantir aesthetics",
     colors: {
       primary: "#FFD700",
-      secondary: "#00E676", 
+      secondary: "#00E676",
       accent: "#00BFFF",
       background: "#0a0a0a",
       surface: "#1a1a1a",
@@ -63,19 +78,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#737373",
       success: "#00E676",
       warning: "#FFD700",
-      error: "#FF4444"
+      error: "#FF4444",
     },
     background: {
       type: "gradient",
       primary: "#0a0a0a",
       secondary: "#1a1a1a",
       direction: "135deg",
-      opacity: 0.95
+      opacity: 0.95,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "professional"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "professional",
   },
   {
     id: "platinum-executive",
@@ -92,19 +113,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#9CA3AF",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "geometric",
       primary: "#111827",
       secondary: "#1F2937",
       pattern: "hexagon-grid",
-      opacity: 0.1
+      opacity: 0.1,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.1, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "luxurious",
   },
   {
     id: "diamond-prestige",
@@ -121,19 +148,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#6B7280",
       success: "#059669",
       warning: "#D97706",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "particle",
       primary: "#030712",
       secondary: "#8B5CF6",
       animation: "diamond-particles",
-      opacity: 0.15
+      opacity: 0.15,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 12 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "luxurious",
   },
   {
     id: "obsidian-command",
@@ -150,19 +183,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#64748B",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#000000",
       secondary: "#0F172A",
       animation: "obsidian-flow",
-      opacity: 0.8
+      opacity: 0.8,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.95, radius: 4 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "corporate"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "corporate",
   },
   {
     id: "titanium-fortress",
@@ -179,19 +218,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#A1A1AA",
       success: "#22C55E",
       warning: "#F97316",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "pattern",
       primary: "#18181B",
       secondary: "#27272A",
       pattern: "carbon-fiber",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 2 },
-    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
-    mood: "corporate"
+    effects: {
+      shadows: true,
+      gradients: false,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "corporate",
   },
   {
     id: "emerald-elite",
@@ -208,7 +253,7 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#6EE7B7",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "gradient",
@@ -216,12 +261,18 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       secondary: "#065F46",
       tertiary: "#047857",
       direction: "45deg",
-      opacity: 0.9
+      opacity: 0.9,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.05, radius: 10 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "luxurious",
   },
   {
     id: "sapphire-command",
@@ -238,19 +289,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#93C5FD",
       success: "#34D399",
       warning: "#FBBF24",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "animated",
       primary: "#1E3A8A",
       secondary: "#1E40AF",
       animation: "sapphire-waves",
-      opacity: 0.7
+      opacity: 0.7,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "luxurious",
   },
   {
     id: "ruby-royalty",
@@ -267,19 +324,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#FCA5A5",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "pattern",
       primary: "#7F1D1D",
       secondary: "#991B1B",
       pattern: "royal-crown",
-      opacity: 0.2
+      opacity: 0.2,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.1, radius: 12 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "luxurious",
   },
   {
     id: "onyx-shadow",
@@ -296,19 +359,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#475569",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "particle",
       primary: "#000000",
       secondary: "#6366F1",
       animation: "shadow-particles",
-      opacity: 0.1
+      opacity: 0.1,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.9, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "minimal"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "minimal",
   },
   {
     id: "pearl-prestige",
@@ -325,19 +394,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#94A3B8",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#1E293B",
       secondary: "#334155",
       animation: "pearl-shimmer",
-      opacity: 0.85
+      opacity: 0.85,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.05, radius: 14 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "luxurious",
   },
 
   // VELOCIFY OPS SERIES (11-20)
@@ -356,19 +431,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#64748B",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "gradient",
       primary: "#0F172A",
       secondary: "#1E293B",
       direction: "180deg",
-      opacity: 0.95
+      opacity: 0.95,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "professional"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "professional",
   },
   {
     id: "velocify-steel",
@@ -385,19 +466,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#94A3B8",
       success: "#059669",
       warning: "#D97706",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "pattern",
       primary: "#020617",
       secondary: "#0F172A",
       pattern: "steel-mesh",
-      opacity: 0.2
+      opacity: 0.2,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.95, radius: 4 },
-    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
-    mood: "corporate"
+    effects: {
+      shadows: true,
+      gradients: false,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "corporate",
   },
   {
     id: "velocify-cyan",
@@ -414,19 +501,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#67E8F9",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "animated",
       primary: "#164E63",
       secondary: "#155E75",
       animation: "cyan-flow",
-      opacity: 0.8
+      opacity: 0.8,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "energetic"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "energetic",
   },
   {
     id: "velocify-midnight",
@@ -443,19 +536,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#64748B",
       success: "#059669",
       warning: "#D97706",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "particle",
       primary: "#0C1426",
       secondary: "#1E40AF",
       animation: "midnight-stars",
-      opacity: 0.15
+      opacity: 0.15,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "calm",
   },
   {
     id: "velocify-ocean",
@@ -472,19 +571,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#7DD3FC",
       success: "#22C55E",
       warning: "#EAB308",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "animated",
       primary: "#0C4A6E",
       secondary: "#075985",
       animation: "ocean-waves",
-      opacity: 0.7
+      opacity: 0.7,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 10 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "calm",
   },
   {
     id: "velocify-ice",
@@ -501,7 +606,7 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#5EEAD4",
       success: "#14B8A6",
       warning: "#F59E0B",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "gradient",
@@ -509,12 +614,18 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       secondary: "#134E4A",
       tertiary: "#0F766E",
       direction: "225deg",
-      opacity: 0.9
+      opacity: 0.9,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "calm",
   },
   {
     id: "velocify-storm",
@@ -531,19 +642,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#9CA3AF",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#111827",
       secondary: "#1F2937",
       animation: "storm-clouds",
-      opacity: 0.6
+      opacity: 0.6,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.95, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "professional"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "professional",
   },
   {
     id: "velocify-frost",
@@ -560,19 +677,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#93C5FD",
       success: "#34D399",
       warning: "#FBBF24",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "pattern",
       primary: "#1E3A8A",
       secondary: "#1E40AF",
       pattern: "frost-crystals",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 12 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "calm",
   },
   {
     id: "velocify-cobalt",
@@ -589,19 +712,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#A78BFA",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "geometric",
       primary: "#1E1B4B",
       secondary: "#312E81",
       pattern: "cobalt-grid",
-      opacity: 0.2
+      opacity: 0.2,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "professional"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "professional",
   },
   {
     id: "velocify-arctic",
@@ -618,19 +747,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#64748B",
       success: "#059669",
       warning: "#D97706",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "animated",
       primary: "#0F172A",
       secondary: "#1E293B",
       animation: "arctic-aurora",
-      opacity: 0.8
+      opacity: 0.8,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.05, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "minimal"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "minimal",
   },
 
   // FIRESTORM SERIES (21-30)
@@ -649,19 +784,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#737373",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#0F0F0F",
       secondary: "#FF6A00",
       animation: "fire-particles",
-      opacity: 0.2
+      opacity: 0.2,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 10 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "energetic"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "energetic",
   },
   {
     id: "firestorm-volcano",
@@ -678,19 +819,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#FCA5A5",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "animated",
       primary: "#450A0A",
       secondary: "#7F1D1D",
       animation: "lava-flow",
-      opacity: 0.7
+      opacity: 0.7,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.1, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: true },
-    mood: "energetic"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: true,
+    },
+    mood: "energetic",
   },
   {
     id: "firestorm-sunset",
@@ -707,7 +854,7 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#FDBA74",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "gradient",
@@ -715,12 +862,18 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       secondary: "#9A3412",
       tertiary: "#F97316",
       direction: "45deg",
-      opacity: 0.8
+      opacity: 0.8,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 12 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "energetic"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "energetic",
   },
   {
     id: "firestorm-ember",
@@ -737,19 +890,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#A8A29E",
       success: "#16A34A",
       warning: "#EAB308",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "particle",
       primary: "#292524",
       secondary: "#EA580C",
       animation: "ember-glow",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.95, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "energetic"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "energetic",
   },
   {
     id: "firestorm-phoenix",
@@ -766,19 +925,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#FCA5A5",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#B91C1C"
+      error: "#B91C1C",
     },
     background: {
       type: "animated",
       primary: "#7F1D1D",
       secondary: "#FFD700",
       animation: "phoenix-wings",
-      opacity: 0.4
+      opacity: 0.4,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.1, radius: 14 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "luxurious",
   },
   {
     id: "firestorm-solar",
@@ -795,19 +960,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#FCD34D",
       success: "#22C55E",
       warning: "#FACC15",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#451A03",
       secondary: "#FACC15",
       animation: "solar-flares",
-      opacity: 0.5
+      opacity: 0.5,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "energetic"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "energetic",
   },
   {
     id: "firestorm-magma",
@@ -824,19 +995,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#9CA3AF",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#7F1D1D"
+      error: "#7F1D1D",
     },
     background: {
       type: "pattern",
       primary: "#1F1F1F",
       secondary: "#7F1D1D",
       pattern: "magma-rock",
-      opacity: 0.4
+      opacity: 0.4,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.9, radius: 4 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "corporate"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "corporate",
   },
   {
     id: "firestorm-crimson",
@@ -853,19 +1030,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#F87171",
       success: "#059669",
       warning: "#D97706",
-      error: "#991B1B"
+      error: "#991B1B",
     },
     background: {
       type: "gradient",
       primary: "#450A0A",
       secondary: "#7F1D1D",
       direction: "135deg",
-      opacity: 0.9
+      opacity: 0.9,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 10 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "luxurious",
   },
   {
     id: "firestorm-amber",
@@ -882,19 +1065,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#FCD34D",
       success: "#22C55E",
       warning: "#D97706",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "animated",
       primary: "#451A03",
       secondary: "#D97706",
       animation: "amber-glow",
-      opacity: 0.6
+      opacity: 0.6,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.05, radius: 12 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "creative"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "creative",
   },
   {
     id: "firestorm-copper",
@@ -911,19 +1100,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#FDBA74",
       success: "#16A34A",
       warning: "#B45309",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "pattern",
       primary: "#451A03",
       secondary: "#B45309",
       pattern: "copper-mesh",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "professional"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "professional",
   },
 
   // DREAM PORTAL SERIES (31-40)
@@ -942,19 +1137,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#737373",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#0D0D0D",
       secondary: "#8B5CF6",
       animation: "amethyst-crystals",
-      opacity: 0.2
+      opacity: 0.2,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 12 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "luxurious",
   },
   {
     id: "dream-portal-lavender",
@@ -971,7 +1172,7 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#C4B5FD",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "gradient",
@@ -979,12 +1180,18 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       secondary: "#4C1D95",
       tertiary: "#A855F7",
       direction: "225deg",
-      opacity: 0.8
+      opacity: 0.8,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.05, radius: 14 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "calm",
   },
   {
     id: "dream-portal-orchid",
@@ -1001,19 +1208,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#E879F9",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#581C87",
       secondary: "#C026D3",
       animation: "orchid-bloom",
-      opacity: 0.4
+      opacity: 0.4,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.1, radius: 16 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "luxurious",
   },
   {
     id: "dream-portal-indigo",
@@ -1030,19 +1243,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#A78BFA",
       success: "#059669",
       warning: "#D97706",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "particle",
       primary: "#1E1B4B",
       secondary: "#6366F1",
       animation: "wisdom-particles",
-      opacity: 0.25
+      opacity: 0.25,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 10 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "calm",
   },
   {
     id: "dream-portal-violet",
@@ -1059,19 +1278,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#C4B5FD",
       success: "#16A34A",
       warning: "#EAB308",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "animated",
       primary: "#2D1B69",
       secondary: "#7C3AED",
       animation: "violet-energy",
-      opacity: 0.5
+      opacity: 0.5,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 12 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "creative"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "creative",
   },
   {
     id: "dream-portal-plum",
@@ -1088,19 +1313,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#D8B4FE",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "gradient",
       primary: "#4A044E",
       secondary: "#701A75",
       direction: "180deg",
-      opacity: 0.9
+      opacity: 0.9,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.95, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "luxurious",
   },
   {
     id: "dream-portal-periwinkle",
@@ -1117,19 +1348,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#A78BFA",
       success: "#34D399",
       warning: "#FBBF24",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "animated",
       primary: "#312E81",
       secondary: "#8B5CF6",
       animation: "periwinkle-clouds",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.05, radius: 12 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "calm",
   },
   {
     id: "dream-portal-mauve",
@@ -1146,19 +1383,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#F9A8D4",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "pattern",
       primary: "#500724",
       secondary: "#A21CAF",
       pattern: "mauve-silk",
-      opacity: 0.2
+      opacity: 0.2,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 14 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "luxurious",
   },
   {
     id: "dream-portal-cosmic",
@@ -1175,19 +1418,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#C4B5FD",
       success: "#059669",
       warning: "#D97706",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "particle",
       primary: "#1A0B2E",
       secondary: "#6D28D9",
       animation: "cosmic-dust",
-      opacity: 0.4
+      opacity: 0.4,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 10 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "futuristic"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "futuristic",
   },
   {
     id: "dream-portal-twilight",
@@ -1204,19 +1453,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#A78BFA",
       success: "#16A34A",
       warning: "#EAB308",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "animated",
       primary: "#1E1B4B",
       secondary: "#4F46E5",
       animation: "twilight-gradient",
-      opacity: 0.6
+      opacity: 0.6,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "calm",
   },
 
   // NEXUS SYNC SERIES (41-50)
@@ -1235,19 +1490,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#737373",
       success: "#00FF00",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#0A0A0A",
       secondary: "#00FF00",
       animation: "neon-circuits",
-      opacity: 0.15
+      opacity: 0.15,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "futuristic"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "futuristic",
   },
   {
     id: "nexus-sync-matrix",
@@ -1264,19 +1525,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#86EFAC",
       success: "#22C55E",
       warning: "#FACC15",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#052E16",
       secondary: "#22C55E",
       animation: "matrix-rain",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.9, radius: 4 },
-    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: true },
-    mood: "futuristic"
+    effects: {
+      shadows: true,
+      gradients: false,
+      blur: false,
+      animations: true,
+      particles: true,
+    },
+    mood: "futuristic",
   },
   {
     id: "nexus-sync-cyber",
@@ -1293,19 +1560,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#6EE7B7",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "geometric",
       primary: "#064E3B",
       secondary: "#10B981",
       pattern: "cyber-grid",
-      opacity: 0.2
+      opacity: 0.2,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 2 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "futuristic"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "futuristic",
   },
   {
     id: "nexus-sync-forest",
@@ -1322,19 +1595,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#6EE7B7",
       success: "#059669",
       warning: "#FBBF24",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "pattern",
       primary: "#022C22",
       secondary: "#064E3B",
       pattern: "forest-leaves",
-      opacity: 0.1
+      opacity: 0.1,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.05, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "calm",
   },
   {
     id: "nexus-sync-emerald",
@@ -1351,19 +1630,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#6EE7B7",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#064E3B",
       secondary: "#10B981",
       animation: "emerald-shine",
-      opacity: 0.4
+      opacity: 0.4,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.1, radius: 12 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "luxurious",
   },
   {
     id: "nexus-sync-jade",
@@ -1380,7 +1665,7 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#5EEAD4",
       success: "#14B8A6",
       warning: "#FACC15",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "gradient",
@@ -1388,12 +1673,18 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       secondary: "#134E4A",
       tertiary: "#14B8A6",
       direction: "135deg",
-      opacity: 0.8
+      opacity: 0.8,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 10 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "calm",
   },
   {
     id: "nexus-sync-lime",
@@ -1410,19 +1701,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#BEF264",
       success: "#84CC16",
       warning: "#F97316",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#1A2E05",
       secondary: "#84CC16",
       animation: "lime-pulse",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: true },
-    mood: "energetic"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: true,
+    },
+    mood: "energetic",
   },
   {
     id: "nexus-sync-mint",
@@ -1439,19 +1736,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#67E8F9",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "pattern",
       primary: "#164E63",
       secondary: "#06B6D4",
       pattern: "mint-waves",
-      opacity: 0.2
+      opacity: 0.2,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 12 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "calm",
   },
   {
     id: "nexus-sync-seafoam",
@@ -1468,19 +1771,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#5EEAD4",
       success: "#0D9488",
       warning: "#FBBF24",
-      error: "#F87171"
+      error: "#F87171",
     },
     background: {
       type: "animated",
       primary: "#042F2E",
       secondary: "#0D9488",
       animation: "seafoam-bubbles",
-      opacity: 0.25
+      opacity: 0.25,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 14 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "calm"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "calm",
   },
   {
     id: "nexus-sync-sage",
@@ -1497,19 +1806,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#86EFAC",
       success: "#22C55E",
       warning: "#D97706",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "gradient",
       primary: "#14532D",
       secondary: "#166534",
       direction: "225deg",
-      opacity: 0.9
+      opacity: 0.9,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.95, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "professional"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "professional",
   },
 
   // ZERO-CB FORTRESS SERIES (51-60)
@@ -1528,19 +1843,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#9CA3AF",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "pattern",
       primary: "#111827",
       secondary: "#6B7280",
       pattern: "fortress-wall",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.9, radius: 4 },
-    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
-    mood: "corporate"
+    effects: {
+      shadows: true,
+      gradients: false,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "corporate",
   },
   {
     id: "fortress-iron",
@@ -1557,19 +1878,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#6B7280",
       success: "#059669",
       warning: "#D97706",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "geometric",
       primary: "#030712",
       secondary: "#374151",
       pattern: "iron-mesh",
-      opacity: 0.4
+      opacity: 0.4,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.95, radius: 2 },
-    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
-    mood: "corporate"
+    effects: {
+      shadows: true,
+      gradients: false,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "corporate",
   },
   {
     id: "fortress-guardian",
@@ -1586,19 +1913,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#94A3B8",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "animated",
       primary: "#0F172A",
       secondary: "#475569",
       animation: "guardian-scan",
-      opacity: 0.2
+      opacity: 0.2,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: true },
-    mood: "professional"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: true,
+    },
+    mood: "professional",
   },
   {
     id: "fortress-shield",
@@ -1615,19 +1948,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#6B7280",
       success: "#16A34A",
       warning: "#F97316",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "pattern",
       primary: "#000000",
       secondary: "#1F2937",
       pattern: "shield-grid",
-      opacity: 0.25
+      opacity: 0.25,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.9, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "corporate"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "corporate",
   },
   {
     id: "fortress-armor",
@@ -1644,19 +1983,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#A1A1AA",
       success: "#22C55E",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "pattern",
       primary: "#18181B",
       secondary: "#52525B",
       pattern: "armor-plates",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.85, radius: 2 },
-    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
-    mood: "corporate"
+    effects: {
+      shadows: true,
+      gradients: false,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "corporate",
   },
   {
     id: "fortress-sentinel",
@@ -1673,19 +2018,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#CBD5E1",
       success: "#059669",
       warning: "#D97706",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "animated",
       primary: "#0F172A",
       secondary: "#64748B",
       animation: "sentinel-sweep",
-      opacity: 0.15
+      opacity: 0.15,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "professional"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "professional",
   },
   {
     id: "fortress-bunker",
@@ -1702,19 +2053,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#71717A",
       success: "#16A34A",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "pattern",
       primary: "#09090B",
       secondary: "#27272A",
       pattern: "bunker-concrete",
-      opacity: 0.4
+      opacity: 0.4,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.9, radius: 4 },
-    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
-    mood: "minimal"
+    effects: {
+      shadows: true,
+      gradients: false,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "minimal",
   },
   {
     id: "fortress-rampart",
@@ -1731,19 +2088,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#9CA3AF",
       success: "#10B981",
       warning: "#F59E0B",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "geometric",
       primary: "#1F2937",
       secondary: "#4B5563",
       pattern: "rampart-stones",
-      opacity: 0.2
+      opacity: 0.2,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 6 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "corporate"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "corporate",
   },
   {
     id: "fortress-bastion",
@@ -1760,19 +2123,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#6B7280",
       success: "#059669",
       warning: "#D97706",
-      error: "#DC2626"
+      error: "#DC2626",
     },
     background: {
       type: "animated",
       primary: "#111827",
       secondary: "#374151",
       animation: "bastion-walls",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 0.95, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
-    mood: "corporate"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: false,
+      animations: true,
+      particles: false,
+    },
+    mood: "corporate",
   },
   {
     id: "fortress-citadel",
@@ -1789,19 +2158,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#4B5563",
       success: "#16A34A",
       warning: "#FBBF24",
-      error: "#EF4444"
+      error: "#EF4444",
     },
     background: {
       type: "particle",
       primary: "#030712",
       secondary: "#FBBF24",
       animation: "citadel-glow",
-      opacity: 0.1
+      opacity: 0.1,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.1, radius: 10 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "luxurious",
   },
 
   // CREATIVE SERIES (61-70)
@@ -1820,7 +2195,7 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#95A5A6",
       success: "#2ECC71",
       warning: "#F39C12",
-      error: "#E74C3C"
+      error: "#E74C3C",
     },
     background: {
       type: "gradient",
@@ -1828,12 +2203,18 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       secondary: "#4ECDC4",
       tertiary: "#FFE66D",
       direction: "45deg",
-      opacity: 0.8
+      opacity: 0.8,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.1, radius: 16 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "creative"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "creative",
   },
   {
     id: "creative-neon",
@@ -1850,19 +2231,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#888888",
       success: "#00FF41",
       warning: "#FFD700",
-      error: "#FF0040"
+      error: "#FF0040",
     },
     background: {
       type: "animated",
       primary: "#0A0A0A",
       secondary: "#00FF41",
       animation: "neon-glow",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 8 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "futuristic"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "futuristic",
   },
   {
     id: "luxury-royal-gold",
@@ -1879,19 +2266,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#DAA520",
       success: "#228B22",
       warning: "#FFD700",
-      error: "#DC143C"
+      error: "#DC143C",
     },
     background: {
       type: "animated",
       primary: "#2F1B14",
       secondary: "#FFD700",
       animation: "gold-shimmer",
-      opacity: 0.4
+      opacity: 0.4,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.2, radius: 12 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
-    mood: "luxurious"
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: false,
+    },
+    mood: "luxurious",
   },
   {
     id: "minimal-zen",
@@ -1908,19 +2301,25 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#795548",
       success: "#388E3C",
       warning: "#F57C00",
-      error: "#D32F2F"
+      error: "#D32F2F",
     },
     background: {
       type: "pattern",
       primary: "#F3E5F5",
       secondary: "#E1BEE7",
       pattern: "zen-circles",
-      opacity: 0.1
+      opacity: 0.1,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 16 },
-    effects: { shadows: false, gradients: false, blur: false, animations: false, particles: false },
-    mood: "calm"
+    effects: {
+      shadows: false,
+      gradients: false,
+      blur: false,
+      animations: false,
+      particles: false,
+    },
+    mood: "calm",
   },
   {
     id: "futuristic-cyber",
@@ -1937,35 +2336,41 @@ export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
       muted: "#888888",
       success: "#00FF00",
       warning: "#FFAA00",
-      error: "#FF0000"
+      error: "#FF0000",
     },
     background: {
       type: "animated",
       primary: "#0A0A0A",
       secondary: "#00FFFF",
       animation: "cyber-grid",
-      opacity: 0.3
+      opacity: 0.3,
     },
     fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
     spacing: { scale: 1.0, radius: 2 },
-    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
-    mood: "futuristic"
-  }
+    effects: {
+      shadows: true,
+      gradients: true,
+      blur: true,
+      animations: true,
+      particles: true,
+    },
+    mood: "futuristic",
+  },
 ];
 
 // Dynamic background animation CSS generator
 export const generateBackgroundCSS = (background: BackgroundConfig): string => {
   switch (background.type) {
-    case 'gradient':
+    case "gradient":
       return `
-        background: linear-gradient(${background.direction || '135deg'}, 
+        background: linear-gradient(${background.direction || "135deg"}, 
           ${background.primary} 0%, 
           ${background.secondary} 50%, 
           ${background.tertiary || background.primary} 100%);
         opacity: ${background.opacity || 1};
       `;
-    
-    case 'animated':
+
+    case "animated":
       return `
         background: ${background.primary};
         position: relative;
@@ -1981,8 +2386,8 @@ export const generateBackgroundCSS = (background: BackgroundConfig): string => {
           animation: ${background.animation} 10s ease-in-out infinite;
         }
       `;
-    
-    case 'particle':
+
+    case "particle":
       return `
         background: ${background.primary};
         position: relative;
@@ -1999,16 +2404,16 @@ export const generateBackgroundCSS = (background: BackgroundConfig): string => {
           animation: ${background.animation} 15s linear infinite;
         }
       `;
-    
-    case 'pattern':
+
+    case "pattern":
       return `
         background: ${background.primary};
-        background-image: url("data:image/svg+xml,${encodeURIComponent(generatePatternSVG(background.pattern || 'grid', background.secondary || '#ffffff'))}");
+        background-image: url("data:image/svg+xml,${encodeURIComponent(generatePatternSVG(background.pattern || "grid", background.secondary || "#ffffff"))}");
         background-size: 50px 50px;
         opacity: ${background.opacity || 1};
       `;
-    
-    case 'geometric':
+
+    case "geometric":
       return `
         background: ${background.primary};
         background-image: 
@@ -2017,7 +2422,7 @@ export const generateBackgroundCSS = (background: BackgroundConfig): string => {
         background-size: 20px 35px;
         opacity: ${background.opacity || 1};
       `;
-    
+
     default:
       return `background: ${background.primary}; opacity: ${background.opacity || 1};`;
   }
@@ -2028,7 +2433,7 @@ const generatePatternSVG = (pattern: string, color: string): string => {
   const patterns = {
     grid: `<svg width="50" height="50" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="${color}" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)"/></svg>`,
     dots: `<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="2" fill="${color}"/></svg>`,
-    lines: `<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg"><path d="M0,40 L40,0" stroke="${color}" stroke-width="1"/></svg>`
+    lines: `<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg"><path d="M0,40 L40,0" stroke="${color}" stroke-width="1"/></svg>`,
   };
   return patterns[pattern as keyof typeof patterns] || patterns.grid;
 };

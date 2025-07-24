@@ -15,7 +15,7 @@ let progressData: ProgressUpdate = {
   completedTasks: [],
   currentTask: "Building Visual Campaign Builder",
   remainingTasks: 14,
-  estimatedTimeRemaining: "4-5 hours"
+  estimatedTimeRemaining: "4-5 hours",
 };
 
 let notificationInterval: NodeJS.Timeout | null = null;
@@ -29,7 +29,7 @@ export const startProgressNotifications: RequestHandler = async (req, res) => {
 
     if (!accountSid || !authToken || !fromPhone) {
       return res.status(400).json({
-        error: "Missing Twilio credentials"
+        error: "Missing Twilio credentials",
       });
     }
 
@@ -42,34 +42,37 @@ export const startProgressNotifications: RequestHandler = async (req, res) => {
     await sendProgressSMS(shannonPhone, accountSid, authToken, fromPhone);
 
     // Set up 20-minute interval notifications
-    notificationInterval = setInterval(async () => {
-      try {
-        await sendProgressSMS(shannonPhone, accountSid, authToken, fromPhone);
-      } catch (error) {
-        console.error("Failed to send progress SMS:", error);
-      }
-    }, 20 * 60 * 1000); // 20 minutes
+    notificationInterval = setInterval(
+      async () => {
+        try {
+          await sendProgressSMS(shannonPhone, accountSid, authToken, fromPhone);
+        } catch (error) {
+          console.error("Failed to send progress SMS:", error);
+        }
+      },
+      20 * 60 * 1000,
+    ); // 20 minutes
 
     res.json({
       success: true,
       message: "Progress notifications started",
       interval: "20 minutes",
       recipient: shannonPhone,
-      url: progressData.url
+      url: progressData.url,
     });
-
   } catch (error) {
     console.error("Failed to start progress notifications:", error);
     res.status(500).json({
       error: "Failed to start notifications",
-      message: error instanceof Error ? error.message : "Unknown error"
+      message: error instanceof Error ? error.message : "Unknown error",
     });
   }
 };
 
 export const updateProgress: RequestHandler = async (req, res) => {
   try {
-    const { completedTask, currentTask, remainingTasks, estimatedTime } = req.body;
+    const { completedTask, currentTask, remainingTasks, estimatedTime } =
+      req.body;
 
     // Update progress data
     if (completedTask) {
@@ -90,13 +93,12 @@ export const updateProgress: RequestHandler = async (req, res) => {
     res.json({
       success: true,
       message: "Progress updated",
-      progress: progressData
+      progress: progressData,
     });
-
   } catch (error) {
     console.error("Failed to update progress:", error);
     res.status(500).json({
-      error: "Failed to update progress"
+      error: "Failed to update progress",
     });
   }
 };
@@ -110,27 +112,37 @@ export const stopProgressNotifications: RequestHandler = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Progress notifications stopped"
+      message: "Progress notifications stopped",
     });
-
   } catch (error) {
     res.status(500).json({
-      error: "Failed to stop notifications"
+      error: "Failed to stop notifications",
     });
   }
 };
 
-async function sendProgressSMS(to: string, accountSid: string, authToken: string, from: string) {
+async function sendProgressSMS(
+  to: string,
+  accountSid: string,
+  authToken: string,
+  from: string,
+) {
   const completedCount = progressData.completedTasks.length;
   const totalTasks = completedCount + progressData.remainingTasks;
-  const percentComplete = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
+  const percentComplete =
+    totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
 
   const message = `🔥 FIRESTORM ENHANCEMENT UPDATE
 
 📊 Progress: ${percentComplete}% Complete (${completedCount}/${totalTasks})
 
 ✅ Recently Completed:
-${progressData.completedTasks.slice(-3).map(task => `• ${task}`).join('\n') || '• Setting up system...'}
+${
+  progressData.completedTasks
+    .slice(-3)
+    .map((task) => `• ${task}`)
+    .join("\n") || "• Setting up system..."
+}
 
 🚧 Currently Working:
 ${progressData.currentTask}
@@ -145,28 +157,32 @@ Updates every 20min. Reply STOP to halt.
 - ECELONX Development Team`;
 
   const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
-  const credentials = Buffer.from(`${accountSid}:${authToken}`).toString('base64');
+  const credentials = Buffer.from(`${accountSid}:${authToken}`).toString(
+    "base64",
+  );
 
   const response = await fetch(twilioUrl, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Authorization': `Basic ${credentials}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Basic ${credentials}`,
+      "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({
       From: from,
       To: to,
-      Body: message
-    })
+      Body: message,
+    }),
   });
 
   const result = await response.text();
-  
+
   if (response.ok) {
     console.log(`📱 Progress SMS sent to ${to}: ${percentComplete}% complete`);
     return JSON.parse(result);
   } else {
-    console.error(`Failed to send progress SMS: ${response.status} - ${result}`);
+    console.error(
+      `Failed to send progress SMS: ${response.status} - ${result}`,
+    );
     throw new Error(`SMS failed: ${response.status}`);
   }
 }
@@ -174,6 +190,6 @@ Updates every 20min. Reply STOP to halt.
 export const getProgress: RequestHandler = async (req, res) => {
   res.json({
     success: true,
-    progress: progressData
+    progress: progressData,
   });
 };

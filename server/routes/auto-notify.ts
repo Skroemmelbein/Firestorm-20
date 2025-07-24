@@ -10,7 +10,7 @@ export const sendAutomaticNotification: RequestHandler = async (req, res) => {
     if (!accountSid || !authToken || !fromPhone) {
       return res.status(400).json({
         error: "Missing Twilio credentials",
-        message: "Please configure Twilio environment variables"
+        message: "Please configure Twilio environment variables",
       });
     }
 
@@ -35,19 +35,21 @@ Drive safely! 🚗💨
 
     // Send SMS using Twilio API
     const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
-    const credentials = Buffer.from(`${accountSid}:${authToken}`).toString('base64');
+    const credentials = Buffer.from(`${accountSid}:${authToken}`).toString(
+      "base64",
+    );
 
     const response = await fetch(twilioUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Basic ${credentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Basic ${credentials}`,
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
         From: fromPhone,
         To: shannonPhone,
-        Body: message
-      })
+        Body: message,
+      }),
     });
 
     const responseText = await response.text();
@@ -73,21 +75,20 @@ Drive safely! 🚗💨
         integrations: {
           rcsAgent: "rcs:nexusdynamics_3ohzywua_agent",
           conversationSid: conversationSid,
-          studioFlowSid: process.env.TWILIO_STUDIO_FLOW_SID
-        }
+          studioFlowSid: process.env.TWILIO_STUDIO_FLOW_SID,
+        },
       });
     } else {
       res.status(response.status).json({
         error: `SMS send failed: ${response.status}`,
-        message: responseText
+        message: responseText,
       });
     }
-
   } catch (error) {
     console.error("Automatic notification error:", error);
     res.status(500).json({
       error: "Failed to send automatic notification",
-      message: error instanceof Error ? error.message : "Unknown error"
+      message: error instanceof Error ? error.message : "Unknown error",
     });
   }
 };
