@@ -404,19 +404,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                             )}
                           />
                         </div>
-                        <div className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-0 relative z-10">
                           <div
                             className={cn(
-                              "font-semibold text-xs tracking-wide",
-                              isActive ? "text-white" : "text-blue-800",
+                              "font-black text-sm tracking-widest uppercase",
+                              isActive ? "text-white drop-shadow-md" : "text-slate-800",
                             )}
                           >
                             {item.label}
                           </div>
                           <div
                             className={cn(
-                              "text-xs font-medium mt-1",
-                              isActive ? "text-white/80" : "text-blue-600/70",
+                              "text-xs font-medium mt-1 leading-tight",
+                              isActive ? "text-white/90" : "text-slate-600/80",
                             )}
                           >
                             {item.description}
