@@ -20,20 +20,28 @@ import {
   createStudioFlow,
   getStudioFlows,
   updateStudioFlow,
-  testTwilioConnection,
+  testTwilioConnection
 } from "./routes/studio-flows";
 import {
   getConversations,
   createConversation,
   getConversationMessages,
   sendConversationMessage,
-  handleConversationWebhook,
+  handleConversationWebhook
 } from "./routes/conversations-api";
 import {
   createAllTables,
   getTableSchemas,
-  testXanoConnection,
+  testXanoConnection
 } from "./routes/xano-table-setup";
+import {
+  configureAgent,
+  verifyAgent,
+  sendMessage,
+  getMessages,
+  handleWebhook,
+  getAgentStatus
+} from "./routes/rcs-api";
 import realApiRouter from "./routes/real-api";
 import xanoSetupRouter from "./routes/xano-setup";
 
@@ -53,18 +61,9 @@ export function createServer() {
 
   // Debug environment variables
   console.log("🔍 Debug environment variables:");
-  console.log(
-    "XANO_INSTANCE_URL:",
-    process.env.XANO_INSTANCE_URL ? "PRESENT" : "MISSING",
-  );
-  console.log(
-    "XANO_API_KEY:",
-    process.env.XANO_API_KEY ? "PRESENT" : "MISSING",
-  );
-  console.log(
-    "XANO_DATABASE_ID:",
-    process.env.XANO_DATABASE_ID ? "PRESENT" : "MISSING",
-  );
+  console.log("XANO_INSTANCE_URL:", process.env.XANO_INSTANCE_URL ? "PRESENT" : "MISSING");
+  console.log("XANO_API_KEY:", process.env.XANO_API_KEY ? "PRESENT" : "MISSING");
+  console.log("XANO_DATABASE_ID:", process.env.XANO_DATABASE_ID ? "PRESENT" : "MISSING");
 
   // Initialize real integrations with environment variables - NO MOCKS
   if (
@@ -83,7 +82,7 @@ export function createServer() {
     console.warn("Missing vars:", {
       XANO_INSTANCE_URL: !process.env.XANO_INSTANCE_URL,
       XANO_API_KEY: !process.env.XANO_API_KEY,
-      XANO_DATABASE_ID: !process.env.XANO_DATABASE_ID,
+      XANO_DATABASE_ID: !process.env.XANO_DATABASE_ID
     });
   }
 
@@ -105,19 +104,14 @@ export function createServer() {
 
   // Initialize SendGrid with Shannon's email
   if (process.env.SENDGRID_API_KEY) {
-    if (
-      process.env.SENDGRID_API_KEY ===
-      "SG.placeholder_key_replace_with_real_sendgrid_api_key"
-    ) {
-      console.warn(
-        "⚠️  SendGrid API key is placeholder - replace with real SendGrid API key",
-      );
+    if (process.env.SENDGRID_API_KEY === "SG.placeholder_key_replace_with_real_sendgrid_api_key") {
+      console.warn("⚠️  SendGrid API key is placeholder - replace with real SendGrid API key");
     } else {
       try {
         initializeSendGrid({
           apiKey: process.env.SENDGRID_API_KEY,
           fromEmail: "shannonkroemmelbein@gmail.com",
-          fromName: "Shannon Kroemmelbein - ECELONX",
+          fromName: "Shannon Kroemmelbein - ECELONX"
         });
         console.log("✅ SendGrid client initialized with Shannon's email");
       } catch (error) {
@@ -125,9 +119,7 @@ export function createServer() {
       }
     }
   } else {
-    console.warn(
-      "⚠️  SendGrid API key not found - add SENDGRID_API_KEY to .env file",
-    );
+    console.warn("⚠️  SendGrid API key not found - add SENDGRID_API_KEY to .env file");
   }
 
   // Initialize OpenAI with working credentials
@@ -178,14 +170,8 @@ export function createServer() {
   // Conversations API routes
   app.get("/api/conversations", getConversations);
   app.post("/api/conversations", createConversation);
-  app.get(
-    "/api/conversations/:conversationSid/messages",
-    getConversationMessages,
-  );
-  app.post(
-    "/api/conversations/:conversationSid/messages",
-    sendConversationMessage,
-  );
+  app.get("/api/conversations/:conversationSid/messages", getConversationMessages);
+  app.post("/api/conversations/:conversationSid/messages", sendConversationMessage);
   app.post("/api/webhooks/conversations", handleConversationWebhook);
 
   // Xano Table Setup routes
