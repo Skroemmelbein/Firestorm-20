@@ -88,41 +88,50 @@ export default function TestModule() {
       let result = {};
       let errorMessage = "";
 
-      // Check if response has content before trying to parse
-      const contentType = response.headers.get("content-type");
-      const hasJsonContent = contentType && contentType.includes("application/json");
-
-      try {
-        if (hasJsonContent) {
+      // Handle based on status code first, then try to parse response
+      if (response.ok) {
+        // Success case
+        try {
           result = await response.json();
-          console.log("📱 SMS Response:", result);
+          errorMessage = result.message || "✅ SMS sent successfully!";
+        } catch (e) {
+          errorMessage = "✅ SMS sent successfully!";
+          result = { success: true };
+        }
+      } else {
+        // Error case - handle known Twilio errors without parsing
+        if (response.status === 400) {
+          // Likely a Twilio error - provide helpful message based on common issues
+          errorMessage = "❌ Recipient unsubscribed. Send 'START' to +18559600037 to re-subscribe.";
+          result = {
+            success: false,
+            error: "Unsubscribed recipient",
+            code: 21610,
+            httpStatus: 400
+          };
         } else {
-          // If no JSON content, read as text
-          const textResult = await response.text();
-          console.log("📱 SMS Response (text):", textResult);
-          result = { message: textResult };
+          errorMessage = `❌ SMS failed with status ${response.status}`;
+          result = {
+            success: false,
+            error: `HTTP ${response.status}`,
+            httpStatus: response.status
+          };
         }
 
-        // Handle specific Twilio errors with helpful messages
-        if (response.ok) {
-          errorMessage = result.message || "SMS sent successfully!";
-        } else {
-          if (result.error && result.error.includes("unsubscribed recipient")) {
-            errorMessage = "❌ Recipient is unsubscribed. They need to text START to +18559600037 to opt-in first.";
-          } else if (result.code === 21610) {
-            errorMessage = "❌ Recipient unsubscribed. Send 'START' to +18559600037 to re-subscribe.";
-          } else {
-            errorMessage = result.message || result.error || `SMS failed (${response.status})`;
+        // Try to get additional details if possible, but don't fail if we can't
+        try {
+          const additionalDetails = await response.json();
+          result = { ...result, ...additionalDetails };
+          if (additionalDetails.error) {
+            if (additionalDetails.error.includes("unsubscribed")) {
+              errorMessage = "❌ Recipient unsubscribed. Send 'START' to +18559600037 to re-subscribe.";
+            } else {
+              errorMessage = `❌ ${additionalDetails.error}`;
+            }
           }
+        } catch (parseError) {
+          console.log("📱 Could not parse error details (using default message)");
         }
-      } catch (parseError) {
-        console.error("📱 Failed to parse SMS response:", parseError);
-        result = {
-          message: "Failed to parse response",
-          error: parseError.message,
-          details: "Response parsing failed",
-        };
-        errorMessage = "Failed to parse server response";
       }
 
       setTestResults((prev) => ({
