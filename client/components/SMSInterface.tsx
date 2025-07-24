@@ -58,7 +58,7 @@ export default function SMSInterface() {
       setConnectionStatus({
         connected: response.ok,
         error: result.error,
-        phone: "+18558000037",
+        phone: "+18558600037",
       });
     } catch (error) {
       setConnectionStatus({
@@ -91,7 +91,7 @@ export default function SMSInterface() {
         success: result.success || response.ok,
         sid: result.sid,
         to: phoneNumber,
-        from: result.from || "+18558000037",
+        from: result.from || "+18558600037",
         body: message,
         error: result.error,
         timestamp: new Date().toISOString(),
@@ -118,7 +118,7 @@ export default function SMSInterface() {
 
   // Quick test message
   const sendTestMessage = async () => {
-    setPhoneNumber("+18144409968"); // Default test number
+    setPhoneNumber("+18558600037"); // Default test number
     setMessage(
       "🚀 Hello from RecurFlow! Your SMS system is working perfectly. Sent at " +
         new Date().toLocaleTimeString(),
@@ -165,7 +165,7 @@ export default function SMSInterface() {
             <div className="space-y-1">
               <div className="text-sm font-medium">Phone Number</div>
               <div className="font-mono text-xs text-muted-foreground">
-                +1 (855) 800-0037
+                +1 (855) 860-0037
               </div>
             </div>
             <Button
