@@ -387,8 +387,18 @@ export default function TwilioConversations() {
                   : "Select Conversation"}
               </h3>
               {selectedConversation && (
-                <div className="text-xs text-gray-600">
-                  SID: {selectedConversation.sid.substring(0, 12)}...
+                <div className="flex items-center gap-2">
+                  <div className="text-xs text-gray-600">
+                    SID: {selectedConversation.sid.substring(0, 12)}...
+                  </div>
+                  <Button
+                    onClick={() => loadMessages(selectedConversation.sid)}
+                    disabled={isLoading.messages}
+                    size="sm"
+                    className="text-xs px-2 py-1 h-6 bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    {isLoading.messages ? "Loading..." : "Load Messages"}
+                  </Button>
                 </div>
               )}
             </div>
