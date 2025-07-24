@@ -88,9 +88,10 @@ router.post("/send", async (req, res) => {
 // Send the test message immediately
 async function sendTestMessage() {
   try {
-    console.log("🚀 Sending test message to 8558600037...");
+    console.log("🚀 Sending test message to different test number...");
 
-    const formattedPhone = "+18559600037";
+    // Use a different test number - can't send to same as FROM number
+    const formattedPhone = "+18144409968"; // Test number different from FROM
 
     const response = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
@@ -108,7 +109,15 @@ async function sendTestMessage() {
       },
     );
 
-    const result = await response.json();
+    // Fix response parsing
+    const responseText = await response.text();
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error("❌ Failed to parse test SMS response:", parseError);
+      result = { message: "Failed to parse response", error: parseError.message };
+    }
 
     if (response.ok) {
       console.log("✅ Test SMS sent successfully!");
