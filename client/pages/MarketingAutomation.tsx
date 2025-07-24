@@ -430,7 +430,7 @@ export default function MarketingAutomation() {
                       <div>
                         <div className="font-medium">Twilio SMS</div>
                         <div className="text-sm text-muted-foreground">
-                          +1 (855) 960-0037
+                          +1 (855) 860-0037
                         </div>
                       </div>
                       <Badge className="bg-green-100 text-green-700">
