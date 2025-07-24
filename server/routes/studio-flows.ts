@@ -90,6 +90,7 @@ export const getStudioFlows: RequestHandler = async (req, res) => {
       process.env.TWILIO_ACCOUNT_SID || req.headers["x-twilio-account-sid"];
     const authToken =
       process.env.TWILIO_AUTH_TOKEN || req.headers["x-twilio-auth-token"];
+    const currentFlowSid = process.env.TWILIO_STUDIO_FLOW_SID;
 
     if (!accountSid || !authToken) {
       return res.status(400).json({
