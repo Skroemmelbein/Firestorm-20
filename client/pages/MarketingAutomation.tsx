@@ -233,6 +233,13 @@ export default function MarketingAutomation() {
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-6 bg-[#1a1a1a] border border-[#FF6A00]/30">
             <TabsTrigger
+              value="builder"
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <Zap className="w-4 h-4 mr-2" />
+              Campaign Builder
+            </TabsTrigger>
+            <TabsTrigger
               value="command"
               className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
             >
