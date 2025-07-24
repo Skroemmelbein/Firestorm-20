@@ -334,16 +334,29 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               })}
             </div>
 
-            <Link to="/integrations">
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2 border-blue-200 text-blue-700"
-              >
-                <Settings className="w-4 h-4" />
-                <span className="hidden sm:inline">Settings</span>
-              </Button>
-            </Link>
+            <div className="flex items-center gap-3">
+              {/* Mission Control Button */}
+              <Link to="/integrations">
+                <Button
+                  size="sm"
+                  className="gap-2 bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 text-white font-bold tracking-wide border-none hover:shadow-xl"
+                >
+                  <Settings className="w-4 h-4" />
+                  <span className="hidden sm:inline">MISSION CONTROL</span>
+                </Button>
+              </Link>
+
+              {/* Shannon Profile Menu */}
+              <div className="flex items-center gap-2 bg-gradient-to-r from-slate-800 to-zinc-900 rounded-lg px-3 py-2 border border-slate-600">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center">
+                  <User className="w-4 h-4 text-white" />
+                </div>
+                <div className="hidden sm:block">
+                  <div className="text-xs font-bold text-cyan-300 uppercase tracking-wide">Shannon</div>
+                  <div className="text-xs text-slate-400">Admin</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </header>
