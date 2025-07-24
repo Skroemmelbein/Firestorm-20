@@ -346,7 +346,7 @@ export default function TestModule() {
                     <Input
                       value={smsTest.phone}
                       onChange={(e) => setSmsTest(prev => ({ ...prev, phone: e.target.value }))}
-                      placeholder="+18559600037"
+                      placeholder="+18144409068"
                       className="bg-[#1a1a1a] border-[#333333] text-white"
                     />
                   </div>
