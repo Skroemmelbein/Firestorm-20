@@ -17,7 +17,7 @@ router.post("/send-test", async (req, res) => {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          From: "+18558600037",
+          From: "+18559600037",
           To: to,
           Body: message,
         }),
@@ -60,8 +60,8 @@ async function sendTestMessage() {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          From: "+18558600037",
-          To: "+18558600037",
+          From: "+18559600037",
+          To: "+18559600037",
           Body: "whhhhaaaa up",
         }),
       },
