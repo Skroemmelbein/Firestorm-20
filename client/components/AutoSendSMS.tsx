@@ -30,7 +30,7 @@ export default function AutoSendSMS() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          to: "+18558600037",
+          to: "+18559600037",
           body:
             "🚀 AUTO-TEST from RecurFlow! Your enterprise SMS system is working perfectly. Sent automatically at " +
             new Date().toLocaleString(),
