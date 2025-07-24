@@ -166,8 +166,8 @@ export default function MemberPortal() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold gradient-text tracking-tight">
-              Member Portal
+            <h1 className="text-4xl font-black bg-gradient-to-r from-purple-600 via-pink-500 to-blue-500 bg-clip-text text-transparent tracking-widest">
+              DREAM PORTAL
             </h1>
             <p className="text-blue-700/70 font-medium">
               Real member benefits from Xano database
