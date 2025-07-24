@@ -179,11 +179,20 @@ export default function Overview() {
       });
 
       const result = await response.json();
+
+      // Handle specific Twilio errors
+      let errorMessage = result.message || (response.ok ? "SMS sent successfully!" : "SMS failed");
+      if (result.error && result.error.includes("unsubscribed recipient")) {
+        errorMessage = "Recipient is unsubscribed. They need to text START to opt-in first.";
+      } else if (result.code === 21610) {
+        errorMessage = "Recipient unsubscribed. Send START to +18559600037 to re-subscribe.";
+      }
+
       setTestResults(prev => ({
         ...prev,
         sms: {
           success: response.ok,
-          message: result.message || (response.ok ? "SMS sent successfully!" : "SMS failed"),
+          message: errorMessage,
           timestamp: new Date(),
         },
       }));
