@@ -791,5 +791,3 @@ export default function MarketingAutomation() {
     </div>
   );
 }
-
-export default MarketingAutomation;
