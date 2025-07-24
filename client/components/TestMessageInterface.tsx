@@ -33,7 +33,7 @@ interface TestResult {
 
 export default function TestMessageInterface() {
   const [smsData, setSmsData] = useState({
-    phone: "+18144409968",
+    phone: "+18558600037",
     message:
       "🚀 Test SMS from RecurFlow! Your marketing automation is working perfectly.",
   });
@@ -261,7 +261,7 @@ export default function TestMessageInterface() {
                   <div>
                     <strong>✅ Twilio Connected</strong>
                     <div className="text-xs mt-1">
-                      Ready to send SMS from +1 (855) 800-0037
+                      Ready to send SMS from +1 (855) 860-0037
                     </div>
                   </div>
                 ) : (
@@ -356,7 +356,7 @@ export default function TestMessageInterface() {
                 <CheckCircle className="h-4 w-4" />
                 <AlertDescription>
                   <strong>Ready!</strong> Twilio SMS is connected and working.
-                  Your test will be sent from +1 (855) 800-0037
+                  Your test will be sent from +1 (855) 860-0037
                 </AlertDescription>
               </Alert>
             </CardContent>
