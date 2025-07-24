@@ -29,7 +29,8 @@ import {
   AlertTriangle,
   Layout,
   ArrowRight,
-  Palette
+  Palette,
+  MessageSquare
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
