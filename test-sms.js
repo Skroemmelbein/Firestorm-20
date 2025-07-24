@@ -1,4 +1,4 @@
-// Quick SMS test to 8144409968
+// Quick SMS test to 8558600037
 const testSMS = async () => {
   try {
     const response = await fetch("http://localhost:8080/api/real/sms/send", {
@@ -7,7 +7,7 @@ const testSMS = async () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        to: "+18144409968",
+        to: "+18558600037",
         body:
           "🚀 Test SMS from RecurFlow! Your marketing automation system is working perfectly. Sent at " +
           new Date().toLocaleTimeString(),
