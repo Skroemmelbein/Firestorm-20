@@ -42,6 +42,7 @@ import {
   Wifi,
 } from "lucide-react";
 import TwilioSIDVault from "@/components/TwilioSIDVault";
+import CredentialVault from "@/components/CredentialVault";
 
 interface Integration {
   id: string;
@@ -292,7 +293,7 @@ export default function Integrations() {
           onValueChange={setSelectedTab}
           className="space-y-6"
         >
-          <TabsList className="grid w-full grid-cols-5 bg-[#1a1a1a] border border-[#00CED1]/30">
+          <TabsList className="grid w-full grid-cols-6 bg-[#1a1a1a] border border-[#00CED1]/30">
             <TabsTrigger
               value="command"
               className="data-[state=active]:bg-[#00CED1] data-[state=active]:text-black text-white hover:text-[#00CED1] transition-colors"
@@ -320,6 +321,13 @@ export default function Integrations() {
             >
               <Database className="w-4 h-4 mr-2" />
               SID Vault
+            </TabsTrigger>
+            <TabsTrigger
+              value="credentials"
+              className="data-[state=active]:bg-[#00CED1] data-[state=active]:text-black text-white hover:text-[#00CED1] transition-colors"
+            >
+              <Shield className="w-4 h-4 mr-2" />
+              Credentials
             </TabsTrigger>
             <TabsTrigger
               value="settings"
@@ -522,6 +530,11 @@ export default function Integrations() {
           {/* SID Vault Tab */}
           <TabsContent value="sid-vault" className="space-y-6">
             <TwilioSIDVault />
+          </TabsContent>
+
+          {/* Credential Vault Tab */}
+          <TabsContent value="credentials" className="space-y-6">
+            <CredentialVault />
           </TabsContent>
 
           {/* System Config Tab */}
