@@ -371,7 +371,7 @@ export default function Overview() {
           <h2 className="text-2xl font-black text-white uppercase tracking-wide mb-6">
             MODULE OPERATIONS STATUS
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {moduleData.map((module) => (
               <div
                 key={module.id}
