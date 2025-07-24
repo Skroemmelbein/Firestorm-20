@@ -261,7 +261,7 @@ export default function TestModule() {
             <CardContent className="p-4 text-center">
               <MessageSquare className="w-8 h-8 mx-auto text-[#00BFFF] mb-2" />
               <h3 className="font-semibold text-white">Quick SMS Test</h3>
-              <p className="text-xs text-[#737373]">Test SMS to +18559600037</p>
+              <p className="text-xs text-[#737373]">Test SMS to +18144409068</p>
             </CardContent>
           </Card>
 
