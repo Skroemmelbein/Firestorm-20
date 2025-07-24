@@ -25,7 +25,6 @@ import {
   Send,
   TrendingUp,
   Upload,
-  Building,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
