@@ -315,7 +315,7 @@ export default function TwilioConversations() {
 
             <div className="space-y-3 max-h-80 overflow-y-auto">
               {!conversations || conversations.length === 0 ? (
-                <div className="text-center py-8 text-[#737373]">
+                <div className="text-center py-8 text-gray-600">
                   <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>No conversations yet</p>
                   <p className="text-xs">Create one to start testing</p>
@@ -329,12 +329,12 @@ export default function TwilioConversations() {
                       onClick={() => setSelectedConversation(conversation)}
                       className={`p-3 border rounded-lg cursor-pointer transition-all ${
                         selectedConversation?.sid === conversation.sid
-                          ? "border-[#00BFFF] bg-[#00BFFF]/10"
-                          : "border-[#333333] hover:border-[#555555]"
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 hover:border-gray-300 bg-white"
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-white text-sm">
+                        <h4 className="font-medium text-gray-800 text-sm">
                           {conversation.friendlyName}
                         </h4>
                         <Badge
