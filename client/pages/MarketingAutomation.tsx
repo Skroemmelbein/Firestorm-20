@@ -365,6 +365,11 @@ export default function MarketingAutomation() {
             </div>
           </TabsContent>
 
+          {/* Segment & Audiences Tab */}
+          <TabsContent value="segments" className="space-y-6">
+            <TwilioSegmentAudience />
+          </TabsContent>
+
           {/* Studio Flows Tab */}
           <TabsContent value="studio" className="space-y-6">
             <div className="flex items-center justify-between">
