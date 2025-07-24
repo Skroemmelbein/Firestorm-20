@@ -411,31 +411,33 @@ export default function SkinCustomizer() {
                 
                 <div className="space-y-2">
                   <Label className="text-[#b3b3b3]">Border Radius: {customTheme.spacing.radius}px</Label>
-                  <Slider
-                    value={[customTheme.spacing.radius]}
-                    onValueChange={([value]) => setCustomTheme(prev => ({
+                  <input
+                    type="range"
+                    value={customTheme.spacing.radius}
+                    onChange={(e) => setCustomTheme(prev => ({
                       ...prev,
-                      spacing: { ...prev.spacing, radius: value }
+                      spacing: { ...prev.spacing, radius: parseInt(e.target.value) }
                     }))}
                     max={20}
                     min={0}
                     step={1}
-                    className="w-full"
+                    className="w-full h-2 bg-[#333333] rounded-lg appearance-none cursor-pointer"
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label className="text-[#b3b3b3]">Spacing Scale: {customTheme.spacing.scale}x</Label>
-                  <Slider
-                    value={[customTheme.spacing.scale]}
-                    onValueChange={([value]) => setCustomTheme(prev => ({
+                  <input
+                    type="range"
+                    value={customTheme.spacing.scale}
+                    onChange={(e) => setCustomTheme(prev => ({
                       ...prev,
-                      spacing: { ...prev.spacing, scale: value }
+                      spacing: { ...prev.spacing, scale: parseFloat(e.target.value) }
                     }))}
                     max={1.5}
                     min={0.8}
                     step={0.1}
-                    className="w-full"
+                    className="w-full h-2 bg-[#333333] rounded-lg appearance-none cursor-pointer"
                   />
                 </div>
               </div>
