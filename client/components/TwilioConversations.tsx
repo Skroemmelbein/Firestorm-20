@@ -441,7 +441,7 @@ export default function TwilioConversations() {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type your message..."
-                    className="bg-[#1a1a1a] border-[#333333] text-white"
+                    className="bg-white border-gray-300 text-gray-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     onKeyPress={(e) =>
                       e.key === "Enter" && !isLoading.sending && sendMessage()
                     }
@@ -449,7 +449,7 @@ export default function TwilioConversations() {
                   <Button
                     onClick={sendMessage}
                     disabled={isLoading.sending || !newMessage.trim()}
-                    className="f10-btn accent-bg text-black"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
                   >
                     {isLoading.sending ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
