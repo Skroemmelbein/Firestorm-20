@@ -214,7 +214,7 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="uploads" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5 glass-card corp-shadow">
+          <TabsList className="grid w-full grid-cols-6 glass-card corp-shadow">
             <TabsTrigger value="uploads" className="gap-2">
               <Upload className="w-4 h-4" />
               Data Uploads
@@ -222,6 +222,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="xano" className="gap-2">
               <Database className="w-4 h-4" />
               Xano Tables
+            </TabsTrigger>
+            <TabsTrigger value="skin" className="gap-2">
+              <Palette className="w-4 h-4" />
+              Skin Tool
             </TabsTrigger>
             <TabsTrigger value="integrations" className="gap-2">
               <Zap className="w-4 h-4" />
