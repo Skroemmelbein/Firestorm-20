@@ -325,18 +325,21 @@ export default function SkinCustomizer() {
                   )}
                   onClick={() => setSelectedTheme(theme)}
                 >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm font-semibold text-white">
-                        {theme.name}
-                      </CardTitle>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <Badge className="bg-[#333333] text-[#b3b3b3] border-[#444444] text-xs">
+                        {theme.category}
+                      </Badge>
                       {selectedTheme.id === theme.id && (
-                        <Badge className="bg-[#FFD700]/20 text-[#FFD700] border-[#FFD700]/40">
+                        <Badge className="bg-[#FFD700]/20 text-[#FFD700] border-[#FFD700]/40 text-xs">
                           SELECTED
                         </Badge>
                       )}
                     </div>
-                    <p className="text-xs text-[#b3b3b3]">{theme.description}</p>
+                    <CardTitle className="text-sm font-semibold text-white">
+                      {theme.name}
+                    </CardTitle>
+                    <p className="text-xs text-[#b3b3b3] line-clamp-2">{theme.description}</p>
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center gap-2 mb-3">
