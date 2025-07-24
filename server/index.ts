@@ -139,5 +139,12 @@ export function createServer() {
   app.post("/api/studio-flows/:flowSid", updateStudioFlow);
   app.post("/api/test-twilio-connection", testTwilioConnection);
 
+  // Conversations API routes
+  app.get("/api/conversations", getConversations);
+  app.post("/api/conversations", createConversation);
+  app.get("/api/conversations/:conversationSid/messages", getConversationMessages);
+  app.post("/api/conversations/:conversationSid/messages", sendConversationMessage);
+  app.post("/api/webhooks/conversations", handleConversationWebhook);
+
   return app;
 }
