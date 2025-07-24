@@ -90,12 +90,24 @@ export default function TestModule() {
       );
 
       let result;
+      let errorMessage;
+
       try {
-        // Clone the response to avoid "body stream already read" error
-        const responseClone = response.clone();
-        const responseText = await responseClone.text();
-        console.log("📱 SMS Raw response:", responseText);
-        result = JSON.parse(responseText);
+        result = await response.json();
+        console.log("📱 SMS Response:", result);
+
+        // Handle specific Twilio errors with helpful messages
+        if (response.ok) {
+          errorMessage = result.message || "SMS sent successfully!";
+        } else {
+          if (result.error && result.error.includes("unsubscribed recipient")) {
+            errorMessage = "❌ Recipient is unsubscribed. They need to text START to +18559600037 to opt-in first.";
+          } else if (result.code === 21610) {
+            errorMessage = "❌ Recipient unsubscribed. Send 'START' to +18559600037 to re-subscribe.";
+          } else {
+            errorMessage = result.message || result.error || "SMS failed to send";
+          }
+        }
       } catch (parseError) {
         console.error("📱 Failed to parse SMS response:", parseError);
         result = {
@@ -103,14 +115,7 @@ export default function TestModule() {
           error: parseError.message,
           details: "Response parsing failed",
         };
-      }
-
-      // Handle specific Twilio errors with helpful messages
-      let errorMessage = result.message || result.error || (response.ok ? "SMS sent successfully!" : "SMS failed to send");
-      if (result.error && result.error.includes("unsubscribed recipient")) {
-        errorMessage = "❌ Recipient is unsubscribed. They need to text START to +18559600037 to opt-in first.";
-      } else if (result.code === 21610) {
-        errorMessage = "❌ Recipient unsubscribed. Send 'START' to +18559600037 to re-subscribe.";
+        errorMessage = "Failed to parse server response";
       }
 
       setTestResults((prev) => ({
