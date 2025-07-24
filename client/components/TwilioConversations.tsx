@@ -333,6 +333,12 @@ export default function TwilioConversations() {
                   <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>No conversations yet</p>
                   <p className="text-xs">Create one to start testing</p>
+                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-left">
+                    <p className="text-sm font-medium text-yellow-800">⚠️ Twilio Conversations Setup</p>
+                    <p className="text-xs text-yellow-700 mt-1">
+                      If you see network errors, ensure your Twilio account has Conversations API enabled.
+                    </p>
+                  </div>
                 </div>
               ) : (
                 (conversations || []).map((conversation) => {
