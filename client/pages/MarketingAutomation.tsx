@@ -249,6 +249,13 @@ export default function MarketingAutomation() {
               Email Templates
             </TabsTrigger>
             <TabsTrigger
+              value="sms-templates"
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <MessageSquare className="w-4 h-4 mr-2" />
+              SMS Templates
+            </TabsTrigger>
+            <TabsTrigger
               value="command"
               className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
             >
