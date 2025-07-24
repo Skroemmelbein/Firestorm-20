@@ -314,6 +314,13 @@ export default function Integrations() {
               Security Control
             </TabsTrigger>
             <TabsTrigger
+              value="sid-vault"
+              className="data-[state=active]:bg-[#00CED1] data-[state=active]:text-black text-white hover:text-[#00CED1] transition-colors"
+            >
+              <Database className="w-4 h-4 mr-2" />
+              SID Vault
+            </TabsTrigger>
+            <TabsTrigger
               value="settings"
               className="data-[state=active]:bg-[#00CED1] data-[state=active]:text-black text-white hover:text-[#00CED1] transition-colors"
             >
