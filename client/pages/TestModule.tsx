@@ -63,8 +63,10 @@ export default function TestModule() {
 
   const runSMSTest = async () => {
     setIsTesting(prev => ({ ...prev, sms: true }));
-    
+
     try {
+      console.log('🧪 Testing SMS with:', { phone: smsTest.phone, message: smsTest.message });
+
       const response = await fetch('/api/real/sms/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -74,24 +76,39 @@ export default function TestModule() {
         })
       });
 
-      const result = await response.json();
-      
+      console.log('📱 SMS Response status:', response.status, response.statusText);
+
+      let result;
+      try {
+        const responseText = await response.text();
+        console.log('📱 SMS Raw response:', responseText);
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('📱 Failed to parse SMS response:', parseError);
+        result = {
+          message: "Failed to parse response",
+          error: parseError.message,
+          details: "Response parsing failed"
+        };
+      }
+
       setTestResults(prev => ({
         ...prev,
         sms: {
           success: response.ok,
-          message: result.message || (response.ok ? "SMS sent successfully!" : "SMS failed to send"),
-          details: result,
+          message: result.message || result.error || (response.ok ? "SMS sent successfully!" : "SMS failed to send"),
+          details: { ...result, status: response.status, statusText: response.statusText },
           timestamp: new Date()
         }
       }));
     } catch (error) {
+      console.error('📱 SMS Test error:', error);
       setTestResults(prev => ({
         ...prev,
         sms: {
           success: false,
           message: "Failed to send SMS",
-          details: error,
+          details: { error: error.message, stack: error.stack },
           timestamp: new Date()
         }
       }));
