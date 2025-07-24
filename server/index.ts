@@ -60,6 +60,18 @@ export function createServer() {
     twilioCredentials.phoneNumber,
   );
 
+  // Initialize SendGrid with Shannon's email
+  if (process.env.SENDGRID_API_KEY) {
+    initializeSendGrid({
+      apiKey: process.env.SENDGRID_API_KEY,
+      fromEmail: "shannonkroemmelbein@gmail.com",
+      fromName: "Shannon Kroemmelbein - ECELONX"
+    });
+    console.log("✅ SendGrid client initialized with Shannon's email");
+  } else {
+    console.warn("⚠️  SendGrid API key not found - add SENDGRID_API_KEY to .env file");
+  }
+
   // Initialize OpenAI with working credentials
   if (process.env.OPENAI_API_KEY) {
     setOpenAIApiKey(process.env.OPENAI_API_KEY);
