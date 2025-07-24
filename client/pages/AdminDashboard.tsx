@@ -644,6 +644,11 @@ export default function AdminDashboard() {
             </div>
           </TabsContent>
 
+          {/* Xano Tables Tab */}
+          <TabsContent value="xano" className="space-y-4">
+            <XanoTableManager />
+          </TabsContent>
+
           {/* SendGrid Email Tab */}
           <TabsContent value="sendgrid" className="space-y-4">
             <SendGridTest />
