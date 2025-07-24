@@ -442,9 +442,15 @@ export default function TestModule() {
                   {testResults.sms ? (
                     <TestResultDisplay result={testResults.sms} />
                   ) : (
-                    <div className="text-center py-8 text-[#737373]">
+                    <div className="text-center py-8 text-gray-600">
                       <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p>No SMS tests run yet</p>
+                      <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-left">
+                        <p className="text-sm font-medium text-blue-800">📱 SMS Subscription Required</p>
+                        <p className="text-xs text-blue-700 mt-1">
+                          If you get an "unsubscribed" error, text <strong>START</strong> to <strong>+18559600037</strong> first.
+                        </p>
+                      </div>
                     </div>
                   )}
                 </CardContent>
