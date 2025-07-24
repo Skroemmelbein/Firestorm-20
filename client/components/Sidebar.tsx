@@ -131,18 +131,24 @@ export default function Sidebar() {
           isCollapsed ? "w-16" : "w-72",
         )}
         style={{
-          background: 'linear-gradient(180deg, rgba(196, 181, 253, 0.85) 0%, rgba(252, 165, 165, 0.75) 50%, rgba(167, 243, 208, 0.85) 100%)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.6)',
+          background:
+            "linear-gradient(180deg, rgba(196, 181, 253, 0.85) 0%, rgba(252, 165, 165, 0.75) 50%, rgba(167, 243, 208, 0.85) 100%)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.6)",
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/20" style={{backdropFilter: 'blur(10px)'}}>
+        <div
+          className="flex items-center justify-between p-4 border-b border-white/20"
+          style={{ backdropFilter: "blur(10px)" }}
+        >
           {!isCollapsed && (
             <div className="flex items-center gap-2">
               <Command className="w-6 h-6 text-[#00BFFF]" />
-              <span className="text-gray-900 font-bold text-lg drop-shadow-lg">ECELONX</span>
+              <span className="text-gray-900 font-bold text-lg drop-shadow-lg">
+                ECELONX
+              </span>
             </div>
           )}
           <button
