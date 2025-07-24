@@ -42,7 +42,7 @@ router.post("/sms/send", async (req, res) => {
 
 ```
 Account SID: ACf19a39d865d43659b94a3a2074
-Phone Number: +1 (855) 800-0037
+Phone Number: +1 (855) 860-0037
 Auth Token: [Stored in environment]
 ```
 
