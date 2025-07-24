@@ -24,6 +24,7 @@ import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import TestMessageInterface from "@/components/TestMessageInterface";
 import CampaignWizard from "@/components/CampaignWizard";
+import TwilioStudioBuilder from "@/components/TwilioStudioBuilder";
 import {
   MessageSquare,
   Phone,
