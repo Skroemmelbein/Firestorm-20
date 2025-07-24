@@ -229,13 +229,20 @@ export default function MarketingAutomation() {
 
         {/* Command Tabs */}
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-[#1a1a1a] border border-[#FF6A00]/30">
+          <TabsList className="grid w-full grid-cols-5 bg-[#1a1a1a] border border-[#FF6A00]/30">
             <TabsTrigger
               value="command"
               className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
             >
               <Command className="w-4 h-4 mr-2" />
               Campaign Command
+            </TabsTrigger>
+            <TabsTrigger
+              value="segments"
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <Users className="w-4 h-4 mr-2" />
+              Segment & Audiences
             </TabsTrigger>
             <TabsTrigger
               value="studio"
