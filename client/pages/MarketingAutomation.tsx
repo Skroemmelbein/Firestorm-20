@@ -187,16 +187,17 @@ export default function MarketingAutomation() {
       <div className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-6 space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center">
-                <Zap className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-red-600 via-orange-500 to-yellow-400 flex items-center justify-center shadow-2xl relative">
+                <Zap className="w-8 h-8 text-white drop-shadow-lg animate-pulse" />
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-red-600 rounded-xl opacity-30 animate-ping"></div>
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-foreground">
-                  Marketing Automation
+                <h1 className="text-5xl font-black bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 bg-clip-text text-transparent tracking-widest">
+                  FIRESTORM
                 </h1>
-                <p className="text-sm text-muted-foreground">
-                  Real Twilio + AI Integration - No Mock Data
+                <p className="text-sm font-bold text-orange-600 uppercase tracking-wide mt-1">
+                  🔥 High-Energy Marketing Engine - Live System 🚀
                 </p>
               </div>
             </div>
