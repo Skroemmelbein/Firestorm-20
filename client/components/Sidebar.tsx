@@ -215,14 +215,14 @@ export default function Sidebar() {
               <div className="space-y-2">
                 <button
                   onClick={() => navigate("/admin")}
-                  className="w-full flex items-center gap-2 p-2 rounded text-sm text-gray-700 hover:text-gray-900 hover:bg-white/20 transition-colors backdrop-blur-sm"
+                  className="w-full flex items-center gap-2 p-2 rounded text-sm text-gray-800 hover:text-gray-900 hover:bg-white/30 transition-colors backdrop-blur-sm border border-transparent hover:border-white/30"
                 >
                   <Upload className="w-4 h-4" />
                   Upload CSV
                 </button>
                 <button
                   onClick={() => navigate("/integrations")}
-                  className="w-full flex items-center gap-2 p-2 rounded text-sm text-gray-700 hover:text-gray-900 hover:bg-white/20 transition-colors backdrop-blur-sm"
+                  className="w-full flex items-center gap-2 p-2 rounded text-sm text-gray-800 hover:text-gray-900 hover:bg-white/30 transition-colors backdrop-blur-sm border border-transparent hover:border-white/30"
                 >
                   <Settings className="w-4 h-4" />
                   Settings
