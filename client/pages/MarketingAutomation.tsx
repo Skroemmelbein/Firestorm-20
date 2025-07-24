@@ -232,7 +232,7 @@ export default function MarketingAutomation() {
 
         {/* Command Tabs */}
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 bg-[#1a1a1a] border border-[#FF6A00]/30">
+          <TabsList className="grid w-full grid-cols-7 bg-[#1a1a1a] border border-[#FF6A00]/30">
             <TabsTrigger
               value="builder"
               className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
