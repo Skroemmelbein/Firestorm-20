@@ -60,6 +60,7 @@ export default function App() {
                 <Route path="/devops" element={<DevOpsCenter />} />
                 <Route path="/integrations" element={<Integrations />} />
                 <Route path="/twilio-vault" element={<TwilioVault />} />
+                <Route path="/test" element={<TestModule />} />
                 <Route path="/settings" element={<Integrations />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
