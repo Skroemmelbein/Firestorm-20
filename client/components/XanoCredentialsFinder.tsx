@@ -340,7 +340,7 @@ export default function XanoCredentialsFinder() {
             <div className="bg-gray-50 p-4 rounded-lg">
               <div className="font-medium mb-2">API Key format:</div>
               <div className="font-mono text-sm break-all">
-                xano_api_1234567890abcdefghijklmnop...
+                xano_api_8558600037abcdefghijklmnop...
               </div>
             </div>
           </div>
