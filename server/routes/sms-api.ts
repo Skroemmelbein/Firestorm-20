@@ -6,7 +6,7 @@ const router = express.Router();
 // Twilio credentials from provided info
 const TWILIO_ACCOUNT_SID = "ACf19a39d865d43659b94a3a2074";
 const TWILIO_AUTH_TOKEN = "1f9a48e4dcd9c518889e148fe931e226";
-const TWILIO_PHONE_NUMBER = "+18558600037";
+const TWILIO_PHONE_NUMBER = "+18559600037";
 
 // Create Basic Auth header for Twilio
 const twilioAuth = Buffer.from(
@@ -82,7 +82,7 @@ async function sendTestMessage() {
   try {
     console.log("🚀 Sending test message to 8558600037...");
 
-    const formattedPhone = "+18558600037";
+    const formattedPhone = "+18559600037";
 
     const response = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
