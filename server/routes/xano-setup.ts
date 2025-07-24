@@ -130,7 +130,7 @@ const XANO_SETUP_DATA = {
       {
         uuid: "mem_001",
         email: "john.doe@example.com",
-        phone: "+18144409968",
+        phone: "+18558600037",
         first_name: "John",
         last_name: "Doe",
         status: "active",
