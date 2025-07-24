@@ -314,44 +314,58 @@ export default function MarketingAutomation() {
 
         {/* Command Center Tabs */}
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 bg-[#1E1E22] border border-[#FF6A00]/30 p-1">
-            <TabsTrigger 
-              value="campaigns" 
+          <TabsList className="grid w-full grid-cols-8 bg-[#1E1E22] border border-[#FF6A00]/30 p-1">
+            <TabsTrigger
+              value="campaigns"
               className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
             >
               <Target className="w-4 h-4 mr-2" />
               TACTICAL OPS
             </TabsTrigger>
-            <TabsTrigger 
-              value="analysis" 
+            <TabsTrigger
+              value="studio-flows"
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <Zap className="w-4 h-4 mr-2" />
+              AI STUDIO FLOWS
+            </TabsTrigger>
+            <TabsTrigger
+              value="journeys"
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <Brain className="w-4 h-4 mr-2" />
+              LEAD JOURNEYS
+            </TabsTrigger>
+            <TabsTrigger
+              value="analysis"
               className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
             >
               <TrendingUp className="w-4 h-4 mr-2" />
               ANALYSIS
             </TabsTrigger>
-            <TabsTrigger 
-              value="audience" 
+            <TabsTrigger
+              value="audience"
               className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
             >
               <Users className="w-4 h-4 mr-2" />
               TARGETS
             </TabsTrigger>
-            <TabsTrigger 
-              value="analytics" 
+            <TabsTrigger
+              value="analytics"
               className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
             >
               <BarChart className="w-4 h-4 mr-2" />
               INTELLIGENCE
             </TabsTrigger>
-            <TabsTrigger 
-              value="test" 
+            <TabsTrigger
+              value="test"
               className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
             >
               <Rocket className="w-4 h-4 mr-2" />
               TEST LAUNCH
             </TabsTrigger>
-            <TabsTrigger 
-              value="settings" 
+            <TabsTrigger
+              value="settings"
               className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
             >
               <Settings className="w-4 h-4 mr-2" />
