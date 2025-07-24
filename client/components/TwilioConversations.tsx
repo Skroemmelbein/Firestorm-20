@@ -478,8 +478,8 @@ export default function TwilioConversations() {
           </h4>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <strong className="text-white">How it works:</strong>
-              <ul className="text-[#b3b3b3] mt-1 space-y-1">
+              <strong className="text-gray-800">How it works:</strong>
+              <ul className="text-gray-700 mt-1 space-y-1">
                 <li>• Start a conversation with a participant</li>
                 <li>• Send messages from this interface</li>
                 <li>• Participant can reply via SMS</li>
