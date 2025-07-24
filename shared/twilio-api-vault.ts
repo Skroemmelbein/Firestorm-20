@@ -167,7 +167,7 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
         type: 'string',
         description: 'The destination phone number',
         required: true,
-        example: '+18558600037',
+        example: '+18559600037',
         validation: 'E.164 format'
       },
       {
@@ -175,7 +175,7 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
         type: 'string',
         description: 'Your Twilio phone number',
         required: true,
-        example: '+18558600037'
+        example: '+18559600037'
       },
       {
         name: 'Body',
@@ -203,8 +203,8 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
     responseExample: {
       sid: 'SM1234567890abcdef1234567890abcdef',
       status: 'queued',
-      to: '+18558600037',
-      from: '+18558600037',
+      to: '+18559600037',
+      from: '+18559600037',
       body: 'Hello from Twilio!'
     },
     pricing: {
@@ -227,14 +227,14 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
         type: 'string',
         description: 'Phone number to call',
         required: true,
-        example: '+18558600037'
+        example: '+18559600037'
       },
       {
         name: 'From',
         type: 'string',
         description: 'Your Twilio phone number',
         required: true,
-        example: '+18558600037'
+        example: '+18559600037'
       },
       {
         name: 'Url',
@@ -262,7 +262,7 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
     responseExample: {
       sid: 'CA1234567890abcdef1234567890abcdef',
       status: 'queued',
-      to: '+18558600037',
+      to: '+18559600037',
       body: 'Your payment of $29.99 is due tomorrow. Pay now to avoid service interruption: [link]'
     },
     pricing: {
@@ -330,7 +330,7 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
         type: 'string',
         description: 'Phone number for 2FA code',
         required: true,
-        example: '+18558600037'
+        example: '+18559600037'
       },
       {
         name: 'Channel',
@@ -352,7 +352,7 @@ export const TWILIO_API_VAULT: TwilioAPIEndpoint[] = [
     responseExample: {
       sid: 'VE1234567890abcdef1234567890abcdef',
       status: 'pending',
-      to: '+18558600037',
+      to: '+18559600037',
       channel: 'sms'
     },
     pricing: {
