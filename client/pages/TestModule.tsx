@@ -65,7 +65,7 @@ export default function TestModule() {
     setIsTesting(prev => ({ ...prev, sms: true }));
     
     try {
-      const response = await fetch('/api/sms/send', {
+      const response = await fetch('/api/real/sms/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
