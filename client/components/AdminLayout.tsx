@@ -49,11 +49,21 @@ interface SubNavigationItem {
 
 const navigationItems = [
   {
-    id: "xano-builder",
-    label: "XANO BUILDER",
+    id: "overview",
+    label: "OVERVIEW",
+    icon: TrendingUp,
+    path: "/",
+    description: "RecurFlow system overview & status",
+    color: "bg-gradient-to-r from-blue-500 to-purple-600",
+    subItems: [],
+  },
+  {
+    id: "perfect-tables",
+    label: "PERFECT TABLES",
     icon: Database,
     path: "/admin",
-    description: "Database & API management",
+    description: "Xano database & API builder",
+    color: "bg-gradient-to-r from-emerald-500 to-teal-600",
     subItems: [
       { id: "dashboard", label: "Dashboard", path: "/admin", icon: Database },
       {
@@ -61,6 +71,12 @@ const navigationItems = [
         label: "Table Manager",
         path: "/admin",
         icon: Database,
+      },
+      {
+        id: "upload-manager",
+        label: "Upload Manager",
+        path: "/admin/uploads",
+        icon: Package,
       },
       {
         id: "api-endpoints",
@@ -71,11 +87,12 @@ const navigationItems = [
     ],
   },
   {
-    id: "merchant-management",
-    label: "MERCHANT MANAGEMENT",
-    icon: Building,
+    id: "zero-cb-1",
+    label: "ZERO CB 1",
+    icon: Shield,
     path: "/merchant",
-    description: "Payment gateway & merchant accounts",
+    description: "Merchant management & chargeback defense",
+    color: "bg-gradient-to-r from-amber-500 to-orange-600",
     subItems: [
       {
         id: "nmi-gateway",
@@ -110,11 +127,12 @@ const navigationItems = [
     ],
   },
   {
-    id: "comm-center",
-    label: "COMM CENTER",
-    icon: MessageSquare,
+    id: "firestorm-marketing",
+    label: "FIRESTORM MARKETING",
+    icon: Zap,
     path: "/marketing-automation",
-    description: "Fortune 10 Marketing Automation + AI",
+    description: "AI-powered marketing automation",
+    color: "bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500",
     subItems: [
       {
         id: "marketing-automation",
