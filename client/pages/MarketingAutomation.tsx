@@ -35,6 +35,7 @@ import {
   Rocket,
   Network,
 } from "lucide-react";
+import TwilioSegmentAudience from "@/components/TwilioSegmentAudience";
 
 interface Campaign {
   id: string;
