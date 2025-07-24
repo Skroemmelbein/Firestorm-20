@@ -233,16 +233,16 @@ const navigationItems = [
     personality: "mission-control",
     subItems: [
       {
-        id: "control-panel",
-        label: "Control Panel",
+        id: "mission-control",
+        label: "Mission Control",
         path: "/integrations",
         icon: Settings,
       },
       {
-        id: "api-vault",
-        label: "API Vault",
-        path: "/twilio-vault",
-        icon: Database,
+        id: "administration-center",
+        label: "Administration Center",
+        path: "/business-overview",
+        icon: Building,
       },
       {
         id: "system-monitor",
@@ -253,7 +253,7 @@ const navigationItems = [
       {
         id: "security-grid",
         label: "Security Grid",
-        path: "/system/security",
+        path: "/devops",
         icon: Shield,
       },
     ],
