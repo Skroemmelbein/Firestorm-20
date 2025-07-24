@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,7 +27,7 @@ import {
   MessageSquare,
   Link,
   Activity,
-  ExternalLink
+  ExternalLink,
 } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -47,19 +53,23 @@ interface TwilioConfig {
 }
 
 export default function Integrations() {
-  const [xanoStatus, setXanoStatus] = useState<ConnectionStatus>({ connected: false });
-  const [twilioStatus, setTwilioStatus] = useState<ConnectionStatus>({ connected: false });
-  
+  const [xanoStatus, setXanoStatus] = useState<ConnectionStatus>({
+    connected: false,
+  });
+  const [twilioStatus, setTwilioStatus] = useState<ConnectionStatus>({
+    connected: false,
+  });
+
   const [xanoConfig, setXanoConfig] = useState<XanoConfig>({
     instanceUrl: "",
     apiKey: "",
-    databaseId: ""
+    databaseId: "",
   });
-  
+
   const [twilioConfig, setTwilioConfig] = useState<TwilioConfig>({
     accountSid: "",
     authToken: "",
-    phoneNumber: ""
+    phoneNumber: "",
   });
 
   const [showXanoApiKey, setShowXanoApiKey] = useState(false);
@@ -74,85 +84,85 @@ export default function Integrations() {
 
   const loadConfigs = async () => {
     try {
-      const response = await fetch('/api/integrations/config');
+      const response = await fetch("/api/integrations/config");
       if (response.ok) {
         const data = await response.json();
         if (data.xano) setXanoConfig(data.xano);
         if (data.twilio) setTwilioConfig(data.twilio);
       }
     } catch (error) {
-      console.error('Failed to load configs:', error);
+      console.error("Failed to load configs:", error);
     }
   };
 
   const saveConfig = async () => {
     setSaving(true);
     try {
-      const response = await fetch('/api/integrations/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ xano: xanoConfig, twilio: twilioConfig })
+      const response = await fetch("/api/integrations/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ xano: xanoConfig, twilio: twilioConfig }),
       });
-      
+
       if (response.ok) {
         await testConnections();
       }
     } catch (error) {
-      console.error('Failed to save config:', error);
+      console.error("Failed to save config:", error);
     } finally {
       setSaving(false);
     }
   };
 
   const testXanoConnection = async () => {
-    setTesting(prev => ({ ...prev, xano: true }));
+    setTesting((prev) => ({ ...prev, xano: true }));
     try {
-      const response = await fetch('/api/integrations/test/xano', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(xanoConfig)
+      const response = await fetch("/api/integrations/test/xano", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(xanoConfig),
       });
-      
+
       const result = await response.json();
       setXanoStatus({
         connected: response.ok,
         lastChecked: new Date(),
-        error: result.error || undefined
+        error: result.error || undefined,
       });
     } catch (error) {
       setXanoStatus({
         connected: false,
         lastChecked: new Date(),
-        error: 'Connection failed'
+        error: "Connection failed",
       });
     } finally {
-      setTesting(prev => ({ ...prev, xano: false }));
+      setTesting((prev) => ({ ...prev, xano: false }));
     }
   };
 
   const testTwilioConnection = async () => {
-    setTesting(prev => ({ ...prev, twilio: true }));
+    setTesting((prev) => ({ ...prev, twilio: true }));
     try {
-      const response = await fetch('/api/integrations/test/twilio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(twilioConfig)
+      const response = await fetch("/api/integrations/test/twilio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(twilioConfig),
       });
-      
+
       const result = await response.json();
       setTwilioStatus({
         connected: response.ok,
         lastChecked: new Date(),
-        error: result.error || undefined
+        error: result.error || undefined,
       });
     } catch (error) {
       setTwilioStatus({
         connected: false,
         lastChecked: new Date(),
-        error: 'Connection failed'
+        error: "Connection failed",
       });
     } finally {
-      setTesting(prev => ({ ...prev, twilio: false }));
+      setTesting((prev) => ({ ...prev, twilio: false }));
     }
   };
 
@@ -166,12 +176,27 @@ export default function Integrations() {
 
   const ConnectionStatusBadge = ({ status }: { status: ConnectionStatus }) => {
     if (status.connected) {
-      return <Badge className="bg-green-500/10 text-green-600 border-green-500/20"><CheckCircle className="w-3 h-3 mr-1" />Connected</Badge>;
+      return (
+        <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+          <CheckCircle className="w-3 h-3 mr-1" />
+          Connected
+        </Badge>
+      );
     }
     if (status.error) {
-      return <Badge variant="destructive"><XCircle className="w-3 h-3 mr-1" />Error</Badge>;
+      return (
+        <Badge variant="destructive">
+          <XCircle className="w-3 h-3 mr-1" />
+          Error
+        </Badge>
+      );
     }
-    return <Badge variant="outline"><AlertTriangle className="w-3 h-3 mr-1" />Not Connected</Badge>;
+    return (
+      <Badge variant="outline">
+        <AlertTriangle className="w-3 h-3 mr-1" />
+        Not Connected
+      </Badge>
+    );
   };
 
   return (
@@ -185,8 +210,12 @@ export default function Integrations() {
                 <Zap className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Xano × Twilio Integration</h1>
-                <p className="text-sm text-muted-foreground">Connect your backend and communication services</p>
+                <h1 className="text-2xl font-bold text-foreground">
+                  Xano × Twilio Integration
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Connect your backend and communication services
+                </p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -198,7 +227,7 @@ export default function Integrations() {
               </RouterLink>
               <Button onClick={saveConfig} disabled={saving} className="gap-2">
                 <Settings className="w-4 h-4" />
-                {saving ? 'Saving...' : 'Save & Test'}
+                {saving ? "Saving..." : "Save & Test"}
               </Button>
             </div>
           </div>
@@ -219,7 +248,9 @@ export default function Integrations() {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">Backend database and API</p>
+              <p className="text-sm text-muted-foreground">
+                Backend database and API
+              </p>
               {xanoStatus.lastChecked && (
                 <p className="text-xs text-muted-foreground mt-1">
                   Last checked: {xanoStatus.lastChecked.toLocaleTimeString()}
@@ -242,7 +273,9 @@ export default function Integrations() {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">SMS and voice services</p>
+              <p className="text-sm text-muted-foreground">
+                SMS and voice services
+              </p>
               <div className="mt-2 space-y-1">
                 <p className="text-xs text-green-600 font-medium">
                   ✅ Account: ACf19a39d865d43659b94a3a2074
@@ -337,23 +370,34 @@ export default function Integrations() {
                 <Alert>
                   <CheckCircle className="h-4 w-4" />
                   <AlertDescription>
-                    ✅ <strong>Your Twilio integration is working!</strong> SMS sending and receiving is enabled.
+                    ✅ <strong>Your Twilio integration is working!</strong> SMS
+                    sending and receiving is enabled.
                   </AlertDescription>
                 </Alert>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                    <h4 className="font-semibold text-sm text-green-800 mb-2">Account SID</h4>
-                    <div className="font-mono text-xs text-green-700">ACf19a39d865d43659b94a3a2074</div>
+                    <h4 className="font-semibold text-sm text-green-800 mb-2">
+                      Account SID
+                    </h4>
+                    <div className="font-mono text-xs text-green-700">
+                      ACf19a39d865d43659b94a3a2074
+                    </div>
                   </div>
 
                   <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                    <h4 className="font-semibold text-sm text-green-800 mb-2">Phone Number</h4>
-                    <div className="font-mono text-xs text-green-700">+1 (855) 800-0037</div>
+                    <h4 className="font-semibold text-sm text-green-800 mb-2">
+                      Phone Number
+                    </h4>
+                    <div className="font-mono text-xs text-green-700">
+                      +1 (855) 800-0037
+                    </div>
                   </div>
 
                   <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                    <h4 className="font-semibold text-sm text-green-800 mb-2">Status</h4>
+                    <h4 className="font-semibold text-sm text-green-800 mb-2">
+                      Status
+                    </h4>
                     <Badge className="bg-green-100 text-green-700">
                       <CheckCircle className="w-3 h-3 mr-1" />
                       Active
@@ -425,7 +469,12 @@ export default function Integrations() {
                         <li>• Twilio sends SMS notification</li>
                       </ul>
                     </div>
-                    <Button className="w-full" disabled={!xanoStatus.connected || !twilioStatus.connected}>
+                    <Button
+                      className="w-full"
+                      disabled={
+                        !xanoStatus.connected || !twilioStatus.connected
+                      }
+                    >
                       Configure SMS Workflow
                     </Button>
                   </div>
@@ -452,7 +501,12 @@ export default function Integrations() {
                         <li>• Twilio places phone call</li>
                       </ul>
                     </div>
-                    <Button className="w-full" disabled={!xanoStatus.connected || !twilioStatus.connected}>
+                    <Button
+                      className="w-full"
+                      disabled={
+                        !xanoStatus.connected || !twilioStatus.connected
+                      }
+                    >
                       Configure Voice Workflow
                     </Button>
                   </div>
@@ -465,7 +519,8 @@ export default function Integrations() {
                 <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Setup Required</AlertTitle>
                 <AlertDescription>
-                  Complete both Xano and Twilio configurations to enable workflow automation.
+                  Complete both Xano and Twilio configurations to enable
+                  workflow automation.
                 </AlertDescription>
               </Alert>
             )}

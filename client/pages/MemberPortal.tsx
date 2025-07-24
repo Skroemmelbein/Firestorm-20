@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "@/components/AdminLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -8,9 +14,26 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  Users, Settings, Shield, Layout, UserCheck, Key, Gift, Star,
-  Percent, Truck, Headphones, Crown, ChevronRight, Search,
-  Loader2, CheckCircle, XCircle, AlertTriangle, Plus, MessageSquare
+  Users,
+  Settings,
+  Shield,
+  Layout,
+  UserCheck,
+  Key,
+  Gift,
+  Star,
+  Percent,
+  Truck,
+  Headphones,
+  Crown,
+  ChevronRight,
+  Search,
+  Loader2,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  Plus,
+  MessageSquare,
 } from "lucide-react";
 import SMSInterface from "@/components/SMSInterface";
 import AICommandInterface from "@/components/AICommandInterface";
@@ -66,12 +89,12 @@ export default function MemberPortal() {
     try {
       // Load members and benefits from real Xano API
       const [membersResponse, benefitsResponse] = await Promise.all([
-        fetch('/api/real/members?per_page=50'),
-        fetch('/api/real/benefits?is_active=true')
+        fetch("/api/real/members?per_page=50"),
+        fetch("/api/real/benefits?is_active=true"),
       ]);
 
       if (!membersResponse.ok || !benefitsResponse.ok) {
-        throw new Error('Failed to load data from Xano');
+        throw new Error("Failed to load data from Xano");
       }
 
       const membersData = await membersResponse.json();
@@ -80,37 +103,49 @@ export default function MemberPortal() {
       setMembers(membersData.data || []);
       setBenefits(benefitsData || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load data');
-      console.error('Error loading data:', err);
+      setError(err instanceof Error ? err.message : "Failed to load data");
+      console.error("Error loading data:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredMembers = members.filter(member =>
-    member.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredMembers = members.filter(
+    (member) =>
+      member.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.email.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const getIconForBenefit = (iconName?: string) => {
     switch (iconName) {
-      case 'percent': return Percent;
-      case 'truck': return Truck;
-      case 'headphones': return Headphones;
-      case 'crown': return Crown;
-      case 'star': return Star;
-      default: return Gift;
+      case "percent":
+        return Percent;
+      case "truck":
+        return Truck;
+      case "headphones":
+        return Headphones;
+      case "crown":
+        return Crown;
+      case "star":
+        return Star;
+      default:
+        return Gift;
     }
   };
 
   const getBenefitColor = (colorTheme?: string) => {
     switch (colorTheme) {
-      case 'green': return 'bg-green-100 text-green-700 border-green-200';
-      case 'blue': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'purple': return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'orange': return 'bg-orange-100 text-orange-700 border-orange-200';
-      default: return 'bg-gray-100 text-gray-700 border-gray-200';
+      case "green":
+        return "bg-green-100 text-green-700 border-green-200";
+      case "blue":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+      case "purple":
+        return "bg-purple-100 text-purple-700 border-purple-200";
+      case "orange":
+        return "bg-orange-100 text-orange-700 border-orange-200";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
@@ -131,8 +166,12 @@ export default function MemberPortal() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold gradient-text tracking-tight">Member Portal</h1>
-            <p className="text-blue-700/70 font-medium">Real member benefits from Xano database</p>
+            <h1 className="text-3xl font-bold gradient-text tracking-tight">
+              Member Portal
+            </h1>
+            <p className="text-blue-700/70 font-medium">
+              Real member benefits from Xano database
+            </p>
           </div>
           <div className="flex gap-2">
             <Button onClick={loadData} variant="outline" className="gap-2">
@@ -157,49 +196,80 @@ export default function MemberPortal() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Total Members</CardTitle>
+              <CardTitle className="text-sm font-semibold text-blue-800">
+                Total Members
+              </CardTitle>
               <Users className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold gradient-text">{members.length.toLocaleString()}</div>
-              <p className="text-xs text-green-600 font-medium">Live from Xano DB</p>
+              <div className="text-2xl font-bold gradient-text">
+                {members.length.toLocaleString()}
+              </div>
+              <p className="text-xs text-green-600 font-medium">
+                Live from Xano DB
+              </p>
             </CardContent>
           </Card>
 
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Active Benefits</CardTitle>
+              <CardTitle className="text-sm font-semibold text-blue-800">
+                Active Benefits
+              </CardTitle>
               <Gift className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold gradient-text">{benefits.length}</div>
-              <p className="text-xs text-blue-600 font-medium">Available to members</p>
+              <div className="text-2xl font-bold gradient-text">
+                {benefits.length}
+              </div>
+              <p className="text-xs text-blue-600 font-medium">
+                Available to members
+              </p>
             </CardContent>
           </Card>
 
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Premium Members</CardTitle>
+              <CardTitle className="text-sm font-semibold text-blue-800">
+                Premium Members
+              </CardTitle>
               <Crown className="h-4 w-4 text-purple-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold gradient-text">
-                {members.filter(m => m.membership_type === 'premium' || m.membership_type === 'enterprise').length}
+                {
+                  members.filter(
+                    (m) =>
+                      m.membership_type === "premium" ||
+                      m.membership_type === "enterprise",
+                  ).length
+                }
               </div>
-              <p className="text-xs text-purple-600 font-medium">Premium + Enterprise</p>
+              <p className="text-xs text-purple-600 font-medium">
+                Premium + Enterprise
+              </p>
             </CardContent>
           </Card>
 
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Avg Engagement</CardTitle>
+              <CardTitle className="text-sm font-semibold text-blue-800">
+                Avg Engagement
+              </CardTitle>
               <Star className="h-4 w-4 text-yellow-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold gradient-text">
-                {members.length > 0 ? Math.round(members.reduce((sum, m) => sum + m.engagement_score, 0) / members.length) : 0}
+                {members.length > 0
+                  ? Math.round(
+                      members.reduce((sum, m) => sum + m.engagement_score, 0) /
+                        members.length,
+                    )
+                  : 0}
               </div>
-              <p className="text-xs text-yellow-600 font-medium">Engagement score</p>
+              <p className="text-xs text-yellow-600 font-medium">
+                Engagement score
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -240,15 +310,22 @@ export default function MemberPortal() {
               {benefits.map((benefit) => {
                 const IconComponent = getIconForBenefit(benefit.icon_name);
                 return (
-                  <Card key={benefit.id} className="glass-card corp-shadow hover:shadow-lg transition-shadow">
+                  <Card
+                    key={benefit.id}
+                    className="glass-card corp-shadow hover:shadow-lg transition-shadow"
+                  >
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
-                          <div className={`p-2 rounded-lg ${getBenefitColor(benefit.color_theme)}`}>
+                          <div
+                            className={`p-2 rounded-lg ${getBenefitColor(benefit.color_theme)}`}
+                          >
                             <IconComponent className="w-5 h-5" />
                           </div>
                           <div>
-                            <CardTitle className="text-lg">{benefit.title}</CardTitle>
+                            <CardTitle className="text-lg">
+                              {benefit.title}
+                            </CardTitle>
                             <Badge variant="outline" className="mt-1">
                               {benefit.benefit_category}
                             </Badge>
@@ -257,24 +334,35 @@ export default function MemberPortal() {
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {benefit.description}
+                      </p>
 
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-medium">Value:</span>
-                          <span className="text-sm text-primary font-semibold">{benefit.value_description}</span>
+                          <span className="text-sm text-primary font-semibold">
+                            {benefit.value_description}
+                          </span>
                         </div>
 
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-medium">Type:</span>
-                          <Badge variant="secondary">{benefit.benefit_type}</Badge>
+                          <Badge variant="secondary">
+                            {benefit.benefit_type}
+                          </Badge>
                         </div>
 
                         <div className="space-y-1">
-                          <span className="text-sm font-medium">Available to:</span>
+                          <span className="text-sm font-medium">
+                            Available to:
+                          </span>
                           <div className="flex flex-wrap gap-1">
                             {benefit.membership_levels.map((level) => (
-                              <Badge key={level} className="text-xs bg-blue-100 text-blue-700">
+                              <Badge
+                                key={level}
+                                className="text-xs bg-blue-100 text-blue-700"
+                              >
                                 {level}
                               </Badge>
                             ))}
@@ -291,8 +379,12 @@ export default function MemberPortal() {
 
                         {benefit.usage_limit && (
                           <div className="flex items-center justify-between pt-2 border-t">
-                            <span className="text-xs text-muted-foreground">Usage limit:</span>
-                            <span className="text-xs font-medium">{benefit.usage_limit} per member</span>
+                            <span className="text-xs text-muted-foreground">
+                              Usage limit:
+                            </span>
+                            <span className="text-xs font-medium">
+                              {benefit.usage_limit} per member
+                            </span>
                           </div>
                         )}
                       </div>
@@ -333,21 +425,28 @@ export default function MemberPortal() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                           <span className="text-sm font-semibold text-primary">
-                            {member.first_name[0]}{member.last_name[0]}
+                            {member.first_name[0]}
+                            {member.last_name[0]}
                           </span>
                         </div>
                         <div>
-                          <div className="font-medium">{member.first_name} {member.last_name}</div>
-                          <div className="text-sm text-muted-foreground">{member.email}</div>
+                          <div className="font-medium">
+                            {member.first_name} {member.last_name}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {member.email}
+                          </div>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-3">
                         <Badge
                           className={
-                            member.membership_type === 'enterprise' ? 'bg-purple-100 text-purple-700' :
-                            member.membership_type === 'premium' ? 'bg-blue-100 text-blue-700' :
-                            'bg-gray-100 text-gray-700'
+                            member.membership_type === "enterprise"
+                              ? "bg-purple-100 text-purple-700"
+                              : member.membership_type === "premium"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-gray-100 text-gray-700"
                           }
                         >
                           {member.membership_type}
@@ -393,15 +492,21 @@ export default function MemberPortal() {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="p-4 border rounded-lg">
-                      <h4 className="font-semibold text-sm text-blue-800 mb-2">Database</h4>
+                      <h4 className="font-semibold text-sm text-blue-800 mb-2">
+                        Database
+                      </h4>
                       <Badge className="bg-green-100 text-green-700">
                         <CheckCircle className="w-3 h-3 mr-1" />
                         Xano Connected
                       </Badge>
                     </div>
                     <div className="p-4 border rounded-lg">
-                      <h4 className="font-semibold text-sm text-blue-800 mb-2">Benefits</h4>
-                      <Badge className="bg-blue-100 text-blue-700">{benefits.length} Active</Badge>
+                      <h4 className="font-semibold text-sm text-blue-800 mb-2">
+                        Benefits
+                      </h4>
+                      <Badge className="bg-blue-100 text-blue-700">
+                        {benefits.length} Active
+                      </Badge>
                     </div>
                   </div>
                   <Button className="w-full gap-2" onClick={loadData}>
@@ -417,9 +522,7 @@ export default function MemberPortal() {
                     <Shield className="w-5 h-5" />
                     Integration Status
                   </CardTitle>
-                  <CardDescription>
-                    Real-time connection status
-                  </CardDescription>
+                  <CardDescription>Real-time connection status</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
@@ -431,12 +534,20 @@ export default function MemberPortal() {
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Member Records</span>
-                      <span className="text-sm text-blue-600">{members.length} loaded</span>
+                      <span className="text-sm font-medium">
+                        Member Records
+                      </span>
+                      <span className="text-sm text-blue-600">
+                        {members.length} loaded
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Benefits Catalog</span>
-                      <span className="text-sm text-blue-600">{benefits.length} active</span>
+                      <span className="text-sm font-medium">
+                        Benefits Catalog
+                      </span>
+                      <span className="text-sm text-blue-600">
+                        {benefits.length} active
+                      </span>
                     </div>
                   </div>
                   <Button variant="outline" className="w-full gap-2">

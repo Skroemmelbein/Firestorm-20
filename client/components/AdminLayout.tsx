@@ -23,7 +23,7 @@ import {
   Shield,
   Wallet,
   Send,
-  TrendingUp
+  TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -49,101 +49,216 @@ interface SubNavigationItem {
 
 const navigationItems = [
   {
-    id: 'xano-builder',
-    label: 'XANO BUILDER',
+    id: "xano-builder",
+    label: "XANO BUILDER",
     icon: Database,
-    path: '/admin',
-    description: 'Database & API management',
+    path: "/admin",
+    description: "Database & API management",
     subItems: [
-      { id: 'dashboard', label: 'Dashboard', path: '/admin', icon: Database },
-      { id: 'table-manager', label: 'Table Manager', path: '/admin', icon: Database },
-      { id: 'api-endpoints', label: 'API Endpoints', path: '/integrations', icon: Zap }
-    ]
+      { id: "dashboard", label: "Dashboard", path: "/admin", icon: Database },
+      {
+        id: "table-manager",
+        label: "Table Manager",
+        path: "/admin",
+        icon: Database,
+      },
+      {
+        id: "api-endpoints",
+        label: "API Endpoints",
+        path: "/integrations",
+        icon: Zap,
+      },
+    ],
   },
   {
-    id: 'merchant-management',
-    label: 'MERCHANT MANAGEMENT',
+    id: "merchant-management",
+    label: "MERCHANT MANAGEMENT",
     icon: Building,
-    path: '/merchant',
-    description: 'Payment gateway & merchant accounts',
+    path: "/merchant",
+    description: "Payment gateway & merchant accounts",
     subItems: [
-      { id: 'nmi-gateway', label: 'NMI Gateway', path: '/billing', icon: CreditCard },
-      { id: 'chargeback-tracker', label: 'Chargeback Defense', path: '/chargeback-tracker', icon: Shield },
-      { id: 'devops-center', label: 'DevOps Automation', path: '/devops', icon: Zap },
-      { id: 'payment-vault', label: 'Payment Vault', path: '/twilio-vault', icon: Database },
-      { id: 'merchant-settings', label: 'Settings', path: '/integrations', icon: Settings }
-    ]
+      {
+        id: "nmi-gateway",
+        label: "NMI Gateway",
+        path: "/billing",
+        icon: CreditCard,
+      },
+      {
+        id: "chargeback-tracker",
+        label: "Chargeback Defense",
+        path: "/chargeback-tracker",
+        icon: Shield,
+      },
+      {
+        id: "devops-center",
+        label: "DevOps Automation",
+        path: "/devops",
+        icon: Zap,
+      },
+      {
+        id: "payment-vault",
+        label: "Payment Vault",
+        path: "/twilio-vault",
+        icon: Database,
+      },
+      {
+        id: "merchant-settings",
+        label: "Settings",
+        path: "/integrations",
+        icon: Settings,
+      },
+    ],
   },
   {
-    id: 'comm-center',
-    label: 'COMM CENTER',
+    id: "comm-center",
+    label: "COMM CENTER",
     icon: MessageSquare,
-    path: '/marketing-automation',
-    description: 'Fortune 10 Marketing Automation + AI',
+    path: "/marketing-automation",
+    description: "Fortune 10 Marketing Automation + AI",
     subItems: [
-      { id: 'marketing-automation', label: 'Marketing Automation', path: '/marketing-automation', icon: Zap },
-      { id: 'campaigns', label: 'Campaign Manager', path: '/comm-center/campaigns', icon: Send },
-      { id: 'ai-responses', label: 'AI Auto-Responses', path: '/comm-center/ai-responses', icon: Bot },
-      { id: 'audience', label: 'Audience Analytics', path: '/comm-center/audience', icon: Users },
-      { id: 'performance', label: 'Performance Insights', path: '/comm-center/analytics', icon: TrendingUp }
-    ]
+      {
+        id: "marketing-automation",
+        label: "Marketing Automation",
+        path: "/marketing-automation",
+        icon: Zap,
+      },
+      {
+        id: "campaigns",
+        label: "Campaign Manager",
+        path: "/comm-center/campaigns",
+        icon: Send,
+      },
+      {
+        id: "ai-responses",
+        label: "AI Auto-Responses",
+        path: "/comm-center/ai-responses",
+        icon: Bot,
+      },
+      {
+        id: "audience",
+        label: "Audience Analytics",
+        path: "/comm-center/audience",
+        icon: Users,
+      },
+      {
+        id: "performance",
+        label: "Performance Insights",
+        path: "/comm-center/analytics",
+        icon: TrendingUp,
+      },
+    ],
   },
   {
-    id: 'billing-tools',
-    label: 'BILLING TOOLS',
+    id: "billing-tools",
+    label: "BILLING TOOLS",
     icon: CreditCard,
-    path: '/billing-kit',
-    description: 'Invoice & billing management',
+    path: "/billing-kit",
+    description: "Invoice & billing management",
     subItems: [
-      { id: 'invoice-builder', label: 'Invoice Builder', path: '/billing-kit', icon: CreditCard },
-      { id: 'billing-analytics', label: 'Analytics', path: '/business-overview', icon: BarChart3 },
-      { id: 'recurring-billing', label: 'Recurring Billing', path: '/billing', icon: Wallet }
-    ]
+      {
+        id: "invoice-builder",
+        label: "Invoice Builder",
+        path: "/billing-kit",
+        icon: CreditCard,
+      },
+      {
+        id: "billing-analytics",
+        label: "Analytics",
+        path: "/business-overview",
+        icon: BarChart3,
+      },
+      {
+        id: "recurring-billing",
+        label: "Recurring Billing",
+        path: "/billing",
+        icon: Wallet,
+      },
+    ],
   },
   {
-    id: 'member-portal',
-    label: 'MEMBER PORTAL CONTROL',
+    id: "member-portal",
+    label: "MEMBER PORTAL CONTROL",
     icon: Users,
-    path: '/members',
-    description: 'Customer portal management',
+    path: "/members",
+    description: "Customer portal management",
     subItems: [
-      { id: 'portal-design', label: 'Portal Design', path: '/members', icon: Settings },
-      { id: 'member-accounts', label: 'Member Accounts', path: '/members', icon: Users },
-      { id: 'access-control', label: 'Access Control', path: '/members', icon: Shield }
-    ]
+      {
+        id: "portal-design",
+        label: "Portal Design",
+        path: "/members",
+        icon: Settings,
+      },
+      {
+        id: "member-accounts",
+        label: "Member Accounts",
+        path: "/members",
+        icon: Users,
+      },
+      {
+        id: "access-control",
+        label: "Access Control",
+        path: "/members",
+        icon: Shield,
+      },
+    ],
   },
   {
-    id: 'fulfillment',
-    label: 'FULFILLMENT',
+    id: "fulfillment",
+    label: "FULFILLMENT",
     icon: Package,
-    path: '/fulfillment',
-    description: 'Order & delivery management',
+    path: "/fulfillment",
+    description: "Order & delivery management",
     subItems: [
-      { id: 'orders', label: 'Orders', path: '/fulfillment', icon: Package },
-      { id: 'shipping', label: 'Shipping', path: '/fulfillment', icon: Package },
-      { id: 'inventory', label: 'Inventory', path: '/fulfillment', icon: Database }
-    ]
+      { id: "orders", label: "Orders", path: "/fulfillment", icon: Package },
+      {
+        id: "shipping",
+        label: "Shipping",
+        path: "/fulfillment",
+        icon: Package,
+      },
+      {
+        id: "inventory",
+        label: "Inventory",
+        path: "/fulfillment",
+        icon: Database,
+      },
+    ],
   },
   {
-    id: 'intelligent-ai',
-    label: 'INTELLIGENT AI',
+    id: "intelligent-ai",
+    label: "INTELLIGENT AI",
     icon: Bot,
-    path: '/ai',
-    description: 'AI-powered insights & automation',
+    path: "/ai",
+    description: "AI-powered insights & automation",
     subItems: [
-      { id: 'predictive-analytics', label: 'Predictive Analytics', path: '/business-overview', icon: BarChart3 },
-      { id: 'smart-recommendations', label: 'Smart Recommendations', path: '/ai', icon: Bot },
-      { id: 'automated-workflows', label: 'Automated Workflows', path: '/ai', icon: Zap }
-    ]
-  }
+      {
+        id: "predictive-analytics",
+        label: "Predictive Analytics",
+        path: "/business-overview",
+        icon: BarChart3,
+      },
+      {
+        id: "smart-recommendations",
+        label: "Smart Recommendations",
+        path: "/ai",
+        icon: Bot,
+      },
+      {
+        id: "automated-workflows",
+        label: "Automated Workflows",
+        path: "/ai",
+        icon: Zap,
+      },
+    ],
+  },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
-  const currentSection = navigationItems.find(item => 
-    location.pathname.startsWith(item.path)
+  const currentSection = navigationItems.find((item) =>
+    location.pathname.startsWith(item.path),
   );
 
   return (
@@ -157,15 +272,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <Zap className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold gradient-text tracking-tight">RecurFlow Enterprise</h1>
-              <p className="text-xs text-blue-600/70 font-medium">Business Management Platform</p>
+              <h1 className="text-lg font-bold gradient-text tracking-tight">
+                RecurFlow Enterprise
+              </h1>
+              <p className="text-xs text-blue-600/70 font-medium">
+                Business Management Platform
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="hidden sm:flex">
-              <Bell className="w-3 h-3 mr-1" />
-              3 Active
+              <Bell className="w-3 h-3 mr-1" />3 Active
             </Badge>
 
             <Button variant="ghost" size="sm" className="gap-2">
@@ -184,7 +302,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="lg:hidden"
             >
-              {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {sidebarOpen ? (
+                <X className="w-4 h-4" />
+              ) : (
+                <Menu className="w-4 h-4" />
+              )}
             </Button>
 
             {/* Horizontal Navigation */}
@@ -201,7 +323,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       "flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-xs font-bold tracking-wide",
                       isActive
                         ? "bg-gradient-to-r from-blue-600 to-green-600 text-white corp-shadow"
-                        : "text-blue-700 hover:text-blue-900 hover:bg-blue-50"
+                        : "text-blue-700 hover:text-blue-900 hover:bg-blue-50",
                     )}
                   >
                     <Icon className="w-4 h-4" />
@@ -212,7 +334,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
 
             <Link to="/integrations">
-              <Button variant="outline" size="sm" className="gap-2 border-blue-200 text-blue-700">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2 border-blue-200 text-blue-700"
+              >
                 <Settings className="w-4 h-4" />
                 <span className="hidden sm:inline">Settings</span>
               </Button>
@@ -223,10 +349,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
       <div className="flex">
         {/* Mobile Sidebar Navigation */}
-        <nav className={cn(
-          "fixed inset-y-0 left-0 z-40 w-72 glass-sidebar transform transition-all duration-300 ease-out lg:hidden corp-shadow-lg",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        )}>
+        <nav
+          className={cn(
+            "fixed inset-y-0 left-0 z-40 w-72 glass-sidebar transform transition-all duration-300 ease-out lg:hidden corp-shadow-lg",
+            sidebarOpen ? "translate-x-0" : "-translate-x-full",
+          )}
+        >
           <div className="flex flex-col h-full pt-20">
             <div className="flex-1 flex flex-col overflow-y-auto">
               <div className="px-4 py-6 space-y-2">
@@ -243,24 +371,32 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                           "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group font-medium",
                           isActive
                             ? "glass-card bg-gradient-to-r from-blue-600 to-green-600 text-white corp-shadow-lg"
-                            : "text-blue-700 hover:text-blue-900 hover:glass-card hover:corp-shadow"
+                            : "text-blue-700 hover:text-blue-900 hover:glass-card hover:corp-shadow",
                         )}
                       >
-                        <Icon className={cn(
-                          "w-5 h-5 flex-shrink-0",
-                          isActive ? "text-white" : "text-blue-600 group-hover:text-blue-800"
-                        )} />
+                        <Icon
+                          className={cn(
+                            "w-5 h-5 flex-shrink-0",
+                            isActive
+                              ? "text-white"
+                              : "text-blue-600 group-hover:text-blue-800",
+                          )}
+                        />
                         <div className="flex-1 min-w-0">
-                          <div className={cn(
-                            "font-semibold text-xs tracking-wide",
-                            isActive ? "text-white" : "text-blue-800"
-                          )}>
+                          <div
+                            className={cn(
+                              "font-semibold text-xs tracking-wide",
+                              isActive ? "text-white" : "text-blue-800",
+                            )}
+                          >
                             {item.label}
                           </div>
-                          <div className={cn(
-                            "text-xs font-medium mt-1",
-                            isActive ? "text-white/80" : "text-blue-600/70"
-                          )}>
+                          <div
+                            className={cn(
+                              "text-xs font-medium mt-1",
+                              isActive ? "text-white/80" : "text-blue-600/70",
+                            )}
+                          >
                             {item.description}
                           </div>
                         </div>
@@ -271,7 +407,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         <div className="ml-4 mt-2 space-y-1">
                           {item.subItems.map((subItem) => {
                             const SubIcon = subItem.icon;
-                            const isSubActive = location.pathname === subItem.path;
+                            const isSubActive =
+                              location.pathname === subItem.path;
                             return (
                               <Link
                                 key={subItem.id}
@@ -281,7 +418,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                                   "flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-200 text-xs font-medium",
                                   isSubActive
                                     ? "bg-white/20 text-white"
-                                    : "text-white/70 hover:text-white hover:bg-white/10"
+                                    : "text-white/70 hover:text-white hover:bg-white/10",
                                 )}
                               >
                                 <SubIcon className="w-4 h-4" />
@@ -299,23 +436,41 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               {/* System Status */}
               <div className="px-4 py-4 border-t border-blue-200/50 mt-auto">
                 <div className="space-y-3">
-                  <div className="text-xs font-semibold text-blue-800 uppercase tracking-wider">System Status</div>
+                  <div className="text-xs font-semibold text-blue-800 uppercase tracking-wider">
+                    System Status
+                  </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-blue-700 font-medium">Database</span>
-                      <Badge className="text-xs bg-green-100 text-green-700 border-green-200">Online</Badge>
+                      <span className="text-blue-700 font-medium">
+                        Database
+                      </span>
+                      <Badge className="text-xs bg-green-100 text-green-700 border-green-200">
+                        Online
+                      </Badge>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-blue-700 font-medium">Payment Gateway</span>
-                      <Badge className="text-xs bg-yellow-100 text-yellow-700 border-yellow-200">Standby</Badge>
+                      <span className="text-blue-700 font-medium">
+                        Payment Gateway
+                      </span>
+                      <Badge className="text-xs bg-yellow-100 text-yellow-700 border-yellow-200">
+                        Standby
+                      </Badge>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-blue-700 font-medium">Communications</span>
-                      <Badge className="text-xs bg-green-100 text-green-700 border-green-200">Active</Badge>
+                      <span className="text-blue-700 font-medium">
+                        Communications
+                      </span>
+                      <Badge className="text-xs bg-green-100 text-green-700 border-green-200">
+                        Active
+                      </Badge>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-blue-700 font-medium">API Services</span>
-                      <Badge className="text-xs bg-green-100 text-green-700 border-green-200">Running</Badge>
+                      <span className="text-blue-700 font-medium">
+                        API Services
+                      </span>
+                      <Badge className="text-xs bg-green-100 text-green-700 border-green-200">
+                        Running
+                      </Badge>
                     </div>
                   </div>
                 </div>
@@ -354,7 +509,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                           "flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium transition-all whitespace-nowrap",
                           isSubActive
                             ? "bg-gradient-to-r from-blue-600 to-green-600 text-white corp-shadow"
-                            : "text-blue-700 hover:text-blue-900 hover:bg-blue-50"
+                            : "text-blue-700 hover:text-blue-900 hover:bg-blue-50",
                         )}
                       >
                         <SubIcon className="w-3 h-3" />
@@ -366,11 +521,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               </div>
             </div>
           )}
-          
+
           {/* Page Content */}
-          <div className="p-6">
-            {children}
-          </div>
+          <div className="p-6">{children}</div>
         </main>
       </div>
     </div>

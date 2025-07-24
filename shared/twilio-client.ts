@@ -1,5 +1,5 @@
 // Real Twilio Client - SMS, Voice, and Webhooks
-import { getXanoClient } from './xano-client';
+import { getXanoClient } from "./xano-client";
 
 interface TwilioConfig {
   accountSid: string;
@@ -45,28 +45,32 @@ export class TwilioClient {
 
   private getAuthHeader(): string {
     const credentials = `${this.config.accountSid}:${this.config.authToken}`;
-    return `Basic ${Buffer.from(credentials).toString('base64')}`;
+    return `Basic ${Buffer.from(credentials).toString("base64")}`;
   }
 
-  private async makeRequest(endpoint: string, method: 'GET' | 'POST' = 'GET', data?: Record<string, string>) {
+  private async makeRequest(
+    endpoint: string,
+    method: "GET" | "POST" = "GET",
+    data?: Record<string, string>,
+  ) {
     const url = `${this.baseUrl}${endpoint}`;
-    
+
     const options: any = {
       method,
       headers: {
-        'Authorization': this.getAuthHeader(),
+        Authorization: this.getAuthHeader(),
       },
     };
 
-    if (data && method === 'POST') {
-      options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    if (data && method === "POST") {
+      options.headers["Content-Type"] = "application/x-www-form-urlencoded";
       options.body = new URLSearchParams(data);
     }
 
     try {
       const response = await fetch(url, options);
       const result = await response.json();
-      
+
       if (!response.ok) {
         // Create detailed error object with Twilio specifics
         const twilioError = {
@@ -78,22 +82,24 @@ export class TwilioClient {
           detail: result.detail,
           url,
           method,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
-        console.error('Twilio API Error:', twilioError);
+        console.error("Twilio API Error:", twilioError);
 
-        const error = new Error(result.message || `HTTP ${response.status}: ${response.statusText}`);
+        const error = new Error(
+          result.message || `HTTP ${response.status}: ${response.statusText}`,
+        );
         (error as any).twilioError = twilioError;
         throw error;
       }
 
       return result;
     } catch (error) {
-      console.error('Twilio API Request Failed:', {
+      console.error("Twilio API Request Failed:", {
         url,
         method,
-        error: error instanceof Error ? error.message : error
+        error: error instanceof Error ? error.message : error,
       });
       throw error;
     }
@@ -114,17 +120,17 @@ export class TwilioClient {
     }
 
     try {
-      const result = await this.makeRequest('/Messages.json', 'POST', data);
-      
+      const result = await this.makeRequest("/Messages.json", "POST", data);
+
       // Log to Xano
       await this.logCommunicationToXano({
-        channel: 'sms',
-        direction: 'outbound',
+        channel: "sms",
+        direction: "outbound",
         to_number: message.to,
         from_number: message.from || this.config.phoneNumber,
         content: message.body,
-        status: 'sent',
-        provider: 'twilio',
+        status: "sent",
+        provider: "twilio",
         provider_id: result.sid,
         provider_status: result.status,
         cost: parseFloat(result.price) || 0,
@@ -144,20 +150,20 @@ export class TwilioClient {
     } catch (error) {
       // Enhanced error information
       const errorDetails = {
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : "Unknown error",
         twilioError: (error as any).twilioError || null,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       // Log failed attempt to Xano
       await this.logCommunicationToXano({
-        channel: 'sms',
-        direction: 'outbound',
+        channel: "sms",
+        direction: "outbound",
         to_number: message.to,
         from_number: message.from || this.config.phoneNumber,
         content: message.body,
-        status: 'failed',
-        provider: 'twilio',
+        status: "failed",
+        provider: "twilio",
         error_message: errorDetails.message,
       });
 
@@ -176,26 +182,27 @@ export class TwilioClient {
     };
 
     if (call.url) {
-      data['Url'] = call.url;
+      data["Url"] = call.url;
     } else if (call.twiml) {
-      data['Twiml'] = call.twiml;
+      data["Twiml"] = call.twiml;
     } else {
       // Default TwiML for basic call
-      data['Twiml'] = '<Response><Say>Hello, this is a call from your RecurFlow system.</Say></Response>';
+      data["Twiml"] =
+        "<Response><Say>Hello, this is a call from your RecurFlow system.</Say></Response>";
     }
 
     try {
-      const result = await this.makeRequest('/Calls.json', 'POST', data);
-      
+      const result = await this.makeRequest("/Calls.json", "POST", data);
+
       // Log to Xano
       await this.logCommunicationToXano({
-        channel: 'voice',
-        direction: 'outbound',
+        channel: "voice",
+        direction: "outbound",
         to_number: call.to,
         from_number: call.from || this.config.phoneNumber,
-        content: call.twiml || 'Voice call initiated',
-        status: 'sent',
-        provider: 'twilio',
+        content: call.twiml || "Voice call initiated",
+        status: "sent",
+        provider: "twilio",
         provider_id: result.sid,
         provider_status: result.status,
         cost: parseFloat(result.price) || 0,
@@ -211,7 +218,7 @@ export class TwilioClient {
         dateCreated: result.date_created,
       };
     } catch (error) {
-      console.error('Voice call failed:', error);
+      console.error("Voice call failed:", error);
       throw error;
     }
   }
@@ -223,7 +230,7 @@ export class TwilioClient {
 
   // Get Account Info (for testing connection)
   async getAccountInfo(): Promise<any> {
-    return this.makeRequest('.json');
+    return this.makeRequest(".json");
   }
 
   // Test Connection
@@ -232,7 +239,7 @@ export class TwilioClient {
       await this.getAccountInfo();
       return true;
     } catch (error) {
-      console.error('Twilio connection test failed:', error);
+      console.error("Twilio connection test failed:", error);
       return false;
     }
   }
@@ -240,43 +247,47 @@ export class TwilioClient {
   // Handle Incoming SMS Webhook with AI
   async handleIncomingSMS(webhook: TwilioWebhook): Promise<void> {
     try {
-      console.log('📨 Incoming SMS from:', webhook.From, 'Message:', webhook.Body);
+      console.log(
+        "📨 Incoming SMS from:",
+        webhook.From,
+        "Message:",
+        webhook.Body,
+      );
 
       // Use AI Customer Service to handle the message
-      const { getAICustomerService } = await import('./ai-customer-service.js');
+      const { getAICustomerService } = await import("./ai-customer-service.js");
       const aiService = getAICustomerService();
 
       const result = await aiService.handleIncomingMessage(
         webhook.From,
-        webhook.Body || '',
-        webhook.MessageSid
+        webhook.Body || "",
+        webhook.MessageSid,
       );
 
-      console.log('🤖 AI Analysis:', {
+      console.log("🤖 AI Analysis:", {
         sentiment: result.analysis.sentiment,
         intent: result.analysis.intent,
         urgency: result.analysis.urgency,
         action: result.actionTaken,
-        autoResponse: result.autoResponse ? 'Generated' : 'None'
+        autoResponse: result.autoResponse ? "Generated" : "None",
       });
-
     } catch (error) {
-      console.error('Error processing incoming SMS with AI:', error);
+      console.error("Error processing incoming SMS with AI:", error);
 
       // Fallback: basic logging without AI
       const xano = getXanoClient();
       const members = await xano.getMembers({ search: webhook.From });
-      let member = members.data.find(m => m.phone === webhook.From);
+      let member = members.data.find((m) => m.phone === webhook.From);
 
       await this.logCommunicationToXano({
         member_id: member?.id,
-        channel: 'sms',
-        direction: 'inbound',
+        channel: "sms",
+        direction: "inbound",
         from_number: webhook.From,
         to_number: webhook.To,
-        content: webhook.Body || '',
-        status: 'delivered',
-        provider: 'twilio',
+        content: webhook.Body || "",
+        status: "delivered",
+        provider: "twilio",
         provider_id: webhook.MessageSid,
         delivered_at: new Date().toISOString(),
         ai_generated: false,
@@ -288,39 +299,42 @@ export class TwilioClient {
   async handleStatusWebhook(webhook: TwilioWebhook): Promise<void> {
     try {
       const xano = getXanoClient();
-      
+
       // Update message status in Xano
-      const communications = await xano.getCommunications({ 
-        limit: 1 
+      const communications = await xano.getCommunications({
+        limit: 1,
       });
-      
+
       // Find the communication record by Twilio SID
-      const comm = communications.find(c => c.provider_id === webhook.MessageSid);
-      
+      const comm = communications.find(
+        (c) => c.provider_id === webhook.MessageSid,
+      );
+
       if (comm) {
         const statusMap: Record<string, string> = {
-          'delivered': 'delivered',
-          'failed': 'failed',
-          'undelivered': 'failed',
-          'sent': 'sent',
-          'received': 'delivered'
+          delivered: "delivered",
+          failed: "failed",
+          undelivered: "failed",
+          sent: "sent",
+          received: "delivered",
         };
-        
+
         await xano.updateCommunicationStatus(
-          comm.id, 
+          comm.id,
           statusMap[webhook.MessageStatus] || webhook.MessageStatus,
-          webhook.MessageStatus === 'delivered' ? new Date().toISOString() : undefined
+          webhook.MessageStatus === "delivered"
+            ? new Date().toISOString()
+            : undefined,
         );
       }
-      
-      console.log('Message status updated:', {
+
+      console.log("Message status updated:", {
         sid: webhook.MessageSid,
         status: webhook.MessageStatus,
-        error: webhook.ErrorMessage
+        error: webhook.ErrorMessage,
       });
-      
     } catch (error) {
-      console.error('Error processing status webhook:', error);
+      console.error("Error processing status webhook:", error);
     }
   }
 
@@ -333,16 +347,16 @@ export class TwilioClient {
         created_at: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('Failed to log communication to Xano:', error);
+      console.error("Failed to log communication to Xano:", error);
       // Don't throw - logging failure shouldn't stop the main operation
     }
   }
 
   // Bulk SMS for campaigns
-  async sendBulkSMS(messages: SMSMessage[]): Promise<{ 
-    successful: number; 
-    failed: number; 
-    results: any[] 
+  async sendBulkSMS(messages: SMSMessage[]): Promise<{
+    successful: number;
+    failed: number;
+    results: any[];
   }> {
     const results = [];
     let successful = 0;
@@ -353,14 +367,14 @@ export class TwilioClient {
         const result = await this.sendSMS(message);
         results.push({ success: true, ...result });
         successful++;
-        
+
         // Add delay to respect rate limits
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       } catch (error) {
-        results.push({ 
-          success: false, 
-          to: message.to, 
-          error: error instanceof Error ? error.message : 'Unknown error' 
+        results.push({
+          success: false,
+          to: message.to,
+          error: error instanceof Error ? error.message : "Unknown error",
         });
         failed++;
       }
@@ -380,7 +394,9 @@ export function initializeTwilio(config: TwilioConfig): TwilioClient {
 
 export function getTwilioClient(): TwilioClient {
   if (!twilioClient) {
-    throw new Error('Twilio client not initialized. Call initializeTwilio() first.');
+    throw new Error(
+      "Twilio client not initialized. Call initializeTwilio() first.",
+    );
   }
   return twilioClient;
 }

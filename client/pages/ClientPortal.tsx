@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,7 +50,7 @@ import {
   Heart,
   CheckCircle,
   AlertTriangle,
-  XCircle
+  XCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -55,13 +61,13 @@ interface Officer {
   title: string;
   email: string;
   phone: string;
-  role: 'owner' | 'admin' | 'manager' | 'user';
+  role: "owner" | "admin" | "manager" | "user";
   permissions: string[];
   lastLogin: Date;
   avatar?: string;
   department: string;
   joinedDate: Date;
-  status: 'active' | 'inactive' | 'pending';
+  status: "active" | "inactive" | "pending";
 }
 
 interface Client {
@@ -79,8 +85,8 @@ interface Client {
   foundedYear: number;
   employees: string;
   revenue: string;
-  accountStatus: 'active' | 'trial' | 'suspended' | 'cancelled';
-  subscriptionTier: 'basic' | 'professional' | 'enterprise';
+  accountStatus: "active" | "trial" | "suspended" | "cancelled";
+  subscriptionTier: "basic" | "professional" | "enterprise";
   monthlySpend: number;
   totalSpend: number;
   contractStart: Date;
@@ -99,7 +105,7 @@ interface Document {
   size: string;
   uploadedBy: string;
   uploadedDate: Date;
-  category: 'contract' | 'invoice' | 'report' | 'compliance' | 'other';
+  category: "contract" | "invoice" | "report" | "compliance" | "other";
   url: string;
 }
 
@@ -108,7 +114,7 @@ interface BillingRecord {
   date: Date;
   amount: number;
   description: string;
-  status: 'paid' | 'pending' | 'overdue' | 'failed';
+  status: "paid" | "pending" | "overdue" | "failed";
   invoiceNumber: string;
   paymentMethod: string;
 }
@@ -117,8 +123,8 @@ interface SupportTicket {
   id: string;
   title: string;
   description: string;
-  status: 'open' | 'in-progress' | 'resolved' | 'closed';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  status: "open" | "in-progress" | "resolved" | "closed";
+  priority: "low" | "medium" | "high" | "urgent";
   createdBy: string;
   createdDate: Date;
   assignedTo: string;
@@ -131,8 +137,8 @@ interface Meeting {
   date: Date;
   duration: number;
   attendees: string[];
-  type: 'onboarding' | 'review' | 'support' | 'sales' | 'training';
-  status: 'scheduled' | 'completed' | 'cancelled';
+  type: "onboarding" | "review" | "support" | "sales" | "training";
+  status: "scheduled" | "completed" | "cancelled";
   notes?: string;
 }
 
@@ -171,7 +177,7 @@ export default function ClientPortal() {
         lastLogin: new Date(),
         department: "Executive",
         joinedDate: new Date("2023-01-01"),
-        status: "active"
+        status: "active",
       },
       {
         id: "2",
@@ -185,7 +191,7 @@ export default function ClientPortal() {
         lastLogin: new Date(Date.now() - 2 * 60 * 60 * 1000),
         department: "Technology",
         joinedDate: new Date("2023-01-15"),
-        status: "active"
+        status: "active",
       },
       {
         id: "3",
@@ -199,8 +205,8 @@ export default function ClientPortal() {
         lastLogin: new Date(Date.now() - 24 * 60 * 60 * 1000),
         department: "Marketing",
         joinedDate: new Date("2023-02-01"),
-        status: "active"
-      }
+        status: "active",
+      },
     ],
     documents: [
       {
@@ -211,7 +217,7 @@ export default function ClientPortal() {
         uploadedBy: "John Smith",
         uploadedDate: new Date("2024-01-01"),
         category: "contract",
-        url: "/documents/service-agreement-2024.pdf"
+        url: "/documents/service-agreement-2024.pdf",
       },
       {
         id: "2",
@@ -221,8 +227,8 @@ export default function ClientPortal() {
         uploadedBy: "System",
         uploadedDate: new Date("2024-01-31"),
         category: "invoice",
-        url: "/documents/invoice-jan-2024.pdf"
-      }
+        url: "/documents/invoice-jan-2024.pdf",
+      },
     ],
     billingHistory: [
       {
@@ -232,7 +238,7 @@ export default function ClientPortal() {
         description: "Monthly Enterprise Subscription",
         status: "paid",
         invoiceNumber: "INV-2024-001",
-        paymentMethod: "Credit Card ending in 4242"
+        paymentMethod: "Credit Card ending in 4242",
       },
       {
         id: "2",
@@ -241,8 +247,8 @@ export default function ClientPortal() {
         description: "Monthly Enterprise Subscription",
         status: "paid",
         invoiceNumber: "INV-2023-012",
-        paymentMethod: "Credit Card ending in 4242"
-      }
+        paymentMethod: "Credit Card ending in 4242",
+      },
     ],
     supportTickets: [
       {
@@ -254,8 +260,8 @@ export default function ClientPortal() {
         createdBy: "Sarah Johnson",
         createdDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
         assignedTo: "Tech Support Team",
-        lastUpdate: new Date(Date.now() - 4 * 60 * 60 * 1000)
-      }
+        lastUpdate: new Date(Date.now() - 4 * 60 * 60 * 1000),
+      },
     ],
     meetings: [
       {
@@ -265,9 +271,9 @@ export default function ClientPortal() {
         duration: 60,
         attendees: ["John Smith", "Sarah Johnson", "Account Manager"],
         type: "review",
-        status: "scheduled"
-      }
-    ]
+        status: "scheduled",
+      },
+    ],
   });
 
   const [selectedOfficer, setSelectedOfficer] = useState<Officer | null>(null);
@@ -280,7 +286,7 @@ export default function ClientPortal() {
       pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
       trial: "bg-blue-100 text-blue-800 border-blue-200",
       suspended: "bg-red-100 text-red-800 border-red-200",
-      cancelled: "bg-gray-100 text-gray-800 border-gray-200"
+      cancelled: "bg-gray-100 text-gray-800 border-gray-200",
     };
     return colors[status as keyof typeof colors] || colors.active;
   };
@@ -290,7 +296,7 @@ export default function ClientPortal() {
       owner: Crown,
       admin: Shield,
       manager: Star,
-      user: Users
+      user: Users,
     };
     const Icon = icons[role as keyof typeof icons] || Users;
     return <Icon className="w-4 h-4" />;
@@ -301,7 +307,7 @@ export default function ClientPortal() {
       owner: "text-yellow-600",
       admin: "text-purple-600",
       manager: "text-blue-600",
-      user: "text-gray-600"
+      user: "text-gray-600",
     };
     return colors[role as keyof typeof colors] || colors.user;
   };
@@ -317,7 +323,9 @@ export default function ClientPortal() {
                 {client.companyName.charAt(0)}
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-foreground">{client.companyName}</h1>
+                <h1 className="text-3xl font-bold text-foreground">
+                  {client.companyName}
+                </h1>
                 <p className="text-sm text-muted-foreground flex items-center gap-4">
                   <span className="flex items-center gap-1">
                     <Building className="w-4 h-4" />
@@ -356,7 +364,9 @@ export default function ClientPortal() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 border-green-200 dark:border-green-700">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-green-700 dark:text-green-300">Monthly Spend</CardTitle>
+              <CardTitle className="text-sm font-medium text-green-700 dark:text-green-300">
+                Monthly Spend
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-900 dark:text-green-100">
@@ -371,7 +381,9 @@ export default function ClientPortal() {
 
           <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-700">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">Total Lifetime Value</CardTitle>
+              <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                Total Lifetime Value
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
@@ -386,26 +398,37 @@ export default function ClientPortal() {
 
           <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-purple-200 dark:border-purple-700">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-300">Active Officers</CardTitle>
+              <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                Active Officers
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
-                {client.officers.filter(o => o.status === 'active').length}
+                {client.officers.filter((o) => o.status === "active").length}
               </div>
               <p className="text-xs text-purple-600 dark:text-purple-400 flex items-center mt-1">
                 <Users className="w-3 h-3 mr-1" />
-                Across {new Set(client.officers.map(o => o.department)).size} departments
+                Across {
+                  new Set(client.officers.map((o) => o.department)).size
+                }{" "}
+                departments
               </p>
             </CardContent>
           </Card>
 
           <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border-orange-200 dark:border-orange-700">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-orange-700 dark:text-orange-300">Contract Status</CardTitle>
+              <CardTitle className="text-sm font-medium text-orange-700 dark:text-orange-300">
+                Contract Status
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-900 dark:text-orange-100">
-                {Math.ceil((client.contractEnd.getTime() - Date.now()) / (1000 * 60 * 60 * 24))} days
+                {Math.ceil(
+                  (client.contractEnd.getTime() - Date.now()) /
+                    (1000 * 60 * 60 * 24),
+                )}{" "}
+                days
               </div>
               <p className="text-xs text-orange-600 dark:text-orange-400 flex items-center mt-1">
                 <Calendar className="w-3 h-3 mr-1" />
@@ -447,7 +470,10 @@ export default function ClientPortal() {
           <TabsContent value="officers" className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold">Company Officers</h2>
-              <Button onClick={() => setIsAddingOfficer(true)} className="gap-2">
+              <Button
+                onClick={() => setIsAddingOfficer(true)}
+                className="gap-2"
+              >
                 <Plus className="w-4 h-4" />
                 Add Officer
               </Button>
@@ -455,22 +481,33 @@ export default function ClientPortal() {
 
             <div className="grid gap-4">
               {client.officers.map((officer) => (
-                <Card key={officer.id} className="hover:shadow-md transition-shadow">
+                <Card
+                  key={officer.id}
+                  className="hover:shadow-md transition-shadow"
+                >
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <Avatar className="w-12 h-12">
                           <AvatarImage src={officer.avatar} />
                           <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white">
-                            {officer.firstName[0]}{officer.lastName[0]}
+                            {officer.firstName[0]}
+                            {officer.lastName[0]}
                           </AvatarFallback>
                         </Avatar>
                         <div>
                           <CardTitle className="text-lg flex items-center gap-2">
                             {officer.firstName} {officer.lastName}
-                            <span className={cn("flex items-center gap-1", getRoleColor(officer.role))}>
+                            <span
+                              className={cn(
+                                "flex items-center gap-1",
+                                getRoleColor(officer.role),
+                              )}
+                            >
                               {getRoleIcon(officer.role)}
-                              <span className="text-sm font-medium">{officer.role.toUpperCase()}</span>
+                              <span className="text-sm font-medium">
+                                {officer.role.toUpperCase()}
+                              </span>
                             </span>
                           </CardTitle>
                           <CardDescription className="flex items-center gap-3">
@@ -502,7 +539,9 @@ export default function ClientPortal() {
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-1">
-                        <Label className="text-xs text-muted-foreground">Contact</Label>
+                        <Label className="text-xs text-muted-foreground">
+                          Contact
+                        </Label>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 text-sm">
                             <Mail className="w-3 h-3" />
@@ -515,10 +554,16 @@ export default function ClientPortal() {
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-xs text-muted-foreground">Permissions</Label>
+                        <Label className="text-xs text-muted-foreground">
+                          Permissions
+                        </Label>
                         <div className="flex flex-wrap gap-1">
                           {officer.permissions.slice(0, 3).map((perm) => (
-                            <Badge key={perm} variant="outline" className="text-xs">
+                            <Badge
+                              key={perm}
+                              variant="outline"
+                              className="text-xs"
+                            >
                               {perm}
                             </Badge>
                           ))}
@@ -530,7 +575,9 @@ export default function ClientPortal() {
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-xs text-muted-foreground">Joined</Label>
+                        <Label className="text-xs text-muted-foreground">
+                          Joined
+                        </Label>
                         <div className="text-sm">
                           {officer.joinedDate.toLocaleDateString()}
                         </div>
@@ -567,7 +614,9 @@ export default function ClientPortal() {
                     </div>
                     <div className="flex justify-between">
                       <span>Monthly</span>
-                      <span className="font-semibold">${client.monthlySpend.toLocaleString()}</span>
+                      <span className="font-semibold">
+                        ${client.monthlySpend.toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Next billing</span>
@@ -585,15 +634,22 @@ export default function ClientPortal() {
                 <CardContent>
                   <div className="space-y-4">
                     {client.billingHistory.map((record) => (
-                      <div key={record.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div
+                        key={record.id}
+                        className="flex items-center justify-between p-3 border rounded-lg"
+                      >
                         <div>
-                          <div className="font-medium">{record.description}</div>
+                          <div className="font-medium">
+                            {record.description}
+                          </div>
                           <div className="text-sm text-muted-foreground">
                             {record.invoiceNumber} • {record.paymentMethod}
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="font-semibold">${record.amount.toLocaleString()}</div>
+                          <div className="font-semibold">
+                            ${record.amount.toLocaleString()}
+                          </div>
                           <Badge className={getStatusColor(record.status)}>
                             {record.status}
                           </Badge>
@@ -628,7 +684,9 @@ export default function ClientPortal() {
                         <div>
                           <div className="font-medium">{doc.name}</div>
                           <div className="text-sm text-muted-foreground">
-                            {doc.type} • {doc.size} • Uploaded by {doc.uploadedBy} on {doc.uploadedDate.toLocaleDateString()}
+                            {doc.type} • {doc.size} • Uploaded by{" "}
+                            {doc.uploadedBy} on{" "}
+                            {doc.uploadedDate.toLocaleDateString()}
                           </div>
                         </div>
                       </div>
@@ -661,28 +719,40 @@ export default function ClientPortal() {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div>
-                        <CardTitle className="text-lg">{ticket.title}</CardTitle>
+                        <CardTitle className="text-lg">
+                          {ticket.title}
+                        </CardTitle>
                         <CardDescription>
-                          Created by {ticket.createdBy} on {ticket.createdDate.toLocaleDateString()}
+                          Created by {ticket.createdBy} on{" "}
+                          {ticket.createdDate.toLocaleDateString()}
                         </CardDescription>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge className={getStatusColor(ticket.status)}>
                           {ticket.status}
                         </Badge>
-                        <Badge variant="outline" className={cn(
-                          ticket.priority === 'urgent' && 'border-red-500 text-red-700',
-                          ticket.priority === 'high' && 'border-orange-500 text-orange-700',
-                          ticket.priority === 'medium' && 'border-yellow-500 text-yellow-700',
-                          ticket.priority === 'low' && 'border-green-500 text-green-700'
-                        )}>
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            ticket.priority === "urgent" &&
+                              "border-red-500 text-red-700",
+                            ticket.priority === "high" &&
+                              "border-orange-500 text-orange-700",
+                            ticket.priority === "medium" &&
+                              "border-yellow-500 text-yellow-700",
+                            ticket.priority === "low" &&
+                              "border-green-500 text-green-700",
+                          )}
+                        >
                           {ticket.priority.toUpperCase()}
                         </Badge>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-3">{ticket.description}</p>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      {ticket.description}
+                    </p>
                     <div className="flex items-center justify-between">
                       <div className="text-sm">
                         Assigned to: {ticket.assignedTo}
@@ -719,7 +789,9 @@ export default function ClientPortal() {
                         <div>
                           <div className="font-medium">{meeting.title}</div>
                           <div className="text-sm text-muted-foreground">
-                            {meeting.date.toLocaleDateString()} at {meeting.date.toLocaleTimeString()} • {meeting.duration} minutes
+                            {meeting.date.toLocaleDateString()} at{" "}
+                            {meeting.date.toLocaleTimeString()} •{" "}
+                            {meeting.duration} minutes
                           </div>
                         </div>
                       </div>
@@ -739,7 +811,7 @@ export default function ClientPortal() {
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
             <h2 className="text-xl font-semibold">Usage Analytics</h2>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
@@ -752,13 +824,13 @@ export default function ClientPortal() {
                       <span className="font-medium">847,231</span>
                     </div>
                     <Progress value={78} />
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="text-sm">Data Storage</span>
                       <span className="font-medium">12.4 GB</span>
                     </div>
                     <Progress value={62} />
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="text-sm">Active Users</span>
                       <span className="font-medium">287</span>
@@ -774,8 +846,12 @@ export default function ClientPortal() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-green-600 mb-2">99.8%</div>
-                    <p className="text-sm text-muted-foreground mb-4">Uptime this month</p>
+                    <div className="text-4xl font-bold text-green-600 mb-2">
+                      99.8%
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Uptime this month
+                    </p>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <div className="font-semibold">Response Time</div>

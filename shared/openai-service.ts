@@ -6,7 +6,7 @@ interface OpenAIConfig {
 }
 
 interface ChatMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
@@ -20,8 +20,8 @@ interface OpenAIResponse {
 }
 
 interface DevelopmentTask {
-  action: 'create' | 'modify' | 'delete' | 'explain' | 'debug';
-  target: 'component' | 'page' | 'api' | 'database' | 'style' | 'function';
+  action: "create" | "modify" | "delete" | "explain" | "debug";
+  target: "component" | "page" | "api" | "database" | "style" | "function";
   details: string;
   code?: string;
   fileName?: string;
@@ -30,26 +30,26 @@ interface DevelopmentTask {
 
 export class OpenAIService {
   private config: OpenAIConfig;
-  private baseUrl = 'https://api.openai.com/v1';
+  private baseUrl = "https://api.openai.com/v1";
 
   constructor(config: OpenAIConfig) {
     this.config = {
-      model: 'gpt-3.5-turbo',
+      model: "gpt-3.5-turbo",
       temperature: 0.7,
       maxTokens: 2000,
-      ...config
+      ...config,
     };
   }
 
   private async makeRequest(endpoint: string, data: any): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.config.apiKey}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       // Read the response body once
@@ -61,13 +61,15 @@ export class OpenAIService {
       }
 
       if (!response.ok) {
-        console.error('OpenAI API Error:', response.status, responseData);
-        throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+        console.error("OpenAI API Error:", response.status, responseData);
+        throw new Error(
+          `OpenAI API error: ${response.status} ${response.statusText}`,
+        );
       }
 
       return responseData;
     } catch (error) {
-      console.error('OpenAI Request Failed:', error);
+      console.error("OpenAI Request Failed:", error);
       throw error;
     }
   }
@@ -77,11 +79,14 @@ export class OpenAIService {
       model: this.config.model,
       messages,
       temperature: this.config.temperature,
-      max_tokens: this.config.maxTokens
+      max_tokens: this.config.maxTokens,
     };
 
-    const response: OpenAIResponse = await this.makeRequest('/chat/completions', data);
-    return response.choices[0]?.message?.content || '';
+    const response: OpenAIResponse = await this.makeRequest(
+      "/chat/completions",
+      data,
+    );
+    return response.choices[0]?.message?.content || "";
   }
 
   async parseVoiceCommand(command: string): Promise<DevelopmentTask | null> {
@@ -105,15 +110,15 @@ Examples:
 If the command is not development-related, return null.`;
 
     const messages: ChatMessage[] = [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: command }
+      { role: "system", content: systemPrompt },
+      { role: "user", content: command },
     ];
 
     try {
       const response = await this.chat(messages);
       return JSON.parse(response);
     } catch (error) {
-      console.error('Error parsing voice command:', error);
+      console.error("Error parsing voice command:", error);
       return null;
     }
   }
@@ -121,7 +126,7 @@ If the command is not development-related, return null.`;
   async generateCode(task: DevelopmentTask, context?: string): Promise<string> {
     const systemPrompt = `You are an expert full-stack developer. Generate clean, production-ready code based on the task requirements.
 
-Context: ${context || 'React TypeScript project with Tailwind CSS and modern best practices'}
+Context: ${context || "React TypeScript project with Tailwind CSS and modern best practices"}
 
 Requirements:
 - Write clean, maintainable code
@@ -136,8 +141,11 @@ Task: ${task.action} ${task.target} - ${task.details}
 Return only the code without explanations or markdown formatting.`;
 
     const messages: ChatMessage[] = [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: `Generate ${task.action === 'create' ? 'new' : 'updated'} ${task.target} code for: ${task.details}` }
+      { role: "system", content: systemPrompt },
+      {
+        role: "user",
+        content: `Generate ${task.action === "create" ? "new" : "updated"} ${task.target} code for: ${task.details}`,
+      },
     ];
 
     return await this.chat(messages);
@@ -152,13 +160,13 @@ Return only the code without explanations or markdown formatting.`;
 
 Be helpful and educational.`;
 
-    const userMessage = question 
+    const userMessage = question
       ? `Explain this code with focus on: ${question}\n\nCode:\n${code}`
       : `Explain this code:\n\n${code}`;
 
     const messages: ChatMessage[] = [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userMessage }
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userMessage },
     ];
 
     return await this.chat(messages);
@@ -175,19 +183,22 @@ Provide:
 
 Be specific and actionable.`;
 
-    const userMessage = error 
+    const userMessage = error
       ? `Debug this code that's causing error: ${error}\n\nCode:\n${code}`
       : `Debug and improve this code:\n\n${code}`;
 
     const messages: ChatMessage[] = [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userMessage }
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userMessage },
     ];
 
     return await this.chat(messages);
   }
 
-  async chatWithContext(userMessage: string, conversationHistory: ChatMessage[] = []): Promise<string> {
+  async chatWithContext(
+    userMessage: string,
+    conversationHistory: ChatMessage[] = [],
+  ): Promise<string> {
     const systemPrompt = `You are an AI development assistant. You help developers build applications by:
 
 1. Understanding natural language commands
@@ -207,9 +218,9 @@ You have access to:
 Be helpful, concise, and practical. When generating code, make it production-ready.`;
 
     const messages: ChatMessage[] = [
-      { role: 'system', content: systemPrompt },
+      { role: "system", content: systemPrompt },
       ...conversationHistory.slice(-10), // Keep last 10 messages for context
-      { role: 'user', content: userMessage }
+      { role: "user", content: userMessage },
     ];
 
     return await this.chat(messages);
@@ -221,9 +232,10 @@ let defaultService: OpenAIService | null = null;
 
 export function getOpenAIService(): OpenAIService {
   if (!defaultService) {
-    const apiKey = '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';
+    const apiKey =
+      "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";
     if (!apiKey) {
-      throw new Error('OpenAI API key not configured');
+      throw new Error("OpenAI API key not configured");
     }
     defaultService = new OpenAIService({ apiKey });
   }

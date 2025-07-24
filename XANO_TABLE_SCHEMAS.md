@@ -3,9 +3,10 @@
 ## **CORE BUSINESS TABLES**
 
 ### 1. **members** (Primary customer table)
+
 ```sql
 id (integer, auto-increment, primary key)
-uuid (text, unique, indexed) 
+uuid (text, unique, indexed)
 email (text, unique, indexed)
 phone (text, unique, indexed)
 first_name (text)
@@ -38,6 +39,7 @@ marketing_emails (boolean, default: true)
 ```
 
 ### 2. **member_benefits** (Benefits catalog)
+
 ```sql
 id (integer, auto-increment, primary key)
 uuid (text, unique, indexed)
@@ -59,6 +61,7 @@ usage_limit (integer, nullable) # Max uses per member
 ```
 
 ### 3. **member_benefit_usage** (Track benefit usage)
+
 ```sql
 id (integer, auto-increment, primary key)
 member_id (integer, foreign key: members.id)
@@ -72,6 +75,7 @@ created_at (timestamp)
 ```
 
 ### 4. **subscriptions** (Member subscription details)
+
 ```sql
 id (integer, auto-increment, primary key)
 member_id (integer, foreign key: members.id)
@@ -90,6 +94,7 @@ payment_method_id (text)
 ```
 
 ### 5. **orders** (Purchase history)
+
 ```sql
 id (integer, auto-increment, primary key)
 member_id (integer, foreign key: members.id)
@@ -111,6 +116,7 @@ delivered_at (timestamp, nullable)
 ```
 
 ### 6. **communications** (SMS/Email history)
+
 ```sql
 id (integer, auto-increment, primary key)
 member_id (integer, foreign key: members.id, nullable)
@@ -140,6 +146,7 @@ ai_confidence (decimal(3,2), nullable) # 0.00-1.00
 ```
 
 ### 7. **support_tickets** (Customer support)
+
 ```sql
 id (integer, auto-increment, primary key)
 member_id (integer, foreign key: members.id)
@@ -158,6 +165,7 @@ resolved_at (timestamp, nullable)
 ```
 
 ### 8. **api_logs** (API usage tracking)
+
 ```sql
 id (integer, auto-increment, primary key)
 endpoint (text)
@@ -176,6 +184,7 @@ created_at (timestamp)
 ## **MARKETING & AUTOMATION TABLES**
 
 ### 9. **campaigns** (Marketing campaigns)
+
 ```sql
 id (integer, auto-increment, primary key)
 uuid (text, unique)
@@ -203,6 +212,7 @@ revenue_generated (decimal(10,2), default: 0)
 ```
 
 ### 10. **automation_rules** (Workflow automation)
+
 ```sql
 id (integer, auto-increment, primary key)
 name (text)
@@ -220,6 +230,7 @@ execution_count (integer, default: 0)
 ## **PAYMENT & BILLING TABLES**
 
 ### 11. **payment_methods** (Stored payment info)
+
 ```sql
 id (integer, auto-increment, primary key)
 member_id (integer, foreign key: members.id)
@@ -237,6 +248,7 @@ updated_at (timestamp)
 ```
 
 ### 12. **transactions** (Payment transactions)
+
 ```sql
 id (integer, auto-increment, primary key)
 member_id (integer, foreign key: members.id)
@@ -259,6 +271,7 @@ created_at (timestamp)
 ## **ANALYTICS & REPORTING TABLES**
 
 ### 13. **member_analytics** (Daily member metrics)
+
 ```sql
 id (integer, auto-increment, primary key)
 date (date, indexed)
@@ -276,6 +289,7 @@ created_at (timestamp)
 ```
 
 ### 14. **system_health** (System monitoring)
+
 ```sql
 id (integer, auto-increment, primary key)
 service_name (text)
@@ -351,6 +365,7 @@ POST /api/webhooks/stripe/subscription
 ## **SAMPLE DATA FOR TESTING**
 
 ### member_benefits sample data:
+
 ```json
 [
   {
@@ -367,7 +382,7 @@ POST /api/webhooks/stripe/subscription
     "title": "Priority Support",
     "description": "Get priority customer support with faster response times",
     "benefit_type": "service",
-    "benefit_category": "support", 
+    "benefit_category": "support",
     "value_description": "24/7 priority support access",
     "membership_levels": ["premium", "enterprise"],
     "icon_name": "headphones",

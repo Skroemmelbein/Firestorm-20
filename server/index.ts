@@ -1,8 +1,16 @@
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { getIntegrationsConfig, saveIntegrationsConfig } from "./routes/integrations-config";
-import { uploadTwilioAPIs, getUploadedAPIs, clearUploadedAPIs, testTwilioAPI } from "./routes/twilio-vault";
+import {
+  getIntegrationsConfig,
+  saveIntegrationsConfig,
+} from "./routes/integrations-config";
+import {
+  uploadTwilioAPIs,
+  getUploadedAPIs,
+  clearUploadedAPIs,
+  testTwilioAPI,
+} from "./routes/twilio-vault";
 import realApiRouter from "./routes/real-api";
 import xanoSetupRouter from "./routes/xano-setup";
 
@@ -20,36 +28,47 @@ export function createServer() {
   app.use(express.urlencoded({ extended: true }));
 
   // Initialize real integrations with environment variables - NO MOCKS
-  if (process.env.XANO_INSTANCE_URL && process.env.XANO_API_KEY && process.env.XANO_DATABASE_ID) {
+  if (
+    process.env.XANO_INSTANCE_URL &&
+    process.env.XANO_API_KEY &&
+    process.env.XANO_DATABASE_ID
+  ) {
     initializeXano({
       instanceUrl: process.env.XANO_INSTANCE_URL,
       apiKey: process.env.XANO_API_KEY,
       databaseId: process.env.XANO_DATABASE_ID,
     });
-    console.log('✅ Xano client initialized with real credentials');
+    console.log("✅ Xano client initialized with real credentials");
   } else {
-    console.warn('⚠️  Xano environment variables not found - add to .env file');
+    console.warn("⚠️  Xano environment variables not found - add to .env file");
   }
 
   // Initialize Twilio with working credentials
   const twilioCredentials = {
-    accountSid: process.env.TWILIO_ACCOUNT_SID || 'ACf1f39d9f653df3669fa99343e88b2074',
-    authToken: process.env.TWILIO_AUTH_TOKEN || '1f9a48e4dcd9c518889e148fe931e226',
-    phoneNumber: process.env.TWILIO_PHONE_NUMBER || '+18559600037',
-    phoneNumber2: process.env.TWILIO_PHONE_NUMBER_2 || '+18557212778',
+    accountSid:
+      process.env.TWILIO_ACCOUNT_SID || "ACf1f39d9f653df3669fa99343e88b2074",
+    authToken:
+      process.env.TWILIO_AUTH_TOKEN || "1f9a48e4dcd9c518889e148fe931e226",
+    phoneNumber: process.env.TWILIO_PHONE_NUMBER || "+18559600037",
+    phoneNumber2: process.env.TWILIO_PHONE_NUMBER_2 || "+18557212778",
   };
 
   initializeTwilio(twilioCredentials);
-  console.log('✅ Twilio client initialized with working credentials:', twilioCredentials.phoneNumber);
+  console.log(
+    "✅ Twilio client initialized with working credentials:",
+    twilioCredentials.phoneNumber,
+  );
 
   // Initialize OpenAI with working credentials
   if (process.env.OPENAI_API_KEY) {
     setOpenAIApiKey(process.env.OPENAI_API_KEY);
-    console.log('✅ OpenAI client initialized with real API key');
+    console.log("✅ OpenAI client initialized with real API key");
   } else {
     // Fallback to hardcoded key
-    setOpenAIApiKey('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');
-    console.log('✅ OpenAI client initialized with fallback API key');
+    setOpenAIApiKey(
+      "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",
+    );
+    console.log("✅ OpenAI client initialized with fallback API key");
   }
 
   // Example API routes

@@ -1,5 +1,5 @@
 // Real Xano API Client - NO MOCKS
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
 
 interface XanoConfig {
   instanceUrl: string;
@@ -14,8 +14,8 @@ export interface Member {
   phone: string;
   first_name: string;
   last_name: string;
-  status: 'active' | 'inactive' | 'suspended' | 'cancelled';
-  membership_type: 'basic' | 'premium' | 'enterprise' | 'lifetime';
+  status: "active" | "inactive" | "suspended" | "cancelled";
+  membership_type: "basic" | "premium" | "enterprise" | "lifetime";
   created_at: string;
   updated_at: string;
   last_login?: string;
@@ -26,7 +26,7 @@ export interface Member {
   total_spent: number;
   subscription_start_date?: string;
   subscription_end_date?: string;
-  billing_cycle?: 'monthly' | 'yearly' | 'lifetime';
+  billing_cycle?: "monthly" | "yearly" | "lifetime";
   login_count: number;
   last_activity?: string;
   engagement_score: number;
@@ -40,8 +40,13 @@ export interface MemberBenefit {
   uuid: string;
   title: string;
   description: string;
-  benefit_type: 'discount' | 'access' | 'service' | 'product' | 'support';
-  benefit_category: 'billing' | 'shipping' | 'support' | 'exclusive' | 'partner';
+  benefit_type: "discount" | "access" | "service" | "product" | "support";
+  benefit_category:
+    | "billing"
+    | "shipping"
+    | "support"
+    | "exclusive"
+    | "partner";
   value_description: string;
   conditions?: string;
   is_active: boolean;
@@ -58,14 +63,14 @@ export interface MemberBenefit {
 export interface Communication {
   id: number;
   member_id?: number;
-  channel: 'sms' | 'email' | 'voice' | 'push';
-  direction: 'inbound' | 'outbound';
+  channel: "sms" | "email" | "voice" | "push";
+  direction: "inbound" | "outbound";
   from_number?: string;
   to_number?: string;
   subject?: string;
   content: string;
-  status: 'queued' | 'sent' | 'delivered' | 'failed' | 'bounced';
-  provider: 'twilio' | 'sendgrid' | 'other';
+  status: "queued" | "sent" | "delivered" | "failed" | "bounced";
+  provider: "twilio" | "sendgrid" | "other";
   provider_id?: string;
   provider_status?: string;
   error_message?: string;
@@ -76,7 +81,7 @@ export interface Communication {
   replied_at?: string;
   created_at: string;
   ai_generated: boolean;
-  ai_sentiment?: 'positive' | 'neutral' | 'negative';
+  ai_sentiment?: "positive" | "neutral" | "negative";
   ai_intent?: string;
   ai_confidence?: number;
 }
@@ -86,10 +91,10 @@ export interface Subscription {
   member_id: number;
   plan_name: string;
   plan_id: string;
-  status: 'active' | 'paused' | 'cancelled' | 'past_due' | 'unpaid';
+  status: "active" | "paused" | "cancelled" | "past_due" | "unpaid";
   amount: number;
   currency: string;
-  billing_cycle: 'monthly' | 'yearly' | 'lifetime';
+  billing_cycle: "monthly" | "yearly" | "lifetime";
   next_billing_date?: string;
   trial_end_date?: string;
   started_at: string;
@@ -106,15 +111,15 @@ export class XanoClient {
   }
 
   private async request<T>(
-    endpoint: string, 
-    method: 'GET' | 'POST' | 'PATCH' | 'DELETE' = 'GET',
-    data?: any
+    endpoint: string,
+    method: "GET" | "POST" | "PATCH" | "DELETE" = "GET",
+    data?: any,
   ): Promise<T> {
     const url = `${this.config.instanceUrl}/api:${this.config.databaseId}${endpoint}`;
-    
+
     const headers: Record<string, string> = {
-      'Authorization': `Bearer ${this.config.apiKey}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.config.apiKey}`,
+      "Content-Type": "application/json",
     };
 
     const options: any = {
@@ -122,13 +127,13 @@ export class XanoClient {
       headers,
     };
 
-    if (data && (method === 'POST' || method === 'PATCH')) {
+    if (data && (method === "POST" || method === "PATCH")) {
       options.body = JSON.stringify(data);
     }
 
     try {
       const response = await fetch(url, options);
-      
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Xano API Error ${response.status}: ${errorText}`);
@@ -137,32 +142,36 @@ export class XanoClient {
       const result = await response.json();
       return result as T;
     } catch (error) {
-      console.error('Xano API Request Failed:', {
+      console.error("Xano API Request Failed:", {
         url,
         method,
-        error: error instanceof Error ? error.message : error
+        error: error instanceof Error ? error.message : error,
       });
       throw error;
     }
   }
 
   // Members API
-  async getMembers(params?: { 
-    page?: number; 
-    per_page?: number; 
+  async getMembers(params?: {
+    page?: number;
+    per_page?: number;
     search?: string;
     status?: string;
     membership_type?: string;
   }): Promise<{ data: Member[]; total: number; page: number }> {
     const queryParams = new URLSearchParams();
-    if (params?.page) queryParams.append('page', params.page.toString());
-    if (params?.per_page) queryParams.append('per_page', params.per_page.toString());
-    if (params?.search) queryParams.append('search', params.search);
-    if (params?.status) queryParams.append('status', params.status);
-    if (params?.membership_type) queryParams.append('membership_type', params.membership_type);
-    
-    const endpoint = `/members${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-    return this.request<{ data: Member[]; total: number; page: number }>(endpoint);
+    if (params?.page) queryParams.append("page", params.page.toString());
+    if (params?.per_page)
+      queryParams.append("per_page", params.per_page.toString());
+    if (params?.search) queryParams.append("search", params.search);
+    if (params?.status) queryParams.append("status", params.status);
+    if (params?.membership_type)
+      queryParams.append("membership_type", params.membership_type);
+
+    const endpoint = `/members${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+    return this.request<{ data: Member[]; total: number; page: number }>(
+      endpoint,
+    );
   }
 
   async getMember(id: number): Promise<Member> {
@@ -170,15 +179,15 @@ export class XanoClient {
   }
 
   async createMember(memberData: Partial<Member>): Promise<Member> {
-    return this.request<Member>('/members', 'POST', memberData);
+    return this.request<Member>("/members", "POST", memberData);
   }
 
   async updateMember(id: number, memberData: Partial<Member>): Promise<Member> {
-    return this.request<Member>(`/members/${id}`, 'PATCH', memberData);
+    return this.request<Member>(`/members/${id}`, "PATCH", memberData);
   }
 
   async deleteMember(id: number): Promise<void> {
-    return this.request<void>(`/members/${id}`, 'DELETE');
+    return this.request<void>(`/members/${id}`, "DELETE");
   }
 
   // Benefits API
@@ -187,10 +196,12 @@ export class XanoClient {
     is_active?: boolean;
   }): Promise<MemberBenefit[]> {
     const queryParams = new URLSearchParams();
-    if (params?.membership_level) queryParams.append('membership_level', params.membership_level);
-    if (params?.is_active !== undefined) queryParams.append('is_active', params.is_active.toString());
-    
-    const endpoint = `/member_benefits${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    if (params?.membership_level)
+      queryParams.append("membership_level", params.membership_level);
+    if (params?.is_active !== undefined)
+      queryParams.append("is_active", params.is_active.toString());
+
+    const endpoint = `/member_benefits${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
     return this.request<MemberBenefit[]>(endpoint);
   }
 
@@ -198,21 +209,34 @@ export class XanoClient {
     return this.request<MemberBenefit[]>(`/members/${memberId}/benefits`);
   }
 
-  async createBenefit(benefitData: Partial<MemberBenefit>): Promise<MemberBenefit> {
-    return this.request<MemberBenefit>('/member_benefits', 'POST', benefitData);
+  async createBenefit(
+    benefitData: Partial<MemberBenefit>,
+  ): Promise<MemberBenefit> {
+    return this.request<MemberBenefit>("/member_benefits", "POST", benefitData);
   }
 
-  async updateBenefit(id: number, benefitData: Partial<MemberBenefit>): Promise<MemberBenefit> {
-    return this.request<MemberBenefit>(`/member_benefits/${id}`, 'PATCH', benefitData);
+  async updateBenefit(
+    id: number,
+    benefitData: Partial<MemberBenefit>,
+  ): Promise<MemberBenefit> {
+    return this.request<MemberBenefit>(
+      `/member_benefits/${id}`,
+      "PATCH",
+      benefitData,
+    );
   }
 
-  async useBenefit(memberId: number, benefitId: number, usageDetails?: any): Promise<void> {
-    return this.request<void>('/member_benefit_usage', 'POST', {
+  async useBenefit(
+    memberId: number,
+    benefitId: number,
+    usageDetails?: any,
+  ): Promise<void> {
+    return this.request<void>("/member_benefit_usage", "POST", {
       member_id: memberId,
       benefit_id: benefitId,
       used_at: new Date().toISOString(),
       usage_details: usageDetails,
-      status: 'used'
+      status: "used",
     });
   }
 
@@ -224,38 +248,52 @@ export class XanoClient {
     limit?: number;
   }): Promise<Communication[]> {
     const queryParams = new URLSearchParams();
-    if (params?.member_id) queryParams.append('member_id', params.member_id.toString());
-    if (params?.channel) queryParams.append('channel', params.channel);
-    if (params?.direction) queryParams.append('direction', params.direction);
-    if (params?.limit) queryParams.append('limit', params.limit.toString());
-    
-    const endpoint = `/communications${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    if (params?.member_id)
+      queryParams.append("member_id", params.member_id.toString());
+    if (params?.channel) queryParams.append("channel", params.channel);
+    if (params?.direction) queryParams.append("direction", params.direction);
+    if (params?.limit) queryParams.append("limit", params.limit.toString());
+
+    const endpoint = `/communications${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
     return this.request<Communication[]>(endpoint);
   }
 
-  async createCommunication(commData: Partial<Communication>): Promise<Communication> {
-    return this.request<Communication>('/communications', 'POST', commData);
+  async createCommunication(
+    commData: Partial<Communication>,
+  ): Promise<Communication> {
+    return this.request<Communication>("/communications", "POST", commData);
   }
 
-  async updateCommunicationStatus(id: number, status: string, deliveredAt?: string): Promise<Communication> {
-    return this.request<Communication>(`/communications/${id}`, 'PATCH', {
+  async updateCommunicationStatus(
+    id: number,
+    status: string,
+    deliveredAt?: string,
+  ): Promise<Communication> {
+    return this.request<Communication>(`/communications/${id}`, "PATCH", {
       status,
-      delivered_at: deliveredAt || new Date().toISOString()
+      delivered_at: deliveredAt || new Date().toISOString(),
     });
   }
 
   // Subscriptions API
   async getSubscriptions(memberId?: number): Promise<Subscription[]> {
-    const endpoint = memberId ? `/subscriptions?member_id=${memberId}` : '/subscriptions';
+    const endpoint = memberId
+      ? `/subscriptions?member_id=${memberId}`
+      : "/subscriptions";
     return this.request<Subscription[]>(endpoint);
   }
 
-  async createSubscription(subData: Partial<Subscription>): Promise<Subscription> {
-    return this.request<Subscription>('/subscriptions', 'POST', subData);
+  async createSubscription(
+    subData: Partial<Subscription>,
+  ): Promise<Subscription> {
+    return this.request<Subscription>("/subscriptions", "POST", subData);
   }
 
-  async updateSubscription(id: number, subData: Partial<Subscription>): Promise<Subscription> {
-    return this.request<Subscription>(`/subscriptions/${id}`, 'PATCH', subData);
+  async updateSubscription(
+    id: number,
+    subData: Partial<Subscription>,
+  ): Promise<Subscription> {
+    return this.request<Subscription>(`/subscriptions/${id}`, "PATCH", subData);
   }
 
   // Analytics API
@@ -268,12 +306,12 @@ export class XanoClient {
     churn_rate: number;
     avg_engagement: number;
   }> {
-    return this.request<any>('/analytics/dashboard');
+    return this.request<any>("/analytics/dashboard");
   }
 
   // Health Check
   async healthCheck(): Promise<{ status: string; timestamp: string }> {
-    return this.request<{ status: string; timestamp: string }>('/health');
+    return this.request<{ status: string; timestamp: string }>("/health");
   }
 
   // Test connection
@@ -282,7 +320,7 @@ export class XanoClient {
       await this.healthCheck();
       return true;
     } catch (error) {
-      console.error('Xano connection test failed:', error);
+      console.error("Xano connection test failed:", error);
       return false;
     }
   }
@@ -298,7 +336,9 @@ export function initializeXano(config: XanoConfig): XanoClient {
 
 export function getXanoClient(): XanoClient {
   if (!xanoClient) {
-    throw new Error('Xano client not initialized. Please configure Xano credentials first.');
+    throw new Error(
+      "Xano client not initialized. Please configure Xano credentials first.",
+    );
   }
   return xanoClient;
 }

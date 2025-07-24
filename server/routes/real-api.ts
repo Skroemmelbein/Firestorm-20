@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 
 const router = express.Router();
 
@@ -6,23 +6,27 @@ const router = express.Router();
 // Safe client getters
 const getXanoClientSafe = () => {
   try {
-    const { getXanoClient } = require('../../shared/xano-client');
+    const { getXanoClient } = require("../../shared/xano-client");
     return getXanoClient();
   } catch (error) {
-    throw new Error('Xano client not initialized. Please configure Xano credentials first.');
+    throw new Error(
+      "Xano client not initialized. Please configure Xano credentials first.",
+    );
   }
 };
 
 const getTwilioClientSafe = () => {
   try {
-    const { getTwilioClient } = require('../../shared/twilio-client');
+    const { getTwilioClient } = require("../../shared/twilio-client");
     return getTwilioClient();
   } catch (error) {
-    throw new Error('Twilio client not initialized. Please configure Twilio credentials first.');
+    throw new Error(
+      "Twilio client not initialized. Please configure Twilio credentials first.",
+    );
   }
 };
 
-router.post('/test/xano', async (req, res) => {
+router.post("/test/xano", async (req, res) => {
   try {
     const xano = getXanoClientSafe();
     const isConnected = await xano.testConnection();
@@ -31,51 +35,54 @@ router.post('/test/xano', async (req, res) => {
       res.json({
         connected: true,
         message: "Successfully connected to Xano",
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } else {
       res.status(400).json({
         connected: false,
-        error: "Failed to connect to Xano. Check your credentials."
+        error: "Failed to connect to Xano. Check your credentials.",
       });
     }
   } catch (error) {
     console.error("Xano connection test failed:", error);
     res.status(500).json({
       connected: false,
-      error: error instanceof Error ? error.message : "Xano not configured. Please set up Xano credentials."
+      error:
+        error instanceof Error
+          ? error.message
+          : "Xano not configured. Please set up Xano credentials.",
     });
   }
 });
 
-router.post('/test/twilio', async (req, res) => {
+router.post("/test/twilio", async (req, res) => {
   try {
     const twilio = getTwilioClientSafe();
     const isConnected = await twilio.testConnection();
-    
+
     if (isConnected) {
       res.json({
         connected: true,
         message: "Successfully connected to Twilio",
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } else {
       res.status(400).json({
         connected: false,
-        error: "Failed to connect to Twilio. Check your credentials."
+        error: "Failed to connect to Twilio. Check your credentials.",
       });
     }
   } catch (error) {
     console.error("Twilio connection test failed:", error);
     res.status(500).json({
       connected: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred"
+      error: error instanceof Error ? error.message : "Unknown error occurred",
     });
   }
 });
 
 // Members API
-router.get('/members', async (req, res) => {
+router.get("/members", async (req, res) => {
   try {
     // Check if Xano is connected, otherwise return mock data
     try {
@@ -92,7 +99,7 @@ router.get('/members', async (req, res) => {
 
       res.json(members);
     } catch (xanoError) {
-      console.log('Xano not connected, returning mock member data');
+      console.log("Xano not connected, returning mock member data");
 
       // Return mock member data
       const mockMembers = {
@@ -109,13 +116,13 @@ router.get('/members', async (req, res) => {
             created_at: "2024-01-15T10:30:00Z",
             updated_at: "2024-01-15T10:30:00Z",
             engagement_score: 85,
-            lifetime_value: 1250.00,
-            total_spent: 890.50,
+            lifetime_value: 1250.0,
+            total_spent: 890.5,
             login_count: 23,
             email_notifications: true,
             sms_notifications: true,
             marketing_emails: true,
-            language: "en"
+            language: "en",
           },
           {
             id: 2,
@@ -129,13 +136,13 @@ router.get('/members', async (req, res) => {
             created_at: "2024-01-10T14:20:00Z",
             updated_at: "2024-01-10T14:20:00Z",
             engagement_score: 92,
-            lifetime_value: 2800.00,
+            lifetime_value: 2800.0,
             total_spent: 1590.25,
             login_count: 45,
             email_notifications: true,
             sms_notifications: true,
             marketing_emails: false,
-            language: "en"
+            language: "en",
           },
           {
             id: 3,
@@ -149,62 +156,62 @@ router.get('/members', async (req, res) => {
             created_at: "2024-01-20T09:15:00Z",
             updated_at: "2024-01-20T09:15:00Z",
             engagement_score: 67,
-            lifetime_value: 450.00,
+            lifetime_value: 450.0,
             total_spent: 285.75,
             login_count: 12,
             email_notifications: true,
             sms_notifications: false,
             marketing_emails: true,
-            language: "en"
-          }
+            language: "en",
+          },
         ],
         total: 3,
-        page: 1
+        page: 1,
       };
 
       res.json(mockMembers);
     }
   } catch (error) {
-    console.error('Error in members endpoint:', error);
-    res.status(500).json({ error: 'Failed to fetch members' });
+    console.error("Error in members endpoint:", error);
+    res.status(500).json({ error: "Failed to fetch members" });
   }
 });
 
-router.get('/members/:id', async (req, res) => {
+router.get("/members/:id", async (req, res) => {
   try {
     const xano = getXanoClientSafe();
     const member = await xano.getMember(parseInt(req.params.id));
     res.json(member);
   } catch (error) {
-    console.error('Error fetching member:', error);
-    res.status(500).json({ error: 'Failed to fetch member' });
+    console.error("Error fetching member:", error);
+    res.status(500).json({ error: "Failed to fetch member" });
   }
 });
 
-router.post('/members', async (req, res) => {
+router.post("/members", async (req, res) => {
   try {
     const xano = getXanoClientSafe();
     const member = await xano.createMember(req.body);
     res.json(member);
   } catch (error) {
-    console.error('Error creating member:', error);
-    res.status(500).json({ error: 'Failed to create member' });
+    console.error("Error creating member:", error);
+    res.status(500).json({ error: "Failed to create member" });
   }
 });
 
-router.patch('/members/:id', async (req, res) => {
+router.patch("/members/:id", async (req, res) => {
   try {
     const xano = getXanoClientSafe();
     const member = await xano.updateMember(parseInt(req.params.id), req.body);
     res.json(member);
   } catch (error) {
-    console.error('Error updating member:', error);
-    res.status(500).json({ error: 'Failed to update member' });
+    console.error("Error updating member:", error);
+    res.status(500).json({ error: "Failed to update member" });
   }
 });
 
 // Benefits API
-router.get('/benefits', async (req, res) => {
+router.get("/benefits", async (req, res) => {
   try {
     // Check if Xano is connected, otherwise return mock data
     try {
@@ -213,12 +220,12 @@ router.get('/benefits', async (req, res) => {
 
       const benefits = await xano.getBenefits({
         membership_level: membership_level as string,
-        is_active: is_active ? is_active === 'true' : undefined,
+        is_active: is_active ? is_active === "true" : undefined,
       });
 
       res.json(benefits);
     } catch (xanoError) {
-      console.log('Xano not connected, returning mock benefits data');
+      console.log("Xano not connected, returning mock benefits data");
 
       // Return mock benefits data
       const mockBenefits = [
@@ -226,7 +233,8 @@ router.get('/benefits', async (req, res) => {
           id: 1,
           uuid: "ben_001",
           title: "10% Subscription Discount",
-          description: "Get 10% off your monthly subscription renewal for the lifetime of your membership",
+          description:
+            "Get 10% off your monthly subscription renewal for the lifetime of your membership",
           benefit_type: "discount",
           benefit_category: "billing",
           value_description: "10% off monthly billing",
@@ -237,13 +245,14 @@ router.get('/benefits', async (req, res) => {
           icon_name: "percent",
           color_theme: "green",
           created_at: "2024-01-01T00:00:00Z",
-          updated_at: "2024-01-01T00:00:00Z"
+          updated_at: "2024-01-01T00:00:00Z",
         },
         {
           id: 2,
           uuid: "ben_002",
           title: "Priority Support",
-          description: "Get priority customer support with faster response times and dedicated support agents",
+          description:
+            "Get priority customer support with faster response times and dedicated support agents",
           benefit_type: "service",
           benefit_category: "support",
           value_description: "24/7 priority support access",
@@ -254,13 +263,14 @@ router.get('/benefits', async (req, res) => {
           icon_name: "headphones",
           color_theme: "blue",
           created_at: "2024-01-01T00:00:00Z",
-          updated_at: "2024-01-01T00:00:00Z"
+          updated_at: "2024-01-01T00:00:00Z",
         },
         {
           id: 3,
           uuid: "ben_003",
           title: "Free Shipping",
-          description: "Free shipping on all orders over $25, including expedited shipping options",
+          description:
+            "Free shipping on all orders over $25, including expedited shipping options",
           benefit_type: "service",
           benefit_category: "shipping",
           value_description: "Free shipping (orders $25+)",
@@ -271,13 +281,14 @@ router.get('/benefits', async (req, res) => {
           icon_name: "truck",
           color_theme: "purple",
           created_at: "2024-01-01T00:00:00Z",
-          updated_at: "2024-01-01T00:00:00Z"
+          updated_at: "2024-01-01T00:00:00Z",
         },
         {
           id: 4,
           uuid: "ben_004",
           title: "Exclusive Content Access",
-          description: "Access to premium content, webinars, and exclusive member-only resources",
+          description:
+            "Access to premium content, webinars, and exclusive member-only resources",
           benefit_type: "access",
           benefit_category: "exclusive",
           value_description: "Premium content library",
@@ -288,13 +299,14 @@ router.get('/benefits', async (req, res) => {
           icon_name: "crown",
           color_theme: "orange",
           created_at: "2024-01-01T00:00:00Z",
-          updated_at: "2024-01-01T00:00:00Z"
+          updated_at: "2024-01-01T00:00:00Z",
         },
         {
           id: 5,
           uuid: "ben_005",
           title: "Monthly Credit Bonus",
-          description: "Receive bonus credits each month that can be used towards purchases or services",
+          description:
+            "Receive bonus credits each month that can be used towards purchases or services",
           benefit_type: "product",
           benefit_category: "billing",
           value_description: "$25 monthly credits",
@@ -305,55 +317,55 @@ router.get('/benefits', async (req, res) => {
           icon_name: "star",
           color_theme: "green",
           created_at: "2024-01-01T00:00:00Z",
-          updated_at: "2024-01-01T00:00:00Z"
-        }
+          updated_at: "2024-01-01T00:00:00Z",
+        },
       ];
 
       res.json(mockBenefits);
     }
   } catch (error) {
-    console.error('Error in benefits endpoint:', error);
-    res.status(500).json({ error: 'Failed to fetch benefits' });
+    console.error("Error in benefits endpoint:", error);
+    res.status(500).json({ error: "Failed to fetch benefits" });
   }
 });
 
-router.get('/members/:id/benefits', async (req, res) => {
+router.get("/members/:id/benefits", async (req, res) => {
   try {
     const xano = getXanoClientSafe();
     const benefits = await xano.getMemberBenefits(parseInt(req.params.id));
     res.json(benefits);
   } catch (error) {
-    console.error('Error fetching member benefits:', error);
-    res.status(500).json({ error: 'Failed to fetch member benefits' });
+    console.error("Error fetching member benefits:", error);
+    res.status(500).json({ error: "Failed to fetch member benefits" });
   }
 });
 
-router.post('/benefits', async (req, res) => {
+router.post("/benefits", async (req, res) => {
   try {
     const xano = getXanoClient();
     const benefit = await xano.createBenefit(req.body);
     res.json(benefit);
   } catch (error) {
-    console.error('Error creating benefit:', error);
-    res.status(500).json({ error: 'Failed to create benefit' });
+    console.error("Error creating benefit:", error);
+    res.status(500).json({ error: "Failed to create benefit" });
   }
 });
 
-router.post('/benefits/:id/use', async (req, res) => {
+router.post("/benefits/:id/use", async (req, res) => {
   try {
     const xano = getXanoClient();
     const { member_id, usage_details } = req.body;
-    
+
     await xano.useBenefit(member_id, parseInt(req.params.id), usage_details);
-    res.json({ success: true, message: 'Benefit usage recorded' });
+    res.json({ success: true, message: "Benefit usage recorded" });
   } catch (error) {
-    console.error('Error recording benefit usage:', error);
-    res.status(500).json({ error: 'Failed to record benefit usage' });
+    console.error("Error recording benefit usage:", error);
+    res.status(500).json({ error: "Failed to record benefit usage" });
   }
 });
 
 // SMS API
-router.post('/sms/send', async (req, res) => {
+router.post("/sms/send", async (req, res) => {
   try {
     const twilio = getTwilioClientSafe();
     const { to, body, from, mediaUrl } = req.body;
@@ -367,13 +379,13 @@ router.post('/sms/send', async (req, res) => {
 
     res.json(result);
   } catch (error) {
-    console.error('Error sending SMS:', error);
+    console.error("Error sending SMS:", error);
 
     // Extract detailed error information
     const errorResponse: any = {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to send SMS',
-      timestamp: new Date().toISOString()
+      error: error instanceof Error ? error.message : "Failed to send SMS",
+      timestamp: new Date().toISOString(),
     };
 
     // Add Twilio-specific error details if available
@@ -392,26 +404,26 @@ router.post('/sms/send', async (req, res) => {
   }
 });
 
-router.post('/sms/bulk', async (req, res) => {
+router.post("/sms/bulk", async (req, res) => {
   try {
     const twilio = getTwilioClientSafe();
     const { messages } = req.body;
-    
+
     const result = await twilio.sendBulkSMS(messages);
     res.json(result);
   } catch (error) {
-    console.error('Error sending bulk SMS:', error);
-    res.status(500).json({ error: 'Failed to send bulk SMS' });
+    console.error("Error sending bulk SMS:", error);
+    res.status(500).json({ error: "Failed to send bulk SMS" });
   }
 });
 
 // Email API
-router.post('/email/send', async (req, res) => {
+router.post("/email/send", async (req, res) => {
   try {
     const { to, subject, html, text } = req.body;
 
     // For now, simulate email sending until SendGrid is fully configured
-    console.log('📧 Sending email:', { to, subject });
+    console.log("📧 Sending email:", { to, subject });
 
     // Simulate SendGrid API call
     const emailResult = {
@@ -419,89 +431,89 @@ router.post('/email/send', async (req, res) => {
       messageId: `email_${Date.now()}`,
       to,
       subject,
-      from: 'noreply@recurflow.com',
-      timestamp: new Date().toISOString()
+      from: "noreply@recurflow.com",
+      timestamp: new Date().toISOString(),
     };
 
     res.json(emailResult);
   } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ error: 'Failed to send email' });
+    console.error("Error sending email:", error);
+    res.status(500).json({ error: "Failed to send email" });
   }
 });
 
 // Voice API
-router.post('/voice/call', async (req, res) => {
+router.post("/voice/call", async (req, res) => {
   try {
     const twilio = getTwilioClient();
     const { to, from, url, twiml } = req.body;
-    
+
     const result = await twilio.makeCall({
       to,
       from,
       url,
       twiml,
     });
-    
+
     res.json(result);
   } catch (error) {
-    console.error('Error making call:', error);
-    res.status(500).json({ error: 'Failed to make call' });
+    console.error("Error making call:", error);
+    res.status(500).json({ error: "Failed to make call" });
   }
 });
 
 // Communications API
-router.get('/communications', async (req, res) => {
+router.get("/communications", async (req, res) => {
   try {
     const xano = getXanoClient();
     const { member_id, channel, direction, limit } = req.query;
-    
+
     const communications = await xano.getCommunications({
       member_id: member_id ? parseInt(member_id as string) : undefined,
       channel: channel as string,
       direction: direction as string,
       limit: limit ? parseInt(limit as string) : undefined,
     });
-    
+
     res.json(communications);
   } catch (error) {
-    console.error('Error fetching communications:', error);
-    res.status(500).json({ error: 'Failed to fetch communications' });
+    console.error("Error fetching communications:", error);
+    res.status(500).json({ error: "Failed to fetch communications" });
   }
 });
 
 // Analytics API
-router.get('/analytics/dashboard', async (req, res) => {
+router.get("/analytics/dashboard", async (req, res) => {
   try {
     const xano = getXanoClient();
     const stats = await xano.getDashboardStats();
     res.json(stats);
   } catch (error) {
-    console.error('Error fetching dashboard stats:', error);
-    res.status(500).json({ error: 'Failed to fetch dashboard stats' });
+    console.error("Error fetching dashboard stats:", error);
+    res.status(500).json({ error: "Failed to fetch dashboard stats" });
   }
 });
 
 // Twilio Webhooks
-router.post('/webhooks/twilio/incoming', async (req, res) => {
+router.post("/webhooks/twilio/incoming", async (req, res) => {
   try {
     const twilio = getTwilioClient();
     await twilio.handleIncomingSMS(req.body);
-    res.status(200).send('OK');
+    res.status(200).send("OK");
   } catch (error) {
-    console.error('Error handling incoming SMS:', error);
-    res.status(500).send('Error');
+    console.error("Error handling incoming SMS:", error);
+    res.status(500).send("Error");
   }
 });
 
-router.post('/webhooks/twilio/status', async (req, res) => {
+router.post("/webhooks/twilio/status", async (req, res) => {
   try {
     const twilio = getTwilioClient();
     await twilio.handleStatusWebhook(req.body);
-    res.status(200).send('OK');
+    res.status(200).send("OK");
   } catch (error) {
-    console.error('Error handling status webhook:', error);
-    res.status(500).send('Error');
+    console.error("Error handling status webhook:", error);
+    res.status(500).send("Error");
   }
 });
 

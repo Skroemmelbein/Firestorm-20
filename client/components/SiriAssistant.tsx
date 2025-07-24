@@ -3,14 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { 
-  Mic, 
-  MicOff, 
-  Volume2, 
-  VolumeX, 
-  Send, 
-  X, 
-  Minimize2, 
+import {
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
+  Send,
+  X,
+  Minimize2,
   Maximize2,
   Sparkles,
   Bot,
@@ -20,7 +20,7 @@ import {
   Wrench,
   Copy,
   FileText,
-  Zap
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getOpenAIService } from "@shared/openai-service";
@@ -33,7 +33,7 @@ interface Message {
   timestamp: Date;
   task?: DevelopmentTask;
   code?: string;
-  actionType?: 'chat' | 'code' | 'explanation' | 'debug';
+  actionType?: "chat" | "code" | "explanation" | "debug";
   canExecute?: boolean;
   executed?: boolean;
 }
@@ -50,15 +50,18 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
   const [textInput, setTextInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
-  const [conversationHistory, setConversationHistory] = useState<Array<{ role: 'user' | 'assistant'; content: string }>>([]);
+  const [conversationHistory, setConversationHistory] = useState<
+    Array<{ role: "user" | "assistant"; content: string }>
+  >([]);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
       type: "assistant",
-      content: "Hey! I'm your AI development assistant. I can help you build components, debug code, and create amazing features. Just ask me anything!",
+      content:
+        "Hey! I'm your AI development assistant. I can help you build components, debug code, and create amazing features. Just ask me anything!",
       timestamp: new Date(),
-      actionType: 'chat'
-    }
+      actionType: "chat",
+    },
   ]);
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -67,13 +70,14 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
 
   useEffect(() => {
     // Initialize speech recognition
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
       setSpeechSupported(true);
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
+      recognitionRef.current.lang = "en-US";
 
       recognitionRef.current.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
@@ -86,7 +90,7 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
     }
 
     // Initialize speech synthesis
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
       synthesisRef.current = window.speechSynthesis;
     }
 
@@ -123,7 +127,7 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
       utterance.rate = 0.9;
       utterance.pitch = 1;
       utterance.volume = 0.8;
-      
+
       utterance.onend = () => setIsSpeaking(false);
       utterance.onerror = () => setIsSpeaking(false);
 
@@ -131,94 +135,144 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
     }
   };
 
-  const generateAIResponse = async (userMessage: string): Promise<{ content: string; task?: DevelopmentTask; actionType: 'chat' | 'code' | 'explanation' | 'debug'; code?: string; canExecute?: boolean }> => {
+  const generateAIResponse = async (
+    userMessage: string,
+  ): Promise<{
+    content: string;
+    task?: DevelopmentTask;
+    actionType: "chat" | "code" | "explanation" | "debug";
+    code?: string;
+    canExecute?: boolean;
+  }> => {
     try {
       const openaiService = getOpenAIService();
 
       // Prevent multiple concurrent requests
       if (isProcessing) {
-        return { content: "Please wait, I'm still processing your previous request...", actionType: 'chat' };
+        return {
+          content: "Please wait, I'm still processing your previous request...",
+          actionType: "chat",
+        };
       }
 
       // Try to parse as development task first
       const task = await openaiService.parseVoiceCommand(userMessage);
-      
+
       if (task) {
-        let response = '';
-        let code = '';
-        let actionType: 'chat' | 'code' | 'explanation' | 'debug' = 'code';
-        
+        let response = "";
+        let code = "";
+        let actionType: "chat" | "code" | "explanation" | "debug" = "code";
+
         switch (task.action) {
-          case 'create':
-          case 'modify':
-            code = await openaiService.generateCode(task, 'React TypeScript project with Tailwind CSS');
+          case "create":
+          case "modify":
+            code = await openaiService.generateCode(
+              task,
+              "React TypeScript project with Tailwind CSS",
+            );
             response = `I'll ${task.action} a ${task.target} for you. Here's the code:`;
-            actionType = 'code';
+            actionType = "code";
             break;
-            
-          case 'explain':
-            response = await openaiService.explainCode(task.code || '', task.details);
-            actionType = 'explanation';
+
+          case "explain":
+            response = await openaiService.explainCode(
+              task.code || "",
+              task.details,
+            );
+            actionType = "explanation";
             break;
-            
-          case 'debug':
-            response = await openaiService.debugCode(task.code || '', task.details);
-            actionType = 'debug';
+
+          case "debug":
+            response = await openaiService.debugCode(
+              task.code || "",
+              task.details,
+            );
+            actionType = "debug";
             break;
-            
+
           default:
-            response = await openaiService.chatWithContext(userMessage, conversationHistory);
-            actionType = 'chat';
+            response = await openaiService.chatWithContext(
+              userMessage,
+              conversationHistory,
+            );
+            actionType = "chat";
         }
-        
-        return { content: response, task, actionType, code, canExecute: !!code };
+
+        return {
+          content: response,
+          task,
+          actionType,
+          code,
+          canExecute: !!code,
+        };
       } else {
-        const response = await openaiService.chatWithContext(userMessage, conversationHistory);
-        return { content: response, actionType: 'chat' };
+        const response = await openaiService.chatWithContext(
+          userMessage,
+          conversationHistory,
+        );
+        return { content: response, actionType: "chat" };
       }
     } catch (error) {
-      console.error('Error generating AI response:', error);
+      console.error("Error generating AI response:", error);
 
       // Enhanced error handling for different error types
-      if (error instanceof Error && error.message.includes('body stream already read')) {
+      if (
+        error instanceof Error &&
+        error.message.includes("body stream already read")
+      ) {
         return {
-          content: "I encountered a technical issue processing your request. Please try again in a moment.",
-          actionType: 'chat'
+          content:
+            "I encountered a technical issue processing your request. Please try again in a moment.",
+          actionType: "chat",
         };
       }
 
       // Smart fallback responses based on keywords
       const lowerMessage = userMessage.toLowerCase();
 
-      if (lowerMessage.includes('create') && lowerMessage.includes('component')) {
+      if (
+        lowerMessage.includes("create") &&
+        lowerMessage.includes("component")
+      ) {
         return {
-          content: "I'd love to help you create a component! While I'm reconnecting to my AI brain, can you tell me more details about what this component should do? For example: 'Create a login form with email and password fields'",
-          actionType: 'chat'
+          content:
+            "I'd love to help you create a component! While I'm reconnecting to my AI brain, can you tell me more details about what this component should do? For example: 'Create a login form with email and password fields'",
+          actionType: "chat",
         };
       }
 
-      if (lowerMessage.includes('fix') || lowerMessage.includes('debug') || lowerMessage.includes('error')) {
+      if (
+        lowerMessage.includes("fix") ||
+        lowerMessage.includes("debug") ||
+        lowerMessage.includes("error")
+      ) {
         return {
-          content: "I'm here to help debug! While I'm getting my full AI powers back, can you share the error message or describe what's not working? I can still provide guidance!",
-          actionType: 'chat'
+          content:
+            "I'm here to help debug! While I'm getting my full AI powers back, can you share the error message or describe what's not working? I can still provide guidance!",
+          actionType: "chat",
         };
       }
 
-      if (lowerMessage.includes('build') || lowerMessage.includes('make')) {
+      if (lowerMessage.includes("build") || lowerMessage.includes("make")) {
         return {
-          content: "Exciting! I love building things. While I'm reconnecting, tell me more about what you want to build - a page, component, API, or something else entirely?",
-          actionType: 'chat'
+          content:
+            "Exciting! I love building things. While I'm reconnecting, tell me more about what you want to build - a page, component, API, or something else entirely?",
+          actionType: "chat",
         };
       }
 
       return {
-        content: "I'm having a moment reconnecting to my AI superpowers, but I'm still here! Try asking me to create a component, fix some code, or build something specific. What would you like to work on?",
-        actionType: 'chat'
+        content:
+          "I'm having a moment reconnecting to my AI superpowers, but I'm still here! Try asking me to create a component, fix some code, or build something specific. What would you like to work on?",
+        actionType: "chat",
       };
     }
   };
 
-  const handleUserMessage = async (content: string, source: "voice" | "text") => {
+  const handleUserMessage = async (
+    content: string,
+    source: "voice" | "text",
+  ) => {
     if (!content.trim()) return;
 
     const userMessage: Message = {
@@ -226,18 +280,21 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
       type: "user",
       content: content.trim(),
       timestamp: new Date(),
-      actionType: 'chat'
+      actionType: "chat",
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setTextInput("");
     setIsProcessing(true);
 
-    setConversationHistory(prev => [...prev, { role: 'user', content: content.trim() }]);
+    setConversationHistory((prev) => [
+      ...prev,
+      { role: "user", content: content.trim() },
+    ]);
 
     try {
       const aiResponse = await generateAIResponse(content);
-      
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: "assistant",
@@ -247,12 +304,15 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
         code: aiResponse.code,
         actionType: aiResponse.actionType,
         canExecute: aiResponse.canExecute,
-        executed: false
+        executed: false,
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
-      setConversationHistory(prev => [...prev, { role: 'assistant', content: aiResponse.content }]);
-      
+      setMessages((prev) => [...prev, assistantMessage]);
+      setConversationHistory((prev) => [
+        ...prev,
+        { role: "assistant", content: aiResponse.content },
+      ]);
+
       if (source === "voice" && speechSupported) {
         setTimeout(() => speakText(aiResponse.content), 500);
       }
@@ -261,11 +321,12 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: "system",
-        content: "I'm having trouble connecting right now, but I'm still here to help! Try asking me to create a component or explain some code.",
+        content:
+          "I'm having trouble connecting right now, but I'm still here to help! Try asking me to create a component or explain some code.",
         timestamp: new Date(),
-        actionType: 'chat'
+        actionType: "chat",
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsProcessing(false);
     }
@@ -293,12 +354,14 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
   }
 
   return (
-    <div className={cn(
-      "fixed z-50 transition-all duration-300 ease-in-out",
-      isMinimized 
-        ? "bottom-6 right-6 w-80 h-16" 
-        : "bottom-6 right-6 w-96 h-[600px]"
-    )}>
+    <div
+      className={cn(
+        "fixed z-50 transition-all duration-300 ease-in-out",
+        isMinimized
+          ? "bottom-6 right-6 w-80 h-16"
+          : "bottom-6 right-6 w-96 h-[600px]",
+      )}
+    >
       <Card className="w-full h-full bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-blue-900 border-2 border-blue-200 dark:border-blue-700 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-blue-200 dark:border-blue-700 bg-gradient-to-r from-blue-500/10 to-purple-500/10">
@@ -314,7 +377,9 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
                   Active
                 </Badge>
                 {speechSupported && (
-                  <Badge variant="outline" className="text-xs">Voice</Badge>
+                  <Badge variant="outline" className="text-xs">
+                    Voice
+                  </Badge>
                 )}
               </div>
             </div>
@@ -326,7 +391,11 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
               onClick={() => setIsMinimized(!isMinimized)}
               className="w-8 h-8 p-0"
             >
-              {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+              {isMinimized ? (
+                <Maximize2 className="w-4 h-4" />
+              ) : (
+                <Minimize2 className="w-4 h-4" />
+              )}
             </Button>
             <Button
               variant="ghost"
@@ -351,40 +420,46 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
                   key={message.id}
                   className={cn(
                     "flex gap-2",
-                    message.type === "user" ? "justify-end" : "justify-start"
+                    message.type === "user" ? "justify-end" : "justify-start",
                   )}
                 >
                   {message.type !== "user" && (
-                    <div className={cn(
-                      "w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1",
-                      message.type === "system" 
-                        ? "bg-yellow-500/20 border border-yellow-500/30"
-                        : "bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500"
-                    )}>
-                      {message.actionType === 'code' ? (
+                    <div
+                      className={cn(
+                        "w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-1",
+                        message.type === "system"
+                          ? "bg-yellow-500/20 border border-yellow-500/30"
+                          : "bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500",
+                      )}
+                    >
+                      {message.actionType === "code" ? (
                         <Code className="w-3 h-3 text-white" />
-                      ) : message.actionType === 'explanation' ? (
+                      ) : message.actionType === "explanation" ? (
                         <Lightbulb className="w-3 h-3 text-white" />
-                      ) : message.actionType === 'debug' ? (
+                      ) : message.actionType === "debug" ? (
                         <Wrench className="w-3 h-3 text-white" />
                       ) : (
                         <Sparkles className="w-3 h-3 text-white" />
                       )}
                     </div>
                   )}
-                  
-                  <div className={cn(
-                    "max-w-[85%] space-y-2",
-                    message.type === "user" && "flex flex-col items-end"
-                  )}>
-                    <div className={cn(
-                      "rounded-2xl px-3 py-2 text-sm",
-                      message.type === "user" 
-                        ? "bg-blue-500 text-white" 
-                        : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
-                    )}>
+
+                  <div
+                    className={cn(
+                      "max-w-[85%] space-y-2",
+                      message.type === "user" && "flex flex-col items-end",
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "rounded-2xl px-3 py-2 text-sm",
+                        message.type === "user"
+                          ? "bg-blue-500 text-white"
+                          : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700",
+                      )}
+                    >
                       <p className="whitespace-pre-wrap">{message.content}</p>
-                      
+
                       {message.code && (
                         <div className="mt-2 space-y-2">
                           <div className="rounded-lg bg-slate-900 p-2 overflow-x-auto">
@@ -402,7 +477,9 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
                                 size="sm"
                                 variant="outline"
                                 className="h-6 text-xs"
-                                onClick={() => navigator.clipboard.writeText(message.code!)}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(message.code!)
+                                }
                               >
                                 <Copy className="w-3 h-3 mr-1" />
                                 Copy
@@ -411,13 +488,13 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
                           )}
                         </div>
                       )}
-                      
+
                       <p className="text-xs opacity-70 mt-1">
                         {message.timestamp.toLocaleTimeString()}
                       </p>
                     </div>
                   </div>
-                  
+
                   {message.type === "user" && (
                     <div className="w-6 h-6 rounded-full bg-slate-300 dark:bg-slate-600 flex items-center justify-center flex-shrink-0 mt-1">
                       <div className="w-3 h-3 rounded-full bg-slate-600 dark:bg-slate-300" />
@@ -425,7 +502,7 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
                   )}
                 </div>
               ))}
-              
+
               {isProcessing && (
                 <div className="flex gap-2 justify-start">
                   <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 mt-1">
@@ -438,7 +515,9 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
                         <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
                         <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce"></div>
                       </div>
-                      <span className="text-xs text-muted-foreground">Thinking...</span>
+                      <span className="text-xs text-muted-foreground">
+                        Thinking...
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -457,14 +536,18 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
                     disabled={isProcessing}
                     className={cn(
                       "w-10 h-10 rounded-full transition-all duration-200",
-                      isListening && "animate-pulse scale-110"
+                      isListening && "animate-pulse scale-110",
                     )}
                   >
-                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                    {isListening ? (
+                      <MicOff className="w-4 h-4" />
+                    ) : (
+                      <Mic className="w-4 h-4" />
+                    )}
                   </Button>
                 </div>
               )}
-              
+
               <form onSubmit={handleSubmit} className="flex gap-2">
                 <Input
                   value={textInput}
@@ -473,8 +556,8 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
                   className="flex-1 text-sm"
                   disabled={isProcessing}
                 />
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   size="sm"
                   disabled={!textInput.trim() || isProcessing}
                 >

@@ -18,7 +18,7 @@ XANO_INSTANCE_URL=https://your-workspace-id.xano.io
 XANO_API_KEY=your_actual_api_key_here
 XANO_DATABASE_ID=your_database_id
 
-# Twilio Configuration  
+# Twilio Configuration
 TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 TWILIO_AUTH_TOKEN=your_real_auth_token_here
 TWILIO_PHONE_NUMBER=+1234567890
@@ -33,9 +33,10 @@ PORT=8080
 In your Xano workspace, create these tables with the exact fields:
 
 ### **members** table:
+
 ```sql
 id (integer, auto-increment, primary key)
-uuid (text, unique, indexed) 
+uuid (text, unique, indexed)
 email (text, unique, indexed)
 phone (text, unique, indexed)
 first_name (text)
@@ -62,6 +63,7 @@ marketing_emails (boolean, default: true)
 ```
 
 ### **member_benefits** table:
+
 ```sql
 id (integer, auto-increment, primary key)
 uuid (text, unique, indexed)
@@ -83,6 +85,7 @@ usage_limit (integer, nullable)
 ```
 
 ### **member_benefit_usage** table:
+
 ```sql
 id (integer, auto-increment, primary key)
 member_id (integer, foreign key: members.id)
@@ -96,6 +99,7 @@ created_at (timestamp)
 ```
 
 ### **communications** table:
+
 ```sql
 id (integer, auto-increment, primary key)
 member_id (integer, foreign key: members.id, nullable)
@@ -127,37 +131,47 @@ ai_confidence (decimal(3,2), nullable)
 Create these API endpoints in Xano:
 
 ### **GET** `/members`
+
 - Returns paginated list of members
 - Query params: `page`, `per_page`, `search`, `status`, `membership_type`
 
 ### **GET** `/members/{id}`
+
 - Returns single member by ID
 
 ### **POST** `/members`
+
 - Creates new member
 - Body: member data object
 
 ### **PATCH** `/members/{id}`
+
 - Updates member
 - Body: partial member data
 
 ### **GET** `/member_benefits`
+
 - Returns list of benefits
 - Query params: `membership_level`, `is_active`
 
 ### **GET** `/members/{id}/benefits`
+
 - Returns benefits available to specific member
 
 ### **POST** `/member_benefits`
+
 - Creates new benefit
 
 ### **POST** `/communications`
+
 - Logs communication record
 
 ### **GET** `/analytics/dashboard`
+
 - Returns dashboard stats
 
 ### **GET** `/health`
+
 - Health check endpoint
 
 ## 📱 Step 4: Twilio Webhook Configuration
@@ -166,11 +180,13 @@ In your Twilio Console:
 
 1. **Go to Phone Numbers** → Select your number
 2. **Set Webhook URL** for incoming messages:
+
    ```
    https://yourdomain.com/api/real/webhooks/twilio/incoming
    ```
 
 3. **Set Status Webhook URL**:
+
    ```
    https://yourdomain.com/api/real/webhooks/twilio/status
    ```
@@ -181,22 +197,26 @@ In your Twilio Console:
 ## 🧪 Step 5: Test Everything
 
 1. **Start the server**:
+
    ```bash
    npm run dev
    ```
 
 2. **Check console for**:
+
    ```
    ✅ Xano client initialized with real credentials
    ✅ Twilio client initialized with real credentials
    ```
 
 3. **Test Xano connection**:
+
    ```bash
    curl -X POST http://localhost:8080/api/real/test/xano
    ```
 
 4. **Test Twilio connection**:
+
    ```bash
    curl -X POST http://localhost:8080/api/real/test/twilio
    ```
@@ -213,6 +233,7 @@ In your Twilio Console:
 Add some test data to your Xano tables:
 
 ### Sample Members:
+
 ```json
 [
   {
@@ -224,12 +245,13 @@ Add some test data to your Xano tables:
     "status": "active",
     "membership_type": "premium",
     "engagement_score": 85,
-    "lifetime_value": 1200.00
+    "lifetime_value": 1200.0
   }
 ]
 ```
 
 ### Sample Benefits:
+
 ```json
 [
   {
@@ -271,16 +293,19 @@ Add some test data to your Xano tables:
 ## 🔍 Troubleshooting
 
 ### Xano Connection Issues:
+
 - Verify instance URL format: `https://x8ki-letl-twmt.xano.io`
 - Check API key has proper permissions
 - Ensure database ID is correct
 
 ### Twilio Connection Issues:
+
 - Verify Account SID starts with "AC"
 - Check Auth Token is valid
 - Ensure phone number format: `+1234567890`
 
 ### Webhook Issues:
+
 - Use ngrok for local development: `ngrok http 8080`
 - Update Twilio webhook URLs to ngrok URL
 - Check webhook logs in Twilio console

@@ -19,8 +19,8 @@ export class SendGridClient {
 
   constructor(config: SendGridConfig) {
     this.config = {
-      fromName: 'RecurFlow',
-      ...config
+      fromName: "RecurFlow",
+      ...config,
     };
   }
 
@@ -30,34 +30,35 @@ export class SendGridClient {
         personalizations: [
           {
             to: [{ email: message.to }],
-            ...(message.templateId && message.dynamicData ? { dynamic_template_data: message.dynamicData } : {})
-          }
+            ...(message.templateId && message.dynamicData
+              ? { dynamic_template_data: message.dynamicData }
+              : {}),
+          },
         ],
         from: {
           email: this.config.fromEmail,
-          name: this.config.fromName
+          name: this.config.fromName,
         },
         subject: message.subject,
-        ...(message.templateId 
+        ...(message.templateId
           ? { template_id: message.templateId }
           : {
               content: [
                 {
-                  type: 'text/html',
-                  value: message.html || message.text || ''
-                }
-              ]
-            }
-        )
+                  type: "text/html",
+                  value: message.html || message.text || "",
+                },
+              ],
+            }),
       };
 
-      const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
-        method: 'POST',
+      const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${this.config.apiKey}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(emailData)
+        body: JSON.stringify(emailData),
       });
 
       if (!response.ok) {
@@ -67,14 +68,13 @@ export class SendGridClient {
 
       return {
         success: true,
-        messageId: response.headers.get('X-Message-Id'),
+        messageId: response.headers.get("X-Message-Id"),
         to: message.to,
         subject: message.subject,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
-
     } catch (error) {
-      console.error('SendGrid send error:', error);
+      console.error("SendGrid send error:", error);
       throw error;
     }
   }
@@ -82,15 +82,15 @@ export class SendGridClient {
   async testConnection(): Promise<boolean> {
     try {
       // Test with a simple API key validation call
-      const response = await fetch('https://api.sendgrid.com/v3/user/profile', {
+      const response = await fetch("https://api.sendgrid.com/v3/user/profile", {
         headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`
-        }
+          Authorization: `Bearer ${this.config.apiKey}`,
+        },
       });
-      
+
       return response.ok;
     } catch (error) {
-      console.error('SendGrid connection test failed:', error);
+      console.error("SendGrid connection test failed:", error);
       return false;
     }
   }
@@ -106,7 +106,9 @@ export function initializeSendGrid(config: SendGridConfig): SendGridClient {
 
 export function getSendGridClient(): SendGridClient {
   if (!sendGridClient) {
-    throw new Error('SendGrid client not initialized. Call initializeSendGrid() first.');
+    throw new Error(
+      "SendGrid client not initialized. Call initializeSendGrid() first.",
+    );
   }
   return sendGridClient;
 }

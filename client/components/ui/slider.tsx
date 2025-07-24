@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface SliderProps {
   value: number[];
@@ -9,7 +9,14 @@ interface SliderProps {
   className?: string;
 }
 
-export function Slider({ value, onValueChange, max, min, step, className = "" }: SliderProps) {
+export function Slider({
+  value,
+  onValueChange,
+  max,
+  min,
+  step,
+  className = "",
+}: SliderProps) {
   return (
     <input
       type="range"

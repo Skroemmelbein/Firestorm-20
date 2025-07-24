@@ -3,7 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Mic, MicOff, Volume2, VolumeX, Send, Sparkles, Settings, Code, FileText, Wrench, Lightbulb, Zap, Copy } from "lucide-react";
+import {
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
+  Send,
+  Sparkles,
+  Settings,
+  Code,
+  FileText,
+  Wrench,
+  Lightbulb,
+  Zap,
+  Copy,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,14 +33,14 @@ interface Message {
   timestamp: Date;
   task?: DevelopmentTask;
   code?: string;
-  actionType?: 'chat' | 'code' | 'explanation' | 'debug';
+  actionType?: "chat" | "code" | "explanation" | "debug";
   canExecute?: boolean;
   executed?: boolean;
 }
 
 interface DevelopmentTask {
-  action: 'create' | 'modify' | 'delete' | 'explain' | 'debug';
-  target: 'component' | 'page' | 'api' | 'database' | 'style' | 'function';
+  action: "create" | "modify" | "delete" | "explain" | "debug";
+  target: "component" | "page" | "api" | "database" | "style" | "function";
   details: string;
   code?: string;
   fileName?: string;
@@ -38,32 +52,36 @@ export default function Index() {
     {
       id: "1",
       type: "assistant",
-      content: "Hi! I'm your AI development assistant powered by OpenAI. I can help you:\n\n• Create components and pages\n• Generate and modify code\n• Debug issues\n• Explain complex concepts\n• Build APIs and databases\n\nJust speak naturally or type what you'd like to build!",
+      content:
+        "Hi! I'm your AI development assistant powered by OpenAI. I can help you:\n\n• Create components and pages\n• Generate and modify code\n• Debug issues\n• Explain complex concepts\n• Build APIs and databases\n\nJust speak naturally or type what you'd like to build!",
       timestamp: new Date(),
-      actionType: 'chat'
-    }
+      actionType: "chat",
+    },
   ]);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [textInput, setTextInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
-  const [conversationHistory, setConversationHistory] = useState<Array<{ role: 'user' | 'assistant'; content: string }>>([]);
+  const [conversationHistory, setConversationHistory] = useState<
+    Array<{ role: "user" | "assistant"; content: string }>
+  >([]);
   const [executingCode, setExecutingCode] = useState<string | null>(null);
-  
+
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const synthesisRef = useRef<SpeechSynthesis | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check for speech recognition support
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
       setSpeechSupported(true);
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
+      recognitionRef.current.lang = "en-US";
 
       recognitionRef.current.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
@@ -81,7 +99,7 @@ export default function Index() {
     }
 
     // Check for speech synthesis support
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
       synthesisRef.current = window.speechSynthesis;
     }
 
@@ -124,11 +142,11 @@ export default function Index() {
       utterance.rate = 0.9;
       utterance.pitch = 1;
       utterance.volume = 0.8;
-      
+
       utterance.onend = () => {
         setIsSpeaking(false);
       };
-      
+
       utterance.onerror = () => {
         setIsSpeaking(false);
       };
@@ -144,7 +162,14 @@ export default function Index() {
     }
   };
 
-  const generateAIResponse = async (userMessage: string): Promise<{ content: string; task?: DevelopmentTask; actionType: 'chat' | 'code' | 'explanation' | 'debug'; code?: string }> => {
+  const generateAIResponse = async (
+    userMessage: string,
+  ): Promise<{
+    content: string;
+    task?: DevelopmentTask;
+    actionType: "chat" | "code" | "explanation" | "debug";
+    code?: string;
+  }> => {
     try {
       const openaiService = getOpenAIService();
 
@@ -153,49 +178,74 @@ export default function Index() {
 
       if (task) {
         // This is a development command
-        let response = '';
-        let code = '';
-        let actionType: 'chat' | 'code' | 'explanation' | 'debug' = 'code';
+        let response = "";
+        let code = "";
+        let actionType: "chat" | "code" | "explanation" | "debug" = "code";
 
         switch (task.action) {
-          case 'create':
-          case 'modify':
-            code = await openaiService.generateCode(task, 'React TypeScript project with Tailwind CSS');
+          case "create":
+          case "modify":
+            code = await openaiService.generateCode(
+              task,
+              "React TypeScript project with Tailwind CSS",
+            );
             response = `I'll ${task.action} a ${task.target} for you. Here's the code:`;
-            actionType = 'code';
+            actionType = "code";
             break;
 
-          case 'explain':
-            response = await openaiService.explainCode(task.code || '', task.details);
-            actionType = 'explanation';
+          case "explain":
+            response = await openaiService.explainCode(
+              task.code || "",
+              task.details,
+            );
+            actionType = "explanation";
             break;
 
-          case 'debug':
-            response = await openaiService.debugCode(task.code || '', task.details);
-            actionType = 'debug';
+          case "debug":
+            response = await openaiService.debugCode(
+              task.code || "",
+              task.details,
+            );
+            actionType = "debug";
             break;
 
           default:
-            response = await openaiService.chatWithContext(userMessage, conversationHistory);
-            actionType = 'chat';
+            response = await openaiService.chatWithContext(
+              userMessage,
+              conversationHistory,
+            );
+            actionType = "chat";
         }
 
-        return { content: response, task, actionType, code, canExecute: !!code };
+        return {
+          content: response,
+          task,
+          actionType,
+          code,
+          canExecute: !!code,
+        };
       } else {
         // Regular conversation
-        const response = await openaiService.chatWithContext(userMessage, conversationHistory);
-        return { content: response, actionType: 'chat' };
+        const response = await openaiService.chatWithContext(
+          userMessage,
+          conversationHistory,
+        );
+        return { content: response, actionType: "chat" };
       }
     } catch (error) {
-      console.error('Error generating AI response:', error);
+      console.error("Error generating AI response:", error);
       return {
-        content: 'I apologize, but I encountered an error processing your request. Please try again or check your OpenAI connection.',
-        actionType: 'chat'
+        content:
+          "I apologize, but I encountered an error processing your request. Please try again or check your OpenAI connection.",
+        actionType: "chat",
       };
     }
   };
 
-  const handleUserMessage = async (content: string, source: "voice" | "text") => {
+  const handleUserMessage = async (
+    content: string,
+    source: "voice" | "text",
+  ) => {
     if (!content.trim()) return;
 
     const userMessage: Message = {
@@ -203,15 +253,18 @@ export default function Index() {
       type: "user",
       content: content.trim(),
       timestamp: new Date(),
-      actionType: 'chat'
+      actionType: "chat",
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setTextInput("");
     setIsProcessing(true);
 
     // Update conversation history
-    setConversationHistory(prev => [...prev, { role: 'user', content: content.trim() }]);
+    setConversationHistory((prev) => [
+      ...prev,
+      { role: "user", content: content.trim() },
+    ]);
 
     try {
       const aiResponse = await generateAIResponse(content);
@@ -225,13 +278,16 @@ export default function Index() {
         code: aiResponse.code,
         actionType: aiResponse.actionType,
         canExecute: aiResponse.canExecute,
-        executed: false
+        executed: false,
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      setMessages((prev) => [...prev, assistantMessage]);
 
       // Update conversation history
-      setConversationHistory(prev => [...prev, { role: 'assistant', content: aiResponse.content }]);
+      setConversationHistory((prev) => [
+        ...prev,
+        { role: "assistant", content: aiResponse.content },
+      ]);
 
       // Auto-speak AI responses if they came from voice input
       if (source === "voice" && speechSupported) {
@@ -244,15 +300,19 @@ export default function Index() {
         type: "system",
         content: "Sorry, I encountered an error. Please try again.",
         timestamp: new Date(),
-        actionType: 'chat'
+        actionType: "chat",
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const executeCode = async (messageId: string, task: DevelopmentTask, code: string) => {
+  const executeCode = async (
+    messageId: string,
+    task: DevelopmentTask,
+    code: string,
+  ) => {
     setExecutingCode(messageId);
 
     try {
@@ -260,25 +320,34 @@ export default function Index() {
       const fileName = task.fileName || generateFileName(task);
 
       switch (task.target) {
-        case 'component':
-          result = await fileManager.createComponent(fileName.replace('.tsx', ''), code);
+        case "component":
+          result = await fileManager.createComponent(
+            fileName.replace(".tsx", ""),
+            code,
+          );
           break;
-        case 'page':
-          result = await fileManager.createPage(fileName.replace('.tsx', ''), code);
+        case "page":
+          result = await fileManager.createPage(
+            fileName.replace(".tsx", ""),
+            code,
+          );
           break;
-        case 'api':
-          result = await fileManager.createAPI(fileName.replace('.ts', ''), code);
+        case "api":
+          result = await fileManager.createAPI(
+            fileName.replace(".ts", ""),
+            code,
+          );
           break;
         default:
-          result = { success: false, message: 'Unsupported file type' };
+          result = { success: false, message: "Unsupported file type" };
       }
 
       // Update the message to show execution status
-      setMessages(prev => prev.map(msg =>
-        msg.id === messageId
-          ? { ...msg, executed: true }
-          : msg
-      ));
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === messageId ? { ...msg, executed: true } : msg,
+        ),
+      );
 
       // Add result message
       const resultMessage: Message = {
@@ -288,21 +357,20 @@ export default function Index() {
           ? `✅ ${result.message}`
           : `❌ ${result.message}`,
         timestamp: new Date(),
-        actionType: 'chat'
+        actionType: "chat",
       };
 
-      setMessages(prev => [...prev, resultMessage]);
-
+      setMessages((prev) => [...prev, resultMessage]);
     } catch (error) {
       const errorMessage: Message = {
         id: Date.now().toString(),
         type: "system",
-        content: `❌ Failed to execute: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        content: `❌ Failed to execute: ${error instanceof Error ? error.message : "Unknown error"}`,
         timestamp: new Date(),
-        actionType: 'chat'
+        actionType: "chat",
       };
 
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setExecutingCode(null);
     }
@@ -311,18 +379,31 @@ export default function Index() {
   const generateFileName = (task: DevelopmentTask): string => {
     if (task.fileName) return task.fileName;
 
-    const name = task.details.split(' ').find(word =>
-      !['create', 'add', 'make', 'build', 'component', 'page', 'api'].includes(word.toLowerCase())
-    ) || 'NewFile';
+    const name =
+      task.details
+        .split(" ")
+        .find(
+          (word) =>
+            ![
+              "create",
+              "add",
+              "make",
+              "build",
+              "component",
+              "page",
+              "api",
+            ].includes(word.toLowerCase()),
+        ) || "NewFile";
 
-    const cleanName = name.charAt(0).toUpperCase() + name.slice(1).replace(/[^a-zA-Z0-9]/g, '');
+    const cleanName =
+      name.charAt(0).toUpperCase() + name.slice(1).replace(/[^a-zA-Z0-9]/g, "");
 
     switch (task.target) {
-      case 'component':
+      case "component":
         return `${cleanName}Component.tsx`;
-      case 'page':
+      case "page":
         return `${cleanName}Page.tsx`;
-      case 'api':
+      case "api":
         return `${cleanName}API.ts`;
       default:
         return `${cleanName}.tsx`;
@@ -335,7 +416,7 @@ export default function Index() {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleUserMessage(textInput, "text");
     }
@@ -352,17 +433,27 @@ export default function Index() {
                 <Sparkles className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">AI Development Assistant</h1>
-                <p className="text-sm text-muted-foreground">Voice-powered coding with OpenAI</p>
+                <h1 className="text-2xl font-bold text-foreground">
+                  AI Development Assistant
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Voice-powered coding with OpenAI
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="bg-green-500/10 text-green-600 border-green-500/20">
+              <Badge
+                variant="secondary"
+                className="bg-green-500/10 text-green-600 border-green-500/20"
+              >
                 <Zap className="w-3 h-3 mr-1" />
                 OpenAI Connected
               </Badge>
               {speechSupported ? (
-                <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                <Badge
+                  variant="secondary"
+                  className="bg-primary/10 text-primary border-primary/20"
+                >
                   Voice Enabled
                 </Badge>
               ) : (
@@ -392,51 +483,66 @@ export default function Index() {
               key={message.id}
               className={cn(
                 "flex gap-3",
-                message.type === "user" ? "justify-end" : "justify-start"
+                message.type === "user" ? "justify-end" : "justify-start",
               )}
             >
               {(message.type === "assistant" || message.type === "system") && (
-                <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1",
-                  message.type === "system"
-                    ? "bg-yellow-500/20 border border-yellow-500/30"
-                    : "bg-gradient-to-br from-primary via-primary to-primary/80"
-                )}>
-                  {message.actionType === 'code' ? (
+                <div
+                  className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1",
+                    message.type === "system"
+                      ? "bg-yellow-500/20 border border-yellow-500/30"
+                      : "bg-gradient-to-br from-primary via-primary to-primary/80",
+                  )}
+                >
+                  {message.actionType === "code" ? (
                     <Code className="w-4 h-4 text-primary-foreground" />
-                  ) : message.actionType === 'explanation' ? (
+                  ) : message.actionType === "explanation" ? (
                     <Lightbulb className="w-4 h-4 text-primary-foreground" />
-                  ) : message.actionType === 'debug' ? (
+                  ) : message.actionType === "debug" ? (
                     <Wrench className="w-4 h-4 text-primary-foreground" />
                   ) : (
                     <Sparkles className="w-4 h-4 text-primary-foreground" />
                   )}
                 </div>
               )}
-              <div className={cn(
-                "max-w-[85%] space-y-2",
-                message.type === "user" && "flex flex-col items-end"
-              )}>
-                <Card className={cn(
-                  "shadow-sm",
-                  message.type === "user"
-                    ? "bg-primary text-primary-foreground border-primary/20"
-                    : message.type === "system"
-                    ? "bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-700/30"
-                    : "bg-card border-border/50"
-                )}>
+              <div
+                className={cn(
+                  "max-w-[85%] space-y-2",
+                  message.type === "user" && "flex flex-col items-end",
+                )}
+              >
+                <Card
+                  className={cn(
+                    "shadow-sm",
+                    message.type === "user"
+                      ? "bg-primary text-primary-foreground border-primary/20"
+                      : message.type === "system"
+                        ? "bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-700/30"
+                        : "bg-card border-border/50",
+                  )}
+                >
                   {message.task && (
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm flex items-center gap-2">
-                        {message.actionType === 'code' && <Code className="w-4 h-4" />}
-                        {message.actionType === 'explanation' && <Lightbulb className="w-4 h-4" />}
-                        {message.actionType === 'debug' && <Wrench className="w-4 h-4" />}
-                        {message.task.action} {message.task.target}: {message.task.fileName || message.task.details}
+                        {message.actionType === "code" && (
+                          <Code className="w-4 h-4" />
+                        )}
+                        {message.actionType === "explanation" && (
+                          <Lightbulb className="w-4 h-4" />
+                        )}
+                        {message.actionType === "debug" && (
+                          <Wrench className="w-4 h-4" />
+                        )}
+                        {message.task.action} {message.task.target}:{" "}
+                        {message.task.fileName || message.task.details}
                       </CardTitle>
                     </CardHeader>
                   )}
                   <CardContent className={cn("p-4", message.task && "pt-0")}>
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                      {message.content}
+                    </p>
                     {message.code && (
                       <div className="mt-3 space-y-3">
                         <div className="rounded-lg bg-slate-900 p-4 overflow-x-auto">
@@ -448,8 +554,16 @@ export default function Index() {
                           <div className="flex gap-2">
                             <Button
                               size="sm"
-                              onClick={() => executeCode(message.id, message.task!, message.code!)}
-                              disabled={executingCode === message.id || message.executed}
+                              onClick={() =>
+                                executeCode(
+                                  message.id,
+                                  message.task!,
+                                  message.code!,
+                                )
+                              }
+                              disabled={
+                                executingCode === message.id || message.executed
+                              }
                               className="gap-2"
                             >
                               {executingCode === message.id ? (
@@ -472,7 +586,9 @@ export default function Index() {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => navigator.clipboard.writeText(message.code!)}
+                              onClick={() =>
+                                navigator.clipboard.writeText(message.code!)
+                              }
                               className="gap-2"
                             >
                               <Copy className="w-3 h-3" />
@@ -482,10 +598,14 @@ export default function Index() {
                         )}
                       </div>
                     )}
-                    <p className={cn(
-                      "text-xs mt-2 opacity-70",
-                      message.type === "user" ? "text-primary-foreground/70" : "text-muted-foreground"
-                    )}>
+                    <p
+                      className={cn(
+                        "text-xs mt-2 opacity-70",
+                        message.type === "user"
+                          ? "text-primary-foreground/70"
+                          : "text-muted-foreground",
+                      )}
+                    >
                       {message.timestamp.toLocaleTimeString()}
                     </p>
                   </CardContent>
@@ -511,7 +631,9 @@ export default function Index() {
                       <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
                       <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
                     </div>
-                    <span className="text-sm text-muted-foreground">Thinking...</span>
+                    <span className="text-sm text-muted-foreground">
+                      Thinking...
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -535,7 +657,7 @@ export default function Index() {
                   disabled={isProcessing}
                   className={cn(
                     "w-16 h-16 rounded-full transition-all duration-200",
-                    isListening && "animate-pulse scale-110"
+                    isListening && "animate-pulse scale-110",
                   )}
                 >
                   {isListening ? (
@@ -566,12 +688,16 @@ export default function Index() {
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder={speechSupported ? "Type a message or use voice..." : "Type your message..."}
+                placeholder={
+                  speechSupported
+                    ? "Type a message or use voice..."
+                    : "Type your message..."
+                }
                 className="flex-1 min-h-[60px] max-h-32 resize-none bg-background/50 border-border/50 focus:border-primary/50"
                 disabled={isProcessing}
               />
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 size="lg"
                 disabled={!textInput.trim() || isProcessing}
                 className="px-6"
@@ -584,13 +710,14 @@ export default function Index() {
               <p className="text-xs text-center text-muted-foreground">
                 {speechSupported
                   ? "Click the microphone to speak or type your message above. Press Enter to send."
-                  : "Speech recognition not supported in this browser. You can still type messages."
-                }
+                  : "Speech recognition not supported in this browser. You can still type messages."}
               </p>
               <Alert className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
                 <FileText className="h-4 w-4" />
                 <AlertDescription className="text-xs">
-                  <strong>Try saying:</strong> "Create a login component", "Fix the header styling", "Add an API for users", "Explain this code", "Debug this function"
+                  <strong>Try saying:</strong> "Create a login component", "Fix
+                  the header styling", "Add an API for users", "Explain this
+                  code", "Debug this function"
                 </AlertDescription>
               </Alert>
             </div>

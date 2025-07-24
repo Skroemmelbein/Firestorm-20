@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,19 +13,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { 
-  MessageSquare, 
-  Mail, 
-  Send, 
-  CheckCircle, 
-  XCircle, 
+import {
+  MessageSquare,
+  Mail,
+  Send,
+  CheckCircle,
+  XCircle,
   Loader2,
   Phone,
-  Zap
+  Zap,
 } from "lucide-react";
 
 interface TestResult {
-  type: 'sms' | 'email';
+  type: "sms" | "email";
   success: boolean;
   details: any;
   timestamp: string;
@@ -28,13 +34,15 @@ interface TestResult {
 export default function TestMessageInterface() {
   const [smsData, setSmsData] = useState({
     phone: "+18144409968",
-    message: "🚀 Test SMS from RecurFlow! Your marketing automation is working perfectly."
+    message:
+      "🚀 Test SMS from RecurFlow! Your marketing automation is working perfectly.",
   });
 
   const [emailData, setEmailData] = useState({
     email: "shannonkroemmelbein@gmail.com",
     subject: "Test Email from RecurFlow Marketing",
-    message: "Hello! This is a test email from your RecurFlow marketing automation system. Everything is working perfectly! 🎉"
+    message:
+      "Hello! This is a test email from your RecurFlow marketing automation system. Everything is working perfectly! 🎉",
   });
 
   const [sending, setSending] = useState({ sms: false, email: false });
@@ -46,10 +54,10 @@ export default function TestMessageInterface() {
   const runDiagnostics = async () => {
     setDiagnosing(true);
     try {
-      const response = await fetch('/api/real/test/twilio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+      const response = await fetch("/api/real/test/twilio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
       });
 
       const result = await response.json();
@@ -57,14 +65,14 @@ export default function TestMessageInterface() {
         connected: response.ok,
         httpStatus: response.status,
         ...result,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       setConnectionStatus({
         connected: false,
-        error: 'Network connection failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
+        error: "Network connection failed",
+        details: error instanceof Error ? error.message : "Unknown error",
+        timestamp: new Date().toISOString(),
       });
     } finally {
       setDiagnosing(false);
@@ -73,15 +81,15 @@ export default function TestMessageInterface() {
 
   // Send test SMS
   const sendTestSMS = async () => {
-    setSending(prev => ({ ...prev, sms: true }));
+    setSending((prev) => ({ ...prev, sms: true }));
     try {
-      const response = await fetch('/api/real/sms/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/real/sms/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           to: smsData.phone,
-          body: smsData.message
-        })
+          body: smsData.message,
+        }),
       });
 
       let result;
@@ -90,47 +98,53 @@ export default function TestMessageInterface() {
       } catch (jsonError) {
         result = {
           success: false,
-          error: `Response parsing failed: ${jsonError instanceof Error ? jsonError.message : 'Invalid JSON'}`,
+          error: `Response parsing failed: ${jsonError instanceof Error ? jsonError.message : "Invalid JSON"}`,
           httpStatus: response.status,
-          httpStatusText: response.statusText
+          httpStatusText: response.statusText,
         };
       }
 
-      setResults(prev => [{
-        type: 'sms',
-        success: result.success || response.ok,
-        details: {
-          ...result,
-          httpStatus: response.status,
-          httpStatusText: response.statusText,
-          requestData: { to: smsData.phone, body: smsData.message }
+      setResults((prev) => [
+        {
+          type: "sms",
+          success: result.success || response.ok,
+          details: {
+            ...result,
+            httpStatus: response.status,
+            httpStatusText: response.statusText,
+            requestData: { to: smsData.phone, body: smsData.message },
+          },
+          timestamp: new Date().toISOString(),
         },
-        timestamp: new Date().toISOString()
-      }, ...prev]);
-
+        ...prev,
+      ]);
     } catch (error) {
-      setResults(prev => [{
-        type: 'sms',
-        success: false,
-        details: {
-          error: error instanceof Error ? error.message : 'Failed to send SMS',
-          networkError: true,
-          requestData: { to: smsData.phone, body: smsData.message }
+      setResults((prev) => [
+        {
+          type: "sms",
+          success: false,
+          details: {
+            error:
+              error instanceof Error ? error.message : "Failed to send SMS",
+            networkError: true,
+            requestData: { to: smsData.phone, body: smsData.message },
+          },
+          timestamp: new Date().toISOString(),
         },
-        timestamp: new Date().toISOString()
-      }, ...prev]);
+        ...prev,
+      ]);
     } finally {
-      setSending(prev => ({ ...prev, sms: false }));
+      setSending((prev) => ({ ...prev, sms: false }));
     }
   };
 
   // Send test email
   const sendTestEmail = async () => {
-    setSending(prev => ({ ...prev, email: true }));
+    setSending((prev) => ({ ...prev, email: true }));
     try {
-      const response = await fetch('/api/real/email/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/real/email/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           to: emailData.email,
           subject: emailData.subject,
@@ -152,32 +166,40 @@ export default function TestMessageInterface() {
                 From: RecurFlow Marketing System
               </p>
             </div>
-          `
-        })
+          `,
+        }),
       });
 
       const result = await response.json();
-      
-      setResults(prev => [{
-        type: 'email',
-        success: result.success || response.ok,
-        details: result,
-        timestamp: new Date().toISOString()
-      }, ...prev]);
 
+      setResults((prev) => [
+        {
+          type: "email",
+          success: result.success || response.ok,
+          details: result,
+          timestamp: new Date().toISOString(),
+        },
+        ...prev,
+      ]);
     } catch (error) {
-      setResults(prev => [{
-        type: 'email',
-        success: false,
-        details: { error: error instanceof Error ? error.message : 'Failed to send email' },
-        timestamp: new Date().toISOString()
-      }, ...prev]);
+      setResults((prev) => [
+        {
+          type: "email",
+          success: false,
+          details: {
+            error:
+              error instanceof Error ? error.message : "Failed to send email",
+          },
+          timestamp: new Date().toISOString(),
+        },
+        ...prev,
+      ]);
     } finally {
-      setSending(prev => ({ ...prev, email: false }));
+      setSending((prev) => ({ ...prev, email: false }));
     }
   };
 
-  // Send both simultaneously 
+  // Send both simultaneously
   const sendBoth = async () => {
     await Promise.all([sendTestSMS(), sendTestEmail()]);
   };
@@ -192,18 +214,28 @@ export default function TestMessageInterface() {
             Test Marketing Messages
           </CardTitle>
           <CardDescription>
-            Send test SMS and email messages to verify your integrations are working
+            Send test SMS and email messages to verify your integrations are
+            working
           </CardDescription>
           <div className="flex gap-2 mt-4">
-            <Button onClick={sendBoth} disabled={sending.sms || sending.email} className="gap-2">
-              {(sending.sms || sending.email) ? (
+            <Button
+              onClick={sendBoth}
+              disabled={sending.sms || sending.email}
+              className="gap-2"
+            >
+              {sending.sms || sending.email ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <Send className="w-4 h-4" />
               )}
               Send Both Tests
             </Button>
-            <Button onClick={runDiagnostics} disabled={diagnosing} variant="outline" className="gap-2">
+            <Button
+              onClick={runDiagnostics}
+              disabled={diagnosing}
+              variant="outline"
+              className="gap-2"
+            >
               {diagnosing ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
@@ -215,20 +247,31 @@ export default function TestMessageInterface() {
 
           {/* Connection Status */}
           {connectionStatus && (
-            <Alert variant={connectionStatus.connected ? "default" : "destructive"} className="mt-4">
-              {connectionStatus.connected ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+            <Alert
+              variant={connectionStatus.connected ? "default" : "destructive"}
+              className="mt-4"
+            >
+              {connectionStatus.connected ? (
+                <CheckCircle className="h-4 w-4" />
+              ) : (
+                <XCircle className="h-4 w-4" />
+              )}
               <AlertDescription>
                 {connectionStatus.connected ? (
                   <div>
                     <strong>✅ Twilio Connected</strong>
-                    <div className="text-xs mt-1">Ready to send SMS from +1 (855) 800-0037</div>
+                    <div className="text-xs mt-1">
+                      Ready to send SMS from +1 (855) 800-0037
+                    </div>
                   </div>
                 ) : (
                   <div>
                     <strong>❌ Connection Failed</strong>
                     <div className="text-xs mt-1">{connectionStatus.error}</div>
                     {connectionStatus.httpStatus && (
-                      <div className="text-xs mt-1">HTTP Status: {connectionStatus.httpStatus}</div>
+                      <div className="text-xs mt-1">
+                        HTTP Status: {connectionStatus.httpStatus}
+                      </div>
                     )}
                   </div>
                 )}
@@ -269,17 +312,24 @@ export default function TestMessageInterface() {
                   <Input
                     id="sms-phone"
                     value={smsData.phone}
-                    onChange={(e) => setSmsData(prev => ({ ...prev, phone: e.target.value }))}
+                    onChange={(e) =>
+                      setSmsData((prev) => ({ ...prev, phone: e.target.value }))
+                    }
                     placeholder="+1234567890"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="sms-message">Message</Label>
                   <Textarea
                     id="sms-message"
                     value={smsData.message}
-                    onChange={(e) => setSmsData(prev => ({ ...prev, message: e.target.value }))}
+                    onChange={(e) =>
+                      setSmsData((prev) => ({
+                        ...prev,
+                        message: e.target.value,
+                      }))
+                    }
                     rows={3}
                     maxLength={160}
                   />
@@ -288,9 +338,9 @@ export default function TestMessageInterface() {
                   </p>
                 </div>
               </div>
-              
-              <Button 
-                onClick={sendTestSMS} 
+
+              <Button
+                onClick={sendTestSMS}
                 disabled={sending.sms || !smsData.phone || !smsData.message}
                 className="gap-2 w-full"
               >
@@ -301,11 +351,12 @@ export default function TestMessageInterface() {
                 )}
                 Send Test SMS
               </Button>
-              
+
               <Alert>
                 <CheckCircle className="h-4 w-4" />
                 <AlertDescription>
-                  <strong>Ready!</strong> Twilio SMS is connected and working. Your test will be sent from +1 (855) 800-0037
+                  <strong>Ready!</strong> Twilio SMS is connected and working.
+                  Your test will be sent from +1 (855) 800-0037
                 </AlertDescription>
               </Alert>
             </CardContent>
@@ -332,36 +383,53 @@ export default function TestMessageInterface() {
                     id="email-address"
                     type="email"
                     value={emailData.email}
-                    onChange={(e) => setEmailData(prev => ({ ...prev, email: e.target.value }))}
+                    onChange={(e) =>
+                      setEmailData((prev) => ({
+                        ...prev,
+                        email: e.target.value,
+                      }))
+                    }
                     placeholder="test@example.com"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="email-subject">Subject Line</Label>
                   <Input
                     id="email-subject"
                     value={emailData.subject}
-                    onChange={(e) => setEmailData(prev => ({ ...prev, subject: e.target.value }))}
+                    onChange={(e) =>
+                      setEmailData((prev) => ({
+                        ...prev,
+                        subject: e.target.value,
+                      }))
+                    }
                     placeholder="Test subject"
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="email-message">Message Content</Label>
                 <Textarea
                   id="email-message"
                   value={emailData.message}
-                  onChange={(e) => setEmailData(prev => ({ ...prev, message: e.target.value }))}
+                  onChange={(e) =>
+                    setEmailData((prev) => ({
+                      ...prev,
+                      message: e.target.value,
+                    }))
+                  }
                   rows={4}
                   placeholder="Your email message..."
                 />
               </div>
-              
-              <Button 
-                onClick={sendTestEmail} 
-                disabled={sending.email || !emailData.email || !emailData.subject}
+
+              <Button
+                onClick={sendTestEmail}
+                disabled={
+                  sending.email || !emailData.email || !emailData.subject
+                }
                 className="gap-2 w-full"
               >
                 {sending.email ? (
@@ -371,10 +439,12 @@ export default function TestMessageInterface() {
                 )}
                 Send Test Email
               </Button>
-              
+
               <Alert>
                 <AlertDescription>
-                  <strong>Note:</strong> SendGrid integration will be configured automatically. The email will include system status and be professionally formatted.
+                  <strong>Note:</strong> SendGrid integration will be configured
+                  automatically. The email will include system status and be
+                  professionally formatted.
                 </AlertDescription>
               </Alert>
             </CardContent>
@@ -392,41 +462,50 @@ export default function TestMessageInterface() {
           <CardContent>
             <div className="space-y-3">
               {results.slice(0, 5).map((result, index) => (
-                <div 
+                <div
                   key={index}
                   className={`p-4 rounded-lg border ${
-                    result.success 
-                      ? 'border-green-200 bg-green-50' 
-                      : 'border-red-200 bg-red-50'
+                    result.success
+                      ? "border-green-200 bg-green-50"
+                      : "border-red-200 bg-red-50"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      {result.type === 'sms' ? (
+                      {result.type === "sms" ? (
                         <MessageSquare className="w-4 h-4" />
                       ) : (
                         <Mail className="w-4 h-4" />
                       )}
-                      <Badge variant={result.success ? "default" : "destructive"}>
-                        {result.type.toUpperCase()} {result.success ? "Sent" : "Failed"}
+                      <Badge
+                        variant={result.success ? "default" : "destructive"}
+                      >
+                        {result.type.toUpperCase()}{" "}
+                        {result.success ? "Sent" : "Failed"}
                       </Badge>
                     </div>
                     <span className="text-xs text-muted-foreground">
                       {new Date(result.timestamp).toLocaleTimeString()}
                     </span>
                   </div>
-                  
+
                   {result.success ? (
                     <div className="text-sm text-green-700">
                       ✅ Message sent successfully!
                       {result.details.sid && (
-                        <div className="text-xs mt-1 font-mono">Twilio SID: {result.details.sid}</div>
+                        <div className="text-xs mt-1 font-mono">
+                          Twilio SID: {result.details.sid}
+                        </div>
                       )}
                       {result.details.status && (
-                        <div className="text-xs mt-1">Status: {result.details.status}</div>
+                        <div className="text-xs mt-1">
+                          Status: {result.details.status}
+                        </div>
                       )}
                       {result.details.price && (
-                        <div className="text-xs mt-1">Cost: ${result.details.price}</div>
+                        <div className="text-xs mt-1">
+                          Cost: ${result.details.price}
+                        </div>
                       )}
                     </div>
                   ) : (
@@ -441,11 +520,13 @@ export default function TestMessageInterface() {
                       )}
 
                       {/* HTTP Status Error */}
-                      {result.details.httpStatus && result.details.httpStatus !== 200 && (
-                        <div className="bg-red-100 border border-red-300 rounded p-2 text-xs">
-                          <strong>HTTP {result.details.httpStatus}:</strong> {result.details.httpStatusText}
-                        </div>
-                      )}
+                      {result.details.httpStatus &&
+                        result.details.httpStatus !== 200 && (
+                          <div className="bg-red-100 border border-red-300 rounded p-2 text-xs">
+                            <strong>HTTP {result.details.httpStatus}:</strong>{" "}
+                            {result.details.httpStatusText}
+                          </div>
+                        )}
 
                       {/* Twilio API Error */}
                       {result.details.error && !result.details.networkError && (
@@ -464,25 +545,45 @@ export default function TestMessageInterface() {
                       {/* More Info */}
                       {result.details.more_info && (
                         <div className="bg-blue-100 border border-blue-300 rounded p-2 text-xs">
-                          <strong>More Info:</strong> <a href={result.details.more_info} target="_blank" className="underline text-blue-600">Twilio Docs</a>
+                          <strong>More Info:</strong>{" "}
+                          <a
+                            href={result.details.more_info}
+                            target="_blank"
+                            className="underline text-blue-600"
+                          >
+                            Twilio Docs
+                          </a>
                         </div>
                       )}
 
                       {/* Request Details */}
                       {result.details.requestData && (
                         <details className="bg-gray-100 border border-gray-300 rounded p-2 text-xs">
-                          <summary className="cursor-pointer font-medium">Request Details</summary>
-                          <pre className="mt-2 whitespace-pre-wrap">{JSON.stringify(result.details.requestData, null, 2)}</pre>
+                          <summary className="cursor-pointer font-medium">
+                            Request Details
+                          </summary>
+                          <pre className="mt-2 whitespace-pre-wrap">
+                            {JSON.stringify(
+                              result.details.requestData,
+                              null,
+                              2,
+                            )}
+                          </pre>
                         </details>
                       )}
 
                       {/* Full Error Response */}
-                      {result.details && Object.keys(result.details).length > 2 && (
-                        <details className="bg-gray-100 border border-gray-300 rounded p-2 text-xs">
-                          <summary className="cursor-pointer font-medium">Full Error Response</summary>
-                          <pre className="mt-2 whitespace-pre-wrap">{JSON.stringify(result.details, null, 2)}</pre>
-                        </details>
-                      )}
+                      {result.details &&
+                        Object.keys(result.details).length > 2 && (
+                          <details className="bg-gray-100 border border-gray-300 rounded p-2 text-xs">
+                            <summary className="cursor-pointer font-medium">
+                              Full Error Response
+                            </summary>
+                            <pre className="mt-2 whitespace-pre-wrap">
+                              {JSON.stringify(result.details, null, 2)}
+                            </pre>
+                          </details>
+                        )}
                     </div>
                   )}
                 </div>

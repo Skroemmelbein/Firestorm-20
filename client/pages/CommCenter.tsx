@@ -1,13 +1,25 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   MessageSquare,
   Phone,
@@ -30,7 +42,7 @@ import {
   BarChart3,
   FileText,
   Download,
-  RefreshCw
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
@@ -38,8 +50,8 @@ import AdminLayout from "@/components/AdminLayout";
 interface MessageTemplate {
   id: string;
   name: string;
-  type: 'sms' | 'email' | 'voice';
-  category: 'marketing' | 'billing' | 'support' | 'onboarding';
+  type: "sms" | "email" | "voice";
+  category: "marketing" | "billing" | "support" | "onboarding";
   subject?: string;
   content: string;
   variables: string[];
@@ -60,7 +72,7 @@ interface ClientJourney {
 
 interface JourneyStep {
   id: string;
-  type: 'sms' | 'email' | 'voice' | 'wait' | 'condition';
+  type: "sms" | "email" | "voice" | "wait" | "condition";
   templateId?: string;
   delay?: number;
   condition?: string;
@@ -70,8 +82,8 @@ interface JourneyStep {
 interface Campaign {
   id: string;
   name: string;
-  type: 'sms' | 'email' | 'voice';
-  status: 'draft' | 'scheduled' | 'running' | 'completed' | 'paused';
+  type: "sms" | "email" | "voice";
+  status: "draft" | "scheduled" | "running" | "completed" | "paused";
   audienceSize: number;
   sent: number;
   delivered: number;
@@ -82,82 +94,97 @@ interface Campaign {
 export default function CommCenter() {
   const [templates] = useState<MessageTemplate[]>([
     {
-      id: '1',
-      name: 'Payment Reminder',
-      type: 'sms',
-      category: 'billing',
-      content: 'Hi {{customer_name}}, your payment of ${{amount}} is due on {{due_date}}. Pay now: {{payment_link}}',
-      variables: ['customer_name', 'amount', 'due_date', 'payment_link'],
+      id: "1",
+      name: "Payment Reminder",
+      type: "sms",
+      category: "billing",
+      content:
+        "Hi {{customer_name}}, your payment of ${{amount}} is due on {{due_date}}. Pay now: {{payment_link}}",
+      variables: ["customer_name", "amount", "due_date", "payment_link"],
       active: true,
       successRate: 85.3,
-      lastUsed: new Date()
+      lastUsed: new Date(),
     },
     {
-      id: '2',
-      name: 'Welcome Email',
-      type: 'email',
-      category: 'onboarding',
-      subject: 'Welcome to {{company_name}}!',
-      content: 'Welcome {{customer_name}}! Thank you for subscribing to our {{plan_name}} plan.',
-      variables: ['customer_name', 'company_name', 'plan_name'],
+      id: "2",
+      name: "Welcome Email",
+      type: "email",
+      category: "onboarding",
+      subject: "Welcome to {{company_name}}!",
+      content:
+        "Welcome {{customer_name}}! Thank you for subscribing to our {{plan_name}} plan.",
+      variables: ["customer_name", "company_name", "plan_name"],
       active: true,
-      successRate: 92.1
-    }
+      successRate: 92.1,
+    },
   ]);
 
   const [journeys] = useState<ClientJourney[]>([
     {
-      id: '1',
-      name: 'New Customer Onboarding',
-      trigger: 'subscription_created',
+      id: "1",
+      name: "New Customer Onboarding",
+      trigger: "subscription_created",
       steps: [
-        { id: '1', type: 'email', templateId: '2', order: 1 },
-        { id: '2', type: 'wait', delay: 24, order: 2 },
-        { id: '3', type: 'sms', templateId: '1', order: 3 }
+        { id: "1", type: "email", templateId: "2", order: 1 },
+        { id: "2", type: "wait", delay: 24, order: 2 },
+        { id: "3", type: "sms", templateId: "1", order: 3 },
       ],
       active: true,
       enrolledCount: 156,
-      completionRate: 78.2
-    }
+      completionRate: 78.2,
+    },
   ]);
 
   const [campaigns] = useState<Campaign[]>([
     {
-      id: '1',
-      name: 'Monthly Newsletter',
-      type: 'email',
-      status: 'completed',
+      id: "1",
+      name: "Monthly Newsletter",
+      type: "email",
+      status: "completed",
       audienceSize: 2847,
       sent: 2847,
       delivered: 2798,
       responded: 312,
-      scheduledAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
-    }
+      scheduledAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+    },
   ]);
 
-  const [selectedTemplate, setSelectedTemplate] = useState<MessageTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<MessageTemplate | null>(null);
 
   const [nmiEvents] = useState([
-    { id: '1', event: 'Payment Successful', customerId: 'CUST_001', amount: 29.99, timestamp: new Date() },
-    { id: '2', event: 'Payment Failed', customerId: 'CUST_002', amount: 99.99, timestamp: new Date(Date.now() - 300000) }
+    {
+      id: "1",
+      event: "Payment Successful",
+      customerId: "CUST_001",
+      amount: 29.99,
+      timestamp: new Date(),
+    },
+    {
+      id: "2",
+      event: "Payment Failed",
+      customerId: "CUST_002",
+      amount: 99.99,
+      timestamp: new Date(Date.now() - 300000),
+    },
   ]);
 
-  const getStatusColor = (status: Campaign['status']) => {
+  const getStatusColor = (status: Campaign["status"]) => {
     const colors = {
-      draft: 'bg-gray-500/10 text-gray-600',
-      scheduled: 'bg-blue-500/10 text-blue-600',
-      running: 'bg-green-500/10 text-green-600',
-      completed: 'bg-purple-500/10 text-purple-600',
-      paused: 'bg-yellow-500/10 text-yellow-600'
+      draft: "bg-gray-500/10 text-gray-600",
+      scheduled: "bg-blue-500/10 text-blue-600",
+      running: "bg-green-500/10 text-green-600",
+      completed: "bg-purple-500/10 text-purple-600",
+      paused: "bg-yellow-500/10 text-yellow-600",
     };
     return colors[status];
   };
 
-  const getTypeIcon = (type: 'sms' | 'email' | 'voice') => {
+  const getTypeIcon = (type: "sms" | "email" | "voice") => {
     const icons = {
       sms: MessageSquare,
       email: Mail,
-      voice: Phone
+      voice: Phone,
     };
     return icons[type];
   };
@@ -168,12 +195,19 @@ export default function CommCenter() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold gradient-text tracking-tight">Communication Center</h1>
-            <p className="text-blue-700/70 font-medium">Manage Twilio, SendGrid templates and customer journeys</p>
+            <h1 className="text-3xl font-bold gradient-text tracking-tight">
+              Communication Center
+            </h1>
+            <p className="text-blue-700/70 font-medium">
+              Manage Twilio, SendGrid templates and customer journeys
+            </p>
           </div>
           <div className="flex gap-2">
             <Link to="/twilio-vault">
-              <Button variant="outline" className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50 corp-shadow">
+              <Button
+                variant="outline"
+                className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50 corp-shadow"
+              >
                 <Database className="w-4 h-4" />
                 API Vault
               </Button>
@@ -189,11 +223,15 @@ export default function CommCenter() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Active Templates</CardTitle>
+              <CardTitle className="text-sm font-semibold text-blue-800">
+                Active Templates
+              </CardTitle>
               <FileText className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold gradient-text">{templates.filter(t => t.active).length}</div>
+              <div className="text-2xl font-bold gradient-text">
+                {templates.filter((t) => t.active).length}
+              </div>
               <p className="text-xs text-blue-600 font-medium">
                 {templates.length} total templates
               </p>
@@ -202,20 +240,27 @@ export default function CommCenter() {
 
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Running Journeys</CardTitle>
+              <CardTitle className="text-sm font-semibold text-blue-800">
+                Running Journeys
+              </CardTitle>
               <Users className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold gradient-text">{journeys.filter(j => j.active).length}</div>
+              <div className="text-2xl font-bold gradient-text">
+                {journeys.filter((j) => j.active).length}
+              </div>
               <p className="text-xs text-blue-600 font-medium">
-                {journeys.reduce((sum, j) => sum + j.enrolledCount, 0)} customers enrolled
+                {journeys.reduce((sum, j) => sum + j.enrolledCount, 0)}{" "}
+                customers enrolled
               </p>
             </CardContent>
           </Card>
 
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Messages Sent Today</CardTitle>
+              <CardTitle className="text-sm font-semibold text-blue-800">
+                Messages Sent Today
+              </CardTitle>
               <Send className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
@@ -228,7 +273,9 @@ export default function CommCenter() {
 
           <Card className="glass-card corp-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-semibold text-blue-800">Success Rate</CardTitle>
+              <CardTitle className="text-sm font-semibold text-blue-800">
+                Success Rate
+              </CardTitle>
               <TrendingUp className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
@@ -284,11 +331,12 @@ export default function CommCenter() {
                     {templates.map((template) => {
                       const Icon = getTypeIcon(template.type);
                       return (
-                        <Card 
-                          key={template.id} 
+                        <Card
+                          key={template.id}
                           className={cn(
                             "border-border/50 cursor-pointer transition-all hover:shadow-sm corp-shadow",
-                            selectedTemplate?.id === template.id && "ring-2 ring-blue-500"
+                            selectedTemplate?.id === template.id &&
+                              "ring-2 ring-blue-500",
                           )}
                           onClick={() => setSelectedTemplate(template)}
                         >
@@ -296,14 +344,21 @@ export default function CommCenter() {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
                                 <Icon className="w-4 h-4 text-blue-600" />
-                                <CardTitle className="text-sm text-blue-800">{template.name}</CardTitle>
+                                <CardTitle className="text-sm text-blue-800">
+                                  {template.name}
+                                </CardTitle>
                               </div>
                               <div className="flex items-center gap-2">
                                 <Badge variant="outline" className="text-xs">
                                   {template.category}
                                 </Badge>
-                                <Badge variant={template.active ? "default" : "outline"} className="text-xs">
-                                  {template.active ? 'Active' : 'Inactive'}
+                                <Badge
+                                  variant={
+                                    template.active ? "default" : "outline"
+                                  }
+                                  className="text-xs"
+                                >
+                                  {template.active ? "Active" : "Inactive"}
                                 </Badge>
                               </div>
                             </div>
@@ -314,8 +369,12 @@ export default function CommCenter() {
                             </p>
                             {template.successRate && (
                               <div className="flex items-center justify-between mt-2 text-xs">
-                                <span className="text-blue-600/70">Success Rate</span>
-                                <span className="font-medium text-green-600">{template.successRate}%</span>
+                                <span className="text-blue-600/70">
+                                  Success Rate
+                                </span>
+                                <span className="font-medium text-green-600">
+                                  {template.successRate}%
+                                </span>
                               </div>
                             )}
                           </CardContent>
@@ -333,7 +392,9 @@ export default function CommCenter() {
                     Template Editor
                   </CardTitle>
                   <CardDescription>
-                    {selectedTemplate ? `Editing: ${selectedTemplate.name}` : 'Select a template to edit'}
+                    {selectedTemplate
+                      ? `Editing: ${selectedTemplate.name}`
+                      : "Select a template to edit"}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -367,9 +428,13 @@ export default function CommCenter() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="billing">Billing</SelectItem>
-                              <SelectItem value="marketing">Marketing</SelectItem>
+                              <SelectItem value="marketing">
+                                Marketing
+                              </SelectItem>
                               <SelectItem value="support">Support</SelectItem>
-                              <SelectItem value="onboarding">Onboarding</SelectItem>
+                              <SelectItem value="onboarding">
+                                Onboarding
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -377,8 +442,8 @@ export default function CommCenter() {
 
                       <div className="space-y-2">
                         <Label>Message Content</Label>
-                        <Textarea 
-                          value={selectedTemplate.content} 
+                        <Textarea
+                          value={selectedTemplate.content}
                           readOnly
                           className="min-h-[120px]"
                         />
@@ -388,7 +453,11 @@ export default function CommCenter() {
                         <Label>Variables</Label>
                         <div className="flex gap-1 flex-wrap">
                           {selectedTemplate.variables.map((variable, index) => (
-                            <Badge key={index} variant="outline" className="font-mono text-xs">
+                            <Badge
+                              key={index}
+                              variant="outline"
+                              className="font-mono text-xs"
+                            >
                               {`{{${variable}}}`}
                             </Badge>
                           ))}
@@ -432,7 +501,8 @@ export default function CommCenter() {
                       Automated Client Journeys
                     </CardTitle>
                     <CardDescription>
-                      Multi-step communication workflows triggered by customer actions
+                      Multi-step communication workflows triggered by customer
+                      actions
                     </CardDescription>
                   </div>
                   <Button className="gap-2 bg-gradient-to-r from-blue-600 to-green-600">
@@ -444,52 +514,84 @@ export default function CommCenter() {
               <CardContent>
                 <div className="space-y-4">
                   {journeys.map((journey) => (
-                    <Card key={journey.id} className="border-border/50 corp-shadow">
+                    <Card
+                      key={journey.id}
+                      className="border-border/50 corp-shadow"
+                    >
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
                           <div>
                             <CardTitle className="text-lg flex items-center gap-2">
                               {journey.name}
-                              <Badge variant={journey.active ? "default" : "outline"}>
-                                {journey.active ? 'Active' : 'Inactive'}
+                              <Badge
+                                variant={journey.active ? "default" : "outline"}
+                              >
+                                {journey.active ? "Active" : "Inactive"}
                               </Badge>
                             </CardTitle>
                             <CardDescription>
-                              Triggered by: <code className="bg-blue-100 px-1 py-0.5 rounded text-xs text-blue-800">{journey.trigger}</code>
+                              Triggered by:{" "}
+                              <code className="bg-blue-100 px-1 py-0.5 rounded text-xs text-blue-800">
+                                {journey.trigger}
+                              </code>
                             </CardDescription>
                           </div>
                           <div className="text-right">
-                            <div className="text-sm text-blue-600/70">Completion Rate</div>
-                            <div className="text-xl font-bold gradient-text">{journey.completionRate}%</div>
+                            <div className="text-sm text-blue-600/70">
+                              Completion Rate
+                            </div>
+                            <div className="text-xl font-bold gradient-text">
+                              {journey.completionRate}%
+                            </div>
                           </div>
                         </div>
                       </CardHeader>
                       <CardContent>
                         <div className="grid grid-cols-2 gap-4 mb-4">
                           <div>
-                            <div className="text-sm text-blue-600/70">Enrolled Customers</div>
-                            <div className="font-medium text-blue-800">{journey.enrolledCount}</div>
+                            <div className="text-sm text-blue-600/70">
+                              Enrolled Customers
+                            </div>
+                            <div className="font-medium text-blue-800">
+                              {journey.enrolledCount}
+                            </div>
                           </div>
                           <div>
-                            <div className="text-sm text-blue-600/70">Journey Steps</div>
-                            <div className="font-medium text-blue-800">{journey.steps.length}</div>
+                            <div className="text-sm text-blue-600/70">
+                              Journey Steps
+                            </div>
+                            <div className="font-medium text-blue-800">
+                              {journey.steps.length}
+                            </div>
                           </div>
                         </div>
 
                         <div className="space-y-2">
-                          <div className="text-sm font-medium text-blue-800">Journey Flow</div>
+                          <div className="text-sm font-medium text-blue-800">
+                            Journey Flow
+                          </div>
                           <div className="flex items-center gap-2 flex-wrap">
                             {journey.steps.map((step, index) => {
-                              const Icon = step.type === 'wait' ? Clock : 
-                                          step.type === 'condition' ? AlertTriangle :
-                                          getTypeIcon(step.type as 'sms' | 'email' | 'voice');
+                              const Icon =
+                                step.type === "wait"
+                                  ? Clock
+                                  : step.type === "condition"
+                                    ? AlertTriangle
+                                    : getTypeIcon(
+                                        step.type as "sms" | "email" | "voice",
+                                      );
                               return (
-                                <div key={step.id} className="flex items-center gap-1">
+                                <div
+                                  key={step.id}
+                                  className="flex items-center gap-1"
+                                >
                                   <Badge variant="outline" className="gap-1">
                                     <Icon className="w-3 h-3" />
-                                    {step.type === 'wait' ? `${step.delay || 0}h` : 
-                                     step.type === 'condition' ? 'condition' : 
-                                     step.type}
+                                    {step.type === "wait"
+                                      ? `${step.delay || 0}h`
+                                      : step.type === "condition"
+                                        ? "condition"
+                                        : step.type}
                                   </Badge>
                                   {index < journey.steps.length - 1 && (
                                     <div className="w-4 h-px bg-blue-200" />
@@ -509,9 +611,17 @@ export default function CommCenter() {
                             <BarChart3 className="w-3 h-3 mr-1" />
                             Analytics
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-red-500">
-                            {journey.active ? <Pause className="w-3 h-3 mr-1" /> : <Play className="w-3 h-3 mr-1" />}
-                            {journey.active ? 'Pause' : 'Resume'}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-500"
+                          >
+                            {journey.active ? (
+                              <Pause className="w-3 h-3 mr-1" />
+                            ) : (
+                              <Play className="w-3 h-3 mr-1" />
+                            )}
+                            {journey.active ? "Pause" : "Resume"}
                           </Button>
                         </div>
                       </CardContent>
@@ -546,24 +656,43 @@ export default function CommCenter() {
                 <div className="space-y-4">
                   {campaigns.map((campaign) => {
                     const Icon = getTypeIcon(campaign.type);
-                    const deliveryRate = campaign.sent > 0 ? (campaign.delivered / campaign.sent * 100).toFixed(1) : '0';
-                    const responseRate = campaign.delivered > 0 ? (campaign.responded / campaign.delivered * 100).toFixed(1) : '0';
-                    
+                    const deliveryRate =
+                      campaign.sent > 0
+                        ? ((campaign.delivered / campaign.sent) * 100).toFixed(
+                            1,
+                          )
+                        : "0";
+                    const responseRate =
+                      campaign.delivered > 0
+                        ? (
+                            (campaign.responded / campaign.delivered) *
+                            100
+                          ).toFixed(1)
+                        : "0";
+
                     return (
-                      <Card key={campaign.id} className="border-border/50 corp-shadow">
+                      <Card
+                        key={campaign.id}
+                        className="border-border/50 corp-shadow"
+                      >
                         <CardHeader className="pb-3">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                               <Icon className="w-5 h-5 text-blue-600" />
                               <div>
-                                <CardTitle className="text-lg text-blue-800">{campaign.name}</CardTitle>
+                                <CardTitle className="text-lg text-blue-800">
+                                  {campaign.name}
+                                </CardTitle>
                                 <CardDescription>
-                                  {campaign.scheduledAt ? `Scheduled for ${campaign.scheduledAt.toLocaleDateString()}` : 'No schedule set'}
+                                  {campaign.scheduledAt
+                                    ? `Scheduled for ${campaign.scheduledAt.toLocaleDateString()}`
+                                    : "No schedule set"}
                                 </CardDescription>
                               </div>
                             </div>
                             <Badge className={getStatusColor(campaign.status)}>
-                              {campaign.status.charAt(0).toUpperCase() + campaign.status.slice(1)}
+                              {campaign.status.charAt(0).toUpperCase() +
+                                campaign.status.slice(1)}
                             </Badge>
                           </div>
                         </CardHeader>
@@ -571,19 +700,31 @@ export default function CommCenter() {
                           <div className="grid grid-cols-4 gap-4 text-sm">
                             <div>
                               <div className="text-blue-600/70">Audience</div>
-                              <div className="font-medium text-blue-800">{campaign.audienceSize.toLocaleString()}</div>
+                              <div className="font-medium text-blue-800">
+                                {campaign.audienceSize.toLocaleString()}
+                              </div>
                             </div>
                             <div>
                               <div className="text-blue-600/70">Sent</div>
-                              <div className="font-medium text-blue-800">{campaign.sent.toLocaleString()}</div>
+                              <div className="font-medium text-blue-800">
+                                {campaign.sent.toLocaleString()}
+                              </div>
                             </div>
                             <div>
-                              <div className="text-blue-600/70">Delivery Rate</div>
-                              <div className="font-medium text-green-600">{deliveryRate}%</div>
+                              <div className="text-blue-600/70">
+                                Delivery Rate
+                              </div>
+                              <div className="font-medium text-green-600">
+                                {deliveryRate}%
+                              </div>
                             </div>
                             <div>
-                              <div className="text-blue-600/70">Response Rate</div>
-                              <div className="font-medium text-green-600">{responseRate}%</div>
+                              <div className="text-blue-600/70">
+                                Response Rate
+                              </div>
+                              <div className="font-medium text-green-600">
+                                {responseRate}%
+                              </div>
                             </div>
                           </div>
 
@@ -592,13 +733,13 @@ export default function CommCenter() {
                               <BarChart3 className="w-3 h-3 mr-1" />
                               View Report
                             </Button>
-                            {campaign.status === 'running' && (
+                            {campaign.status === "running" && (
                               <Button variant="outline" size="sm">
                                 <Pause className="w-3 h-3 mr-1" />
                                 Pause
                               </Button>
                             )}
-                            {campaign.status === 'completed' && (
+                            {campaign.status === "completed" && (
                               <Button variant="outline" size="sm">
                                 <Download className="w-3 h-3 mr-1" />
                                 Export Data
@@ -630,16 +771,25 @@ export default function CommCenter() {
                 <CardContent>
                   <div className="space-y-3">
                     {nmiEvents.map((event) => (
-                      <div key={event.id} className="flex items-center gap-3 p-3 glass-card rounded-lg">
-                        <div className={cn(
-                          "w-2 h-2 rounded-full",
-                          event.event === 'Payment Successful' && "bg-green-500",
-                          event.event === 'Payment Failed' && "bg-red-500"
-                        )} />
+                      <div
+                        key={event.id}
+                        className="flex items-center gap-3 p-3 glass-card rounded-lg"
+                      >
+                        <div
+                          className={cn(
+                            "w-2 h-2 rounded-full",
+                            event.event === "Payment Successful" &&
+                              "bg-green-500",
+                            event.event === "Payment Failed" && "bg-red-500",
+                          )}
+                        />
                         <div className="flex-1">
-                          <div className="font-medium text-sm text-blue-800">{event.event}</div>
+                          <div className="font-medium text-sm text-blue-800">
+                            {event.event}
+                          </div>
                           <div className="text-xs text-blue-600/70">
-                            Customer {event.customerId} • ${event.amount} • {event.timestamp.toLocaleTimeString()}
+                            Customer {event.customerId} • ${event.amount} •{" "}
+                            {event.timestamp.toLocaleTimeString()}
                           </div>
                         </div>
                         <Badge variant="outline" className="text-xs">
@@ -648,7 +798,7 @@ export default function CommCenter() {
                       </div>
                     ))}
                   </div>
-                  
+
                   <Button variant="outline" className="w-full mt-4 gap-2">
                     <RefreshCw className="w-4 h-4" />
                     Refresh Events
@@ -663,7 +813,8 @@ export default function CommCenter() {
                     Automation Rules
                   </CardTitle>
                   <CardDescription>
-                    Configure automatic communication triggers based on NMI events
+                    Configure automatic communication triggers based on NMI
+                    events
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -671,13 +822,18 @@ export default function CommCenter() {
                     <Card className="border-border/50">
                       <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
-                          <CardTitle className="text-sm">Payment Success → Thank You SMS</CardTitle>
-                          <Badge className="bg-green-100 text-green-700 border-green-200">Active</Badge>
+                          <CardTitle className="text-sm">
+                            Payment Success → Thank You SMS
+                          </CardTitle>
+                          <Badge className="bg-green-100 text-green-700 border-green-200">
+                            Active
+                          </Badge>
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0">
                         <p className="text-xs text-blue-600/70">
-                          Send thank you message immediately after successful payment
+                          Send thank you message immediately after successful
+                          payment
                         </p>
                       </CardContent>
                     </Card>
@@ -685,13 +841,18 @@ export default function CommCenter() {
                     <Card className="border-border/50">
                       <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
-                          <CardTitle className="text-sm">Payment Failed → Recovery Journey</CardTitle>
-                          <Badge className="bg-green-100 text-green-700 border-green-200">Active</Badge>
+                          <CardTitle className="text-sm">
+                            Payment Failed → Recovery Journey
+                          </CardTitle>
+                          <Badge className="bg-green-100 text-green-700 border-green-200">
+                            Active
+                          </Badge>
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0">
                         <p className="text-xs text-blue-600/70">
-                          Enroll customer in payment recovery journey after failed payment
+                          Enroll customer in payment recovery journey after
+                          failed payment
                         </p>
                       </CardContent>
                     </Card>

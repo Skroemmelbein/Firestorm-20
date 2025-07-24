@@ -1,20 +1,26 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { 
-  MessageSquare, 
-  Send, 
-  CheckCircle, 
-  XCircle, 
+import {
+  MessageSquare,
+  Send,
+  CheckCircle,
+  XCircle,
   Loader2,
   Phone,
   Clock,
-  AlertTriangle
+  AlertTriangle,
 } from "lucide-react";
 
 interface SMSResult {
@@ -42,22 +48,22 @@ export default function SMSInterface() {
   const testConnection = async () => {
     setSending(true);
     try {
-      const response = await fetch('/api/real/test/twilio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+      const response = await fetch("/api/real/test/twilio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
       });
-      
+
       const result = await response.json();
       setConnectionStatus({
         connected: response.ok,
         error: result.error,
-        phone: '+18558000037'
+        phone: "+18558000037",
       });
     } catch (error) {
       setConnectionStatus({
         connected: false,
-        error: 'Connection failed'
+        error: "Connection failed",
       });
     } finally {
       setSending(false);
@@ -67,32 +73,32 @@ export default function SMSInterface() {
   // Send SMS
   const sendSMS = async () => {
     if (!phoneNumber || !message) return;
-    
+
     setSending(true);
     try {
-      const response = await fetch('/api/real/sms/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/real/sms/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           to: phoneNumber,
-          body: message
-        })
+          body: message,
+        }),
       });
-      
+
       const result = await response.json();
-      
+
       const smsResult: SMSResult = {
         success: result.success || response.ok,
         sid: result.sid,
         to: phoneNumber,
-        from: result.from || '+18558000037',
+        from: result.from || "+18558000037",
         body: message,
         error: result.error,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
-      
-      setResults(prev => [smsResult, ...prev]);
-      
+
+      setResults((prev) => [smsResult, ...prev]);
+
       if (smsResult.success) {
         setMessage(""); // Clear message on success
       }
@@ -101,10 +107,10 @@ export default function SMSInterface() {
         success: false,
         to: phoneNumber,
         body: message,
-        error: error instanceof Error ? error.message : 'Failed to send SMS',
-        timestamp: new Date().toISOString()
+        error: error instanceof Error ? error.message : "Failed to send SMS",
+        timestamp: new Date().toISOString(),
       };
-      setResults(prev => [smsResult, ...prev]);
+      setResults((prev) => [smsResult, ...prev]);
     } finally {
       setSending(false);
     }
@@ -113,7 +119,10 @@ export default function SMSInterface() {
   // Quick test message
   const sendTestMessage = async () => {
     setPhoneNumber("+18144409968"); // Default test number
-    setMessage("🚀 Hello from RecurFlow! Your SMS system is working perfectly. Sent at " + new Date().toLocaleTimeString());
+    setMessage(
+      "🚀 Hello from RecurFlow! Your SMS system is working perfectly. Sent at " +
+        new Date().toLocaleTimeString(),
+    );
 
     // Wait a moment for state to update, then send
     setTimeout(() => {
@@ -123,8 +132,8 @@ export default function SMSInterface() {
 
   const formatPhoneNumber = (phone: string) => {
     // Simple phone number formatting
-    const cleaned = phone.replace(/\D/g, '');
-    if (cleaned.length === 11 && cleaned.startsWith('1')) {
+    const cleaned = phone.replace(/\D/g, "");
+    if (cleaned.length === 11 && cleaned.startsWith("1")) {
       return `+${cleaned}`;
     } else if (cleaned.length === 10) {
       return `+1${cleaned}`;
@@ -149,26 +158,43 @@ export default function SMSInterface() {
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <div className="text-sm font-medium">Account SID</div>
-              <div className="font-mono text-xs text-muted-foreground">ACf19a39d865d43659b94a3a2074</div>
+              <div className="font-mono text-xs text-muted-foreground">
+                ACf19a39d865d43659b94a3a2074
+              </div>
             </div>
             <div className="space-y-1">
               <div className="text-sm font-medium">Phone Number</div>
-              <div className="font-mono text-xs text-muted-foreground">+1 (855) 800-0037</div>
+              <div className="font-mono text-xs text-muted-foreground">
+                +1 (855) 800-0037
+              </div>
             </div>
-            <Button onClick={testConnection} disabled={sending} variant="outline">
-              {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+            <Button
+              onClick={testConnection}
+              disabled={sending}
+              variant="outline"
+            >
+              {sending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <CheckCircle className="w-4 h-4" />
+              )}
               Test Connection
             </Button>
           </div>
-          
+
           {connectionStatus && (
-            <Alert variant={connectionStatus.connected ? "default" : "destructive"}>
-              {connectionStatus.connected ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+            <Alert
+              variant={connectionStatus.connected ? "default" : "destructive"}
+            >
+              {connectionStatus.connected ? (
+                <CheckCircle className="h-4 w-4" />
+              ) : (
+                <XCircle className="h-4 w-4" />
+              )}
               <AlertDescription>
-                {connectionStatus.connected 
+                {connectionStatus.connected
                   ? `✅ Connected! Ready to send SMS from ${connectionStatus.phone}`
-                  : `❌ ${connectionStatus.error}`
-                }
+                  : `❌ ${connectionStatus.error}`}
               </AlertDescription>
             </Alert>
           )}
@@ -194,13 +220,15 @@ export default function SMSInterface() {
                 id="phone"
                 placeholder="+1234567890"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(formatPhoneNumber(e.target.value))}
+                onChange={(e) =>
+                  setPhoneNumber(formatPhoneNumber(e.target.value))
+                }
               />
               <p className="text-xs text-muted-foreground">
                 Include country code (e.g., +1 for US)
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="message">Message</Label>
               <Textarea
@@ -216,10 +244,10 @@ export default function SMSInterface() {
               </p>
             </div>
           </div>
-          
+
           <div className="flex gap-2">
-            <Button 
-              onClick={sendSMS} 
+            <Button
+              onClick={sendSMS}
               disabled={sending || !phoneNumber || !message}
               className="gap-2"
             >
@@ -230,9 +258,9 @@ export default function SMSInterface() {
               )}
               Send SMS
             </Button>
-            
-            <Button 
-              onClick={sendTestMessage} 
+
+            <Button
+              onClick={sendTestMessage}
               variant="outline"
               disabled={sending}
               className="gap-2"
@@ -259,12 +287,12 @@ export default function SMSInterface() {
           <CardContent>
             <div className="space-y-3">
               {results.slice(0, 10).map((result, index) => (
-                <div 
+                <div
                   key={index}
                   className={`p-4 rounded-lg border ${
-                    result.success 
-                      ? 'border-green-200 bg-green-50' 
-                      : 'border-red-200 bg-red-50'
+                    result.success
+                      ? "border-green-200 bg-green-50"
+                      : "border-red-200 bg-red-50"
                   }`}
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -274,7 +302,9 @@ export default function SMSInterface() {
                       ) : (
                         <XCircle className="w-4 h-4 text-red-600" />
                       )}
-                      <Badge variant={result.success ? "default" : "destructive"}>
+                      <Badge
+                        variant={result.success ? "default" : "destructive"}
+                      >
                         {result.success ? "Sent" : "Failed"}
                       </Badge>
                       <span className="text-sm text-muted-foreground">
@@ -285,17 +315,17 @@ export default function SMSInterface() {
                       {new Date(result.timestamp!).toLocaleTimeString()}
                     </span>
                   </div>
-                  
+
                   <div className="text-sm mb-2">
                     <strong>Message:</strong> "{result.body}"
                   </div>
-                  
+
                   {result.success && result.sid && (
                     <div className="text-xs text-muted-foreground">
                       SID: {result.sid}
                     </div>
                   )}
-                  
+
                   {result.error && (
                     <div className="text-xs text-red-600 mt-1">
                       Error: {result.error}

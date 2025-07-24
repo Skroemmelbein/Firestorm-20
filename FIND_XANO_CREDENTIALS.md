@@ -16,6 +16,7 @@ https://x8ki-letl-twmt.xano.io/workspace/123456
 ```
 
 **Copy the part before "/workspace"** - this is your Instance URL:
+
 ```
 https://x8ki-letl-twmt.xano.io
 ```
@@ -24,13 +25,14 @@ https://x8ki-letl-twmt.xano.io
 
 1. **In your Xano workspace**, look for **"Settings"** in the left sidebar
 2. **Click on "API Keys"**
-3. **If you have an existing key**: Click "Copy" 
+3. **If you have an existing key**: Click "Copy"
 4. **If you need a new key**: Click "Create API Key"
    - Give it a name like "RecurFlow Integration"
    - **Enable all permissions** (check all boxes)
    - **Copy the generated key**
 
 The API key will look like:
+
 ```
 xano_api_12345abcdef67890ghijklmnop
 ```
@@ -38,6 +40,7 @@ xano_api_12345abcdef67890ghijklmnop
 ## 🗃️ Step 4: Get Your Database ID
 
 **Option A - From URL**:
+
 1. **In your workspace**, click on **"Database"** in the left sidebar
 2. **Look at the URL** - it will show something like:
    ```
@@ -46,6 +49,7 @@ xano_api_12345abcdef67890ghijklmnop
 3. **The Database ID is the number after "/database/"** (in this example: `789012`)
 
 **Option B - From Database Settings**:
+
 1. **Go to Database section**
 2. **Click on the settings/gear icon**
 3. **Look for "Database ID"** in the settings panel
@@ -63,14 +67,17 @@ Database ID: [your-numeric-database-id]
 ## 🆘 Can't Find Something?
 
 **If you can't find the Database ID**:
+
 - Try creating a new database in Xano
 - The ID will be visible when you create it
 
 **If you can't find API Keys**:
+
 - Look for "Settings" → "Authentication" → "API Keys"
 - Or try "Account Settings" → "API Management"
 
 **If the workspace URL is different**:
+
 - Any URL that starts with `https://` and ends with `.xano.io` should work
 - Examples: `https://app.xano.com`, `https://x123.xano.io`, etc.
 
@@ -79,7 +86,7 @@ Database ID: [your-numeric-database-id]
 After you enter these credentials:
 
 1. **Click "Test Connection"** - should show "✅ Connected"
-2. **Click "Save Configuration"** 
+2. **Click "Save Configuration"**
 3. **We'll then create the database tables you need**
 4. **Set up your member benefits system**
 

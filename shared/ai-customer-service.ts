@@ -1,9 +1,9 @@
 // AI-Powered Customer Service
 // Integrates OpenAI with Xano member data and Twilio SMS for intelligent customer support
 
-import { getOpenAIService } from './openai-service';
-import { getXanoClient, Member } from './xano-client';
-import { getTwilioClient } from './twilio-client';
+import { getOpenAIService } from "./openai-service";
+import { getXanoClient, Member } from "./xano-client";
+import { getTwilioClient } from "./twilio-client";
 
 interface CustomerServiceConfig {
   autoResponseEnabled: boolean;
@@ -13,10 +13,10 @@ interface CustomerServiceConfig {
 }
 
 interface AIAnalysis {
-  sentiment: 'positive' | 'neutral' | 'negative';
+  sentiment: "positive" | "neutral" | "negative";
   confidence: number;
   intent: string;
-  urgency: 'low' | 'medium' | 'high';
+  urgency: "low" | "medium" | "high";
   suggestedResponse?: string;
   shouldEscalate: boolean;
   keywords: string[];
@@ -31,15 +31,15 @@ export class AICustomerService {
       sentimentAnalysisEnabled: true,
       escalationThreshold: 0.7,
       responseTimeoutMinutes: 5,
-      ...config
+      ...config,
     };
   }
 
   // Main function to handle incoming customer messages
   async handleIncomingMessage(
-    phoneNumber: string, 
-    message: string, 
-    twilioMessageId: string
+    phoneNumber: string,
+    message: string,
+    twilioMessageId: string,
   ): Promise<{
     analysis: AIAnalysis;
     autoResponse?: string;
@@ -48,74 +48,94 @@ export class AICustomerService {
     try {
       // Get member info from Xano
       const member = await this.findMemberByPhone(phoneNumber);
-      
+
       // Analyze the message with AI
       const analysis = await this.analyzeMessage(message, member);
-      
+
       // Log to Xano communications table
-      await this.logCommunication(member?.id, phoneNumber, message, analysis, twilioMessageId);
-      
+      await this.logCommunication(
+        member?.id,
+        phoneNumber,
+        message,
+        analysis,
+        twilioMessageId,
+      );
+
       let autoResponse: string | undefined;
-      let actionTaken = 'analyzed';
+      let actionTaken = "analyzed";
 
       // Auto-respond if enabled and confidence is high
       if (this.config.autoResponseEnabled && !analysis.shouldEscalate) {
-        autoResponse = await this.generateAutoResponse(message, member, analysis);
-        
+        autoResponse = await this.generateAutoResponse(
+          message,
+          member,
+          analysis,
+        );
+
         if (autoResponse) {
           // Send SMS response via Twilio
           await this.sendAutoResponse(phoneNumber, autoResponse);
-          actionTaken = 'auto_responded';
-          
+          actionTaken = "auto_responded";
+
           // Log the outbound response
-          await this.logCommunication(member?.id, phoneNumber, autoResponse, null, null, 'outbound');
+          await this.logCommunication(
+            member?.id,
+            phoneNumber,
+            autoResponse,
+            null,
+            null,
+            "outbound",
+          );
         }
       }
 
       // Escalate if needed
       if (analysis.shouldEscalate) {
         await this.escalateToHuman(member, message, analysis);
-        actionTaken = 'escalated';
+        actionTaken = "escalated";
       }
 
       return {
         analysis,
         autoResponse,
-        actionTaken
+        actionTaken,
       };
-
     } catch (error) {
-      console.error('Error handling customer message:', error);
-      
+      console.error("Error handling customer message:", error);
+
       // Send fallback response
-      await this.sendAutoResponse(phoneNumber, 
-        "Thanks for your message! We're experiencing high volume. A team member will respond soon."
+      await this.sendAutoResponse(
+        phoneNumber,
+        "Thanks for your message! We're experiencing high volume. A team member will respond soon.",
       );
-      
+
       return {
         analysis: {
-          sentiment: 'neutral',
+          sentiment: "neutral",
           confidence: 0.5,
-          intent: 'unknown',
-          urgency: 'medium',
+          intent: "unknown",
+          urgency: "medium",
           shouldEscalate: true,
-          keywords: []
+          keywords: [],
         },
-        actionTaken: 'error_fallback'
+        actionTaken: "error_fallback",
       };
     }
   }
 
   // Analyze customer message with AI
-  private async analyzeMessage(message: string, member?: Member): Promise<AIAnalysis> {
+  private async analyzeMessage(
+    message: string,
+    member?: Member,
+  ): Promise<AIAnalysis> {
     const openAI = getOpenAIService();
-    
+
     try {
       // Multi-step analysis using GPT
       const analysisPrompt = `Analyze this customer service message for RecurFlow membership platform.
 
 Customer message: "${message}"
-${member ? `Member info: ${member.first_name} ${member.last_name}, ${member.membership_type} member, engagement score: ${member.engagement_score}` : 'Unknown customer'}
+${member ? `Member info: ${member.first_name} ${member.last_name}, ${member.membership_type} member, engagement score: ${member.engagement_score}` : "Unknown customer"}
 
 Provide analysis as JSON:
 {
@@ -136,40 +156,41 @@ Escalation criteria:
 - Complaints about service quality`;
 
       const response = await openAI.chatWithContext(analysisPrompt);
-      const cleaned = response.replace(/```json|```/g, '').trim();
+      const cleaned = response.replace(/```json|```/g, "").trim();
       const analysis = JSON.parse(cleaned);
 
       // Validate and normalize the response
       return {
-        sentiment: analysis.sentiment || 'neutral',
+        sentiment: analysis.sentiment || "neutral",
         confidence: Math.min(Math.max(analysis.confidence || 0.5, 0), 1),
-        intent: analysis.intent || 'general',
-        urgency: analysis.urgency || 'medium',
-        shouldEscalate: analysis.shouldEscalate || analysis.urgency === 'high' || 
-                       (analysis.sentiment === 'negative' && analysis.confidence > 0.7),
-        keywords: Array.isArray(analysis.keywords) ? analysis.keywords : []
+        intent: analysis.intent || "general",
+        urgency: analysis.urgency || "medium",
+        shouldEscalate:
+          analysis.shouldEscalate ||
+          analysis.urgency === "high" ||
+          (analysis.sentiment === "negative" && analysis.confidence > 0.7),
+        keywords: Array.isArray(analysis.keywords) ? analysis.keywords : [],
       };
-
     } catch (error) {
-      console.error('Error analyzing message:', error);
-      
+      console.error("Error analyzing message:", error);
+
       // Fallback analysis
       return {
-        sentiment: 'neutral',
+        sentiment: "neutral",
         confidence: 0.3,
-        intent: 'general',
-        urgency: 'medium',
+        intent: "general",
+        urgency: "medium",
         shouldEscalate: true, // Escalate on analysis failure
-        keywords: []
+        keywords: [],
       };
     }
   }
 
   // Generate AI response for common questions
   private async generateAutoResponse(
-    message: string, 
-    member?: Member, 
-    analysis?: AIAnalysis
+    message: string,
+    member?: Member,
+    analysis?: AIAnalysis,
   ): Promise<string | null> {
     const openAI = getOpenAIService();
 
@@ -177,8 +198,8 @@ Escalation criteria:
       const responsePrompt = `Generate a helpful customer service SMS response (under 160 characters) for RecurFlow membership platform.
 
 Customer message: "${message}"
-${member ? `Member: ${member.first_name} ${member.last_name} (${member.membership_type})` : 'Non-member'}
-${analysis ? `Intent: ${analysis.intent}, Sentiment: ${analysis.sentiment}` : ''}
+${member ? `Member: ${member.first_name} ${member.last_name} (${member.membership_type})` : "Non-member"}
+${analysis ? `Intent: ${analysis.intent}, Sentiment: ${analysis.sentiment}` : ""}
 
 Guidelines:
 - Be friendly, professional, and concise
@@ -196,35 +217,37 @@ Common responses:
 Respond only with the SMS message text (no quotes or explanations).`;
 
       const response = await openAI.chatWithContext(responsePrompt);
-      
+
       // Clean up the response
       const cleanResponse = response
-        .replace(/^["']|["']$/g, '') // Remove surrounding quotes
+        .replace(/^["']|["']$/g, "") // Remove surrounding quotes
         .trim();
 
       // Validate length for SMS
       if (cleanResponse.length > 160) {
-        return cleanResponse.substring(0, 157) + '...';
+        return cleanResponse.substring(0, 157) + "...";
       }
 
       return cleanResponse;
-
     } catch (error) {
-      console.error('Error generating auto response:', error);
+      console.error("Error generating auto response:", error);
       return null;
     }
   }
 
   // Send SMS response via Twilio
-  private async sendAutoResponse(phoneNumber: string, message: string): Promise<void> {
+  private async sendAutoResponse(
+    phoneNumber: string,
+    message: string,
+  ): Promise<void> {
     try {
       const twilio = getTwilioClient();
       await twilio.sendSMS({
         to: phoneNumber,
-        body: message
+        body: message,
       });
     } catch (error) {
-      console.error('Error sending auto response:', error);
+      console.error("Error sending auto response:", error);
       throw error;
     }
   }
@@ -234,9 +257,9 @@ Respond only with the SMS message text (no quotes or explanations).`;
     try {
       const xano = getXanoClient();
       const members = await xano.getMembers({ search: phoneNumber });
-      return members.data.find(m => m.phone === phoneNumber) || null;
+      return members.data.find((m) => m.phone === phoneNumber) || null;
     } catch (error) {
-      console.error('Error finding member:', error);
+      console.error("Error finding member:", error);
       return null;
     }
   }
@@ -248,28 +271,28 @@ Respond only with the SMS message text (no quotes or explanations).`;
     content: string,
     analysis: AIAnalysis | null,
     twilioMessageId: string | null,
-    direction: 'inbound' | 'outbound' = 'inbound'
+    direction: "inbound" | "outbound" = "inbound",
   ): Promise<void> {
     try {
       const xano = getXanoClient();
       await xano.createCommunication({
         member_id: memberId,
-        channel: 'sms',
+        channel: "sms",
         direction,
-        from_number: direction === 'inbound' ? phoneNumber : undefined,
-        to_number: direction === 'outbound' ? phoneNumber : undefined,
+        from_number: direction === "inbound" ? phoneNumber : undefined,
+        to_number: direction === "outbound" ? phoneNumber : undefined,
         content,
-        status: 'delivered',
-        provider: 'twilio',
+        status: "delivered",
+        provider: "twilio",
         provider_id: twilioMessageId,
-        ai_generated: direction === 'outbound',
+        ai_generated: direction === "outbound",
         ai_sentiment: analysis?.sentiment,
         ai_intent: analysis?.intent,
         ai_confidence: analysis?.confidence,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('Error logging communication:', error);
+      console.error("Error logging communication:", error);
       // Don't throw - logging failure shouldn't stop the main process
     }
   }
@@ -278,31 +301,39 @@ Respond only with the SMS message text (no quotes or explanations).`;
   private async escalateToHuman(
     member: Member | null,
     message: string,
-    analysis: AIAnalysis
+    analysis: AIAnalysis,
   ): Promise<void> {
     try {
       const xano = getXanoClient();
-      
+
       // Create support ticket in Xano
-      await xano.request('/support_tickets', 'POST', {
+      await xano.request("/support_tickets", "POST", {
         member_id: member?.id,
         subject: `SMS Escalation: ${analysis.intent}`,
         description: `Customer message: "${message}"\n\nAI Analysis:\n- Sentiment: ${analysis.sentiment}\n- Intent: ${analysis.intent}\n- Urgency: ${analysis.urgency}\n- Confidence: ${analysis.confidence}`,
-        priority: analysis.urgency === 'high' ? 'urgent' : analysis.urgency === 'medium' ? 'high' : 'medium',
-        status: 'open',
-        category: analysis.intent === 'billing' ? 'billing' : 
-                 analysis.intent === 'support' ? 'technical' : 'general',
-        created_at: new Date().toISOString()
+        priority:
+          analysis.urgency === "high"
+            ? "urgent"
+            : analysis.urgency === "medium"
+              ? "high"
+              : "medium",
+        status: "open",
+        category:
+          analysis.intent === "billing"
+            ? "billing"
+            : analysis.intent === "support"
+              ? "technical"
+              : "general",
+        created_at: new Date().toISOString(),
       });
 
-      console.log('Support ticket created for escalation:', {
-        member: member?.email || 'unknown',
+      console.log("Support ticket created for escalation:", {
+        member: member?.email || "unknown",
         intent: analysis.intent,
-        urgency: analysis.urgency
+        urgency: analysis.urgency,
       });
-
     } catch (error) {
-      console.error('Error escalating to human:', error);
+      console.error("Error escalating to human:", error);
     }
   }
 
@@ -310,10 +341,10 @@ Respond only with the SMS message text (no quotes or explanations).`;
   async generateMarketingMessage(
     audienceSegment: string,
     campaignGoal: string,
-    memberSample?: Member[]
+    memberSample?: Member[],
   ): Promise<string> {
     const openAI = getOpenAIService();
-    
+
     const prompt = `Generate a marketing SMS message for RecurFlow membership platform.
 
 Campaign details:
@@ -321,7 +352,7 @@ Campaign details:
 - Goal: ${campaignGoal}
 - Message limit: 160 characters
 
-${memberSample ? `Sample member data: ${JSON.stringify(memberSample.slice(0, 3))}` : ''}
+${memberSample ? `Sample member data: ${JSON.stringify(memberSample.slice(0, 3))}` : ""}
 
 Requirements:
 - Compelling but not pushy
@@ -344,7 +375,7 @@ Respond with just the SMS message text.`;
     nextActions: string[];
   }> {
     const openAI = getOpenAIService();
-    
+
     const prompt = `Analyze this RecurFlow member's engagement and provide insights.
 
 Member data: ${JSON.stringify(member)}
@@ -367,15 +398,15 @@ Focus on actionable insights to improve member retention and satisfaction.`;
 
     try {
       const response = await openAI.chatWithContext(prompt);
-      const cleaned = response.replace(/```json|```/g, '').trim();
+      const cleaned = response.replace(/```json|```/g, "").trim();
       return JSON.parse(cleaned);
     } catch (error) {
-      console.error('Error analyzing engagement:', error);
+      console.error("Error analyzing engagement:", error);
       return {
         score: member.engagement_score || 50,
-        insights: ['Analysis unavailable'],
-        recommendations: ['Review member activity manually'],
-        nextActions: ['Contact member for feedback']
+        insights: ["Analysis unavailable"],
+        recommendations: ["Review member activity manually"],
+        nextActions: ["Contact member for feedback"],
       };
     }
   }
@@ -384,7 +415,9 @@ Focus on actionable insights to improve member retention and satisfaction.`;
 // Export singleton instance
 let aiCustomerService: AICustomerService | null = null;
 
-export function getAICustomerService(config?: Partial<CustomerServiceConfig>): AICustomerService {
+export function getAICustomerService(
+  config?: Partial<CustomerServiceConfig>,
+): AICustomerService {
   if (!aiCustomerService) {
     aiCustomerService = new AICustomerService(config);
   }
