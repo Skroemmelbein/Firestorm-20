@@ -151,5 +151,10 @@ export function createServer() {
   app.post("/api/conversations/:conversationSid/messages", sendConversationMessage);
   app.post("/api/webhooks/conversations", handleConversationWebhook);
 
+  // Xano Table Setup routes
+  app.post("/api/xano/create-all-tables", createAllTables);
+  app.get("/api/xano/table-schemas", getTableSchemas);
+  app.post("/api/xano/test-connection", testXanoConnection);
+
   return app;
 }
