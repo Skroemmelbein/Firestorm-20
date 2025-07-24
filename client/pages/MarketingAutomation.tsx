@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import TwilioSegmentAudience from "@/components/TwilioSegmentAudience";
 import CampaignBuilder from "@/components/CampaignBuilder";
+import EmailTemplateDesigner from "@/components/EmailTemplateDesigner";
 
 interface Campaign {
   id: string;
