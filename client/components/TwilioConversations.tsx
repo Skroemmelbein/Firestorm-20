@@ -410,8 +410,8 @@ export default function TwilioConversations() {
                           <div
                             className={`max-w-xs px-3 py-2 rounded-lg ${
                               message.direction === "outbound"
-                                ? "bg-[#00BFFF] text-black"
-                                : "bg-[#333333] text-white"
+                                ? "bg-blue-600 text-white"
+                                : "bg-white text-gray-800 border border-gray-200"
                             }`}
                           >
                             <p className="text-sm">{message.body}</p>
@@ -425,9 +425,9 @@ export default function TwilioConversations() {
                             </div>
                           </div>
                           {message.direction === "outbound" ? (
-                            <Bot className="w-6 h-6 text-[#00BFFF] mt-1" />
+                            <Bot className="w-6 h-6 text-blue-600 mt-1" />
                           ) : (
-                            <User className="w-6 h-6 text-[#32CD32] mt-1" />
+                            <User className="w-6 h-6 text-green-600 mt-1" />
                           )}
                         </div>
                       ))}
