@@ -39,7 +39,7 @@ interface TestResult {
 
 export default function TestModule() {
   const [smsTest, setSmsTest] = useState({
-    phone: "+18559600037",
+    phone: "+18144409068",
     message: "Test message from ECELONX system"
   });
   const [isTesting, setIsTesting] = useState({
