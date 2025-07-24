@@ -41,6 +41,7 @@ import {
   HardDrive,
   Wifi,
 } from "lucide-react";
+import TwilioSIDVault from "@/components/TwilioSIDVault";
 
 interface Integration {
   id: string;
