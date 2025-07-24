@@ -179,5 +179,13 @@ export function createServer() {
   app.get("/api/xano/table-schemas", getTableSchemas);
   app.post("/api/xano/test-connection", testXanoConnection);
 
+  // RCS API routes
+  app.post("/api/rcs/configure-agent", configureAgent);
+  app.post("/api/rcs/verify-agent", verifyAgent);
+  app.post("/api/rcs/send-message", sendMessage);
+  app.get("/api/rcs/messages/:agentId", getMessages);
+  app.get("/api/rcs/agent/:agentId/status", getAgentStatus);
+  app.post("/api/rcs/webhook", handleWebhook);
+
   return app;
 }
