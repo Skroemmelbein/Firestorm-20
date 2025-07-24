@@ -348,14 +348,14 @@ export default function TwilioConversations() {
                           {status.label}
                         </Badge>
                       </div>
-                      <div className="flex items-center justify-between text-xs text-[#737373]">
+                      <div className="flex items-center justify-between text-xs text-gray-600">
                         <span>
                           {conversation.participants?.length || 0} participants
                         </span>
                         <span>{conversation.messagesCount || 0} messages</span>
                       </div>
                       {conversation.lastMessage && (
-                        <p className="text-xs text-[#b3b3b3] mt-2 truncate">
+                        <p className="text-xs text-gray-500 mt-2 truncate">
                           {conversation.lastMessage.body}
                         </p>
                       )}
@@ -369,13 +369,13 @@ export default function TwilioConversations() {
           {/* Message Thread */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-white">
+              <h3 className="font-semibold text-gray-800">
                 {selectedConversation
                   ? selectedConversation.friendlyName
                   : "Select Conversation"}
               </h3>
               {selectedConversation && (
-                <div className="text-xs text-[#737373]">
+                <div className="text-xs text-gray-600">
                   SID: {selectedConversation.sid.substring(0, 12)}...
                 </div>
               )}
