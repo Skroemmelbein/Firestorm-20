@@ -28,6 +28,7 @@ import {
   Link,
   Activity,
   ExternalLink,
+  CreditCard,
 } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
