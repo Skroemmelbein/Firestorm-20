@@ -35,7 +35,7 @@ interface TableSetupResult {
   failed: number;
   xanoInstance: string;
   results: TableResult[];
-  errors?: Array<{table: string, error: string}>;
+  errors?: Array<{ table: string; error: string }>;
 }
 
 export default function XanoTableManager() {
@@ -44,16 +44,16 @@ export default function XanoTableManager() {
   const [isLoading, setIsLoading] = useState({
     connecting: false,
     creating: false,
-    schemas: false
+    schemas: false,
   });
   const [setupResult, setSetupResult] = useState<TableSetupResult | null>(null);
   const [schemas, setSchemas] = useState<any>(null);
 
   const testConnection = async () => {
-    setIsLoading(prev => ({ ...prev, connecting: true }));
+    setIsLoading((prev) => ({ ...prev, connecting: true }));
     try {
-      const response = await fetch('/api/xano/test-connection', {
-        method: 'POST'
+      const response = await fetch("/api/xano/test-connection", {
+        method: "POST",
       });
 
       if (!response.ok) {
@@ -65,63 +65,63 @@ export default function XanoTableManager() {
       setConnectionDetails(result);
 
       if (!result.connected) {
-        console.error('Xano connection failed:', result);
+        console.error("Xano connection failed:", result);
       }
     } catch (error) {
-      console.error('Connection test failed:', error);
+      console.error("Connection test failed:", error);
       setIsConnected(false);
       setConnectionDetails({
-        error: 'Connection test failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        error: "Connection test failed",
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     } finally {
-      setIsLoading(prev => ({ ...prev, connecting: false }));
+      setIsLoading((prev) => ({ ...prev, connecting: false }));
     }
   };
 
   const createAllTables = async () => {
-    setIsLoading(prev => ({ ...prev, creating: true }));
+    setIsLoading((prev) => ({ ...prev, creating: true }));
     setSetupResult(null);
-    
+
     try {
-      const response = await fetch('/api/xano/create-all-tables', {
-        method: 'POST'
+      const response = await fetch("/api/xano/create-all-tables", {
+        method: "POST",
       });
-      
+
       const result = await response.json();
       setSetupResult(result);
-      
+
       if (result.success) {
-        console.log('✅ All tables created successfully!');
+        console.log("✅ All tables created successfully!");
       } else {
-        console.error('❌ Table creation had issues:', result);
+        console.error("❌ Table creation had issues:", result);
       }
     } catch (error) {
-      console.error('Table creation failed:', error);
+      console.error("Table creation failed:", error);
       setSetupResult({
         success: false,
         totalTables: 0,
         successful: 0,
         failed: 1,
-        xanoInstance: 'Unknown',
+        xanoInstance: "Unknown",
         results: [],
-        errors: [{ table: 'system', error: 'Request failed' }]
+        errors: [{ table: "system", error: "Request failed" }],
       });
     } finally {
-      setIsLoading(prev => ({ ...prev, creating: false }));
+      setIsLoading((prev) => ({ ...prev, creating: false }));
     }
   };
 
   const loadSchemas = async () => {
-    setIsLoading(prev => ({ ...prev, schemas: true }));
+    setIsLoading((prev) => ({ ...prev, schemas: true }));
     try {
-      const response = await fetch('/api/xano/table-schemas');
+      const response = await fetch("/api/xano/table-schemas");
       const result = await response.json();
       setSchemas(result);
     } catch (error) {
-      console.error('Failed to load schemas:', error);
+      console.error("Failed to load schemas:", error);
     } finally {
-      setIsLoading(prev => ({ ...prev, schemas: false }));
+      setIsLoading((prev) => ({ ...prev, schemas: false }));
     }
   };
 
@@ -146,7 +146,7 @@ export default function XanoTableManager() {
         <div className="bg-[#1a1a1a] border border-[#333333] rounded-lg p-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-white">Upgraded Xano Instance</h3>
-            <Button 
+            <Button
               onClick={testConnection}
               disabled={isLoading.connecting}
               size="sm"
@@ -159,7 +159,7 @@ export default function XanoTableManager() {
               )}
             </Button>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label className="text-[#b3b3b3] text-sm">Instance URL</Label>
@@ -168,7 +168,9 @@ export default function XanoTableManager() {
               </div>
             </div>
             <div>
-              <Label className="text-[#b3b3b3] text-sm">Connection Status</Label>
+              <Label className="text-[#b3b3b3] text-sm">
+                Connection Status
+              </Label>
               <div className="flex items-center gap-2 mt-1">
                 {isConnected === null ? (
                   <Badge className="bg-[#6B7280]/20 text-[#6B7280] border-[#6B7280]/40">
@@ -186,7 +188,7 @@ export default function XanoTableManager() {
               </div>
             </div>
           </div>
-          
+
           {connectionDetails && (
             <div className="mt-4 text-xs text-[#b3b3b3]">
               {isConnected ? (
@@ -194,15 +196,17 @@ export default function XanoTableManager() {
                   <strong>✅ Upgraded Xano instance ready!</strong>
                   {connectionDetails.existingTables && (
                     <div className="mt-1">
-                      Existing tables: {Array.isArray(connectionDetails.existingTables) 
-                        ? connectionDetails.existingTables.length 
-                        : 'Unknown'}
+                      Existing tables:{" "}
+                      {Array.isArray(connectionDetails.existingTables)
+                        ? connectionDetails.existingTables.length
+                        : "Unknown"}
                     </div>
                   )}
                 </div>
               ) : (
                 <div className="text-[#EF4444]">
-                  <strong>❌ Connection failed:</strong> {connectionDetails.message || connectionDetails.error}
+                  <strong>❌ Connection failed:</strong>{" "}
+                  {connectionDetails.message || connectionDetails.error}
                 </div>
               )}
             </div>
@@ -214,10 +218,12 @@ export default function XanoTableManager() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-semibold text-white">ECELONX Table Setup</h3>
-              <p className="text-sm text-[#b3b3b3]">Create all required tables for the ECELONX system</p>
+              <p className="text-sm text-[#b3b3b3]">
+                Create all required tables for the ECELONX system
+              </p>
             </div>
             <div className="flex gap-2">
-              <Button 
+              <Button
                 onClick={loadSchemas}
                 disabled={isLoading.schemas}
                 size="sm"
@@ -229,7 +235,7 @@ export default function XanoTableManager() {
                   <Eye className="w-4 h-4" />
                 )}
               </Button>
-              <Button 
+              <Button
                 onClick={createAllTables}
                 disabled={isLoading.creating || !isConnected}
                 className="f10-btn accent-bg text-black font-medium"
@@ -252,10 +258,15 @@ export default function XanoTableManager() {
           {/* Table List Preview */}
           {schemas && (
             <div className="mb-4">
-              <h4 className="font-medium text-white mb-2">Tables to Create ({schemas.totalTables})</h4>
+              <h4 className="font-medium text-white mb-2">
+                Tables to Create ({schemas.totalTables})
+              </h4>
               <div className="grid grid-cols-4 gap-2">
                 {Object.keys(schemas.schemas).map((tableName) => (
-                  <Badge key={tableName} className="bg-[#FFD700]/20 text-[#FFD700] border-[#FFD700]/40 text-xs">
+                  <Badge
+                    key={tableName}
+                    className="bg-[#FFD700]/20 text-[#FFD700] border-[#FFD700]/40 text-xs"
+                  >
                     {tableName}
                   </Badge>
                 ))}
@@ -268,7 +279,9 @@ export default function XanoTableManager() {
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
                 <Loader2 className="w-4 h-4 animate-spin text-[#FFD700]" />
-                <span className="text-sm font-medium text-white">Creating ECELONX tables...</span>
+                <span className="text-sm font-medium text-white">
+                  Creating ECELONX tables...
+                </span>
               </div>
               <Progress value={33} className="w-full" />
             </div>
@@ -279,15 +292,21 @@ export default function XanoTableManager() {
             <div className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[#10B981]">{setupResult.successful}</div>
+                  <div className="text-2xl font-bold text-[#10B981]">
+                    {setupResult.successful}
+                  </div>
                   <div className="text-xs text-[#737373]">SUCCESSFUL</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[#EF4444]">{setupResult.failed}</div>
+                  <div className="text-2xl font-bold text-[#EF4444]">
+                    {setupResult.failed}
+                  </div>
                   <div className="text-xs text-[#737373]">FAILED</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-white">{setupResult.totalTables}</div>
+                  <div className="text-2xl font-bold text-white">
+                    {setupResult.totalTables}
+                  </div>
                   <div className="text-xs text-[#737373]">TOTAL</div>
                 </div>
               </div>
@@ -297,50 +316,58 @@ export default function XanoTableManager() {
                 {setupResult.results.map((result, index) => {
                   const StatusIcon = getStatusIcon(result.success);
                   const statusColor = getStatusColor(result.success);
-                  
+
                   return (
                     <div
                       key={index}
                       className="flex items-center justify-between p-2 bg-[#0a0a0a] rounded border border-[#333333]"
                     >
                       <div className="flex items-center gap-3">
-                        <StatusIcon 
-                          className="w-4 h-4" 
+                        <StatusIcon
+                          className="w-4 h-4"
                           style={{ color: statusColor }}
                         />
                         <div>
-                          <div className="font-medium text-white text-sm">{result.table}</div>
+                          <div className="font-medium text-white text-sm">
+                            {result.table}
+                          </div>
                           <div className="text-xs text-[#737373]">
                             {result.fields && `${result.fields} fields`}
                           </div>
                         </div>
                       </div>
                       <div className="text-xs text-[#b3b3b3]">
-                        {result.success ? 'Created' : result.error}
+                        {result.success ? "Created" : result.error}
                       </div>
                     </div>
                   );
                 })}
-                
+
                 {/* Show errors if any */}
-                {setupResult.errors && setupResult.errors.map((error, index) => (
-                  <div
-                    key={`error-${index}`}
-                    className="flex items-center justify-between p-2 bg-[#EF4444]/10 rounded border border-[#EF4444]/30"
-                  >
-                    <div className="flex items-center gap-3">
-                      <XCircle className="w-4 h-4 text-[#EF4444]" />
-                      <div>
-                        <div className="font-medium text-white text-sm">{error.table}</div>
-                        <div className="text-xs text-[#EF4444]">{error.error}</div>
+                {setupResult.errors &&
+                  setupResult.errors.map((error, index) => (
+                    <div
+                      key={`error-${index}`}
+                      className="flex items-center justify-between p-2 bg-[#EF4444]/10 rounded border border-[#EF4444]/30"
+                    >
+                      <div className="flex items-center gap-3">
+                        <XCircle className="w-4 h-4 text-[#EF4444]" />
+                        <div>
+                          <div className="font-medium text-white text-sm">
+                            {error.table}
+                          </div>
+                          <div className="text-xs text-[#EF4444]">
+                            {error.error}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
 
               <div className="text-xs text-[#737373] text-center">
-                Setup completed at {new Date(setupResult.timestamp || Date.now()).toLocaleString()}
+                Setup completed at{" "}
+                {new Date(setupResult.timestamp || Date.now()).toLocaleString()}
               </div>
             </div>
           )}
@@ -348,7 +375,9 @@ export default function XanoTableManager() {
 
         {/* Quick Info */}
         <div className="bg-[#1a1a1a] border border-[#FFD700]/30 rounded-lg p-4">
-          <h4 className="font-semibold text-[#FFD700] mb-2">🚀 Upgraded Xano Instance</h4>
+          <h4 className="font-semibold text-[#FFD700] mb-2">
+            🚀 Upgraded Xano Instance
+          </h4>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <strong className="text-white">What gets created:</strong>

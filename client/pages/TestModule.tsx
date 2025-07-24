@@ -41,170 +41,189 @@ interface TestResult {
 export default function TestModule() {
   const [smsTest, setSmsTest] = useState({
     phone: "+18144409068",
-    message: "Test message from ECELONX system"
+    message: "Test message from ECELONX system",
   });
   const [isTesting, setIsTesting] = useState({
     sms: false,
     voice: false,
-    api: false
+    api: false,
   });
-  const [testResults, setTestResults] = useState<Record<string, TestResult>>({});
+  const [testResults, setTestResults] = useState<Record<string, TestResult>>(
+    {},
+  );
 
   const [voiceTest, setVoiceTest] = useState({
     phone: "+18144409068",
-    message: "Hello, this is a test call from your ECELONX system. All systems are operational."
+    message:
+      "Hello, this is a test call from your ECELONX system. All systems are operational.",
   });
 
   const [apiTest, setApiTest] = useState({
     endpoint: "https://api.example.com/test",
     method: "GET",
     headers: "{}",
-    body: "{}"
+    body: "{}",
   });
 
   const runSMSTest = async () => {
-    setIsTesting(prev => ({ ...prev, sms: true }));
+    setIsTesting((prev) => ({ ...prev, sms: true }));
 
     try {
-      console.log('🧪 Testing SMS with:', { phone: smsTest.phone, message: smsTest.message });
-
-      const response = await fetch('/api/real/sms/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: smsTest.phone,
-          body: smsTest.message
-        })
+      console.log("🧪 Testing SMS with:", {
+        phone: smsTest.phone,
+        message: smsTest.message,
       });
 
-      console.log('📱 SMS Response status:', response.status, response.statusText);
+      const response = await fetch("/api/real/sms/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: smsTest.phone,
+          body: smsTest.message,
+        }),
+      });
+
+      console.log(
+        "📱 SMS Response status:",
+        response.status,
+        response.statusText,
+      );
 
       let result;
       try {
         const responseText = await response.text();
-        console.log('📱 SMS Raw response:', responseText);
+        console.log("📱 SMS Raw response:", responseText);
         result = JSON.parse(responseText);
       } catch (parseError) {
-        console.error('📱 Failed to parse SMS response:', parseError);
+        console.error("📱 Failed to parse SMS response:", parseError);
         result = {
           message: "Failed to parse response",
           error: parseError.message,
-          details: "Response parsing failed"
+          details: "Response parsing failed",
         };
       }
 
-      setTestResults(prev => ({
+      setTestResults((prev) => ({
         ...prev,
         sms: {
           success: response.ok,
-          message: result.message || result.error || (response.ok ? "SMS sent successfully!" : "SMS failed to send"),
-          details: { ...result, status: response.status, statusText: response.statusText },
-          timestamp: new Date()
-        }
+          message:
+            result.message ||
+            result.error ||
+            (response.ok ? "SMS sent successfully!" : "SMS failed to send"),
+          details: {
+            ...result,
+            status: response.status,
+            statusText: response.statusText,
+          },
+          timestamp: new Date(),
+        },
       }));
     } catch (error) {
-      console.error('📱 SMS Test error:', error);
-      setTestResults(prev => ({
+      console.error("📱 SMS Test error:", error);
+      setTestResults((prev) => ({
         ...prev,
         sms: {
           success: false,
           message: "Failed to send SMS",
           details: { error: error.message, stack: error.stack },
-          timestamp: new Date()
-        }
+          timestamp: new Date(),
+        },
       }));
     } finally {
-      setIsTesting(prev => ({ ...prev, sms: false }));
+      setIsTesting((prev) => ({ ...prev, sms: false }));
     }
   };
 
   const runVoiceTest = async () => {
-    setIsTesting(prev => ({ ...prev, voice: true }));
-    
+    setIsTesting((prev) => ({ ...prev, voice: true }));
+
     try {
-      const response = await fetch('/api/voice/call', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/voice/call", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           to: voiceTest.phone,
-          message: voiceTest.message
-        })
+          message: voiceTest.message,
+        }),
       });
 
       const result = await response.json();
-      
-      setTestResults(prev => ({
+
+      setTestResults((prev) => ({
         ...prev,
         voice: {
           success: response.ok,
-          message: result.message || (response.ok ? "Voice call initiated!" : "Voice call failed"),
+          message:
+            result.message ||
+            (response.ok ? "Voice call initiated!" : "Voice call failed"),
           details: result,
-          timestamp: new Date()
-        }
+          timestamp: new Date(),
+        },
       }));
     } catch (error) {
-      setTestResults(prev => ({
+      setTestResults((prev) => ({
         ...prev,
         voice: {
           success: false,
           message: "Failed to initiate voice call",
           details: error,
-          timestamp: new Date()
-        }
+          timestamp: new Date(),
+        },
       }));
     } finally {
-      setIsTesting(prev => ({ ...prev, voice: false }));
+      setIsTesting((prev) => ({ ...prev, voice: false }));
     }
   };
 
   const runAPITest = async () => {
-    setIsTesting(prev => ({ ...prev, api: true }));
-    
+    setIsTesting((prev) => ({ ...prev, api: true }));
+
     try {
-      const headers = JSON.parse(apiTest.headers || '{}');
-      const body = apiTest.method !== 'GET' ? apiTest.body : undefined;
+      const headers = JSON.parse(apiTest.headers || "{}");
+      const body = apiTest.method !== "GET" ? apiTest.body : undefined;
 
       const response = await fetch(apiTest.endpoint, {
         method: apiTest.method,
         headers: {
-          'Content-Type': 'application/json',
-          ...headers
+          "Content-Type": "application/json",
+          ...headers,
         },
-        body: body ? JSON.stringify(JSON.parse(body)) : undefined
+        body: body ? JSON.stringify(JSON.parse(body)) : undefined,
       });
 
       const result = await response.text();
-      
-      setTestResults(prev => ({
+
+      setTestResults((prev) => ({
         ...prev,
         api: {
           success: response.ok,
           message: `API ${apiTest.method} request completed`,
           details: { status: response.status, response: result },
-          timestamp: new Date()
-        }
+          timestamp: new Date(),
+        },
       }));
     } catch (error) {
-      setTestResults(prev => ({
+      setTestResults((prev) => ({
         ...prev,
         api: {
           success: false,
           message: "API request failed",
           details: error,
-          timestamp: new Date()
-        }
+          timestamp: new Date(),
+        },
       }));
     } finally {
-      setIsTesting(prev => ({ ...prev, api: false }));
+      setIsTesting((prev) => ({ ...prev, api: false }));
     }
   };
 
   const TestResultDisplay = ({ result }: { result: TestResult }) => (
-    <div 
+    <div
       className={`p-4 rounded-lg border ${
-        result.success 
-          ? 'bg-green-500/10 border-green-500/30' 
-          : 'bg-red-500/10 border-red-500/30'
+        result.success
+          ? "bg-green-500/10 border-green-500/30"
+          : "bg-red-500/10 border-red-500/30"
       }`}
     >
       <div className="flex items-center gap-2 mb-2">
@@ -214,7 +233,7 @@ export default function TestModule() {
           <XCircle className="w-4 h-4 text-red-500" />
         )}
         <span className="font-medium text-white">
-          {result.success ? 'Success' : 'Failed'}
+          {result.success ? "Success" : "Failed"}
         </span>
         <span className="text-xs text-gray-400">
           {result.timestamp.toLocaleTimeString()}
@@ -235,12 +254,19 @@ export default function TestModule() {
   return (
     <div className="min-h-screen bg-[#111111]">
       {/* Test Module Header */}
-      <div className="f10-command-header" style={{ background: "linear-gradient(135deg, #1a1a0a 0%, #2d2d1a 100%)" }}>
+      <div
+        className="f10-command-header"
+        style={{
+          background: "linear-gradient(135deg, #1a1a0a 0%, #2d2d1a 100%)",
+        }}
+      >
         <div className="f10-command-title">
           <TestTube className="w-8 h-8 text-[#00E676]" />
           <div>
             <h1 className="f10-heading-lg text-white">TEST MODULE</h1>
-            <p className="f10-command-subtitle">System Testing & Validation Center</p>
+            <p className="f10-command-subtitle">
+              System Testing & Validation Center
+            </p>
           </div>
         </div>
         <div className="f10-command-status">
@@ -258,7 +284,10 @@ export default function TestModule() {
       <div className="f10-ops-zone">
         {/* Quick Test Actions */}
         <div className="grid grid-cols-4 gap-4 mb-8">
-          <Card className="f10-card cursor-pointer hover:accent-glow transition-all" onClick={runSMSTest}>
+          <Card
+            className="f10-card cursor-pointer hover:accent-glow transition-all"
+            onClick={runSMSTest}
+          >
             <CardContent className="p-4 text-center">
               <MessageSquare className="w-8 h-8 mx-auto text-[#00BFFF] mb-2" />
               <h3 className="font-semibold text-white">Quick SMS Test</h3>
@@ -274,7 +303,10 @@ export default function TestModule() {
             </CardContent>
           </Card>
 
-          <Card className="f10-card cursor-pointer hover:accent-glow transition-all" onClick={runVoiceTest}>
+          <Card
+            className="f10-card cursor-pointer hover:accent-glow transition-all"
+            onClick={runVoiceTest}
+          >
             <CardContent className="p-4 text-center">
               <Phone className="w-8 h-8 mx-auto text-[#8A2BE2] mb-2" />
               <h3 className="font-semibold text-white">Quick Voice Test</h3>
@@ -282,7 +314,10 @@ export default function TestModule() {
             </CardContent>
           </Card>
 
-          <Card className="f10-card cursor-pointer hover:accent-glow transition-all" onClick={runAPITest}>
+          <Card
+            className="f10-card cursor-pointer hover:accent-glow transition-all"
+            onClick={runAPITest}
+          >
             <CardContent className="p-4 text-center">
               <Network className="w-8 h-8 mx-auto text-[#32CD32] mb-2" />
               <h3 className="font-semibold text-white">Quick API Test</h3>
@@ -350,7 +385,12 @@ export default function TestModule() {
                     <Label className="text-[#b3b3b3]">Phone Number</Label>
                     <Input
                       value={smsTest.phone}
-                      onChange={(e) => setSmsTest(prev => ({ ...prev, phone: e.target.value }))}
+                      onChange={(e) =>
+                        setSmsTest((prev) => ({
+                          ...prev,
+                          phone: e.target.value,
+                        }))
+                      }
                       placeholder="+18144409068"
                       className="bg-[#1a1a1a] border-[#333333] text-white"
                     />
@@ -359,13 +399,18 @@ export default function TestModule() {
                     <Label className="text-[#b3b3b3]">Message</Label>
                     <Textarea
                       value={smsTest.message}
-                      onChange={(e) => setSmsTest(prev => ({ ...prev, message: e.target.value }))}
+                      onChange={(e) =>
+                        setSmsTest((prev) => ({
+                          ...prev,
+                          message: e.target.value,
+                        }))
+                      }
                       placeholder="Test message"
                       className="bg-[#1a1a1a] border-[#333333] text-white"
                       rows={3}
                     />
                   </div>
-                  <Button 
+                  <Button
                     onClick={runSMSTest}
                     disabled={isTesting.sms}
                     className="w-full f10-btn accent-bg text-black font-medium"
@@ -423,7 +468,12 @@ export default function TestModule() {
                     <Label className="text-[#b3b3b3]">Phone Number</Label>
                     <Input
                       value={voiceTest.phone}
-                      onChange={(e) => setVoiceTest(prev => ({ ...prev, phone: e.target.value }))}
+                      onChange={(e) =>
+                        setVoiceTest((prev) => ({
+                          ...prev,
+                          phone: e.target.value,
+                        }))
+                      }
                       placeholder="+18144409068"
                       className="bg-[#1a1a1a] border-[#333333] text-white"
                     />
@@ -432,13 +482,18 @@ export default function TestModule() {
                     <Label className="text-[#b3b3b3]">Voice Message</Label>
                     <Textarea
                       value={voiceTest.message}
-                      onChange={(e) => setVoiceTest(prev => ({ ...prev, message: e.target.value }))}
+                      onChange={(e) =>
+                        setVoiceTest((prev) => ({
+                          ...prev,
+                          message: e.target.value,
+                        }))
+                      }
                       placeholder="Test voice message"
                       className="bg-[#1a1a1a] border-[#333333] text-white"
                       rows={3}
                     />
                   </div>
-                  <Button 
+                  <Button
                     onClick={runVoiceTest}
                     disabled={isTesting.voice}
                     className="w-full f10-btn accent-bg text-black font-medium"
@@ -496,7 +551,12 @@ export default function TestModule() {
                     <Label className="text-[#b3b3b3]">Endpoint URL</Label>
                     <Input
                       value={apiTest.endpoint}
-                      onChange={(e) => setApiTest(prev => ({ ...prev, endpoint: e.target.value }))}
+                      onChange={(e) =>
+                        setApiTest((prev) => ({
+                          ...prev,
+                          endpoint: e.target.value,
+                        }))
+                      }
                       placeholder="https://api.example.com/test"
                       className="bg-[#1a1a1a] border-[#333333] text-white"
                     />
@@ -505,7 +565,12 @@ export default function TestModule() {
                     <Label className="text-[#b3b3b3]">Method</Label>
                     <select
                       value={apiTest.method}
-                      onChange={(e) => setApiTest(prev => ({ ...prev, method: e.target.value }))}
+                      onChange={(e) =>
+                        setApiTest((prev) => ({
+                          ...prev,
+                          method: e.target.value,
+                        }))
+                      }
                       className="w-full px-3 py-2 bg-[#1a1a1a] border border-[#333333] rounded-lg text-white"
                     >
                       <option value="GET">GET</option>
@@ -518,25 +583,35 @@ export default function TestModule() {
                     <Label className="text-[#b3b3b3]">Headers (JSON)</Label>
                     <Textarea
                       value={apiTest.headers}
-                      onChange={(e) => setApiTest(prev => ({ ...prev, headers: e.target.value }))}
+                      onChange={(e) =>
+                        setApiTest((prev) => ({
+                          ...prev,
+                          headers: e.target.value,
+                        }))
+                      }
                       placeholder='{"Authorization": "Bearer token"}'
                       className="bg-[#1a1a1a] border-[#333333] text-white font-mono text-sm"
                       rows={2}
                     />
                   </div>
-                  {apiTest.method !== 'GET' && (
+                  {apiTest.method !== "GET" && (
                     <div>
                       <Label className="text-[#b3b3b3]">Body (JSON)</Label>
                       <Textarea
                         value={apiTest.body}
-                        onChange={(e) => setApiTest(prev => ({ ...prev, body: e.target.value }))}
+                        onChange={(e) =>
+                          setApiTest((prev) => ({
+                            ...prev,
+                            body: e.target.value,
+                          }))
+                        }
                         placeholder='{"key": "value"}'
                         className="bg-[#1a1a1a] border-[#333333] text-white font-mono text-sm"
                         rows={3}
                       />
                     </div>
                   )}
-                  <Button 
+                  <Button
                     onClick={runAPITest}
                     disabled={isTesting.api}
                     className="w-full f10-btn accent-bg text-black font-medium"
