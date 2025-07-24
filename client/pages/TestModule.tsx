@@ -353,7 +353,7 @@ export default function TestModule() {
 
         {/* Detailed Testing Tabs */}
         <Tabs defaultValue="sms" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-[#1a1a1a] border border-[#00E676]/30">
+          <TabsList className="grid w-full grid-cols-6 bg-[#1a1a1a] border border-[#00E676]/30">
             <TabsTrigger
               value="sms"
               className="data-[state=active]:bg-[#00E676] data-[state=active]:text-black text-white hover:text-[#00E676] transition-colors"
