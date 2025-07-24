@@ -17,7 +17,7 @@ router.post("/send-test", async (req, res) => {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          From: "+18558000037",
+          From: "+18558600037",
           To: to,
           Body: message,
         }),
@@ -49,7 +49,7 @@ router.post("/send-test", async (req, res) => {
 // Auto-send the test message
 async function sendTestMessage() {
   try {
-    console.log("🚀 Sending test SMS to 8144409068...");
+    console.log("🚀 Sending test SMS to 8558600037...");
 
     const response = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/ACf19a39d865d43659b94a3a2074/Messages.json`,
@@ -60,8 +60,8 @@ async function sendTestMessage() {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          From: "+18558000037",
-          To: "+18144409068",
+          From: "+18558600037",
+          To: "+18558600037",
           Body: "whhhhaaaa up",
         }),
       },
