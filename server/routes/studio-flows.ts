@@ -133,6 +133,7 @@ export const getStudioFlows: RequestHandler = async (req, res) => {
     res.json({
       success: true,
       flows: result.flows || [],
+      currentFlowSid: currentFlowSid,
       message: "Studio Flows retrieved successfully",
     });
   } catch (error) {
