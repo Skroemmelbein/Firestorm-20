@@ -37,6 +37,7 @@ interface NavigationItem {
   icon: any;
   path: string;
   description: string;
+  color?: string;
   subItems?: SubNavigationItem[];
 }
 
