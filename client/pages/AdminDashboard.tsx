@@ -212,7 +212,7 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="uploads" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3 glass-card corp-shadow">
+          <TabsList className="grid w-full grid-cols-4 glass-card corp-shadow">
             <TabsTrigger value="uploads" className="gap-2">
               <Upload className="w-4 h-4" />
               Data Uploads
@@ -220,6 +220,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="integrations" className="gap-2">
               <Zap className="w-4 h-4" />
               Integrations
+            </TabsTrigger>
+            <TabsTrigger value="sendgrid" className="gap-2">
+              <CheckCircle className="w-4 h-4" />
+              SendGrid Email
             </TabsTrigger>
             <TabsTrigger value="activity" className="gap-2">
               <Activity className="w-4 h-4" />
