@@ -1,0 +1,1931 @@
+export interface BackgroundConfig {
+  type: 'solid' | 'gradient' | 'pattern' | 'animated' | 'particle' | 'geometric';
+  primary: string;
+  secondary?: string;
+  tertiary?: string;
+  opacity?: number;
+  animation?: string;
+  pattern?: string;
+  direction?: string;
+}
+
+export interface ComprehensiveTheme {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  colors: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    background: string;
+    surface: string;
+    text: string;
+    muted: string;
+    success: string;
+    warning: string;
+    error: string;
+  };
+  background: BackgroundConfig;
+  fonts: {
+    heading: string;
+    body: string;
+    mono: string;
+  };
+  spacing: {
+    scale: number;
+    radius: number;
+  };
+  effects: {
+    shadows: boolean;
+    gradients: boolean;
+    blur: boolean;
+    animations: boolean;
+    particles: boolean;
+  };
+  mood: 'professional' | 'creative' | 'energetic' | 'calm' | 'luxurious' | 'minimal' | 'futuristic' | 'corporate';
+}
+
+export const COMPREHENSIVE_THEMES: ComprehensiveTheme[] = [
+  // EXECUTIVE COMMAND SERIES (1-10)
+  {
+    id: "fortune-10-gold",
+    name: "Fortune 10 Gold Command",
+    category: "Executive Command",
+    description: "Ultimate executive control center with Tesla/Palantir aesthetics",
+    colors: {
+      primary: "#FFD700",
+      secondary: "#00E676", 
+      accent: "#00BFFF",
+      background: "#0a0a0a",
+      surface: "#1a1a1a",
+      text: "#ffffff",
+      muted: "#737373",
+      success: "#00E676",
+      warning: "#FFD700",
+      error: "#FF4444"
+    },
+    background: {
+      type: "gradient",
+      primary: "#0a0a0a",
+      secondary: "#1a1a1a",
+      direction: "135deg",
+      opacity: 0.95
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "professional"
+  },
+  {
+    id: "platinum-executive",
+    name: "Platinum Executive",
+    category: "Executive Command",
+    description: "Premium platinum finish for C-suite operations",
+    colors: {
+      primary: "#E5E7EB",
+      secondary: "#6B7280",
+      accent: "#3B82F6",
+      background: "#111827",
+      surface: "#1F2937",
+      text: "#F9FAFB",
+      muted: "#9CA3AF",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "geometric",
+      primary: "#111827",
+      secondary: "#1F2937",
+      pattern: "hexagon-grid",
+      opacity: 0.1
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.1, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "luxurious"
+  },
+  {
+    id: "diamond-prestige",
+    name: "Diamond Prestige",
+    category: "Executive Command",
+    description: "Ultra-high-end diamond clarity interface",
+    colors: {
+      primary: "#F3F4F6",
+      secondary: "#D1D5DB",
+      accent: "#8B5CF6",
+      background: "#030712",
+      surface: "#111827",
+      text: "#F9FAFB",
+      muted: "#6B7280",
+      success: "#059669",
+      warning: "#D97706",
+      error: "#DC2626"
+    },
+    background: {
+      type: "particle",
+      primary: "#030712",
+      secondary: "#8B5CF6",
+      animation: "diamond-particles",
+      opacity: 0.15
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 12 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "luxurious"
+  },
+  {
+    id: "obsidian-command",
+    name: "Obsidian Command",
+    category: "Executive Command",
+    description: "Dark volcanic glass finish for power users",
+    colors: {
+      primary: "#1F2937",
+      secondary: "#374151",
+      accent: "#F59E0B",
+      background: "#000000",
+      surface: "#0F172A",
+      text: "#F1F5F9",
+      muted: "#64748B",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#000000",
+      secondary: "#0F172A",
+      animation: "obsidian-flow",
+      opacity: 0.8
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.95, radius: 4 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "corporate"
+  },
+  {
+    id: "titanium-fortress",
+    name: "Titanium Fortress",
+    category: "Executive Command",
+    description: "Industrial strength titanium interface design",
+    colors: {
+      primary: "#6B7280",
+      secondary: "#9CA3AF",
+      accent: "#EF4444",
+      background: "#18181B",
+      surface: "#27272A",
+      text: "#FAFAFA",
+      muted: "#A1A1AA",
+      success: "#22C55E",
+      warning: "#F97316",
+      error: "#EF4444"
+    },
+    background: {
+      type: "pattern",
+      primary: "#18181B",
+      secondary: "#27272A",
+      pattern: "carbon-fiber",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 2 },
+    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
+    mood: "corporate"
+  },
+  {
+    id: "emerald-elite",
+    name: "Emerald Elite",
+    category: "Executive Command",
+    description: "Luxurious emerald green for VIP access",
+    colors: {
+      primary: "#10B981",
+      secondary: "#059669",
+      accent: "#FFD700",
+      background: "#064E3B",
+      surface: "#065F46",
+      text: "#ECFDF5",
+      muted: "#6EE7B7",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#F87171"
+    },
+    background: {
+      type: "gradient",
+      primary: "#064E3B",
+      secondary: "#065F46",
+      tertiary: "#047857",
+      direction: "45deg",
+      opacity: 0.9
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.05, radius: 10 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "luxurious"
+  },
+  {
+    id: "sapphire-command",
+    name: "Sapphire Command",
+    category: "Executive Command",
+    description: "Deep blue sapphire luxury interface",
+    colors: {
+      primary: "#3B82F6",
+      secondary: "#1D4ED8",
+      accent: "#FBBF24",
+      background: "#1E3A8A",
+      surface: "#1E40AF",
+      text: "#DBEAFE",
+      muted: "#93C5FD",
+      success: "#34D399",
+      warning: "#FBBF24",
+      error: "#F87171"
+    },
+    background: {
+      type: "animated",
+      primary: "#1E3A8A",
+      secondary: "#1E40AF",
+      animation: "sapphire-waves",
+      opacity: 0.7
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "luxurious"
+  },
+  {
+    id: "ruby-royalty",
+    name: "Ruby Royalty",
+    category: "Executive Command",
+    description: "Regal ruby red for premium operations",
+    colors: {
+      primary: "#DC2626",
+      secondary: "#B91C1C",
+      accent: "#FDE047",
+      background: "#7F1D1D",
+      surface: "#991B1B",
+      text: "#FEF2F2",
+      muted: "#FCA5A5",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#DC2626"
+    },
+    background: {
+      type: "pattern",
+      primary: "#7F1D1D",
+      secondary: "#991B1B",
+      pattern: "royal-crown",
+      opacity: 0.2
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.1, radius: 12 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "luxurious"
+  },
+  {
+    id: "onyx-shadow",
+    name: "Onyx Shadow",
+    category: "Executive Command",
+    description: "Deep black onyx with shadow effects",
+    colors: {
+      primary: "#1F2937",
+      secondary: "#111827",
+      accent: "#6366F1",
+      background: "#000000",
+      surface: "#0F172A",
+      text: "#F8FAFC",
+      muted: "#475569",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "particle",
+      primary: "#000000",
+      secondary: "#6366F1",
+      animation: "shadow-particles",
+      opacity: 0.1
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.9, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "minimal"
+  },
+  {
+    id: "pearl-prestige",
+    name: "Pearl Prestige",
+    category: "Executive Command",
+    description: "Elegant pearl white with iridescent accents",
+    colors: {
+      primary: "#F8FAFC",
+      secondary: "#E2E8F0",
+      accent: "#8B5CF6",
+      background: "#1E293B",
+      surface: "#334155",
+      text: "#F1F5F9",
+      muted: "#94A3B8",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#1E293B",
+      secondary: "#334155",
+      animation: "pearl-shimmer",
+      opacity: 0.85
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.05, radius: 14 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "luxurious"
+  },
+
+  // VELOCIFY OPS SERIES (11-20)
+  {
+    id: "velocify-azure",
+    name: "Velocify Azure",
+    category: "Velocify Ops",
+    description: "Professional azure blue for client operations",
+    colors: {
+      primary: "#00BFFF",
+      secondary: "#0EA5E9",
+      accent: "#FFD700",
+      background: "#0F172A",
+      surface: "#1E293B",
+      text: "#F1F5F9",
+      muted: "#64748B",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "gradient",
+      primary: "#0F172A",
+      secondary: "#1E293B",
+      direction: "180deg",
+      opacity: 0.95
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "professional"
+  },
+  {
+    id: "velocify-steel",
+    name: "Velocify Steel",
+    category: "Velocify Ops",
+    description: "Industrial steel blue for operations",
+    colors: {
+      primary: "#475569",
+      secondary: "#64748B",
+      accent: "#0EA5E9",
+      background: "#020617",
+      surface: "#0F172A",
+      text: "#F8FAFC",
+      muted: "#94A3B8",
+      success: "#059669",
+      warning: "#D97706",
+      error: "#DC2626"
+    },
+    background: {
+      type: "pattern",
+      primary: "#020617",
+      secondary: "#0F172A",
+      pattern: "steel-mesh",
+      opacity: 0.2
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.95, radius: 4 },
+    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
+    mood: "corporate"
+  },
+  {
+    id: "velocify-cyan",
+    name: "Velocify Cyan",
+    category: "Velocify Ops",
+    description: "Bright cyan for high-performance operations",
+    colors: {
+      primary: "#06B6D4",
+      secondary: "#0891B2",
+      accent: "#F59E0B",
+      background: "#164E63",
+      surface: "#155E75",
+      text: "#F0F9FF",
+      muted: "#67E8F9",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#F87171"
+    },
+    background: {
+      type: "animated",
+      primary: "#164E63",
+      secondary: "#155E75",
+      animation: "cyan-flow",
+      opacity: 0.8
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "energetic"
+  },
+  {
+    id: "velocify-midnight",
+    name: "Velocify Midnight",
+    category: "Velocify Ops",
+    description: "Deep midnight blue for 24/7 operations",
+    colors: {
+      primary: "#1E40AF",
+      secondary: "#1D4ED8",
+      accent: "#FBBF24",
+      background: "#0C1426",
+      surface: "#1E293B",
+      text: "#E2E8F0",
+      muted: "#64748B",
+      success: "#059669",
+      warning: "#D97706",
+      error: "#DC2626"
+    },
+    background: {
+      type: "particle",
+      primary: "#0C1426",
+      secondary: "#1E40AF",
+      animation: "midnight-stars",
+      opacity: 0.15
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "calm"
+  },
+  {
+    id: "velocify-ocean",
+    name: "Velocify Ocean",
+    category: "Velocify Ops",
+    description: "Deep ocean blue for smooth operations",
+    colors: {
+      primary: "#0369A1",
+      secondary: "#0284C7",
+      accent: "#84CC16",
+      background: "#0C4A6E",
+      surface: "#075985",
+      text: "#E0F2FE",
+      muted: "#7DD3FC",
+      success: "#22C55E",
+      warning: "#EAB308",
+      error: "#F87171"
+    },
+    background: {
+      type: "animated",
+      primary: "#0C4A6E",
+      secondary: "#075985",
+      animation: "ocean-waves",
+      opacity: 0.7
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 10 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "calm"
+  },
+  {
+    id: "velocify-ice",
+    name: "Velocify Ice",
+    category: "Velocify Ops",
+    description: "Cool ice blue for precision operations",
+    colors: {
+      primary: "#0F766E",
+      secondary: "#0D9488",
+      accent: "#F59E0B",
+      background: "#042F2E",
+      surface: "#134E4A",
+      text: "#F0FDFA",
+      muted: "#5EEAD4",
+      success: "#14B8A6",
+      warning: "#F59E0B",
+      error: "#F87171"
+    },
+    background: {
+      type: "gradient",
+      primary: "#042F2E",
+      secondary: "#134E4A",
+      tertiary: "#0F766E",
+      direction: "225deg",
+      opacity: 0.9
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "calm"
+  },
+  {
+    id: "velocify-storm",
+    name: "Velocify Storm",
+    category: "Velocify Ops",
+    description: "Storm gray for weather any challenge",
+    colors: {
+      primary: "#6B7280",
+      secondary: "#4B5563",
+      accent: "#3B82F6",
+      background: "#111827",
+      surface: "#1F2937",
+      text: "#F9FAFB",
+      muted: "#9CA3AF",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#111827",
+      secondary: "#1F2937",
+      animation: "storm-clouds",
+      opacity: 0.6
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.95, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "professional"
+  },
+  {
+    id: "velocify-frost",
+    name: "Velocify Frost",
+    category: "Velocify Ops",
+    description: "Frosted blue for crystal clear operations",
+    colors: {
+      primary: "#60A5FA",
+      secondary: "#3B82F6",
+      accent: "#F59E0B",
+      background: "#1E3A8A",
+      surface: "#1E40AF",
+      text: "#DBEAFE",
+      muted: "#93C5FD",
+      success: "#34D399",
+      warning: "#FBBF24",
+      error: "#F87171"
+    },
+    background: {
+      type: "pattern",
+      primary: "#1E3A8A",
+      secondary: "#1E40AF",
+      pattern: "frost-crystals",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 12 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "calm"
+  },
+  {
+    id: "velocify-cobalt",
+    name: "Velocify Cobalt",
+    category: "Velocify Ops",
+    description: "Deep cobalt blue for professional excellence",
+    colors: {
+      primary: "#1D4ED8",
+      secondary: "#2563EB",
+      accent: "#FBBF24",
+      background: "#1E1B4B",
+      surface: "#312E81",
+      text: "#EDE9FE",
+      muted: "#A78BFA",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "geometric",
+      primary: "#1E1B4B",
+      secondary: "#312E81",
+      pattern: "cobalt-grid",
+      opacity: 0.2
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "professional"
+  },
+  {
+    id: "velocify-arctic",
+    name: "Velocify Arctic",
+    category: "Velocify Ops",
+    description: "Arctic white and blue for clean operations",
+    colors: {
+      primary: "#F1F5F9",
+      secondary: "#E2E8F0",
+      accent: "#0EA5E9",
+      background: "#0F172A",
+      surface: "#1E293B",
+      text: "#F8FAFC",
+      muted: "#64748B",
+      success: "#059669",
+      warning: "#D97706",
+      error: "#DC2626"
+    },
+    background: {
+      type: "animated",
+      primary: "#0F172A",
+      secondary: "#1E293B",
+      animation: "arctic-aurora",
+      opacity: 0.8
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.05, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "minimal"
+  },
+
+  // FIRESTORM SERIES (21-30)
+  {
+    id: "firestorm-blaze",
+    name: "FIRESTORM Blaze",
+    category: "FIRESTORM",
+    description: "Intense orange blaze for marketing campaigns",
+    colors: {
+      primary: "#FF6A00",
+      secondary: "#FF8533",
+      accent: "#FFD700",
+      background: "#0F0F0F",
+      surface: "#1A1A1A",
+      text: "#FFFFFF",
+      muted: "#737373",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#0F0F0F",
+      secondary: "#FF6A00",
+      animation: "fire-particles",
+      opacity: 0.2
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 10 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "energetic"
+  },
+  {
+    id: "firestorm-volcano",
+    name: "FIRESTORM Volcano",
+    category: "FIRESTORM",
+    description: "Volcanic red-orange for explosive campaigns",
+    colors: {
+      primary: "#DC2626",
+      secondary: "#EF4444",
+      accent: "#FBBF24",
+      background: "#450A0A",
+      surface: "#7F1D1D",
+      text: "#FEF2F2",
+      muted: "#FCA5A5",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#DC2626"
+    },
+    background: {
+      type: "animated",
+      primary: "#450A0A",
+      secondary: "#7F1D1D",
+      animation: "lava-flow",
+      opacity: 0.7
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.1, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: true },
+    mood: "energetic"
+  },
+  {
+    id: "firestorm-sunset",
+    name: "FIRESTORM Sunset",
+    category: "FIRESTORM",
+    description: "Sunset gradient for warm engagement",
+    colors: {
+      primary: "#F97316",
+      secondary: "#EA580C",
+      accent: "#FDE047",
+      background: "#431407",
+      surface: "#9A3412",
+      text: "#FFF7ED",
+      muted: "#FDBA74",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "gradient",
+      primary: "#431407",
+      secondary: "#9A3412",
+      tertiary: "#F97316",
+      direction: "45deg",
+      opacity: 0.8
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 12 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "energetic"
+  },
+  {
+    id: "firestorm-ember",
+    name: "FIRESTORM Ember",
+    category: "FIRESTORM",
+    description: "Glowing ember orange for sustained heat",
+    colors: {
+      primary: "#EA580C",
+      secondary: "#DC2626",
+      accent: "#FACC15",
+      background: "#292524",
+      surface: "#44403C",
+      text: "#FAFAF9",
+      muted: "#A8A29E",
+      success: "#16A34A",
+      warning: "#EAB308",
+      error: "#DC2626"
+    },
+    background: {
+      type: "particle",
+      primary: "#292524",
+      secondary: "#EA580C",
+      animation: "ember-glow",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.95, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "energetic"
+  },
+  {
+    id: "firestorm-phoenix",
+    name: "FIRESTORM Phoenix",
+    category: "FIRESTORM",
+    description: "Phoenix rising red and gold palette",
+    colors: {
+      primary: "#B91C1C",
+      secondary: "#DC2626",
+      accent: "#FFD700",
+      background: "#7F1D1D",
+      surface: "#991B1B",
+      text: "#FEF2F2",
+      muted: "#FCA5A5",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#B91C1C"
+    },
+    background: {
+      type: "animated",
+      primary: "#7F1D1D",
+      secondary: "#FFD700",
+      animation: "phoenix-wings",
+      opacity: 0.4
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.1, radius: 14 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "luxurious"
+  },
+  {
+    id: "firestorm-solar",
+    name: "FIRESTORM Solar",
+    category: "FIRESTORM",
+    description: "Solar flare yellow-orange energy",
+    colors: {
+      primary: "#FACC15",
+      secondary: "#EAB308",
+      accent: "#F97316",
+      background: "#451A03",
+      surface: "#92400E",
+      text: "#FFFBEB",
+      muted: "#FCD34D",
+      success: "#22C55E",
+      warning: "#FACC15",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#451A03",
+      secondary: "#FACC15",
+      animation: "solar-flares",
+      opacity: 0.5
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "energetic"
+  },
+  {
+    id: "firestorm-magma",
+    name: "FIRESTORM Magma",
+    category: "FIRESTORM",
+    description: "Deep magma red for powerful campaigns",
+    colors: {
+      primary: "#7F1D1D",
+      secondary: "#991B1B",
+      accent: "#F59E0B",
+      background: "#1F1F1F",
+      surface: "#2D2D2D",
+      text: "#FFFFFF",
+      muted: "#9CA3AF",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#7F1D1D"
+    },
+    background: {
+      type: "pattern",
+      primary: "#1F1F1F",
+      secondary: "#7F1D1D",
+      pattern: "magma-rock",
+      opacity: 0.4
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.9, radius: 4 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "corporate"
+  },
+  {
+    id: "firestorm-crimson",
+    name: "FIRESTORM Crimson",
+    category: "FIRESTORM",
+    description: "Deep crimson for elite campaigns",
+    colors: {
+      primary: "#991B1B",
+      secondary: "#B91C1C",
+      accent: "#FBBF24",
+      background: "#450A0A",
+      surface: "#7F1D1D",
+      text: "#FEF2F2",
+      muted: "#F87171",
+      success: "#059669",
+      warning: "#D97706",
+      error: "#991B1B"
+    },
+    background: {
+      type: "gradient",
+      primary: "#450A0A",
+      secondary: "#7F1D1D",
+      direction: "135deg",
+      opacity: 0.9
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 10 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "luxurious"
+  },
+  {
+    id: "firestorm-amber",
+    name: "FIRESTORM Amber",
+    category: "FIRESTORM",
+    description: "Warm amber glow for inviting campaigns",
+    colors: {
+      primary: "#D97706",
+      secondary: "#F59E0B",
+      accent: "#FDE047",
+      background: "#451A03",
+      surface: "#78350F",
+      text: "#FFFBEB",
+      muted: "#FCD34D",
+      success: "#22C55E",
+      warning: "#D97706",
+      error: "#DC2626"
+    },
+    background: {
+      type: "animated",
+      primary: "#451A03",
+      secondary: "#D97706",
+      animation: "amber-glow",
+      opacity: 0.6
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.05, radius: 12 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "creative"
+  },
+  {
+    id: "firestorm-copper",
+    name: "FIRESTORM Copper",
+    category: "FIRESTORM",
+    description: "Metallic copper for premium campaigns",
+    colors: {
+      primary: "#B45309",
+      secondary: "#D97706",
+      accent: "#84CC16",
+      background: "#451A03",
+      surface: "#78350F",
+      text: "#FFF7ED",
+      muted: "#FDBA74",
+      success: "#16A34A",
+      warning: "#B45309",
+      error: "#DC2626"
+    },
+    background: {
+      type: "pattern",
+      primary: "#451A03",
+      secondary: "#B45309",
+      pattern: "copper-mesh",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "professional"
+  },
+
+  // DREAM PORTAL SERIES (31-40)
+  {
+    id: "dream-portal-amethyst",
+    name: "Dream Portal Amethyst",
+    category: "Dream Portal",
+    description: "Mystical amethyst purple for member experiences",
+    colors: {
+      primary: "#8B5CF6",
+      secondary: "#7C3AED",
+      accent: "#FFD700",
+      background: "#0D0D0D",
+      surface: "#1A1A1A",
+      text: "#FFFFFF",
+      muted: "#737373",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#0D0D0D",
+      secondary: "#8B5CF6",
+      animation: "amethyst-crystals",
+      opacity: 0.2
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 12 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "luxurious"
+  },
+  {
+    id: "dream-portal-lavender",
+    name: "Dream Portal Lavender",
+    category: "Dream Portal",
+    description: "Soothing lavender for calm member interactions",
+    colors: {
+      primary: "#A855F7",
+      secondary: "#9333EA",
+      accent: "#FBBF24",
+      background: "#2E1065",
+      surface: "#4C1D95",
+      text: "#F3E8FF",
+      muted: "#C4B5FD",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#F87171"
+    },
+    background: {
+      type: "gradient",
+      primary: "#2E1065",
+      secondary: "#4C1D95",
+      tertiary: "#A855F7",
+      direction: "225deg",
+      opacity: 0.8
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.05, radius: 14 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "calm"
+  },
+  {
+    id: "dream-portal-orchid",
+    name: "Dream Portal Orchid",
+    category: "Dream Portal",
+    description: "Elegant orchid purple for premium members",
+    colors: {
+      primary: "#C026D3",
+      secondary: "#A21CAF",
+      accent: "#FDE047",
+      background: "#581C87",
+      surface: "#7C2D92",
+      text: "#FAE8FF",
+      muted: "#E879F9",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#581C87",
+      secondary: "#C026D3",
+      animation: "orchid-bloom",
+      opacity: 0.4
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.1, radius: 16 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "luxurious"
+  },
+  {
+    id: "dream-portal-indigo",
+    name: "Dream Portal Indigo",
+    category: "Dream Portal",
+    description: "Deep indigo for wisdom and insight",
+    colors: {
+      primary: "#6366F1",
+      secondary: "#4F46E5",
+      accent: "#FACC15",
+      background: "#1E1B4B",
+      surface: "#312E81",
+      text: "#EDE9FE",
+      muted: "#A78BFA",
+      success: "#059669",
+      warning: "#D97706",
+      error: "#DC2626"
+    },
+    background: {
+      type: "particle",
+      primary: "#1E1B4B",
+      secondary: "#6366F1",
+      animation: "wisdom-particles",
+      opacity: 0.25
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 10 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "calm"
+  },
+  {
+    id: "dream-portal-violet",
+    name: "Dream Portal Violet",
+    category: "Dream Portal",
+    description: "Rich violet for creative inspiration",
+    colors: {
+      primary: "#7C3AED",
+      secondary: "#6D28D9",
+      accent: "#84CC16",
+      background: "#2D1B69",
+      surface: "#553C9A",
+      text: "#F3E8FF",
+      muted: "#C4B5FD",
+      success: "#16A34A",
+      warning: "#EAB308",
+      error: "#F87171"
+    },
+    background: {
+      type: "animated",
+      primary: "#2D1B69",
+      secondary: "#7C3AED",
+      animation: "violet-energy",
+      opacity: 0.5
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 12 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "creative"
+  },
+  {
+    id: "dream-portal-plum",
+    name: "Dream Portal Plum",
+    category: "Dream Portal",
+    description: "Deep plum for sophisticated experiences",
+    colors: {
+      primary: "#9333EA",
+      secondary: "#7E22CE",
+      accent: "#F59E0B",
+      background: "#4A044E",
+      surface: "#701A75",
+      text: "#F5E7FF",
+      muted: "#D8B4FE",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "gradient",
+      primary: "#4A044E",
+      secondary: "#701A75",
+      direction: "180deg",
+      opacity: 0.9
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.95, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "luxurious"
+  },
+  {
+    id: "dream-portal-periwinkle",
+    name: "Dream Portal Periwinkle",
+    category: "Dream Portal",
+    description: "Soft periwinkle for gentle member journeys",
+    colors: {
+      primary: "#8B5CF6",
+      secondary: "#6366F1",
+      accent: "#FBBF24",
+      background: "#312E81",
+      surface: "#4338CA",
+      text: "#EDE9FE",
+      muted: "#A78BFA",
+      success: "#34D399",
+      warning: "#FBBF24",
+      error: "#F87171"
+    },
+    background: {
+      type: "animated",
+      primary: "#312E81",
+      secondary: "#8B5CF6",
+      animation: "periwinkle-clouds",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.05, radius: 12 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "calm"
+  },
+  {
+    id: "dream-portal-mauve",
+    name: "Dream Portal Mauve",
+    category: "Dream Portal",
+    description: "Elegant mauve for refined member experiences",
+    colors: {
+      primary: "#A21CAF",
+      secondary: "#BE185D",
+      accent: "#FDE047",
+      background: "#500724",
+      surface: "#831843",
+      text: "#FCE7F3",
+      muted: "#F9A8D4",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "pattern",
+      primary: "#500724",
+      secondary: "#A21CAF",
+      pattern: "mauve-silk",
+      opacity: 0.2
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 14 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "luxurious"
+  },
+  {
+    id: "dream-portal-cosmic",
+    name: "Dream Portal Cosmic",
+    category: "Dream Portal",
+    description: "Cosmic purple for otherworldly experiences",
+    colors: {
+      primary: "#6D28D9",
+      secondary: "#5B21B6",
+      accent: "#FACC15",
+      background: "#1A0B2E",
+      surface: "#3C0764",
+      text: "#F3E8FF",
+      muted: "#C4B5FD",
+      success: "#059669",
+      warning: "#D97706",
+      error: "#DC2626"
+    },
+    background: {
+      type: "particle",
+      primary: "#1A0B2E",
+      secondary: "#6D28D9",
+      animation: "cosmic-dust",
+      opacity: 0.4
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 10 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "futuristic"
+  },
+  {
+    id: "dream-portal-twilight",
+    name: "Dream Portal Twilight",
+    category: "Dream Portal",
+    description: "Twilight purple-blue for evening experiences",
+    colors: {
+      primary: "#4F46E5",
+      secondary: "#4338CA",
+      accent: "#84CC16",
+      background: "#1E1B4B",
+      surface: "#312E81",
+      text: "#EDE9FE",
+      muted: "#A78BFA",
+      success: "#16A34A",
+      warning: "#EAB308",
+      error: "#F87171"
+    },
+    background: {
+      type: "animated",
+      primary: "#1E1B4B",
+      secondary: "#4F46E5",
+      animation: "twilight-gradient",
+      opacity: 0.6
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "calm"
+  },
+
+  // NEXUS SYNC SERIES (41-50)
+  {
+    id: "nexus-sync-neon",
+    name: "Nexus Sync Neon",
+    category: "Nexus Sync",
+    description: "Bright neon green for active integrations",
+    colors: {
+      primary: "#00FF00",
+      secondary: "#22C55E",
+      accent: "#FFD700",
+      background: "#0A0A0A",
+      surface: "#1A1A1A",
+      text: "#FFFFFF",
+      muted: "#737373",
+      success: "#00FF00",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#0A0A0A",
+      secondary: "#00FF00",
+      animation: "neon-circuits",
+      opacity: 0.15
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "futuristic"
+  },
+  {
+    id: "nexus-sync-matrix",
+    name: "Nexus Sync Matrix",
+    category: "Nexus Sync",
+    description: "Matrix green for data flow visualization",
+    colors: {
+      primary: "#22C55E",
+      secondary: "#16A34A",
+      accent: "#FACC15",
+      background: "#052E16",
+      surface: "#14532D",
+      text: "#F0FDF4",
+      muted: "#86EFAC",
+      success: "#22C55E",
+      warning: "#FACC15",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#052E16",
+      secondary: "#22C55E",
+      animation: "matrix-rain",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.9, radius: 4 },
+    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: true },
+    mood: "futuristic"
+  },
+  {
+    id: "nexus-sync-cyber",
+    name: "Nexus Sync Cyber",
+    category: "Nexus Sync",
+    description: "Cyberpunk green for advanced integrations",
+    colors: {
+      primary: "#10B981",
+      secondary: "#059669",
+      accent: "#F59E0B",
+      background: "#064E3B",
+      surface: "#065F46",
+      text: "#ECFDF5",
+      muted: "#6EE7B7",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#F87171"
+    },
+    background: {
+      type: "geometric",
+      primary: "#064E3B",
+      secondary: "#10B981",
+      pattern: "cyber-grid",
+      opacity: 0.2
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 2 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "futuristic"
+  },
+  {
+    id: "nexus-sync-forest",
+    name: "Nexus Sync Forest",
+    category: "Nexus Sync",
+    description: "Deep forest green for natural data flow",
+    colors: {
+      primary: "#059669",
+      secondary: "#047857",
+      accent: "#FBBF24",
+      background: "#022C22",
+      surface: "#064E3B",
+      text: "#F0FDF4",
+      muted: "#6EE7B7",
+      success: "#059669",
+      warning: "#FBBF24",
+      error: "#F87171"
+    },
+    background: {
+      type: "pattern",
+      primary: "#022C22",
+      secondary: "#064E3B",
+      pattern: "forest-leaves",
+      opacity: 0.1
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.05, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "calm"
+  },
+  {
+    id: "nexus-sync-emerald",
+    name: "Nexus Sync Emerald",
+    category: "Nexus Sync",
+    description: "Rich emerald for premium integrations",
+    colors: {
+      primary: "#10B981",
+      secondary: "#059669",
+      accent: "#FFD700",
+      background: "#064E3B",
+      surface: "#065F46",
+      text: "#ECFDF5",
+      muted: "#6EE7B7",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#064E3B",
+      secondary: "#10B981",
+      animation: "emerald-shine",
+      opacity: 0.4
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.1, radius: 12 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "luxurious"
+  },
+  {
+    id: "nexus-sync-jade",
+    name: "Nexus Sync Jade",
+    category: "Nexus Sync",
+    description: "Jade green for harmonious connections",
+    colors: {
+      primary: "#14B8A6",
+      secondary: "#0D9488",
+      accent: "#FACC15",
+      background: "#042F2E",
+      surface: "#134E4A",
+      text: "#F0FDFA",
+      muted: "#5EEAD4",
+      success: "#14B8A6",
+      warning: "#FACC15",
+      error: "#F87171"
+    },
+    background: {
+      type: "gradient",
+      primary: "#042F2E",
+      secondary: "#134E4A",
+      tertiary: "#14B8A6",
+      direction: "135deg",
+      opacity: 0.8
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 10 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "calm"
+  },
+  {
+    id: "nexus-sync-lime",
+    name: "Nexus Sync Lime",
+    category: "Nexus Sync",
+    description: "Electric lime for high-energy connections",
+    colors: {
+      primary: "#84CC16",
+      secondary: "#65A30D",
+      accent: "#F97316",
+      background: "#1A2E05",
+      surface: "#365314",
+      text: "#F7FEE7",
+      muted: "#BEF264",
+      success: "#84CC16",
+      warning: "#F97316",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#1A2E05",
+      secondary: "#84CC16",
+      animation: "lime-pulse",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: true },
+    mood: "energetic"
+  },
+  {
+    id: "nexus-sync-mint",
+    name: "Nexus Sync Mint",
+    category: "Nexus Sync",
+    description: "Fresh mint for clean integrations",
+    colors: {
+      primary: "#06B6D4",
+      secondary: "#0891B2",
+      accent: "#84CC16",
+      background: "#164E63",
+      surface: "#155E75",
+      text: "#F0F9FF",
+      muted: "#67E8F9",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#F87171"
+    },
+    background: {
+      type: "pattern",
+      primary: "#164E63",
+      secondary: "#06B6D4",
+      pattern: "mint-waves",
+      opacity: 0.2
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 12 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: false },
+    mood: "calm"
+  },
+  {
+    id: "nexus-sync-seafoam",
+    name: "Nexus Sync Seafoam",
+    category: "Nexus Sync",
+    description: "Seafoam green for fluid data exchange",
+    colors: {
+      primary: "#0D9488",
+      secondary: "#0F766E",
+      accent: "#FBBF24",
+      background: "#042F2E",
+      surface: "#134E4A",
+      text: "#F0FDFA",
+      muted: "#5EEAD4",
+      success: "#0D9488",
+      warning: "#FBBF24",
+      error: "#F87171"
+    },
+    background: {
+      type: "animated",
+      primary: "#042F2E",
+      secondary: "#0D9488",
+      animation: "seafoam-bubbles",
+      opacity: 0.25
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 14 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "calm"
+  },
+  {
+    id: "nexus-sync-sage",
+    name: "Nexus Sync Sage",
+    category: "Nexus Sync",
+    description: "Wise sage green for intelligent connections",
+    colors: {
+      primary: "#22C55E",
+      secondary: "#16A34A",
+      accent: "#D97706",
+      background: "#14532D",
+      surface: "#166534",
+      text: "#F0FDF4",
+      muted: "#86EFAC",
+      success: "#22C55E",
+      warning: "#D97706",
+      error: "#DC2626"
+    },
+    background: {
+      type: "gradient",
+      primary: "#14532D",
+      secondary: "#166534",
+      direction: "225deg",
+      opacity: 0.9
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.95, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "professional"
+  },
+
+  // ZERO-CB FORTRESS SERIES (51-60)
+  {
+    id: "fortress-steel",
+    name: "Zero-CB Fortress Steel",
+    category: "Zero-CB Fortress",
+    description: "Impenetrable steel gray for chargeback defense",
+    colors: {
+      primary: "#6B7280",
+      secondary: "#4B5563",
+      accent: "#DC2626",
+      background: "#111827",
+      surface: "#1F2937",
+      text: "#F9FAFB",
+      muted: "#9CA3AF",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#DC2626"
+    },
+    background: {
+      type: "pattern",
+      primary: "#111827",
+      secondary: "#6B7280",
+      pattern: "fortress-wall",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.9, radius: 4 },
+    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
+    mood: "corporate"
+  },
+  {
+    id: "fortress-iron",
+    name: "Zero-CB Fortress Iron",
+    category: "Zero-CB Fortress",
+    description: "Iron defense system with red alerts",
+    colors: {
+      primary: "#374151",
+      secondary: "#4B5563",
+      accent: "#EF4444",
+      background: "#030712",
+      surface: "#111827",
+      text: "#F8FAFC",
+      muted: "#6B7280",
+      success: "#059669",
+      warning: "#D97706",
+      error: "#EF4444"
+    },
+    background: {
+      type: "geometric",
+      primary: "#030712",
+      secondary: "#374151",
+      pattern: "iron-mesh",
+      opacity: 0.4
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.95, radius: 2 },
+    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
+    mood: "corporate"
+  },
+  {
+    id: "fortress-guardian",
+    name: "Zero-CB Guardian",
+    category: "Zero-CB Fortress",
+    description: "Guardian blue-gray for protection systems",
+    colors: {
+      primary: "#475569",
+      secondary: "#64748B",
+      accent: "#F59E0B",
+      background: "#0F172A",
+      surface: "#1E293B",
+      text: "#F1F5F9",
+      muted: "#94A3B8",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "animated",
+      primary: "#0F172A",
+      secondary: "#475569",
+      animation: "guardian-scan",
+      opacity: 0.2
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: true },
+    mood: "professional"
+  },
+  {
+    id: "fortress-shield",
+    name: "Zero-CB Shield",
+    category: "Zero-CB Fortress",
+    description: "Shield system with defensive positioning",
+    colors: {
+      primary: "#1F2937",
+      secondary: "#374151",
+      accent: "#F97316",
+      background: "#000000",
+      surface: "#0F172A",
+      text: "#F9FAFB",
+      muted: "#6B7280",
+      success: "#16A34A",
+      warning: "#F97316",
+      error: "#DC2626"
+    },
+    background: {
+      type: "pattern",
+      primary: "#000000",
+      secondary: "#1F2937",
+      pattern: "shield-grid",
+      opacity: 0.25
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.9, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "corporate"
+  },
+  {
+    id: "fortress-armor",
+    name: "Zero-CB Armor",
+    category: "Zero-CB Fortress",
+    description: "Heavy armor plating for maximum protection",
+    colors: {
+      primary: "#52525B",
+      secondary: "#71717A",
+      accent: "#EF4444",
+      background: "#18181B",
+      surface: "#27272A",
+      text: "#FAFAFA",
+      muted: "#A1A1AA",
+      success: "#22C55E",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "pattern",
+      primary: "#18181B",
+      secondary: "#52525B",
+      pattern: "armor-plates",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.85, radius: 2 },
+    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
+    mood: "corporate"
+  },
+  {
+    id: "fortress-sentinel",
+    name: "Zero-CB Sentinel",
+    category: "Zero-CB Fortress",
+    description: "Sentinel watch system with alert capabilities",
+    colors: {
+      primary: "#64748B",
+      secondary: "#94A3B8",
+      accent: "#DC2626",
+      background: "#0F172A",
+      surface: "#1E293B",
+      text: "#F8FAFC",
+      muted: "#CBD5E1",
+      success: "#059669",
+      warning: "#D97706",
+      error: "#DC2626"
+    },
+    background: {
+      type: "animated",
+      primary: "#0F172A",
+      secondary: "#64748B",
+      animation: "sentinel-sweep",
+      opacity: 0.15
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "professional"
+  },
+  {
+    id: "fortress-bunker",
+    name: "Zero-CB Bunker",
+    category: "Zero-CB Fortress",
+    description: "Underground bunker for ultimate security",
+    colors: {
+      primary: "#27272A",
+      secondary: "#3F3F46",
+      accent: "#F59E0B",
+      background: "#09090B",
+      surface: "#18181B",
+      text: "#FAFAFA",
+      muted: "#71717A",
+      success: "#16A34A",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "pattern",
+      primary: "#09090B",
+      secondary: "#27272A",
+      pattern: "bunker-concrete",
+      opacity: 0.4
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.9, radius: 4 },
+    effects: { shadows: true, gradients: false, blur: false, animations: true, particles: false },
+    mood: "minimal"
+  },
+  {
+    id: "fortress-rampart",
+    name: "Zero-CB Rampart",
+    category: "Zero-CB Fortress",
+    description: "Rampart defensive walls with watchtowers",
+    colors: {
+      primary: "#4B5563",
+      secondary: "#6B7280",
+      accent: "#EF4444",
+      background: "#1F2937",
+      surface: "#374151",
+      text: "#F3F4F6",
+      muted: "#9CA3AF",
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#EF4444"
+    },
+    background: {
+      type: "geometric",
+      primary: "#1F2937",
+      secondary: "#4B5563",
+      pattern: "rampart-stones",
+      opacity: 0.2
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.0, radius: 6 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "corporate"
+  },
+  {
+    id: "fortress-bastion",
+    name: "Zero-CB Bastion",
+    category: "Zero-CB Fortress",
+    description: "Bastion stronghold for chargeback warfare",
+    colors: {
+      primary: "#374151",
+      secondary: "#4B5563",
+      accent: "#DC2626",
+      background: "#111827",
+      surface: "#1F2937",
+      text: "#F9FAFB",
+      muted: "#6B7280",
+      success: "#059669",
+      warning: "#D97706",
+      error: "#DC2626"
+    },
+    background: {
+      type: "animated",
+      primary: "#111827",
+      secondary: "#374151",
+      animation: "bastion-walls",
+      opacity: 0.3
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 0.95, radius: 8 },
+    effects: { shadows: true, gradients: true, blur: false, animations: true, particles: false },
+    mood: "corporate"
+  },
+  {
+    id: "fortress-citadel",
+    name: "Zero-CB Citadel",
+    category: "Zero-CB Fortress",
+    description: "Ultimate citadel for complete protection",
+    colors: {
+      primary: "#1F2937",
+      secondary: "#374151",
+      accent: "#FBBF24",
+      background: "#030712",
+      surface: "#111827",
+      text: "#F8FAFC",
+      muted: "#4B5563",
+      success: "#16A34A",
+      warning: "#FBBF24",
+      error: "#EF4444"
+    },
+    background: {
+      type: "particle",
+      primary: "#030712",
+      secondary: "#FBBF24",
+      animation: "citadel-glow",
+      opacity: 0.1
+    },
+    fonts: { heading: "Inter", body: "Inter", mono: "JetBrains Mono" },
+    spacing: { scale: 1.1, radius: 10 },
+    effects: { shadows: true, gradients: true, blur: true, animations: true, particles: true },
+    mood: "luxurious"
+  }
+
+  // Continue with remaining themes (61-100) to be added in follow-up...
+];
+
+// Dynamic background animation CSS generator
+export const generateBackgroundCSS = (background: BackgroundConfig): string => {
+  switch (background.type) {
+    case 'gradient':
+      return `
+        background: linear-gradient(${background.direction || '135deg'}, 
+          ${background.primary} 0%, 
+          ${background.secondary} 50%, 
+          ${background.tertiary || background.primary} 100%);
+        opacity: ${background.opacity || 1};
+      `;
+    
+    case 'animated':
+      return `
+        background: ${background.primary};
+        position: relative;
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: ${background.secondary};
+          opacity: ${background.opacity || 0.5};
+          animation: ${background.animation} 10s ease-in-out infinite;
+        }
+      `;
+    
+    case 'particle':
+      return `
+        background: ${background.primary};
+        position: relative;
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: radial-gradient(circle, ${background.secondary} 1px, transparent 1px);
+          background-size: 20px 20px;
+          opacity: ${background.opacity || 0.3};
+          animation: ${background.animation} 15s linear infinite;
+        }
+      `;
+    
+    case 'pattern':
+      return `
+        background: ${background.primary};
+        background-image: url("data:image/svg+xml,${encodeURIComponent(generatePatternSVG(background.pattern || 'grid', background.secondary || '#ffffff'))}");
+        background-size: 50px 50px;
+        opacity: ${background.opacity || 1};
+      `;
+    
+    case 'geometric':
+      return `
+        background: ${background.primary};
+        background-image: 
+          linear-gradient(30deg, ${background.secondary}40 12%, transparent 12.5%, transparent 87%, ${background.secondary}40 87.5%, ${background.secondary}40),
+          linear-gradient(150deg, ${background.secondary}40 12%, transparent 12.5%, transparent 87%, ${background.secondary}40 87.5%, ${background.secondary}40);
+        background-size: 20px 35px;
+        opacity: ${background.opacity || 1};
+      `;
+    
+    default:
+      return `background: ${background.primary}; opacity: ${background.opacity || 1};`;
+  }
+};
+
+// SVG pattern generator helper
+const generatePatternSVG = (pattern: string, color: string): string => {
+  const patterns = {
+    grid: `<svg width="50" height="50" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="${color}" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)"/></svg>`,
+    dots: `<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="2" fill="${color}"/></svg>`,
+    lines: `<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg"><path d="M0,40 L40,0" stroke="${color}" stroke-width="1"/></svg>`
+  };
+  return patterns[pattern as keyof typeof patterns] || patterns.grid;
+};
+
+// Animation keyframes (to be added to global CSS)
+export const BACKGROUND_ANIMATIONS = `
+  @keyframes fire-particles {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.2; }
+    50% { transform: translateY(-20px) scale(1.1); opacity: 0.4; }
+  }
+  
+  @keyframes matrix-rain {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
+  }
+  
+  @keyframes cyber-grid {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.4; }
+  }
+  
+  @keyframes guardian-scan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
+  @keyframes sentinel-sweep {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  @keyframes amethyst-crystals {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.2; }
+    50% { transform: scale(1.05) rotate(180deg); opacity: 0.3; }
+  }
+  
+  @keyframes cosmic-dust {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+  
+  @keyframes ocean-waves {
+    0%, 100% { transform: translateX(0) scaleY(1); }
+    50% { transform: translateX(20px) scaleY(1.1); }
+  }
+`;
