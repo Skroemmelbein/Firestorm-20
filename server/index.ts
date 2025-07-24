@@ -51,6 +51,7 @@ import {
 } from "./routes/progress-notifier";
 import realApiRouter from "./routes/real-api";
 import xanoSetupRouter from "./routes/xano-setup";
+import twilioSidDiscoveryRouter from "./routes/twilio-sid-discovery";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
