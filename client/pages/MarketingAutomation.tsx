@@ -56,6 +56,7 @@ import {
   AlertTriangle,
   ArrowUp,
   ArrowDown,
+  ArrowRight,
   Inbox,
   Outbox,
   Activity,
