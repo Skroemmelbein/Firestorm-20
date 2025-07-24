@@ -36,6 +36,7 @@ import AdminLayout from "@/components/AdminLayout";
 import SendGridTest from "@/components/SendGridTest";
 import XanoTableManager from "@/components/XanoTableManager";
 import SkinCustomizer from "@/components/SkinCustomizer";
+import RCSManager from "@/components/RCSManager";
 
 interface TableUpload {
   id: string;
