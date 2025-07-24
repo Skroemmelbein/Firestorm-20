@@ -460,7 +460,7 @@ export default function TwilioConversations() {
                 </div>
               </div>
             ) : (
-              <div className="border border-[#333333] rounded-lg p-8 text-center text-[#737373]">
+              <div className="border border-gray-200 rounded-lg p-8 text-center text-gray-600 bg-gray-50">
                 <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Select a conversation to view messages</p>
                 <p className="text-xs mt-2">
@@ -472,8 +472,8 @@ export default function TwilioConversations() {
         </div>
 
         {/* Info Panel */}
-        <div className="bg-[#1a1a1a] border border-[#00BFFF]/30 rounded-lg p-4">
-          <h4 className="font-semibold text-[#00BFFF] mb-2">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h4 className="font-semibold text-blue-700 mb-2">
             📱 Two-Way Messaging Active
           </h4>
           <div className="grid grid-cols-2 gap-4 text-sm">
