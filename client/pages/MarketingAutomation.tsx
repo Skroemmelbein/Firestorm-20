@@ -57,6 +57,11 @@ import {
   ArrowDown,
   Inbox,
   Outbox,
+  Activity,
+  Database,
+  Flame,
+  Rocket,
+  Command,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -106,10 +111,10 @@ export default function MarketingAutomation() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([
     {
       id: "1",
-      name: "Holiday Sale Blast",
+      name: "HOLIDAY SURGE PROTOCOL",
       type: "multi-channel",
       status: "active",
-      audience: "VIP Customers",
+      audience: "VIP TIER",
       sent: 15420,
       delivered: 15280,
       opened: 8642,
@@ -123,10 +128,10 @@ export default function MarketingAutomation() {
     },
     {
       id: "2",
-      name: "Cart Abandonment Recovery",
+      name: "CART RECOVERY STRIKE",
       type: "sms",
       status: "active",
-      audience: "Abandoned Carts",
+      audience: "ABANDONED TARGETS",
       sent: 892,
       delivered: 889,
       opened: 534,
@@ -145,7 +150,7 @@ export default function MarketingAutomation() {
       id: "1",
       trigger: "STOP",
       response:
-        "You've been unsubscribed. We respect your choice. Reply RESTART to opt back in.",
+        "DISENGAGED. Contact terminated. Reply RESTART to reestablish connection.",
       aiGenerated: false,
       conversationGoal: "support",
       effectiveness: 95,
@@ -155,7 +160,7 @@ export default function MarketingAutomation() {
       id: "2",
       trigger: "PRICE",
       response:
-        "Great question! Our current pricing starts at $49. I'd love to show you our exclusive deals. What's your budget range?",
+        "PRICING DATA: Entry tier $49. Analyzing your requirements for optimal solution match. Budget parameters?",
       aiGenerated: true,
       conversationGoal: "sale",
       effectiveness: 72,
@@ -176,887 +181,524 @@ export default function MarketingAutomation() {
 
   const trainAIResponses = async () => {
     setAiTraining(true);
-    // Simulate AI training
     await new Promise((resolve) => setTimeout(resolve, 3000));
     setAiTraining(false);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Header with Toolbar */}
-      <div className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-6 space-y-4">
+    <div className="min-h-screen bg-[#0F0F10] text-white">
+      {/* Command Center Header */}
+      <div className="border-b border-[#FF6A00]/20 bg-black/90 backdrop-blur-xl">
+        <div className="container mx-auto px-6 py-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-red-600 via-orange-500 to-yellow-400 flex items-center justify-center shadow-2xl relative">
-                <Zap className="w-8 h-8 text-white drop-shadow-lg animate-pulse" />
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-red-600 rounded-xl opacity-30 animate-ping"></div>
+            <div className="flex items-center gap-6">
+              <div className="relative">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#FF6A00] via-[#FF2D55] to-[#FF6A00] flex items-center justify-center border border-[#FF6A00]/30 shadow-2xl shadow-[#FF6A00]/20">
+                  <Flame className="w-10 h-10 text-white" />
+                </div>
+                <div className="absolute inset-0 bg-[#FF6A00]/20 animate-pulse border border-[#FF6A00]/50"></div>
               </div>
               <div>
-                <h1 className="text-5xl font-black bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 bg-clip-text text-transparent tracking-widest">
+                <h1 className="text-6xl font-black tracking-wider text-white mb-1">
                   FIRESTORM
                 </h1>
-                <p className="text-sm font-bold text-orange-600 uppercase tracking-wide mt-1">
-                  🔥 High-Energy Marketing Engine - Live System 🚀
-                </p>
+                <div className="flex items-center gap-3">
+                  <div className="h-1 w-16 bg-gradient-to-r from-[#FF6A00] to-[#FF2D55]"></div>
+                  <p className="text-sm font-bold text-[#FF6A00] uppercase tracking-widest">
+                    TACTICAL MARKETING ENGINE
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Badge className="bg-gradient-to-r from-red-500 to-orange-500 text-white border-orange-400 shadow-lg animate-pulse">
-                <Bot className="w-3 h-3 mr-1" />
-                AI IGNITED 🔥
-              </Badge>
-              <Badge className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white border-yellow-400 shadow-lg">
-                <MessageSquare className="w-3 h-3 mr-1" />
-                SMS BLASTING ⚡
-              </Badge>
-              <Badge className="bg-gradient-to-r from-yellow-500 to-red-500 text-white border-red-400 shadow-lg animate-bounce">
-                <Zap className="w-3 h-3 mr-1" />
-                FULL THROTTLE 🚀
-              </Badge>
+            <div className="flex items-center gap-4">
+              <div className="bg-[#1E1E22] border border-[#FF6A00]/30 px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-[#00E676] animate-pulse"></div>
+                  <span className="text-xs font-bold text-[#00E676]">OPERATIONAL</span>
+                </div>
+              </div>
+              <div className="bg-[#1E1E22] border border-[#FF6A00]/30 px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <Activity className="w-3 h-3 text-[#FF6A00]" />
+                  <span className="text-xs font-bold text-white">AI ACTIVE</span>
+                </div>
+              </div>
+              <div className="bg-[#1E1E22] border border-[#FF6A00]/30 px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <Database className="w-3 h-3 text-[#FF6A00]" />
+                  <span className="text-xs font-bold text-white">LIVE SYNC</span>
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* Top Toolbar */}
-          <Tabs defaultValue="campaigns" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 bg-white/50 backdrop-blur">
-              <TabsTrigger value="campaigns" className="gap-2">
-                <Target className="w-4 h-4" />
-                Campaigns
-              </TabsTrigger>
-              <TabsTrigger value="analysis" className="gap-2">
-                <TrendingUp className="w-4 h-4" />
-                Analysis
-              </TabsTrigger>
-              <TabsTrigger value="audience" className="gap-2">
-                <Users className="w-4 h-4" />
-                Audience
-              </TabsTrigger>
-              <TabsTrigger value="analytics" className="gap-2">
-                <BarChart className="w-4 h-4" />
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger value="test" className="gap-2">
-                <MessageSquare className="w-4 h-4" />
-                Test Messages
-              </TabsTrigger>
-              <TabsTrigger value="settings" className="gap-2">
-                <Settings className="w-4 h-4" />
-                Settings
-              </TabsTrigger>
-            </TabsList>
-
-            {/* Tab Content */}
-            <TabsContent value="campaigns" className="mt-6">
-              <CampaignWizard />
-            </TabsContent>
-
-            <TabsContent value="analysis" className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-green-700">
-                      Total Revenue
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-green-900">
-                      $75,720
-                    </div>
-                    <p className="text-xs text-green-600 mt-1">
-                      +12% from last month
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-blue-700">
-                      Messages Sent
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-blue-900">
-                      16,312
-                    </div>
-                    <p className="text-xs text-blue-600 mt-1">
-                      98.7% delivery rate
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-purple-700">
-                      Response Rate
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-purple-900">
-                      23.4%
-                    </div>
-                    <p className="text-xs text-purple-600 mt-1">
-                      Above industry avg
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-orange-700">
-                      Conversions
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-orange-900">
-                      909
-                    </div>
-                    <p className="text-xs text-orange-600 mt-1">
-                      5.6% conversion rate
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="audience" className="mt-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Audience Segments</CardTitle>
-                    <CardDescription>
-                      Manage your customer segments
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <div className="font-medium">Current Clients</div>
-                        <div className="text-sm text-muted-foreground">
-                          1,247 contacts
-                        </div>
-                      </div>
-                      <Badge>Active</Badge>
-                    </div>
-                    <div className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <div className="font-medium">PPC Leads</div>
-                        <div className="text-sm text-muted-foreground">
-                          523 contacts
-                        </div>
-                      </div>
-                      <Badge variant="secondary">Growing</Badge>
-                    </div>
-                    <div className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <div className="font-medium">Cancelled Clients</div>
-                        <div className="text-sm text-muted-foreground">
-                          892 contacts
-                        </div>
-                      </div>
-                      <Badge variant="outline">Inactive</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Segment Performance</CardTitle>
-                    <CardDescription>Response rates by segment</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span>Current Clients</span>
-                          <span>34.2%</span>
-                        </div>
-                        <Progress value={34.2} className="h-2" />
-                      </div>
-                      <div>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span>PPC Leads</span>
-                          <span>18.7%</span>
-                        </div>
-                        <Progress value={18.7} className="h-2" />
-                      </div>
-                      <div>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span>Referrals</span>
-                          <span>45.1%</span>
-                        </div>
-                        <Progress value={45.1} className="h-2" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="analytics" className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Campaign Analytics</CardTitle>
-                  <CardDescription>
-                    Detailed performance metrics and insights
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <TrendingUp className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">
-                      Advanced analytics dashboard coming soon
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="test" className="mt-6">
-              <TestMessageInterface />
-            </TabsContent>
-
-            <TabsContent value="settings" className="mt-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Integration Settings</CardTitle>
-                    <CardDescription>
-                      Configure your API connections
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-medium">Twilio SMS</div>
-                        <div className="text-sm text-muted-foreground">
-                          +1 (855) 860-0037
-                        </div>
-                      </div>
-                      <Badge className="bg-green-100 text-green-700">
-                        Connected
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-medium">SendGrid Email</div>
-                        <div className="text-sm text-muted-foreground">
-                          Not configured
-                        </div>
-                      </div>
-                      <Badge variant="secondary">Setup Required</Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-medium">OpenAI Integration</div>
-                        <div className="text-sm text-muted-foreground">
-                          GPT-3.5 Turbo
-                        </div>
-                      </div>
-                      <Badge className="bg-green-100 text-green-700">
-                        Active
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>AI Settings</CardTitle>
-                    <CardDescription>
-                      Configure AI response behavior
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Label>Auto-respond to inquiries</Label>
-                      <Switch defaultChecked />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <Label>Sentiment analysis</Label>
-                      <Switch defaultChecked />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <Label>Lead scoring</Label>
-                      <Switch />
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
         </div>
       </div>
 
-      {/* Real-time Status */}
-      <div className="container mx-auto px-4 py-6">
+      {/* Mission Control Dashboard */}
+      <div className="container mx-auto px-6 py-8">
+        {/* Critical Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-700">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-green-700 dark:text-green-300">
-                Total Revenue
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-900 dark:text-green-100">
-                ${totalRevenue.toLocaleString()}
+          <div className="bg-[#1E1E22] border border-[#00E676]/30 p-6 hover:border-[#00E676] transition-colors">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold text-[#00E676] uppercase tracking-wider">
+                TOTAL REVENUE
+              </h3>
+              <TrendingUp className="w-4 h-4 text-[#00E676]" />
+            </div>
+            <div className="text-3xl font-black text-white mb-2">
+              ${totalRevenue.toLocaleString()}
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-full h-1 bg-[#1E1E22]">
+                <div className="w-[78%] h-full bg-[#00E676]"></div>
               </div>
-              <p className="text-xs text-green-600 dark:text-green-400 flex items-center mt-1">
-                <ArrowUp className="w-3 h-3 mr-1" />
-                +23.4% from last month
-              </p>
-            </CardContent>
-          </Card>
+              <span className="text-xs text-[#00E676] font-bold">+23.4%</span>
+            </div>
+          </div>
 
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-700">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                Conversions
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                {totalConversions.toLocaleString()}
+          <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6 hover:border-[#FF6A00] transition-colors">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold text-[#FF6A00] uppercase tracking-wider">
+                CONVERSIONS
+              </h3>
+              <Target className="w-4 h-4 text-[#FF6A00]" />
+            </div>
+            <div className="text-3xl font-black text-white mb-2">
+              {totalConversions.toLocaleString()}
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-full h-1 bg-[#1E1E22]">
+                <div className="w-[65%] h-full bg-[#FF6A00]"></div>
               </div>
-              <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center mt-1">
-                <ArrowUp className="w-3 h-3 mr-1" />
-                +18.2% conversion rate
-              </p>
-            </CardContent>
-          </Card>
+              <span className="text-xs text-[#FF6A00] font-bold">+18.2%</span>
+            </div>
+          </div>
 
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-purple-200 dark:border-purple-700">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-300">
-                Response Rate
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
-                {avgResponseRate.toFixed(1)}%
+          <div className="bg-[#1E1E22] border border-[#FF2D55]/30 p-6 hover:border-[#FF2D55] transition-colors">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold text-[#FF2D55] uppercase tracking-wider">
+                RESPONSE RATE
+              </h3>
+              <MessageSquare className="w-4 h-4 text-[#FF2D55]" />
+            </div>
+            <div className="text-3xl font-black text-white mb-2">
+              {avgResponseRate.toFixed(1)}%
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-full h-1 bg-[#1E1E22]">
+                <div className="w-[72%] h-full bg-[#FF2D55]"></div>
               </div>
-              <p className="text-xs text-purple-600 dark:text-purple-400 flex items-center mt-1">
-                <ArrowUp className="w-3 h-3 mr-1" />
-                AI-powered responses
-              </p>
-            </CardContent>
-          </Card>
+              <span className="text-xs text-[#FF2D55] font-bold">AI-DRIVEN</span>
+            </div>
+          </div>
 
-          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border-orange-200 dark:border-orange-700">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-orange-700 dark:text-orange-300">
-                Active Campaigns
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-900 dark:text-orange-100">
-                {campaigns.filter((c) => c.status === "active").length}
+          <div className="bg-[#1E1E22] border border-[#FFD700]/30 p-6 hover:border-[#FFD700] transition-colors">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold text-[#FFD700] uppercase tracking-wider">
+                ACTIVE OPERATIONS
+              </h3>
+              <Command className="w-4 h-4 text-[#FFD700]" />
+            </div>
+            <div className="text-3xl font-black text-white mb-2">
+              {campaigns.filter((c) => c.status === "active").length}
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-full h-1 bg-[#1E1E22]">
+                <div className="w-[100%] h-full bg-[#FFD700]"></div>
               </div>
-              <p className="text-xs text-orange-600 dark:text-orange-400 flex items-center mt-1">
-                <Clock className="w-3 h-3 mr-1" />
-                Running automatically
-              </p>
-            </CardContent>
-          </Card>
+              <span className="text-xs text-[#FFD700] font-bold">LIVE</span>
+            </div>
+          </div>
         </div>
 
-        <Tabs
-          value={selectedTab}
-          onValueChange={setSelectedTab}
-          className="space-y-6"
-        >
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="campaigns" className="gap-2">
-              <Send className="w-4 h-4" />
-              Campaigns
+        {/* Command Center Tabs */}
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6 bg-[#1E1E22] border border-[#FF6A00]/30 p-1">
+            <TabsTrigger 
+              value="campaigns" 
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <Target className="w-4 h-4 mr-2" />
+              TACTICAL OPS
             </TabsTrigger>
-            <TabsTrigger value="ai-responses" className="gap-2">
-              <Bot className="w-4 h-4" />
-              AI Responses
+            <TabsTrigger 
+              value="analysis" 
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <TrendingUp className="w-4 h-4 mr-2" />
+              ANALYSIS
             </TabsTrigger>
-            <TabsTrigger value="audience" className="gap-2">
-              <Users className="w-4 h-4" />
-              Audience
+            <TabsTrigger 
+              value="audience" 
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <Users className="w-4 h-4 mr-2" />
+              TARGETS
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="gap-2">
-              <BarChart className="w-4 h-4" />
-              Analytics
+            <TabsTrigger 
+              value="analytics" 
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <BarChart className="w-4 h-4 mr-2" />
+              INTELLIGENCE
             </TabsTrigger>
-            <TabsTrigger value="test" className="gap-2">
-              <Send className="w-4 h-4" />
-              Test Messages
+            <TabsTrigger 
+              value="test" 
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <Rocket className="w-4 h-4 mr-2" />
+              TEST LAUNCH
             </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-2">
-              <Settings className="w-4 h-4" />
-              Settings
+            <TabsTrigger 
+              value="settings" 
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              CONTROL
             </TabsTrigger>
           </TabsList>
 
-          {/* Campaigns Tab */}
+          {/* Tactical Operations Tab */}
           <TabsContent value="campaigns" className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Marketing Campaigns</h2>
-              <div className="flex gap-2">
-                <Button variant="outline" className="gap-2">
-                  <Filter className="w-4 h-4" />
-                  Filter
+              <h2 className="text-2xl font-black text-white uppercase tracking-wide">ACTIVE CAMPAIGNS</h2>
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline" 
+                  className="border-[#FF6A00]/50 text-[#FF6A00] hover:bg-[#FF6A00] hover:text-black transition-colors"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  FILTER
                 </Button>
-                <Button className="gap-2">
-                  <Plus className="w-4 h-4" />
-                  Create Campaign
+                <Button className="bg-gradient-to-r from-[#FF6A00] to-[#FF2D55] text-black font-bold hover:from-[#FF2D55] hover:to-[#FF6A00] transition-all">
+                  <Plus className="w-4 h-4 mr-2" />
+                  DEPLOY CAMPAIGN
                 </Button>
               </div>
             </div>
 
-            <div className="grid gap-4">
+            <div className="space-y-4">
               {campaigns.map((campaign) => (
-                <Card
+                <div
                   key={campaign.id}
-                  className="hover:shadow-md transition-shadow"
+                  className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6 hover:border-[#FF6A00] transition-all hover:shadow-lg hover:shadow-[#FF6A00]/20"
                 >
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={cn(
-                            "w-3 h-3 rounded-full",
-                            campaign.status === "active"
-                              ? "bg-green-500"
-                              : campaign.status === "paused"
-                                ? "bg-yellow-500"
-                                : campaign.status === "completed"
-                                  ? "bg-blue-500"
-                                  : "bg-gray-500",
-                          )}
-                        />
-                        <div>
-                          <CardTitle className="text-lg">
-                            {campaign.name}
-                          </CardTitle>
-                          <CardDescription className="flex items-center gap-2">
-                            <Badge variant="outline">{campaign.type}</Badge>
-                            <span>•</span>
-                            <span>{campaign.audience}</span>
-                            {campaign.aiEnabled && (
-                              <>
-                                <span>•</span>
-                                <Badge className="bg-purple-100 text-purple-700 border-purple-200">
-                                  <Brain className="w-3 h-3 mr-1" />
-                                  AI Enabled
-                                </Badge>
-                              </>
-                            )}
-                          </CardDescription>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button size="sm" variant="outline">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          {campaign.status === "active" ? (
-                            <Pause className="w-4 h-4" />
-                          ) : (
-                            <Play className="w-4 h-4" />
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-blue-600">
-                          {campaign.sent.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Sent
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-green-600">
-                          {campaign.delivered.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Delivered
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-purple-600">
-                          {campaign.opened.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Opened
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-orange-600">
-                          {campaign.clicked.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Clicked
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-emerald-600">
-                          {campaign.conversions.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Conversions
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-green-700">
-                          ${campaign.revenue.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Revenue
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Delivery Rate</span>
-                        <span>
-                          {((campaign.delivered / campaign.sent) * 100).toFixed(
-                            1,
-                          )}
-                          %
-                        </span>
-                      </div>
-                      <Progress
-                        value={(campaign.delivered / campaign.sent) * 100}
-                        className="h-2"
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={cn(
+                          "w-3 h-3",
+                          campaign.status === "active"
+                            ? "bg-[#00E676] shadow-lg shadow-[#00E676]/50"
+                            : campaign.status === "paused"
+                              ? "bg-[#FFD700] shadow-lg shadow-[#FFD700]/50"
+                              : campaign.status === "completed"
+                                ? "bg-[#FF6A00] shadow-lg shadow-[#FF6A00]/50"
+                                : "bg-gray-500",
+                        )}
                       />
-
-                      <div className="flex justify-between text-sm">
-                        <span>Conversion Rate</span>
-                        <span>
-                          {(
-                            (campaign.conversions / campaign.sent) *
-                            100
-                          ).toFixed(1)}
-                          %
-                        </span>
-                      </div>
-                      <Progress
-                        value={(campaign.conversions / campaign.sent) * 100}
-                        className="h-2"
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* AI Responses Tab */}
-          <TabsContent value="ai-responses" className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-semibold">AI Auto-Responses</h2>
-                <p className="text-sm text-muted-foreground">
-                  ChatGPT-powered responses to engage and convert
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={trainAIResponses}
-                  disabled={aiTraining}
-                  className="gap-2"
-                >
-                  {aiTraining ? (
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Brain className="w-4 h-4" />
-                  )}
-                  {aiTraining ? "Training..." : "Train AI"}
-                </Button>
-                <Button className="gap-2">
-                  <Plus className="w-4 h-4" />
-                  Add Response
-                </Button>
-              </div>
-            </div>
-
-            <div className="grid gap-4">
-              {autoResponses.map((response) => (
-                <Card key={response.id}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center",
-                            response.aiGenerated
-                              ? "bg-purple-100 text-purple-600"
-                              : "bg-gray-100 text-gray-600",
-                          )}
-                        >
-                          {response.aiGenerated ? (
-                            <Sparkles className="w-4 h-4" />
-                          ) : (
-                            <MessageSquare className="w-4 h-4" />
-                          )}
-                        </div>
-                        <div>
-                          <CardTitle className="text-base">
-                            Trigger: "{response.trigger}"
-                          </CardTitle>
-                          <div className="flex items-center gap-2">
-                            <Badge
-                              variant={
-                                response.aiGenerated ? "default" : "outline"
-                              }
-                            >
-                              {response.aiGenerated ? "AI Generated" : "Manual"}
-                            </Badge>
-                            <Badge variant="outline">
-                              {response.conversationGoal}
-                            </Badge>
+                      <div>
+                        <h3 className="text-xl font-black text-white uppercase tracking-wide">
+                          {campaign.name}
+                        </h3>
+                        <div className="flex items-center gap-4 mt-2">
+                          <div className="px-3 py-1 bg-[#FF6A00]/20 border border-[#FF6A00]/50 text-[#FF6A00] text-xs font-bold uppercase">
+                            {campaign.type}
                           </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm font-medium">
-                          {response.effectiveness}% effective
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {response.timesUsed} uses
+                          <div className="text-white text-sm font-bold">
+                            TARGET: {campaign.audience}
+                          </div>
+                          {campaign.aiEnabled && (
+                            <div className="px-3 py-1 bg-[#FF2D55]/20 border border-[#FF2D55]/50 text-[#FF2D55] text-xs font-bold uppercase">
+                              AI ENABLED
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="bg-muted/50 p-3 rounded-lg">
-                      <p className="text-sm">{response.response}</p>
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="border-[#FF6A00]/50 text-[#FF6A00] hover:bg-[#FF6A00] hover:text-black"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="border-[#FF6A00]/50 text-[#FF6A00] hover:bg-[#FF6A00] hover:text-black"
+                      >
+                        {campaign.status === "active" ? (
+                          <Pause className="w-4 h-4" />
+                        ) : (
+                          <Play className="w-4 h-4" />
+                        )}
+                      </Button>
                     </div>
-                    <div className="flex justify-between items-center mt-3">
-                      <Progress
-                        value={response.effectiveness}
-                        className="flex-1 mr-4"
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-6 gap-6 mb-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-[#00E676]">
+                        {campaign.sent.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        DEPLOYED
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-[#FFD700]">
+                        {campaign.delivered.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        DELIVERED
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-[#FF6A00]">
+                        {campaign.opened.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        ENGAGED
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-[#FF2D55]">
+                        {campaign.clicked.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        ACTIONS
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-[#00E676]">
+                        {campaign.conversions.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        CONVERSIONS
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-white">
+                        ${campaign.revenue.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-gray-400 font-bold uppercase">
+                        REVENUE
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-bold text-white">DELIVERY RATE</span>
+                      <span className="text-sm font-bold text-[#00E676]">
+                        {((campaign.delivered / campaign.sent) * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                    <div className="w-full h-1 bg-[#1E1E22]">
+                      <div 
+                        className="h-full bg-[#00E676]"
+                        style={{ width: `${(campaign.delivered / campaign.sent) * 100}%` }}
                       />
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
-                          Edit
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          Test
-                        </Button>
-                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
 
-          {/* Audience Tab */}
-          <TabsContent value="audience" className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Audience Management</h2>
-              <div className="flex gap-2">
-                <Button variant="outline" className="gap-2">
-                  <Upload className="w-4 h-4" />
-                  Import
-                </Button>
-                <Button variant="outline" className="gap-2">
-                  <Download className="w-4 h-4" />
-                  Export
-                </Button>
-                <Button className="gap-2">
-                  <Plus className="w-4 h-4" />
-                  Add Contact
-                </Button>
-              </div>
-            </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Contact Segments</CardTitle>
-                <CardDescription>
-                  Organize your audience for targeted campaigns
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 border rounded-lg">
-                    <h3 className="font-medium">VIP Customers</h3>
-                    <p className="text-2xl font-bold text-green-600 mt-1">
-                      2,847
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      High-value customers
-                    </p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <h3 className="font-medium">Abandoned Carts</h3>
-                    <p className="text-2xl font-bold text-orange-600 mt-1">
-                      1,234
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Ready to convert
-                    </p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <h3 className="font-medium">New Subscribers</h3>
-                    <p className="text-2xl font-bold text-blue-600 mt-1">
-                      5,692
-                    </p>
-                    <p className="text-xs text-muted-foreground">Fresh leads</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-bold text-white">CONVERSION RATE</span>
+                      <span className="text-sm font-bold text-[#FF6A00]">
+                        {((campaign.conversions / campaign.sent) * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                    <div className="w-full h-1 bg-[#1E1E22]">
+                      <div 
+                        className="h-full bg-[#FF6A00]"
+                        style={{ width: `${(campaign.conversions / campaign.sent) * 100}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-6">
-            <h2 className="text-xl font-semibold">Performance Analytics</h2>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Revenue by Channel</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">SMS Marketing</span>
-                    <span className="font-medium">$45,200</span>
-                  </div>
-                  <Progress value={75} />
-
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Voice Campaigns</span>
-                    <span className="font-medium">$22,100</span>
-                  </div>
-                  <Progress value={45} />
-
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Multi-Channel</span>
-                    <span className="font-medium">$8,420</span>
-                  </div>
-                  <Progress value={20} />
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>AI Response Effectiveness</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-purple-600 mb-2">
-                      87.3%
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Average AI response effectiveness
-                    </p>
-                    <Badge className="mt-2 bg-purple-100 text-purple-700">
-                      <TrendingUp className="w-3 h-3 mr-1" />
-                      +12% this month
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
+              ))}
             </div>
           </TabsContent>
 
-          {/* Test Messages Tab */}
+          {/* Analysis Tab */}
+          <TabsContent value="analysis" className="space-y-6">
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">PERFORMANCE ANALYSIS</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-[#1E1E22] border border-[#00E676]/30 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xs font-bold text-[#00E676] uppercase tracking-wider">
+                    REVENUE GENERATION
+                  </h3>
+                  <DollarSign className="w-4 h-4 text-[#00E676]" />
+                </div>
+                <div className="text-3xl font-black text-white">$75,720</div>
+                <div className="text-xs text-[#00E676] font-bold mt-2">+12% MONTH</div>
+              </div>
+
+              <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xs font-bold text-[#FF6A00] uppercase tracking-wider">
+                    MESSAGES DEPLOYED
+                  </h3>
+                  <Send className="w-4 h-4 text-[#FF6A00]" />
+                </div>
+                <div className="text-3xl font-black text-white">16,312</div>
+                <div className="text-xs text-[#FF6A00] font-bold mt-2">98.7% DELIVERY</div>
+              </div>
+
+              <div className="bg-[#1E1E22] border border-[#FF2D55]/30 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xs font-bold text-[#FF2D55] uppercase tracking-wider">
+                    ENGAGEMENT RATE
+                  </h3>
+                  <Eye className="w-4 h-4 text-[#FF2D55]" />
+                </div>
+                <div className="text-3xl font-black text-white">23.4%</div>
+                <div className="text-xs text-[#FF2D55] font-bold mt-2">ABOVE INDUSTRY</div>
+              </div>
+
+              <div className="bg-[#1E1E22] border border-[#FFD700]/30 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xs font-bold text-[#FFD700] uppercase tracking-wider">
+                    CONVERSION TOTAL
+                  </h3>
+                  <Target className="w-4 h-4 text-[#FFD700]" />
+                </div>
+                <div className="text-3xl font-black text-white">909</div>
+                <div className="text-xs text-[#FFD700] font-bold mt-2">5.6% RATE</div>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Targets Tab */}
+          <TabsContent value="audience" className="space-y-6">
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">TARGET MANAGEMENT</h2>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="bg-[#1E1E22] border border-[#00E676]/30 p-6">
+                <h3 className="text-lg font-black text-[#00E676] uppercase mb-4">VIP TIER</h3>
+                <div className="text-4xl font-black text-white mb-2">2,847</div>
+                <div className="text-xs text-gray-400 uppercase">HIGH-VALUE TARGETS</div>
+              </div>
+              
+              <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6">
+                <h3 className="text-lg font-black text-[#FF6A00] uppercase mb-4">ABANDONED CARTS</h3>
+                <div className="text-4xl font-black text-white mb-2">1,234</div>
+                <div className="text-xs text-gray-400 uppercase">RECOVERY READY</div>
+              </div>
+              
+              <div className="bg-[#1E1E22] border border-[#FF2D55]/30 p-6">
+                <h3 className="text-lg font-black text-[#FF2D55] uppercase mb-4">NEW ACQUISITIONS</h3>
+                <div className="text-4xl font-black text-white mb-2">5,692</div>
+                <div className="text-xs text-gray-400 uppercase">FRESH LEADS</div>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Intelligence Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">TACTICAL INTELLIGENCE</h2>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6">
+                <h3 className="text-lg font-black text-[#FF6A00] uppercase mb-6">REVENUE BY CHANNEL</h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-bold text-white">SMS OPERATIONS</span>
+                    <span className="text-lg font-black text-[#00E676]">$45,200</span>
+                  </div>
+                  <div className="w-full h-2 bg-[#1E1E22]">
+                    <div className="w-[75%] h-full bg-[#00E676]"></div>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-bold text-white">VOICE CAMPAIGNS</span>
+                    <span className="text-lg font-black text-[#FF6A00]">$22,100</span>
+                  </div>
+                  <div className="w-full h-2 bg-[#1E1E22]">
+                    <div className="w-[45%] h-full bg-[#FF6A00]"></div>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-bold text-white">MULTI-CHANNEL</span>
+                    <span className="text-lg font-black text-[#FF2D55]">$8,420</span>
+                  </div>
+                  <div className="w-full h-2 bg-[#1E1E22]">
+                    <div className="w-[20%] h-full bg-[#FF2D55]"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-[#1E1E22] border border-[#FF2D55]/30 p-6">
+                <h3 className="text-lg font-black text-[#FF2D55] uppercase mb-6">AI EFFECTIVENESS</h3>
+                <div className="text-center">
+                  <div className="text-6xl font-black text-white mb-4">87.3%</div>
+                  <div className="text-sm text-gray-400 uppercase mb-4">AI RESPONSE SUCCESS RATE</div>
+                  <div className="px-4 py-2 bg-[#FF2D55]/20 border border-[#FF2D55]/50 text-[#FF2D55] text-xs font-bold uppercase">
+                    +12% THIS MONTH
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Test Launch Tab */}
           <TabsContent value="test" className="space-y-6">
+            <div className="flex items-center gap-4 mb-6">
+              <Rocket className="w-8 h-8 text-[#FF6A00]" />
+              <h2 className="text-2xl font-black text-white uppercase tracking-wide">TEST LAUNCH CENTER</h2>
+            </div>
             <TestMessageInterface />
           </TabsContent>
 
-          {/* Settings Tab */}
+          {/* Control Tab */}
           <TabsContent value="settings" className="space-y-6">
-            <h2 className="text-xl font-semibold">Marketing Settings</h2>
-
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">SYSTEM CONTROL</h2>
+            
             <div className="grid gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>AI Configuration</CardTitle>
-                  <CardDescription>
-                    Configure ChatGPT integration for auto-responses
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="ai-enabled">Enable AI Auto-Responses</Label>
-                    <Switch id="ai-enabled" defaultChecked />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>AI Response Tone</Label>
-                    <Select defaultValue="professional">
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="professional">
-                          Professional
-                        </SelectItem>
-                        <SelectItem value="friendly">Friendly</SelectItem>
-                        <SelectItem value="casual">Casual</SelectItem>
-                        <SelectItem value="persuasive">Persuasive</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Response Goal Priority</Label>
-                    <Select defaultValue="sale">
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sale">Drive Sales</SelectItem>
-                        <SelectItem value="lead">Generate Leads</SelectItem>
-                        <SelectItem value="support">Provide Support</SelectItem>
-                        <SelectItem value="retention">
-                          Customer Retention
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Twilio Configuration</CardTitle>
-                  <CardDescription>
-                    Advanced Twilio settings for outbound/inbound marketing
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>SMS Rate Limit</Label>
-                      <Input placeholder="1000 per hour" />
+              <div className="bg-[#1E1E22] border border-[#FF6A00]/30 p-6">
+                <h3 className="text-lg font-black text-[#FF6A00] uppercase mb-4">INTEGRATION STATUS</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 border border-[#00E676]/30">
+                    <div>
+                      <div className="font-bold text-white">TWILIO SMS</div>
+                      <div className="text-sm text-[#FF6A00]">+1 (855) 860-0037</div>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Voice Concurrent Calls</Label>
-                      <Input placeholder="50" />
+                    <div className="px-3 py-1 bg-[#00E676]/20 border border-[#00E676]/50 text-[#00E676] text-xs font-bold">
+                      CONNECTED
                     </div>
                   </div>
-
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="auto-retry">
-                      Auto-retry Failed Messages
-                    </Label>
-                    <Switch id="auto-retry" defaultChecked />
+                  <div className="flex items-center justify-between p-4 border border-[#FF2D55]/30">
+                    <div>
+                      <div className="font-bold text-white">OPENAI INTEGRATION</div>
+                      <div className="text-sm text-[#FF6A00]">GPT-3.5 TURBO</div>
+                    </div>
+                    <div className="px-3 py-1 bg-[#00E676]/20 border border-[#00E676]/50 text-[#00E676] text-xs font-bold">
+                      ACTIVE
+                    </div>
                   </div>
+                </div>
+              </div>
 
+              <div className="bg-[#1E1E22] border border-[#FF2D55]/30 p-6">
+                <h3 className="text-lg font-black text-[#FF2D55] uppercase mb-4">AI CONFIGURATION</h3>
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="delivery-receipts">
-                      Request Delivery Receipts
-                    </Label>
-                    <Switch id="delivery-receipts" defaultChecked />
+                    <span className="font-bold text-white">AUTO-RESPONSE SYSTEM</span>
+                    <Switch defaultChecked className="data-[state=checked]:bg-[#FF2D55]" />
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-white">SENTIMENT ANALYSIS</span>
+                    <Switch defaultChecked className="data-[state=checked]:bg-[#FF2D55]" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-white">LEAD SCORING</span>
+                    <Switch className="data-[state=checked]:bg-[#FF2D55]" />
+                  </div>
+                </div>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
