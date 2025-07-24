@@ -241,6 +241,13 @@ export default function MarketingAutomation() {
               Campaign Builder
             </TabsTrigger>
             <TabsTrigger
+              value="email-templates"
+              className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
+            >
+              <Mail className="w-4 h-4 mr-2" />
+              Email Templates
+            </TabsTrigger>
+            <TabsTrigger
               value="command"
               className="data-[state=active]:bg-[#FF6A00] data-[state=active]:text-black text-white hover:text-[#FF6A00] transition-colors"
             >
