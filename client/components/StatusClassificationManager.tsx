@@ -643,7 +643,7 @@ export default function StatusClassificationManager() {
                     </div>
                     <div className="flex justify-between">
                       <span>False positive rate:</span>
-                      <span className="font-medium text-green-600">< 2%</span>
+                      <span className="font-medium text-green-600">&lt; 2%</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Protection accuracy:</span>
