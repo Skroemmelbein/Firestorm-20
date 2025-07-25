@@ -368,6 +368,241 @@ export class TwilioClient {
     }
   }
 
+  async sendWhatsApp(message: SMSMessage): Promise<any> {
+    const data = {
+      To: `whatsapp:${message.to}`,
+      From: `whatsapp:${this.config.phoneNumber}`,
+      Body: message.body,
+    };
+
+    if (message.mediaUrl && message.mediaUrl.length > 0) {
+      message.mediaUrl.forEach((url, index) => {
+        data[`MediaUrl${index}`] = url;
+      });
+    }
+
+    try {
+      const result = await this.makeRequest("/Messages.json", "POST", data);
+
+      // Log to Xano
+      await this.logCommunicationToXano({
+        channel: "whatsapp",
+        direction: "outbound",
+        to_number: message.to,
+        from_number: this.config.phoneNumber,
+        content: message.body,
+        status: "sent",
+        provider: "twilio",
+        provider_id: result.sid,
+        provider_status: result.status,
+        cost: parseFloat(result.price) || 0,
+        sent_at: new Date().toISOString(),
+      });
+
+      return {
+        success: true,
+        sid: result.sid,
+        status: result.status,
+        to: message.to,
+        from: this.config.phoneNumber,
+        body: message.body,
+        price: result.price,
+        dateCreated: result.date_created,
+        channel: "whatsapp",
+      };
+    } catch (error) {
+      console.error("WhatsApp message failed:", error);
+      throw error;
+    }
+  }
+
+  async executeStudioFlow(flowSid: string, to: string, parameters?: Record<string, any>): Promise<any> {
+    const data = {
+      To: to,
+      From: this.config.phoneNumber,
+    };
+
+    if (parameters) {
+      Object.entries(parameters).forEach(([key, value]) => {
+        data[`Parameters.${key}`] = String(value);
+      });
+    }
+
+    try {
+      const result = await this.makeRequest(`/Studio/Flows/${flowSid}/Executions.json`, "POST", data);
+
+      // Log to Xano
+      await this.logCommunicationToXano({
+        channel: "studio_flow",
+        direction: "outbound",
+        to_number: to,
+        from_number: this.config.phoneNumber,
+        content: `Studio Flow executed: ${flowSid}`,
+        status: "sent",
+        provider: "twilio",
+        provider_id: result.sid,
+        provider_status: result.status,
+        sent_at: new Date().toISOString(),
+      });
+
+      return {
+        success: true,
+        executionSid: result.sid,
+        flowSid: flowSid,
+        to: to,
+        status: result.status,
+        dateCreated: result.date_created,
+      };
+    } catch (error) {
+      console.error("Studio Flow execution failed:", error);
+      throw error;
+    }
+  }
+
+  async getStudioFlowExecution(flowSid: string, executionSid: string): Promise<any> {
+    return this.makeRequest(`/Studio/Flows/${flowSid}/Executions/${executionSid}.json`);
+  }
+
+  async sendRCS(message: SMSMessage & { 
+    contentSid?: string; 
+    richContent?: any 
+  }): Promise<any> {
+    const data = {
+      To: message.to,
+      From: message.from || this.config.phoneNumber,
+      Body: message.body,
+      ...(process.env.TWILIO_MESSAGING_SERVICE_SID && {
+        MessagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID
+      })
+    };
+
+    if (message.contentSid) {
+      data["ContentSid"] = message.contentSid;
+    }
+
+    if (message.richContent) {
+      data["ContentVariables"] = JSON.stringify(message.richContent);
+    }
+
+    if (message.mediaUrl && message.mediaUrl.length > 0) {
+      message.mediaUrl.forEach((url, index) => {
+        data[`MediaUrl${index}`] = url;
+      });
+    }
+
+    try {
+      const result = await this.makeRequest("/Messages.json", "POST", data);
+
+      // Log to Xano
+      await this.logCommunicationToXano({
+        channel: "rcs",
+        direction: "outbound",
+        to_number: message.to,
+        from_number: message.from || this.config.phoneNumber,
+        content: message.body,
+        status: "sent",
+        provider: "twilio",
+        provider_id: result.sid,
+        provider_status: result.status,
+        cost: parseFloat(result.price) || 0,
+        sent_at: new Date().toISOString(),
+      });
+
+      return {
+        success: true,
+        sid: result.sid,
+        status: result.status,
+        to: message.to,
+        from: message.from || this.config.phoneNumber,
+        body: message.body,
+        price: result.price,
+        dateCreated: result.date_created,
+        channel: "rcs",
+      };
+    } catch (error) {
+      console.error("RCS message failed:", error);
+      throw error;
+    }
+  }
+
+  // Enhanced Voice Call with TwiML Bins
+  async makeAdvancedCall(call: VoiceCall & {
+    record?: boolean;
+    transcribe?: boolean;
+    machineDetection?: boolean;
+    timeout?: number;
+  }): Promise<any> {
+    const data = {
+      To: call.to,
+      From: call.from || this.config.phoneNumber,
+    };
+
+    if (call.url) {
+      data["Url"] = call.url;
+    } else if (call.twiml) {
+      data["Twiml"] = call.twiml;
+    } else {
+      // Default TwiML for basic call
+      data["Twiml"] = "<Response><Say>Hello, this is a call from ECHELONX.</Say></Response>";
+    }
+
+    if (call.record) {
+      data["Record"] = "true";
+    }
+
+    if (call.transcribe) {
+      data["Transcribe"] = "true";
+    }
+
+    if (call.machineDetection) {
+      data["MachineDetection"] = "Enable";
+    }
+
+    if (call.timeout) {
+      data["Timeout"] = call.timeout.toString();
+    }
+
+    try {
+      const result = await this.makeRequest("/Calls.json", "POST", data);
+
+      // Log to Xano
+      await this.logCommunicationToXano({
+        channel: "voice_advanced",
+        direction: "outbound",
+        to_number: call.to,
+        from_number: call.from || this.config.phoneNumber,
+        content: call.twiml || "Advanced voice call initiated",
+        status: "sent",
+        provider: "twilio",
+        provider_id: result.sid,
+        provider_status: result.status,
+        cost: parseFloat(result.price) || 0,
+        sent_at: new Date().toISOString(),
+      });
+
+      return {
+        success: true,
+        sid: result.sid,
+        status: result.status,
+        to: call.to,
+        from: call.from || this.config.phoneNumber,
+        dateCreated: result.date_created,
+        features: {
+          record: call.record,
+          transcribe: call.transcribe,
+          machineDetection: call.machineDetection,
+        },
+      };
+    } catch (error) {
+      console.error("Advanced voice call failed:", error);
+      throw error;
+    }
+  }
+
+  async getCallRecording(callSid: string): Promise<any> {
+    return this.makeRequest(`/Calls/${callSid}/Recordings.json`);
+  }
+
   // Bulk SMS for campaigns
   async sendBulkSMS(messages: SMSMessage[]): Promise<{
     successful: number;
@@ -393,6 +628,56 @@ export class TwilioClient {
           error: error instanceof Error ? error.message : "Unknown error",
         });
         failed++;
+      }
+    }
+
+    return { successful, failed, results };
+  }
+
+  async sendBulkMultiChannel(messages: Array<{
+    to: string;
+    body: string;
+    channels: Array<'sms' | 'whatsapp' | 'rcs'>;
+    mediaUrl?: string[];
+    contentSid?: string;
+  }>): Promise<{
+    successful: number;
+    failed: number;
+    results: any[];
+  }> {
+    const results = [];
+    let successful = 0;
+    let failed = 0;
+
+    for (const message of messages) {
+      for (const channel of message.channels) {
+        try {
+          let result;
+          switch (channel) {
+            case 'sms':
+              result = await this.sendSMS(message);
+              break;
+            case 'whatsapp':
+              result = await this.sendWhatsApp(message);
+              break;
+            case 'rcs':
+              result = await this.sendRCS({ ...message, contentSid: message.contentSid });
+              break;
+          }
+          results.push({ success: true, channel, ...result });
+          successful++;
+        } catch (error) {
+          results.push({
+            success: false,
+            channel,
+            to: message.to,
+            error: error instanceof Error ? error.message : "Unknown error",
+          });
+          failed++;
+        }
+
+        // Add delay to respect rate limits
+        await new Promise((resolve) => setTimeout(resolve, 150));
       }
     }
 

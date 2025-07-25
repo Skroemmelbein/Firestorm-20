@@ -15,7 +15,7 @@ const getXanoClientSafe = () => {
   }
 };
 
-const getTwilioClientSafe = () => {
+const getSafeTwilioClient = () => {
   try {
     const { initializeTwilio, getTwilioClient } = require("../../shared/twilio-client");
     
@@ -70,7 +70,7 @@ router.post("/test/xano", async (req, res) => {
 
 router.post("/test/twilio", async (req, res) => {
   try {
-    const twilio = getTwilioClientSafe();
+    const twilio = getSafeTwilioClient();
     const isConnected = await twilio.testConnection();
 
     if (isConnected) {
@@ -380,7 +380,7 @@ router.post("/benefits/:id/use", async (req, res) => {
 // SMS API
 router.post("/sms/send", async (req, res) => {
   try {
-    const twilio = getTwilioClientSafe();
+    const twilio = getSafeTwilioClient();
     const { to, body, from, mediaUrl } = req.body;
 
     const result = await twilio.sendSMS({
@@ -419,7 +419,7 @@ router.post("/sms/send", async (req, res) => {
 
 router.post("/sms/bulk", async (req, res) => {
   try {
-    const twilio = getTwilioClientSafe();
+    const twilio = getSafeTwilioClient();
     const { messages } = req.body;
 
     const result = await twilio.sendBulkSMS(messages);
@@ -458,7 +458,7 @@ router.post("/email/send", async (req, res) => {
 // Voice API
 router.post("/voice/call", async (req, res) => {
   try {
-    const twilio = getTwilioClientSafe();
+    const twilio = getSafeTwilioClient();
     const { to, from, url, twiml } = req.body;
 
     const result = await twilio.makeCall({
@@ -510,7 +510,7 @@ router.get("/analytics/dashboard", async (req, res) => {
 // Twilio Webhooks
 router.post("/webhooks/twilio/incoming", async (req, res) => {
   try {
-    const twilio = getTwilioClientSafe();
+    const twilio = getSafeTwilioClient();
     await twilio.handleIncomingSMS(req.body);
     res.status(200).send("OK");
   } catch (error) {
@@ -521,7 +521,7 @@ router.post("/webhooks/twilio/incoming", async (req, res) => {
 
 router.post("/webhooks/twilio/status", async (req, res) => {
   try {
-    const twilio = getTwilioClientSafe();
+    const twilio = getSafeTwilioClient();
     await twilio.handleStatusWebhook(req.body);
     res.status(200).send("OK");
   } catch (error) {
@@ -544,10 +544,10 @@ router.post("/events", async (req, res) => {
     if (eventData.MessageSid || userAgent.includes('TwilioProxy')) {
       // Twilio event (SMS/MMS/RCS status or incoming message)
       if (eventData.MessageStatus) {
-        const twilio = getTwilioClientSafe();
+        const twilio = getSafeTwilioClient();
         await twilio.handleStatusWebhook(eventData);
       } else if (eventData.Body) {
-        const twilio = getTwilioClientSafe();
+        const twilio = getSafeTwilioClient();
         await twilio.handleIncomingSMS(eventData);
       }
     } else if (eventData.event_type || userAgent.includes('SendGrid')) {
@@ -590,10 +590,132 @@ router.post("/events", async (req, res) => {
   }
 });
 
+router.post("/test/whatsapp", async (req, res) => {
+  try {
+    const { to, message, mediaUrl } = req.body;
+
+    if (!to || !message) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing required fields: to, message",
+      });
+    }
+
+    const twilioClient = getSafeTwilioClient();
+    if (!twilioClient) {
+      return res.json({
+        success: false,
+        error: "Twilio client not configured",
+        message: "Please configure TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN",
+      });
+    }
+
+    const result = await twilioClient.sendWhatsApp(
+      to,
+      process.env.TWILIO_PHONE_NUMBER || "+15551234567",
+      message,
+      mediaUrl
+    );
+
+    res.json({
+      success: true,
+      message: "WhatsApp message sent successfully",
+      result: result,
+    });
+  } catch (error: any) {
+    console.error("WhatsApp send error:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+router.post("/test/studio-flow", async (req, res) => {
+  try {
+    const { flowSid, to, parameters } = req.body;
+
+    if (!flowSid || !to) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing required fields: flowSid, to",
+      });
+    }
+
+    const twilioClient = getSafeTwilioClient();
+    if (!twilioClient) {
+      return res.json({
+        success: false,
+        error: "Twilio client not configured",
+        message: "Please configure TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN",
+      });
+    }
+
+    const result = await twilioClient.createStudioExecution(
+      flowSid,
+      to,
+      process.env.TWILIO_PHONE_NUMBER || "+15551234567",
+      parameters
+    );
+
+    res.json({
+      success: true,
+      message: "Studio Flow execution created successfully",
+      result: result,
+    });
+  } catch (error: any) {
+    console.error("Studio Flow execution error:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+router.post("/test/voice-call", async (req, res) => {
+  try {
+    const { to, url } = req.body;
+
+    if (!to || !url) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing required fields: to, url",
+      });
+    }
+
+    const twilioClient = getSafeTwilioClient();
+    if (!twilioClient) {
+      return res.json({
+        success: false,
+        error: "Twilio client not configured",
+        message: "Please configure TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN",
+      });
+    }
+
+    const result = await twilioClient.makeCall(
+      to,
+      process.env.TWILIO_PHONE_NUMBER || "+15551234567",
+      url
+    );
+
+    res.json({
+      success: true,
+      message: "Voice call initiated successfully",
+      result: result,
+    });
+  } catch (error: any) {
+    console.error("Voice call error:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
 router.post("/test/sms-mms-rcs", async (req, res) => {
   try {
     const { to, message, mediaUrl } = req.body;
-    const twilio = getTwilioClientSafe();
+    const twilio = getSafeTwilioClient();
     
     const result = await twilio.sendSMS({
       to: to || "+15558675310",
@@ -824,7 +946,7 @@ router.get("/assets/health", async (req, res) => {
 router.post("/test/sms-mms-rcs-with-assets", async (req, res) => {
   try {
     const { to, message, generateAsset, assetQuery } = req.body;
-    const twilio = getTwilioClientSafe();
+    const twilio = getSafeTwilioClient();
     
     let mediaUrl: string[] = [];
     
@@ -907,6 +1029,573 @@ router.post("/test/email-with-assets", async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/nmi/create-customer", async (req, res) => {
+  try {
+    const { customer, paymentMethod } = req.body;
+    
+    const testCustomer = customer || {
+      firstName: "Test",
+      lastName: "Customer",
+      email: "test@example.com",
+      phone: "+15558675310",
+      address: {
+        street1: "123 Test St",
+        city: "Test City",
+        state: "CA",
+        zipCode: "90210"
+      }
+    };
+
+    const testPaymentMethod = paymentMethod || {
+      type: "credit_card",
+      cardNumber: "4111111111111111",
+      expiryMonth: "12",
+      expiryYear: "25",
+      cvv: "123"
+    };
+
+    const response = await fetch("http://localhost:3000/api/nmi/enhanced/create-customer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        customer: testCustomer,
+        paymentMethod: testPaymentMethod
+      })
+    });
+
+    const result = await response.json();
+    
+    res.json({
+      success: true,
+      message: "NMI customer creation test completed",
+      result: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/nmi/one-time-payment", async (req, res) => {
+  try {
+    const { customerId, amount, description } = req.body;
+    
+    if (!customerId) {
+      return res.status(400).json({
+        success: false,
+        error: "customerId is required for payment test"
+      });
+    }
+
+    const response = await fetch("http://localhost:3000/api/nmi/enhanced/one-time-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        customerId: customerId,
+        amount: amount || "1.00",
+        description: description || "Test payment"
+      })
+    });
+
+    const result = await response.json();
+    
+    res.json({
+      success: true,
+      message: "NMI one-time payment test completed",
+      result: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/nmi/create-subscription", async (req, res) => {
+  try {
+    const { customerId, planId, amount, frequency } = req.body;
+    
+    if (!customerId) {
+      return res.status(400).json({
+        success: false,
+        error: "customerId is required for subscription test"
+      });
+    }
+
+    const response = await fetch("http://localhost:3000/api/nmi/enhanced/create-subscription", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        customerId: customerId,
+        planId: planId || "TEST_PLAN_001",
+        amount: amount || "29.99",
+        frequency: frequency || "monthly"
+      })
+    });
+
+    const result = await response.json();
+    
+    res.json({
+      success: true,
+      message: "NMI subscription creation test completed",
+      result: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/nmi/webhook", async (req, res) => {
+  try {
+    const testWebhookPayload = {
+      event_type: "subscription_payment_success",
+      subscription_id: "12345",
+      transaction_id: "TXN_67890",
+      customer_vault_id: "CUST_123",
+      amount: "29.99",
+      status: "approved"
+    };
+
+    const response = await fetch("http://localhost:3000/api/nmi/enhanced/webhook", {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "x-nmi-signature": "test_signature_placeholder"
+      },
+      body: JSON.stringify(testWebhookPayload)
+    });
+
+    const result = await response.json();
+    
+    res.json({
+      success: true,
+      message: "NMI webhook test completed",
+      result: result,
+      testPayload: testWebhookPayload
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/twilio/whatsapp", async (req, res) => {
+  try {
+    const { to, message, mediaUrl } = req.body;
+    const twilio = getSafeTwilioClient();
+    
+    const result = await twilio.sendWhatsApp({
+      to: to || "+15558675310",
+      body: message || "ECHELONX WhatsApp test message 📱",
+      mediaUrl: mediaUrl ? [mediaUrl] : undefined
+    });
+    
+    res.json({
+      success: true,
+      message: "WhatsApp message sent successfully",
+      result: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/twilio/studio-flow", async (req, res) => {
+  try {
+    const { flowSid, to, parameters } = req.body;
+    const twilio = getSafeTwilioClient();
+    
+    if (!flowSid) {
+      return res.status(400).json({
+        success: false,
+        error: "flowSid is required for Studio Flow test"
+      });
+    }
+    
+    const result = await twilio.executeStudioFlow(
+      flowSid,
+      to || "+15558675310",
+      parameters || { customerName: "Test Customer", accountBalance: "100.00" }
+    );
+    
+    res.json({
+      success: true,
+      message: "Studio Flow executed successfully",
+      result: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/twilio/rcs", async (req, res) => {
+  try {
+    const { to, message, contentSid, richContent, mediaUrl } = req.body;
+    const twilio = getSafeTwilioClient();
+    
+    const result = await twilio.sendRCS({
+      to: to || "+15558675310",
+      body: message || "ECHELONX RCS test with rich content 🚀",
+      contentSid: contentSid,
+      richContent: richContent,
+      mediaUrl: mediaUrl ? [mediaUrl] : undefined
+    });
+    
+    res.json({
+      success: true,
+      message: "RCS message sent successfully",
+      result: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/twilio/advanced-call", async (req, res) => {
+  try {
+    const { to, twiml, record, transcribe, machineDetection, timeout } = req.body;
+    const twilio = getSafeTwilioClient();
+    
+    const result = await twilio.makeAdvancedCall({
+      to: to || "+15558675310",
+      twiml: twiml || "<Response><Say>This is an advanced ECHELONX test call with recording and transcription.</Say></Response>",
+      record: record || true,
+      transcribe: transcribe || true,
+      machineDetection: machineDetection || true,
+      timeout: timeout || 30
+    });
+    
+    res.json({
+      success: true,
+      message: "Advanced voice call initiated successfully",
+      result: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/twilio/multi-channel-bulk", async (req, res) => {
+  try {
+    const { messages } = req.body;
+    const twilio = getSafeTwilioClient();
+    
+    const testMessages = messages || [
+      {
+        to: "+15558675310",
+        body: "ECHELONX multi-channel test message 1",
+        channels: ["sms", "whatsapp"],
+        mediaUrl: ["https://demo.cloudinary.com/sample.jpg"]
+      },
+      {
+        to: "+15558675311",
+        body: "ECHELONX multi-channel test message 2",
+        channels: ["rcs", "sms"],
+      }
+    ];
+    
+    const result = await twilio.sendBulkMultiChannel(testMessages);
+    
+    res.json({
+      success: true,
+      message: "Multi-channel bulk messaging completed",
+      result: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/phase3/translate", async (req, res) => {
+  try {
+    const { text, targetLang, sourceLang } = req.body;
+    
+    const testText = text || "Welcome to ECHELONX Message War Machine";
+    const testTargetLang = targetLang || "ES";
+    
+    const { DeepLClient } = await import("../../shared/deepl-client");
+    const deepl = new DeepLClient({
+      apiKey: process.env.DEEPL_API_KEY || "placeholder_deepl_key",
+      baseUrl: "https://api-free.deepl.com"
+    });
+    
+    const translatedText = await deepl.translateText(testText, testTargetLang, sourceLang);
+    
+    res.json({
+      success: true,
+      message: "Text translated successfully",
+      result: {
+        originalText: testText,
+        translatedText: translatedText,
+        sourceLang: sourceLang || "auto-detected",
+        targetLang: testTargetLang
+      }
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: "Translation failed - using demo mode",
+      result: {
+        originalText: text || "Welcome to ECHELONX Message War Machine",
+        translatedText: "Bienvenido a ECHELONX Message War Machine (Demo)",
+        sourceLang: "EN",
+        targetLang: targetLang || "ES",
+        demo_mode: true
+      },
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/phase3/grammar-check", async (req, res) => {
+  try {
+    const { text, language } = req.body;
+    
+    const testText = text || "This are a test message for grammar checking.";
+    
+    const { LanguageToolClient } = await import("../../shared/languagetool-client");
+    const languageTool = new LanguageToolClient({
+      baseUrl: "https://api.languagetool.org"
+    });
+    
+    const result = await languageTool.checkGrammar(testText, language || "en-US");
+    
+    res.json({
+      success: true,
+      message: "Grammar check completed",
+      result: result
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: "Grammar check failed - using demo mode",
+      result: {
+        originalText: text || "This are a test message for grammar checking.",
+        correctedText: "This is a test message for grammar checking. (Demo)",
+        issues: [
+          {
+            message: "Grammar error detected",
+            suggestions: ["is"],
+            offset: 5,
+            length: 3
+          }
+        ],
+        demo_mode: true
+      },
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/phase4/create-template", async (req, res) => {
+  try {
+    const { templateName, content, channels } = req.body;
+    
+    const { TwilioContentClient } = await import("../../shared/twilio-content-client");
+    const contentClient = new TwilioContentClient({
+      accountSid: process.env.TWILIO_ACCOUNT_SID || "placeholder_sid",
+      authToken: process.env.TWILIO_AUTH_TOKEN || "placeholder_token"
+    });
+    
+    const result = await contentClient.createTemplate(
+      templateName || "echelonx_test_template",
+      content || {
+        subject: "ECHELONX Notification",
+        body: "Hello {{customerName}}, your account status is {{status}}.",
+        media: ["https://demo.cloudinary.com/sample.jpg"]
+      },
+      channels || ["sms", "whatsapp", "email"]
+    );
+    
+    res.json({
+      success: true,
+      message: "Template created successfully",
+      result: result
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: "Template creation failed - using demo mode",
+      result: {
+        templateSid: "CNxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        templateName: templateName || "echelonx_test_template",
+        channels: channels || ["sms", "whatsapp", "email"],
+        status: "approved",
+        demo_mode: true
+      },
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/phase5/sinch-sms", async (req, res) => {
+  try {
+    const { to, message } = req.body;
+    
+    const { SinchClient } = await import("../../shared/sinch-client");
+    const sinch = new SinchClient({
+      servicePlanId: process.env.SINCH_SERVICE_PLAN_ID || "placeholder_plan_id",
+      apiToken: process.env.SINCH_API_TOKEN || "placeholder_token"
+    });
+    
+    const result = await sinch.sendSMS(
+      to || "+15558675310",
+      message || "ECHELONX fallback SMS via Sinch"
+    );
+    
+    res.json({
+      success: true,
+      message: "Sinch SMS sent successfully (fallback)",
+      result: result
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: "Sinch SMS failed - using demo mode",
+      result: {
+        messageId: "demo_sinch_" + Date.now(),
+        to: to || "+15558675310",
+        status: "delivered",
+        demo_mode: true
+      },
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/phase5/shorten-link", async (req, res) => {
+  try {
+    const { url, domain } = req.body;
+    
+    const { RebrandlyClient } = await import("../../shared/rebrandly-client");
+    const rebrandly = new RebrandlyClient({
+      apiKey: process.env.REBRANDLY_API_KEY || "placeholder_key"
+    });
+    
+    const result = await rebrandly.shortenUrl(
+      url || "https://echelonx.com/campaign-landing",
+      domain
+    );
+    
+    res.json({
+      success: true,
+      message: "Link shortened successfully",
+      result: result
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: "Link shortening failed - using demo mode",
+      result: {
+        originalUrl: url || "https://echelonx.com/campaign-landing",
+        shortUrl: "https://rebrand.ly/demo-" + Date.now(),
+        clicks: 0,
+        demo_mode: true
+      },
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.get("/test/phase5/analytics-chart", async (req, res) => {
+  try {
+    const { chartType, data } = req.query;
+    
+    const { QuickChartClient } = await import("../../shared/quickchart-client");
+    const quickChart = new QuickChartClient();
+    
+    const chartUrl = await quickChart.generateChart({
+      type: chartType as string || "bar",
+      data: data ? JSON.parse(data as string) : {
+        labels: ["SMS", "WhatsApp", "Email", "Voice"],
+        datasets: [{
+          label: "Message Delivery Rate",
+          data: [95, 98, 92, 87],
+          backgroundColor: ["#00CED1", "#00E676", "#FF6B6B", "#4ECDC4"]
+        }]
+      }
+    });
+    
+    res.json({
+      success: true,
+      message: "Analytics chart generated successfully",
+      result: {
+        chartUrl: chartUrl,
+        chartType: chartType || "bar"
+      }
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: "Chart generation failed - using demo mode",
+      result: {
+        chartUrl: "https://quickchart.io/chart?c={type:'bar',data:{labels:['SMS','WhatsApp','Email','Voice'],datasets:[{label:'Delivery Rate',data:[95,98,92,87]}]}}",
+        demo_mode: true
+      },
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/phase5/slack-alert", async (req, res) => {
+  try {
+    const { message, channel, bounceRate } = req.body;
+    
+    const { SlackClient } = await import("../../shared/slack-client");
+    const slack = new SlackClient({
+      botToken: process.env.SLACK_BOT_TOKEN || "placeholder_token"
+    });
+    
+    const alertMessage = message || `🚨 ECHELONX Alert: Bounce rate is ${bounceRate || 4.2}% (above 3% threshold)`;
+    
+    const result = await slack.sendMessage(
+      channel || "#alerts",
+      alertMessage
+    );
+    
+    res.json({
+      success: true,
+      message: "Slack alert sent successfully",
+      result: result
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: "Slack alert failed - using demo mode",
+      result: {
+        channel: channel || "#alerts",
+        message: message || `🚨 ECHELONX Alert: Bounce rate is ${bounceRate || 4.2}% (above 3% threshold)`,
+        timestamp: new Date().toISOString(),
+        demo_mode: true
+      },
       error: error instanceof Error ? error.message : "Unknown error"
     });
   }
