@@ -170,6 +170,12 @@ const navigationItems = [
         icon: Database,
       },
       {
+        id: "data-sync-status",
+        label: "Data Sync Status",
+        path: "/admin/sync-status",
+        icon: RefreshCw,
+      },
+      {
         id: "intelligent-upload",
         label: "Intelligent Upload Manager",
         path: "/admin/uploads",
@@ -184,13 +190,13 @@ const navigationItems = [
       {
         id: "sync-engine",
         label: "Sync Engine",
-        path: "/admin",
+        path: "/admin/sync",
         icon: Zap,
       },
       {
         id: "table-builder",
         label: "Table Builder",
-        path: "/admin",
+        path: "/admin/tables",
         icon: Database,
       },
     ],
