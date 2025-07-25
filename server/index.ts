@@ -317,5 +317,17 @@ export function createServer() {
   app.get("/api/transaction-migration/progress/:batchId", getTransactionMigrationProgress);
   app.get("/api/transaction-migration/stats", getTransactionMigrationStats);
 
+  // Vault Export Processing - ACU and delta data handling
+  app.post("/api/vault-export/process", processVaultExport);
+  app.get("/api/vault-export/status/:exportId", getVaultExportStatus);
+  app.get("/api/vault-export/acu-stats", getACUUpdateStats);
+  app.post("/api/vault-export/validate-integrity", validateVaultIntegrity);
+
+  // Updated Cards Handler - 71 NMI card updates (ACU events)
+  app.post("/api/updated-cards/process", processUpdatedCards);
+  app.get("/api/updated-cards/status/:batchId", getCardUpdateStatus);
+  app.post("/api/updated-cards/retry", retryFailedCardUpdates);
+  app.post("/api/updated-cards/validate", validateCardUpdateBatch);
+
   return app;
 }
