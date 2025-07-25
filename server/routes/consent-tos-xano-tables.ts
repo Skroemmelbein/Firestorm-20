@@ -9,94 +9,158 @@ const CONSENT_TOS_TABLES = [
     name: "consent_tos_events",
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
-      
+
       // Event Identity
       { name: "eventId", type: "text", unique: true, indexed: true },
-      { name: "customerId", type: "text", foreign_key: "customer_master.customerId", indexed: true },
-      
+      {
+        name: "customerId",
+        type: "text",
+        foreign_key: "customer_master.customerId",
+        indexed: true,
+      },
+
       // Event Type & Details
-      { name: "eventType", type: "enum", values: [
-        "terms_of_service_acceptance", "privacy_policy_acceptance", "email_marketing_consent",
-        "sms_marketing_consent", "auto_dialer_consent", "data_processing_consent",
-        "cookies_consent", "newsletter_subscription", "promotional_consent",
-        "third_party_sharing_consent", "data_retention_consent", "analytics_consent",
-        "consent_withdrawal", "terms_update_acceptance"
-      ], indexed: true },
-      
+      {
+        name: "eventType",
+        type: "enum",
+        values: [
+          "terms_of_service_acceptance",
+          "privacy_policy_acceptance",
+          "email_marketing_consent",
+          "sms_marketing_consent",
+          "auto_dialer_consent",
+          "data_processing_consent",
+          "cookies_consent",
+          "newsletter_subscription",
+          "promotional_consent",
+          "third_party_sharing_consent",
+          "data_retention_consent",
+          "analytics_consent",
+          "consent_withdrawal",
+          "terms_update_acceptance",
+        ],
+        indexed: true,
+      },
+
       // Consent Details
       { name: "consentStatus", type: "boolean", indexed: true },
       { name: "consentText", type: "text" },
       { name: "documentVersion", type: "text", indexed: true },
       { name: "documentUrl", type: "text" },
-      
+
       // Technical Tracking
       { name: "timestamp", type: "timestamp", indexed: true },
       { name: "ipAddress", type: "text", indexed: true },
       { name: "userAgent", type: "text" },
       { name: "sessionId", type: "text", indexed: true },
       { name: "deviceFingerprint", type: "text" },
-      
+
       // Geographic & Context
       { name: "geoLocation", type: "json" },
-      
+
       // Source & Method
-      { name: "consentMethod", type: "enum", values: [
-        "website_checkbox", "email_link_click", "sms_reply", "phone_verbal",
-        "paper_form", "api_call", "mobile_app", "popup_modal", "banner_accept",
-        "double_opt_in", "implied_consent"
-      ], indexed: true },
-      
-      { name: "sourceChannel", type: "enum", values: [
-        "website", "mobile_app", "email", "sms", "phone", "in_person",
-        "api", "admin_portal", "customer_portal", "third_party"
-      ], default: "website", indexed: true },
-      
+      {
+        name: "consentMethod",
+        type: "enum",
+        values: [
+          "website_checkbox",
+          "email_link_click",
+          "sms_reply",
+          "phone_verbal",
+          "paper_form",
+          "api_call",
+          "mobile_app",
+          "popup_modal",
+          "banner_accept",
+          "double_opt_in",
+          "implied_consent",
+        ],
+        indexed: true,
+      },
+
+      {
+        name: "sourceChannel",
+        type: "enum",
+        values: [
+          "website",
+          "mobile_app",
+          "email",
+          "sms",
+          "phone",
+          "in_person",
+          "api",
+          "admin_portal",
+          "customer_portal",
+          "third_party",
+        ],
+        default: "website",
+        indexed: true,
+      },
+
       { name: "sourceUrl", type: "text" },
       { name: "referrerUrl", type: "text" },
-      
+
       // Legal Requirements
       { name: "doubleOptIn", type: "boolean", default: false },
       { name: "doubleOptInConfirmedAt", type: "timestamp" },
       { name: "doubleOptInIpAddress", type: "text" },
-      
+
       // Withdrawal Tracking
       { name: "withdrawnAt", type: "timestamp" },
       { name: "withdrawalReason", type: "text" },
-      { name: "withdrawalMethod", type: "enum", values: [
-        "unsubscribe_link", "customer_service", "account_settings",
-        "reply_stop", "admin_action", "automatic_expiry", "gdpr_request"
-      ] },
-      
+      {
+        name: "withdrawalMethod",
+        type: "enum",
+        values: [
+          "unsubscribe_link",
+          "customer_service",
+          "account_settings",
+          "reply_stop",
+          "admin_action",
+          "automatic_expiry",
+          "gdpr_request",
+        ],
+      },
+
       // Dispute Protection
       { name: "evidenceHash", type: "text", unique: true, indexed: true },
       { name: "evidenceStorage", type: "json" },
-      
+
       // Compliance Metadata
-      { name: "gdprLawfulBasis", type: "enum", values: [
-        "consent", "contract", "legal_obligation", "vital_interests", "public_task", "legitimate_interests"
-      ] },
+      {
+        name: "gdprLawfulBasis",
+        type: "enum",
+        values: [
+          "consent",
+          "contract",
+          "legal_obligation",
+          "vital_interests",
+          "public_task",
+          "legitimate_interests",
+        ],
+      },
       { name: "ccpaCategories", type: "json" },
       { name: "tcpaCompliant", type: "boolean", default: false },
       { name: "canSpamCompliant", type: "boolean", default: false },
-      
+
       // Validation & Quality
       { name: "validationScore", type: "integer", default: 0 },
       { name: "validationIssues", type: "json" },
-      
+
       // Additional Metadata
       { name: "campaignId", type: "text", indexed: true },
       { name: "formId", type: "text" },
       { name: "leadSource", type: "text" },
       { name: "tags", type: "json" },
       { name: "notes", type: "text" },
-      
+
       // Import Tracking
       { name: "importSource", type: "text", default: "war_chest" },
       { name: "importBatch", type: "text", indexed: true },
       { name: "importedAt", type: "timestamp" },
       { name: "created_at", type: "timestamp" },
-      { name: "updated_at", type: "timestamp" }
-    ]
+      { name: "updated_at", type: "timestamp" },
+    ],
   },
 
   {
@@ -111,15 +175,30 @@ const CONSENT_TOS_TABLES = [
       { name: "failedRecords", type: "integer", default: 0 },
       { name: "skippedRecords", type: "integer", default: 0 },
       { name: "averageComplianceScore", type: "integer", default: 0 },
-      { name: "status", type: "enum", values: ["pending", "processing", "completed", "failed"], default: "pending" },
-      { name: "processingMode", type: "enum", values: ["validate_only", "import", "merge"], default: "import" },
-      { name: "duplicateHandling", type: "enum", values: ["skip", "merge", "create_new", "error"], default: "skip" },
+      {
+        name: "status",
+        type: "enum",
+        values: ["pending", "processing", "completed", "failed"],
+        default: "pending",
+      },
+      {
+        name: "processingMode",
+        type: "enum",
+        values: ["validate_only", "import", "merge"],
+        default: "import",
+      },
+      {
+        name: "duplicateHandling",
+        type: "enum",
+        values: ["skip", "merge", "create_new", "error"],
+        default: "skip",
+      },
       { name: "startedAt", type: "timestamp" },
       { name: "completedAt", type: "timestamp" },
       { name: "errorMessage", type: "text" },
       { name: "created_at", type: "timestamp" },
-      { name: "updated_at", type: "timestamp" }
-    ]
+      { name: "updated_at", type: "timestamp" },
+    ],
   },
 
   {
@@ -127,7 +206,12 @@ const CONSENT_TOS_TABLES = [
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
       { name: "eventType", type: "text", indexed: true },
-      { name: "customerId", type: "text", foreign_key: "customer_master.customerId", indexed: true },
+      {
+        name: "customerId",
+        type: "text",
+        foreign_key: "customer_master.customerId",
+        indexed: true,
+      },
       { name: "eventId", type: "text", indexed: true },
       { name: "complianceScore", type: "integer" },
       { name: "riskFactors", type: "json" },
@@ -136,15 +220,21 @@ const CONSENT_TOS_TABLES = [
       { name: "auditReason", type: "text" },
       { name: "remedialActions", type: "json" },
       { name: "importedAt", type: "timestamp" },
-      { name: "created_at", type: "timestamp", indexed: true }
-    ]
+      { name: "created_at", type: "timestamp", indexed: true },
+    ],
   },
 
   {
     name: "customer_consent_summary",
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
-      { name: "customerId", type: "text", unique: true, foreign_key: "customer_master.customerId", indexed: true },
+      {
+        name: "customerId",
+        type: "text",
+        unique: true,
+        foreign_key: "customer_master.customerId",
+        indexed: true,
+      },
       { name: "totalEvents", type: "integer", default: 0 },
       { name: "activeConsents", type: "json" },
       { name: "complianceStatus", type: "json" },
@@ -157,23 +247,38 @@ const CONSENT_TOS_TABLES = [
       { name: "gdprCompliant", type: "boolean", default: false },
       { name: "canSpamCompliant", type: "boolean", default: false },
       { name: "ccpaCompliant", type: "boolean", default: false },
-      { name: "disputeReadiness", type: "enum", values: ["low", "medium", "high"], default: "low" },
+      {
+        name: "disputeReadiness",
+        type: "enum",
+        values: ["low", "medium", "high"],
+        default: "low",
+      },
       { name: "lastConsentDate", type: "timestamp" },
       { name: "lastWithdrawalDate", type: "timestamp" },
       { name: "lastUpdated", type: "timestamp", indexed: true },
       { name: "created_at", type: "timestamp" },
-      { name: "updated_at", type: "timestamp" }
-    ]
+      { name: "updated_at", type: "timestamp" },
+    ],
   },
 
   {
     name: "legal_document_versions",
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
-      { name: "documentType", type: "enum", values: [
-        "terms_of_service", "privacy_policy", "cookie_policy", "data_processing_agreement",
-        "subscription_terms", "refund_policy", "acceptable_use_policy"
-      ], indexed: true },
+      {
+        name: "documentType",
+        type: "enum",
+        values: [
+          "terms_of_service",
+          "privacy_policy",
+          "cookie_policy",
+          "data_processing_agreement",
+          "subscription_terms",
+          "refund_policy",
+          "acceptable_use_policy",
+        ],
+        indexed: true,
+      },
       { name: "version", type: "text", indexed: true },
       { name: "title", type: "text" },
       { name: "contentHash", type: "text", unique: true },
@@ -188,8 +293,8 @@ const CONSENT_TOS_TABLES = [
       { name: "notificationRequired", type: "boolean", default: false },
       { name: "gracePeriodDays", type: "integer", default: 30 },
       { name: "created_at", type: "timestamp" },
-      { name: "updated_at", type: "timestamp" }
-    ]
+      { name: "updated_at", type: "timestamp" },
+    ],
   },
 
   {
@@ -197,22 +302,50 @@ const CONSENT_TOS_TABLES = [
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
       { name: "requestId", type: "text", unique: true, indexed: true },
-      { name: "customerId", type: "text", foreign_key: "customer_master.customerId", indexed: true },
-      { name: "withdrawalType", type: "enum", values: [
-        "all_marketing", "email_only", "sms_only", "phone_only", "data_processing",
-        "account_deletion", "gdpr_erasure", "ccpa_deletion"
-      ], indexed: true },
-      { name: "requestMethod", type: "enum", values: [
-        "unsubscribe_link", "customer_service", "email_request", "phone_request",
-        "account_settings", "legal_request", "automated_expiry"
-      ] },
+      {
+        name: "customerId",
+        type: "text",
+        foreign_key: "customer_master.customerId",
+        indexed: true,
+      },
+      {
+        name: "withdrawalType",
+        type: "enum",
+        values: [
+          "all_marketing",
+          "email_only",
+          "sms_only",
+          "phone_only",
+          "data_processing",
+          "account_deletion",
+          "gdpr_erasure",
+          "ccpa_deletion",
+        ],
+        indexed: true,
+      },
+      {
+        name: "requestMethod",
+        type: "enum",
+        values: [
+          "unsubscribe_link",
+          "customer_service",
+          "email_request",
+          "phone_request",
+          "account_settings",
+          "legal_request",
+          "automated_expiry",
+        ],
+      },
       { name: "requestDate", type: "timestamp", indexed: true },
       { name: "verificationMethod", type: "text" },
       { name: "verificationCompleted", type: "boolean", default: false },
       { name: "verificationDate", type: "timestamp" },
-      { name: "processingStatus", type: "enum", values: [
-        "pending", "verified", "processing", "completed", "rejected"
-      ], default: "pending" },
+      {
+        name: "processingStatus",
+        type: "enum",
+        values: ["pending", "verified", "processing", "completed", "rejected"],
+        default: "pending",
+      },
       { name: "processedDate", type: "timestamp" },
       { name: "processedBy", type: "text" },
       { name: "gracePeriodEnd", type: "timestamp" },
@@ -222,8 +355,8 @@ const CONSENT_TOS_TABLES = [
       { name: "confirmationDate", type: "timestamp" },
       { name: "notes", type: "text" },
       { name: "created_at", type: "timestamp" },
-      { name: "updated_at", type: "timestamp" }
-    ]
+      { name: "updated_at", type: "timestamp" },
+    ],
   },
 
   {
@@ -231,20 +364,55 @@ const CONSENT_TOS_TABLES = [
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
       { name: "violationId", type: "text", unique: true, indexed: true },
-      { name: "customerId", type: "text", foreign_key: "customer_master.customerId", indexed: true },
-      { name: "violationType", type: "enum", values: [
-        "tcpa_violation", "gdpr_violation", "can_spam_violation", "ccpa_violation",
-        "missing_consent", "expired_consent", "invalid_consent", "double_opt_in_failure"
-      ], indexed: true },
-      { name: "severity", type: "enum", values: ["low", "medium", "high", "critical"], default: "medium" },
+      {
+        name: "customerId",
+        type: "text",
+        foreign_key: "customer_master.customerId",
+        indexed: true,
+      },
+      {
+        name: "violationType",
+        type: "enum",
+        values: [
+          "tcpa_violation",
+          "gdpr_violation",
+          "can_spam_violation",
+          "ccpa_violation",
+          "missing_consent",
+          "expired_consent",
+          "invalid_consent",
+          "double_opt_in_failure",
+        ],
+        indexed: true,
+      },
+      {
+        name: "severity",
+        type: "enum",
+        values: ["low", "medium", "high", "critical"],
+        default: "medium",
+      },
       { name: "detectedDate", type: "timestamp", indexed: true },
-      { name: "detectionMethod", type: "enum", values: ["automated_scan", "manual_review", "customer_complaint", "audit"] },
+      {
+        name: "detectionMethod",
+        type: "enum",
+        values: [
+          "automated_scan",
+          "manual_review",
+          "customer_complaint",
+          "audit",
+        ],
+      },
       { name: "description", type: "text" },
       { name: "evidenceData", type: "json" },
       { name: "riskAssessment", type: "json" },
       { name: "remediationRequired", type: "boolean", default: true },
       { name: "remediationPlan", type: "text" },
-      { name: "remediationStatus", type: "enum", values: ["open", "in_progress", "completed", "deferred"], default: "open" },
+      {
+        name: "remediationStatus",
+        type: "enum",
+        values: ["open", "in_progress", "completed", "deferred"],
+        default: "open",
+      },
       { name: "remediationDate", type: "timestamp" },
       { name: "assignedTo", type: "text" },
       { name: "resolvedBy", type: "text" },
@@ -252,8 +420,8 @@ const CONSENT_TOS_TABLES = [
       { name: "resolutionNotes", type: "text" },
       { name: "preventiveActions", type: "json" },
       { name: "created_at", type: "timestamp" },
-      { name: "updated_at", type: "timestamp" }
-    ]
+      { name: "updated_at", type: "timestamp" },
+    ],
   },
 
   {
@@ -261,12 +429,32 @@ const CONSENT_TOS_TABLES = [
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
       { name: "evidenceId", type: "text", unique: true, indexed: true },
-      { name: "customerId", type: "text", foreign_key: "customer_master.customerId", indexed: true },
-      { name: "consentEventId", type: "text", foreign_key: "consent_tos_events.eventId", indexed: true },
-      { name: "evidenceType", type: "enum", values: [
-        "consent_proof", "ip_verification", "timestamp_proof", "double_opt_in_proof",
-        "withdrawal_proof", "document_version_proof", "communication_history"
-      ], indexed: true },
+      {
+        name: "customerId",
+        type: "text",
+        foreign_key: "customer_master.customerId",
+        indexed: true,
+      },
+      {
+        name: "consentEventId",
+        type: "text",
+        foreign_key: "consent_tos_events.eventId",
+        indexed: true,
+      },
+      {
+        name: "evidenceType",
+        type: "enum",
+        values: [
+          "consent_proof",
+          "ip_verification",
+          "timestamp_proof",
+          "double_opt_in_proof",
+          "withdrawal_proof",
+          "document_version_proof",
+          "communication_history",
+        ],
+        indexed: true,
+      },
       { name: "evidenceHash", type: "text", unique: true, indexed: true },
       { name: "storageLocation", type: "text" },
       { name: "encryptionMethod", type: "text", default: "AES-256-GCM" },
@@ -283,9 +471,9 @@ const CONSENT_TOS_TABLES = [
       { name: "archived", type: "boolean", default: false },
       { name: "archivedDate", type: "timestamp" },
       { name: "created_at", type: "timestamp", indexed: true },
-      { name: "updated_at", type: "timestamp" }
-    ]
-  }
+      { name: "updated_at", type: "timestamp" },
+    ],
+  },
 ];
 
 /**
@@ -346,7 +534,7 @@ router.post("/create-consent-tos-tables", async (req, res) => {
         "Compliance violation detection & remediation",
         "Encrypted evidence vault for legal disputes",
         "Real-time compliance scoring",
-        "Automated legal requirement validation"
+        "Automated legal requirement validation",
       ],
     });
   } catch (error: any) {
@@ -372,7 +560,8 @@ router.post("/seed-consent-data", async (req, res) => {
         sourceChannel: "website",
         timestamp: "2023-01-15T10:30:00Z",
         ipAddress: "192.168.1.100",
-        userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        userAgent:
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         doubleOptIn: true,
         doubleOptInConfirmedAt: "2023-01-15T10:32:15Z",
         tcpaCompliant: false,
@@ -380,7 +569,7 @@ router.post("/seed-consent-data", async (req, res) => {
         gdprLawfulBasis: "consent",
         documentVersion: "1.2.0",
         validationScore: 92,
-        importSource: "war_chest"
+        importSource: "war_chest",
       },
       {
         eventId: "CONSENT-WC-000001-002",
@@ -391,7 +580,8 @@ router.post("/seed-consent-data", async (req, res) => {
         sourceChannel: "website",
         timestamp: "2023-01-15T10:35:00Z",
         ipAddress: "192.168.1.100",
-        userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        userAgent:
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         doubleOptIn: true,
         doubleOptInConfirmedAt: "2023-01-15T10:37:22Z",
         doubleOptInIpAddress: "192.168.1.100",
@@ -400,7 +590,7 @@ router.post("/seed-consent-data", async (req, res) => {
         gdprLawfulBasis: "consent",
         documentVersion: "1.2.0",
         validationScore: 98,
-        importSource: "war_chest"
+        importSource: "war_chest",
       },
       {
         eventId: "CONSENT-WC-000002-001",
@@ -418,8 +608,8 @@ router.post("/seed-consent-data", async (req, res) => {
         gdprLawfulBasis: "contract",
         documentVersion: "1.3.0",
         validationScore: 75,
-        importSource: "war_chest"
-      }
+        importSource: "war_chest",
+      },
     ];
 
     const results = [];
@@ -435,29 +625,35 @@ router.post("/seed-consent-data", async (req, res) => {
           ipAddress: event.ipAddress,
           userAgent: event.userAgent,
           consentMethod: event.consentMethod,
-          documentVersion: event.documentVersion
+          documentVersion: event.documentVersion,
         };
-        
-        const dataString = JSON.stringify(evidenceData, Object.keys(evidenceData).sort());
-        event.evidenceHash = require('crypto').createHash('sha256').update(dataString).digest('hex');
-        
+
+        const dataString = JSON.stringify(
+          evidenceData,
+          Object.keys(evidenceData).sort(),
+        );
+        event.evidenceHash = require("crypto")
+          .createHash("sha256")
+          .update(dataString)
+          .digest("hex");
+
         event.evidenceStorage = {
           location: `evidence_vault/${event.evidenceHash.substring(0, 4)}/${event.evidenceHash}`,
           retentionPeriod: 2555,
-          encryptionMethod: "AES-256-GCM"
+          encryptionMethod: "AES-256-GCM",
         };
 
         // Add import metadata
         event.importedAt = new Date().toISOString();
 
         const result = await xanoAPI.createRecord("consent_tos_events", event);
-        
+
         results.push({
           eventId: event.eventId,
           status: "created",
           xanoId: result.id,
           validationScore: event.validationScore,
-          evidenceHash: event.evidenceHash
+          evidenceHash: event.evidenceHash,
         });
       } catch (error: any) {
         results.push({
@@ -496,7 +692,7 @@ router.get("/health-check", async (req, res) => {
         averageComplianceScore: 0,
         tcpaCompliantEvents: 0,
         gdprCompliantEvents: 0,
-        evidenceVaultItems: 0
+        evidenceVaultItems: 0,
       },
     };
 
@@ -512,26 +708,38 @@ router.get("/health-check", async (req, res) => {
         // Update summary based on table data
         if (table.name === "consent_tos_events") {
           health.summary.totalEvents = records.length;
-          health.summary.activeConsents = records.filter((e: any) => e.consentStatus && !e.withdrawnAt).length;
-          health.summary.withdrawnConsents = records.filter((e: any) => e.withdrawnAt).length;
-          health.summary.tcpaCompliantEvents = records.filter((e: any) => e.tcpaCompliant).length;
-          health.summary.gdprCompliantEvents = records.filter((e: any) => e.gdprLawfulBasis === 'consent').length;
-          
+          health.summary.activeConsents = records.filter(
+            (e: any) => e.consentStatus && !e.withdrawnAt,
+          ).length;
+          health.summary.withdrawnConsents = records.filter(
+            (e: any) => e.withdrawnAt,
+          ).length;
+          health.summary.tcpaCompliantEvents = records.filter(
+            (e: any) => e.tcpaCompliant,
+          ).length;
+          health.summary.gdprCompliantEvents = records.filter(
+            (e: any) => e.gdprLawfulBasis === "consent",
+          ).length;
+
           if (records.length > 0) {
             health.summary.averageComplianceScore = Math.round(
-              records.reduce((sum: number, e: any) => sum + (e.validationScore || 0), 0) / records.length
+              records.reduce(
+                (sum: number, e: any) => sum + (e.validationScore || 0),
+                0,
+              ) / records.length,
             );
           }
         }
-        
+
         if (table.name === "compliance_violations") {
-          health.summary.complianceViolations = records.filter((v: any) => v.remediationStatus !== 'completed').length;
+          health.summary.complianceViolations = records.filter(
+            (v: any) => v.remediationStatus !== "completed",
+          ).length;
         }
-        
+
         if (table.name === "dispute_evidence_vault") {
           health.summary.evidenceVaultItems = records.length;
         }
-        
       } catch (error) {
         health.tables[table.name] = {
           exists: false,
