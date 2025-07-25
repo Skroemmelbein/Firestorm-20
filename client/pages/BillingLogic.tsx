@@ -112,6 +112,8 @@ export default function BillingLogic() {
   const [aiQuery, setAiQuery] = useState('');
   const [aiResponse, setAiResponse] = useState('');
   const [isAiThinking, setIsAiThinking] = useState(false);
+  const [isTestingPayment, setIsTestingPayment] = useState(false);
+  const [testPaymentResult, setTestPaymentResult] = useState<any>(null);
 
   const [nmiConnectionStatus, setNmiConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected' | 'error'>('disconnected');
   const [xanoSyncStatus, setXanoSyncStatus] = useState<'idle' | 'syncing' | 'completed' | 'error'>('idle');
@@ -145,22 +147,61 @@ export default function BillingLogic() {
     }
   };
 
+  const testNmiPayment = async () => {
+    setIsTestingPayment(true);
+    setTestPaymentResult(null);
+
+    try {
+      const response = await fetch('/api/nmi/test-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: 1.00,
+          customer: {
+            firstName: 'Test',
+            lastName: 'Customer',
+            email: 'test@ecelonx.com',
+            phone: '+18144409068'
+          },
+          paymentMethod: {
+            type: 'credit_card',
+            cardNumber: '4111111111111111', // Test card number
+            expiryMonth: '12',
+            expiryYear: '25',
+            cvv: '123'
+          }
+        })
+      });
+
+      const result = await response.json();
+      setTestPaymentResult(result);
+
+    } catch (error: any) {
+      setTestPaymentResult({
+        success: false,
+        message: error.message || 'Test payment failed'
+      });
+    } finally {
+      setIsTestingPayment(false);
+    }
+  };
+
   const askBillingAssistant = async () => {
     if (!aiQuery.trim()) return;
-    
+
     setIsAiThinking(true);
-    
+
     try {
       // Simulate AI response
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       const responses = [
         `For "${aiQuery}", I recommend implementing a 3-step dunning process: Day 1 - friendly reminder, Day 7 - urgent notice with grace period, Day 14 - final notice before suspension. This typically recovers 65% of failed payments.`,
         `Based on your query about "${aiQuery}", consider setting up automated retry logic with exponential backoff: immediate retry, then 24h, then 72h, then 7 days. This maximizes recovery while minimizing customer frustration.`,
         `For "${aiQuery}", implement segmented billing rules based on customer lifetime value. High-value customers get extended grace periods and personal outreach, while low-value accounts follow standard automation.`,
         `Your question about "${aiQuery}" suggests implementing a subscription health scoring system. Track payment success rate, engagement metrics, and support interactions to predict churn before it happens.`
       ];
-      
+
       setAiResponse(responses[Math.floor(Math.random() * responses.length)]);
     } catch (error) {
       setAiResponse('Sorry, I encountered an error processing your request. Please try again.');
@@ -206,10 +247,14 @@ export default function BillingLogic() {
         </div>
 
         <Tabs defaultValue="nmi-setup" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="nmi-setup" className="gap-2">
               <CreditCard className="w-4 h-4" />
               NMI Setup
+            </TabsTrigger>
+            <TabsTrigger value="test-payment" className="gap-2">
+              <Play className="w-4 h-4" />
+              Test $1
             </TabsTrigger>
             <TabsTrigger value="billing-plans" className="gap-2">
               <DollarSign className="w-4 h-4" />
@@ -384,6 +429,130 @@ export default function BillingLogic() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Test Payment Tab */}
+          <TabsContent value="test-payment" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Play className="w-5 h-5" />
+                  NMI $1 Test Transaction
+                </CardTitle>
+                <CardDescription>
+                  Test your NMI integration with a $1 transaction using test credit card
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
+                  <h4 className="font-medium mb-2">Test Transaction Details</h4>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Amount:</span>
+                      <span className="ml-2 font-medium">$1.00 USD</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Card:</span>
+                      <span className="ml-2 font-medium">4111****1111 (Test)</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Customer:</span>
+                      <span className="ml-2 font-medium">Test Customer</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Email:</span>
+                      <span className="ml-2 font-medium">test@ecelonx.com</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-center">
+                  <Button
+                    onClick={testNmiPayment}
+                    disabled={isTestingPayment || nmiConnectionStatus !== 'connected'}
+                    size="lg"
+                    className="gap-2 px-8"
+                  >
+                    {isTestingPayment ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        Processing $1 Test...
+                      </>
+                    ) : (
+                      <>
+                        <Play className="w-4 h-4" />
+                        Run $1 Test Transaction
+                      </>
+                    )}
+                  </Button>
+                </div>
+
+                {nmiConnectionStatus !== 'connected' && (
+                  <Alert variant="destructive">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>Connection Required</AlertTitle>
+                    <AlertDescription>
+                      Please test your NMI connection in the "NMI Setup" tab before running payment tests.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                {testPaymentResult && (
+                  <Card className={testPaymentResult.success ? "border-green-500/50 bg-green-50/30" : "border-red-500/50 bg-red-50/30"}>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        {testPaymentResult.success ? (
+                          <>
+                            <CheckCircle className="w-5 h-5 text-green-600" />
+                            Payment Test Successful
+                          </>
+                        ) : (
+                          <>
+                            <AlertTriangle className="w-5 h-5 text-red-600" />
+                            Payment Test Failed
+                          </>
+                        )}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="font-mono text-sm bg-muted/50 p-3 rounded">
+                          <pre>{JSON.stringify(testPaymentResult, null, 2)}</pre>
+                        </div>
+
+                        {testPaymentResult.success && (
+                          <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">Transaction ID:</span>
+                              <span className="font-medium">{testPaymentResult.transactionId || 'N/A'}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">Status:</span>
+                              <span className="font-medium text-green-600">Approved</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">Amount:</span>
+                              <span className="font-medium">$1.00</span>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex gap-2 mt-4">
+                          <Button variant="outline" size="sm" onClick={() => setTestPaymentResult(null)}>
+                            Clear Results
+                          </Button>
+                          {testPaymentResult.success && (
+                            <Button variant="outline" size="sm">
+                              View in Dashboard
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Billing Plans Tab */}
