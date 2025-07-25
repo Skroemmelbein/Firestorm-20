@@ -63,6 +63,7 @@ import billingTokenizationRouter from "./routes/billing-tokenization";
 import billingAnalyticsRouter from "./routes/billing-analytics";
 import nmiTransactionLogsRouter from "./routes/nmi-transaction-logs";
 import quickSetupRouter from "./routes/quick-setup";
+import nmiStatusCheckRouter from "./routes/nmi-status-check";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
@@ -272,6 +273,9 @@ export function createServer() {
 
   // Quick setup for billing system
   app.use("/api/setup", quickSetupRouter);
+
+  // NMI status and account checking
+  app.use("/api/nmi-status", nmiStatusCheckRouter);
 
   return app;
 }
