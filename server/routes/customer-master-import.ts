@@ -1,6 +1,6 @@
 import express from "express";
 import { z } from "zod";
-import { xanoAPI } from "./api-integrations";
+import { getXanoClient } from "../../shared/xano-client";
 
 const router = express.Router();
 
@@ -116,7 +116,7 @@ class DuplicateDetector {
 
     // Exact email match
     try {
-      const emailMatches = await xanoAPI.queryRecords("customer_master", {
+      const emailMatches = await getXanoClient().queryRecords("customer_master", {
         emailAddress: customer.emailAddress,
       });
       potentialDupes.push(
@@ -130,7 +130,7 @@ class DuplicateDetector {
 
     // Phone number match
     try {
-      const phoneMatches = await xanoAPI.queryRecords("customer_master", {
+      const phoneMatches = await getXanoClient().queryRecords("customer_master", {
         phoneNumber: customer.phoneNumber,
       });
       potentialDupes.push(
@@ -144,7 +144,7 @@ class DuplicateDetector {
 
     // Name + Address fuzzy match
     try {
-      const nameAddressMatches = await xanoAPI.queryRecords(
+      const nameAddressMatches = await getXanoClient().queryRecords(
         "customer_master",
         {},
       );
@@ -171,7 +171,7 @@ class DuplicateDetector {
     // SSN Last 4 match
     if (customer.socialSecurityLastFour) {
       try {
-        const ssnMatches = await xanoAPI.queryRecords("customer_master", {
+        const ssnMatches = await getXanoClient().queryRecords("customer_master", {
           socialSecurityLastFour: customer.socialSecurityLastFour,
         });
         potentialDupes.push(
@@ -433,18 +433,18 @@ router.post("/import-customer", async (req, res) => {
       await DataEnrichmentEngine.enrichCustomerData(validatedCustomer);
 
     // Add import metadata
-    enrichedCustomer.importedAt = new Date().toISOString();
-    enrichedCustomer.lastUpdatedAt = new Date().toISOString();
-    enrichedCustomer.version = 1;
+    (enrichedCustomer as any).importedAt = new Date().toISOString();
+    (enrichedCustomer as any).lastUpdatedAt = new Date().toISOString();
+    (enrichedCustomer as any).version = 1;
 
     // Save to Xano
-    const savedCustomer = await xanoAPI.createRecord(
+    const savedCustomer = await getXanoClient().createRecord(
       "customer_master",
       enrichedCustomer,
     );
 
     // Log import event
-    await xanoAPI.createRecord("import_audit_log", {
+    await getXanoClient().createRecord("import_audit_log", {
       entityType: "customer_master",
       entityId: savedCustomer.id,
       action: "import",
@@ -501,7 +501,7 @@ router.post("/batch-import", async (req, res) => {
     };
 
     // Create batch record
-    const batchRecord = await xanoAPI.createRecord("import_batches", {
+    const batchRecord = await getXanoClient().createRecord("import_batches", {
       batchId: validatedBatch.batchId,
       source: validatedBatch.source,
       totalRecords: validatedBatch.customers.length,
@@ -570,8 +570,8 @@ router.post("/batch-import", async (req, res) => {
           // Enrich and save
           const enriched =
             await DataEnrichmentEngine.enrichCustomerData(customer);
-          enriched.importBatch = validatedBatch.batchId;
-          enriched.importedAt = new Date().toISOString();
+          (enriched as any).importBatch = validatedBatch.batchId;
+          (enriched as any).importedAt = new Date().toISOString();
 
           let savedCustomer;
 
@@ -581,10 +581,10 @@ router.post("/batch-import", async (req, res) => {
           ) {
             // Merge with existing record
             const mergedData = { ...highConfidenceDupe, ...enriched };
-            mergedData.version = (highConfidenceDupe.version || 0) + 1;
-            mergedData.lastUpdatedAt = new Date().toISOString();
+            (mergedData as any).version = (highConfidenceDupe.version || 0) + 1;
+            (mergedData as any).lastUpdatedAt = new Date().toISOString();
 
-            savedCustomer = await xanoAPI.updateRecord(
+            savedCustomer = await getXanoClient().updateRecord(
               "customer_master",
               highConfidenceDupe.id,
               mergedData,
@@ -599,7 +599,7 @@ router.post("/batch-import", async (req, res) => {
             });
           } else {
             // Create new record
-            savedCustomer = await xanoAPI.createRecord(
+            savedCustomer = await getXanoClient().createRecord(
               "customer_master",
               enriched,
             );
@@ -623,7 +623,7 @@ router.post("/batch-import", async (req, res) => {
           );
 
           // Update batch progress
-          await xanoAPI.updateRecord("import_batches", batchRecord.id, {
+          await getXanoClient().updateRecord("import_batches", batchRecord.id, {
             processedRecords: i + 1,
             successfulRecords: results.successful,
             failedRecords: results.failed,
@@ -646,7 +646,7 @@ router.post("/batch-import", async (req, res) => {
     }
 
     // Update batch completion
-    await xanoAPI.updateRecord("import_batches", batchRecord.id, {
+    await getXanoClient().updateRecord("import_batches", batchRecord.id, {
       status: "completed",
       completedAt: new Date().toISOString(),
       processedRecords: validatedBatch.customers.length,
@@ -683,7 +683,7 @@ router.get("/customer/:customerId", async (req, res) => {
   try {
     const { customerId } = req.params;
 
-    const customers = await xanoAPI.queryRecords("customer_master", {
+    const customers = await getXanoClient().queryRecords("customer_master", {
       customerId: customerId,
     });
 
@@ -698,7 +698,7 @@ router.get("/customer/:customerId", async (req, res) => {
 
     // Get related data
     const [auditLogs, duplicateChecks] = await Promise.all([
-      xanoAPI.queryRecords("import_audit_log", { entityId: customer.id }),
+      getXanoClient().queryRecords("import_audit_log", { entityId: customer.id }),
       DuplicateDetector.findPotentialDuplicates(customer),
     ]);
 
@@ -728,7 +728,7 @@ router.get("/batch/:batchId", async (req, res) => {
   try {
     const { batchId } = req.params;
 
-    const batches = await xanoAPI.queryRecords("import_batches", {
+    const batches = await getXanoClient().queryRecords("import_batches", {
       batchId: batchId,
     });
 
@@ -742,12 +742,12 @@ router.get("/batch/:batchId", async (req, res) => {
     const batch = batches[0];
 
     // Get customers from this batch
-    const customers = await xanoAPI.queryRecords("customer_master", {
+    const customers = await getXanoClient().queryRecords("customer_master", {
       importBatch: batchId,
     });
 
     // Get audit logs for this batch
-    const auditLogs = await xanoAPI.queryRecords("import_audit_log", {
+    const auditLogs = await getXanoClient().queryRecords("import_audit_log", {
       batchId: batchId,
     });
 

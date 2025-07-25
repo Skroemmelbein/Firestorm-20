@@ -1,5 +1,5 @@
 import express from "express";
-import { xanoAPI } from "./api-integrations";
+import { getXanoClient } from "../../shared/xano-client";
 
 const router = express.Router();
 
@@ -156,7 +156,7 @@ router.post("/create", async (req, res) => {
     console.log("✅ Subscription created in NMI:", nmiSubscriptionId);
 
     // Step 3: Save to Xano
-    const xanoMember = await xanoAPI.createRecord("members", {
+    const xanoMember = await getXanoClient().createRecord("members", {
       uuid: `member_${Date.now()}`,
       email: customer.email,
       phone: customer.phone,
@@ -173,7 +173,7 @@ router.post("/create", async (req, res) => {
       created_at: new Date().toISOString(),
     });
 
-    const xanoSubscription = await xanoAPI.createRecord("subscriptions", {
+    const xanoSubscription = await getXanoClient().createRecord("subscriptions", {
       member_id: xanoMember.id,
       nmi_subscription_id: nmiSubscriptionId,
       plan_name: subscription.planName,
@@ -191,7 +191,7 @@ router.post("/create", async (req, res) => {
     });
 
     // Step 4: Save payment method
-    await xanoAPI.createRecord("payment_methods", {
+    await getXanoClient().createRecord("payment_methods", {
       member_id: xanoMember.id,
       nmi_vault_id: nmiCustomerId,
       type: paymentMethod.type,
@@ -233,13 +233,13 @@ router.post("/create", async (req, res) => {
  */
 router.get("/list", async (req, res) => {
   try {
-    const subscriptions = await xanoAPI.queryRecords("subscriptions", {});
+    const subscriptions = await getXanoClient().queryRecords("subscriptions", {});
 
     // Enhance with member data
     const enhancedSubscriptions = await Promise.all(
       subscriptions.map(async (sub: any) => {
         try {
-          const member = await xanoAPI.getRecord("members", sub.member_id);
+          const member = await getXanoClient().getRecord("members", sub.member_id);
           return {
             ...sub,
             member: {
@@ -278,7 +278,7 @@ router.patch("/:id/status", async (req, res) => {
     const { status, action } = req.body; // action: 'pause', 'resume', 'cancel'
 
     // Get subscription from Xano
-    const subscription = await xanoAPI.getRecord("subscriptions", id);
+    const subscription = await getXanoClient().getRecord("subscriptions", parseInt(id));
 
     if (!subscription.nmi_subscription_id) {
       throw new Error("NMI subscription ID not found");
@@ -317,9 +317,9 @@ router.patch("/:id/status", async (req, res) => {
     if (action === "resume") updateData.resumed_at = new Date().toISOString();
     if (action === "cancel") updateData.cancelled_at = new Date().toISOString();
 
-    const updatedSubscription = await xanoAPI.updateRecord(
+    const updatedSubscription = await getXanoClient().updateRecord(
       "subscriptions",
-      id,
+      parseInt(id),
       updateData,
     );
 
@@ -341,7 +341,7 @@ router.patch("/:id/status", async (req, res) => {
  */
 router.get("/analytics", async (req, res) => {
   try {
-    const subscriptions = await xanoAPI.queryRecords("subscriptions", {});
+    const subscriptions = await getXanoClient().queryRecords("subscriptions", {});
 
     const analytics = {
       totalSubscriptions: subscriptions.length,

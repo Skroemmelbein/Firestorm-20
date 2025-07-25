@@ -1,5 +1,5 @@
 import express from "express";
-import { xanoAPI } from "./api-integrations";
+import { getXanoClient } from "../../shared/xano-client";
 
 const router = express.Router();
 
@@ -278,7 +278,7 @@ router.post("/create-tables", async (req, res) => {
         console.log(`Creating table: ${table.name}`);
 
         // Create table in Xano
-        const result = await xanoAPI.createTable(table.name, table.columns);
+        const result = await getXanoClient().createTable(table.name, table.columns);
 
         results.push({
           table: table.name,
@@ -351,7 +351,7 @@ router.get("/schemas", async (req, res) => {
 router.post("/test-data", async (req, res) => {
   try {
     // Create sample member
-    const member = await xanoAPI.createRecord("members", {
+    const member = await getXanoClient().createRecord("members", {
       uuid: `member_${Date.now()}`,
       email: "test@example.com",
       phone: "+1234567890",
@@ -363,7 +363,7 @@ router.post("/test-data", async (req, res) => {
     });
 
     // Create sample billing plan
-    const plan = await xanoAPI.createRecord("billing_plans", {
+    const plan = await getXanoClient().createRecord("billing_plans", {
       plan_id: "premium_monthly",
       name: "Premium Monthly",
       description: "Premium subscription with advanced features",
@@ -375,7 +375,7 @@ router.post("/test-data", async (req, res) => {
     });
 
     // Create sample subscription
-    const subscription = await xanoAPI.createRecord("subscriptions", {
+    const subscription = await getXanoClient().createRecord("subscriptions", {
       member_id: member.id,
       plan_id: "premium_monthly",
       plan_name: "Premium Monthly",
@@ -419,14 +419,14 @@ router.get("/stats", async (req, res) => {
     };
 
     try {
-      const members = await xanoAPI.queryRecords("members", {});
+      const members = await getXanoClient().queryRecords("members", {});
       stats.totalMembers = members.length;
     } catch (e) {
       console.log("Members table not found or empty");
     }
 
     try {
-      const subscriptions = await xanoAPI.queryRecords("subscriptions", {
+      const subscriptions = await getXanoClient().queryRecords("subscriptions", {
         status: "active",
       });
       stats.activeSubscriptions = subscriptions.length;
@@ -438,7 +438,7 @@ router.get("/stats", async (req, res) => {
     }
 
     try {
-      const transactions = await xanoAPI.queryRecords("transactions", {
+      const transactions = await getXanoClient().queryRecords("transactions", {
         status: "completed",
       });
       stats.totalRevenue = transactions.reduce(

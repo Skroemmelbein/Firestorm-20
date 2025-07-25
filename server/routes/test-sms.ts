@@ -30,12 +30,12 @@ router.post("/send-test", async (req, res) => {
       res.json({
         success: true,
         message: `SMS sent successfully to ${to}`,
-        sid: result.sid,
+        sid: (result as any).sid,
       });
     } else {
       res.status(400).json({
         success: false,
-        error: result.message || "Failed to send SMS",
+        error: (result as any).message || "Failed to send SMS",
       });
     }
   } catch (error) {
@@ -70,7 +70,7 @@ async function sendTestMessage() {
     const result = await response.json();
 
     if (response.ok) {
-      console.log("✅ Test SMS sent successfully!", result.sid);
+      console.log("✅ Test SMS sent successfully!", (result as any).sid);
     } else {
       console.error("❌ Failed to send test SMS:", result);
     }

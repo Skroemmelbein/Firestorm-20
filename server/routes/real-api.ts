@@ -1364,10 +1364,10 @@ router.post("/test/phase3/translate", async (req, res) => {
       success: false,
       message: "Translation failed - using demo mode",
       result: {
-        originalText: text || "Welcome to ECHELONX Message War Machine",
+        originalText: req.body.text || "Welcome to ECHELONX Message War Machine",
         translatedText: "Bienvenido a ECHELONX Message War Machine (Demo)",
         sourceLang: "EN",
-        targetLang: targetLang || "ES",
+        targetLang: req.body.targetLang || "ES",
         demo_mode: true
       },
       error: error instanceof Error ? error.message : "Unknown error"
@@ -1398,7 +1398,7 @@ router.post("/test/phase3/grammar-check", async (req, res) => {
       success: false,
       message: "Grammar check failed - using demo mode",
       result: {
-        originalText: text || "This are a test message for grammar checking.",
+        originalText: req.body.text || "This are a test message for grammar checking.",
         correctedText: "This is a test message for grammar checking. (Demo)",
         issues: [
           {
@@ -1446,8 +1446,8 @@ router.post("/test/phase4/create-template", async (req, res) => {
       message: "Template creation failed - using demo mode",
       result: {
         templateSid: "CNxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        templateName: templateName || "echelonx_test_template",
-        channels: channels || ["sms", "whatsapp", "email"],
+        templateName: req.body.templateName || "echelonx_test_template",
+        channels: req.body.channels || ["sms", "whatsapp", "email"],
         status: "approved",
         demo_mode: true
       },
@@ -1463,13 +1463,15 @@ router.post("/test/phase5/sinch-sms", async (req, res) => {
     const { SinchClient } = await import("../../shared/sinch-client");
     const sinch = new SinchClient({
       servicePlanId: process.env.SINCH_SERVICE_PLAN_ID || "placeholder_plan_id",
-      apiToken: process.env.SINCH_API_TOKEN || "placeholder_token"
+      apiToken: process.env.SINCH_API_TOKEN || "placeholder_token",
+      baseUrl: "https://sms.api.sinch.com"
     });
     
-    const result = await sinch.sendSMS(
-      to || "+15558675310",
-      message || "ECHELONX fallback SMS via Sinch"
-    );
+    const result = await sinch.sendSMS({
+      to: [to || "+15558675310"],
+      from: "ECHELONX",
+      body: message || "ECHELONX fallback SMS via Sinch"
+    });
     
     res.json({
       success: true,
@@ -1482,7 +1484,7 @@ router.post("/test/phase5/sinch-sms", async (req, res) => {
       message: "Sinch SMS failed - using demo mode",
       result: {
         messageId: "demo_sinch_" + Date.now(),
-        to: to || "+15558675310",
+        to: req.body.to || "+15558675310",
         status: "delivered",
         demo_mode: true
       },
@@ -1497,13 +1499,14 @@ router.post("/test/phase5/shorten-link", async (req, res) => {
     
     const { RebrandlyClient } = await import("../../shared/rebrandly-client");
     const rebrandly = new RebrandlyClient({
-      apiKey: process.env.REBRANDLY_API_KEY || "placeholder_key"
+      apiKey: process.env.REBRANDLY_API_KEY || "placeholder_key",
+      baseUrl: "https://api.rebrandly.com"
     });
     
-    const result = await rebrandly.shortenUrl(
-      url || "https://echelonx.com/campaign-landing",
-      domain
-    );
+    const result = await rebrandly.createLink({
+      destination: url || "https://echelonx.com/campaign-landing",
+      slashtag: domain || "echelonx-campaign"
+    });
     
     res.json({
       success: true,
@@ -1515,7 +1518,7 @@ router.post("/test/phase5/shorten-link", async (req, res) => {
       success: false,
       message: "Link shortening failed - using demo mode",
       result: {
-        originalUrl: url || "https://echelonx.com/campaign-landing",
+        originalUrl: req.body.url || "https://echelonx.com/campaign-landing",
         shortUrl: "https://rebrand.ly/demo-" + Date.now(),
         clicks: 0,
         demo_mode: true
@@ -1530,10 +1533,12 @@ router.get("/test/phase5/analytics-chart", async (req, res) => {
     const { chartType, data } = req.query;
     
     const { QuickChartClient } = await import("../../shared/quickchart-client");
-    const quickChart = new QuickChartClient();
+    const quickChart = new QuickChartClient({
+      baseUrl: "https://quickchart.io"
+    });
     
     const chartUrl = await quickChart.generateChart({
-      type: chartType as string || "bar",
+      type: (req.query.chartType as "bar") || "bar",
       data: data ? JSON.parse(data as string) : {
         labels: ["SMS", "WhatsApp", "Email", "Voice"],
         datasets: [{
@@ -1571,15 +1576,16 @@ router.post("/test/phase5/slack-alert", async (req, res) => {
     
     const { SlackClient } = await import("../../shared/slack-client");
     const slack = new SlackClient({
-      botToken: process.env.SLACK_BOT_TOKEN || "placeholder_token"
+      botToken: process.env.SLACK_BOT_TOKEN || "placeholder_token",
+      baseUrl: "https://slack.com/api"
     });
     
     const alertMessage = message || `🚨 ECHELONX Alert: Bounce rate is ${bounceRate || 4.2}% (above 3% threshold)`;
     
-    const result = await slack.sendMessage(
-      channel || "#alerts",
-      alertMessage
-    );
+    const result = await slack.sendMessage({
+      channel: channel || "#alerts",
+      text: alertMessage
+    });
     
     res.json({
       success: true,
@@ -1591,8 +1597,8 @@ router.post("/test/phase5/slack-alert", async (req, res) => {
       success: false,
       message: "Slack alert failed - using demo mode",
       result: {
-        channel: channel || "#alerts",
-        message: message || `🚨 ECHELONX Alert: Bounce rate is ${bounceRate || 4.2}% (above 3% threshold)`,
+        channel: req.body.channel || "#alerts",
+        message: req.body.message || `🚨 ECHELONX Alert: Bounce rate is ${req.body.bounceRate || 4.2}% (above 3% threshold)`,
         timestamp: new Date().toISOString(),
         demo_mode: true
       },

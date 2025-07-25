@@ -307,7 +307,7 @@ Respond only with the SMS message text (no quotes or explanations).`;
       const xano = getXanoClient();
 
       // Create support ticket in Xano
-      await xano.request("/support_tickets", "POST", {
+      await xano.makeRequest("/support_tickets", "POST", {
         member_id: member?.id,
         subject: `SMS Escalation: ${analysis.intent}`,
         description: `Customer message: "${message}"\n\nAI Analysis:\n- Sentiment: ${analysis.sentiment}\n- Intent: ${analysis.intent}\n- Urgency: ${analysis.urgency}\n- Confidence: ${analysis.confidence}`,

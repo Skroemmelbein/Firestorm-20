@@ -1,5 +1,5 @@
 import express from "express";
-import { xanoAPI } from "./api-integrations";
+import { getXanoClient } from "../../shared/xano-client";
 
 const router = express.Router();
 
@@ -489,7 +489,7 @@ router.post("/create-consent-tos-tables", async (req, res) => {
       try {
         console.log(`Creating table: ${table.name}`);
 
-        const result = await xanoAPI.createTable(table.name, table.columns);
+        const result = await getXanoClient().createTable(table.name, table.columns);
 
         results.push({
           table: table.name,
@@ -632,28 +632,28 @@ router.post("/seed-consent-data", async (req, res) => {
           evidenceData,
           Object.keys(evidenceData).sort(),
         );
-        event.evidenceHash = require("crypto")
+        (event as any).evidenceHash = require("crypto")
           .createHash("sha256")
           .update(dataString)
           .digest("hex");
 
-        event.evidenceStorage = {
-          location: `evidence_vault/${event.evidenceHash.substring(0, 4)}/${event.evidenceHash}`,
+        (event as any).evidenceStorage = {
+          location: `evidence_vault/${(event as any).evidenceHash.substring(0, 4)}/${(event as any).evidenceHash}`,
           retentionPeriod: 2555,
           encryptionMethod: "AES-256-GCM",
         };
 
         // Add import metadata
-        event.importedAt = new Date().toISOString();
+        (event as any).importedAt = new Date().toISOString();
 
-        const result = await xanoAPI.createRecord("consent_tos_events", event);
+        const result = await getXanoClient().createRecord("consent_tos_events", event);
 
         results.push({
           eventId: event.eventId,
           status: "created",
           xanoId: result.id,
           validationScore: event.validationScore,
-          evidenceHash: event.evidenceHash,
+          evidenceHash: (event as any).evidenceHash,
         });
       } catch (error: any) {
         results.push({
@@ -699,7 +699,7 @@ router.get("/health-check", async (req, res) => {
     // Check each table exists and get counts
     for (const table of CONSENT_TOS_TABLES) {
       try {
-        const records = await xanoAPI.queryRecords(table.name, {});
+        const records = await getXanoClient().queryRecords(table.name, {});
         health.tables[table.name] = {
           exists: true,
           count: records.length,

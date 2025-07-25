@@ -39,22 +39,22 @@ router.post("/phase3/send-multilingual", async (req, res) => {
         let finalMessage;
         try {
           const grammarResult = await languageTool.checkGrammar(translatedMessage, targetLang);
-          finalMessage = grammarResult.correctedText || translatedMessage;
+          finalMessage = (grammarResult as any).correctedText || translatedMessage;
         } catch (grammarError) {
           finalMessage = translatedMessage;
         }
 
         let sendResult;
         if (channel === "sms" || !channel) {
-          const { getSafeTwilioClient } = await import("../routes/real-api");
-          const twilio = getSafeTwilioClient();
+          const { getTwilioClient } = await import("../../shared/twilio-client");
+          const twilio = getTwilioClient();
           sendResult = await twilio.sendSMS({
             to: to,
             body: finalMessage
           });
         } else if (channel === "whatsapp") {
-          const { getSafeTwilioClient } = await import("../routes/real-api");
-          const twilio = getSafeTwilioClient();
+          const { getTwilioClient } = await import("../../shared/twilio-client");
+          const twilio = getTwilioClient();
           sendResult = await twilio.sendWhatsApp({
             to: to,
             body: finalMessage
@@ -129,20 +129,20 @@ router.post("/phase4/send-template", async (req, res) => {
         let sendResult;
         
         if (channel === "sms") {
-          const { getSafeTwilioClient } = await import("../routes/real-api");
-          const twilio = getSafeTwilioClient();
+          const { getTwilioClient } = await import("../../shared/twilio-client");
+          const twilio = getTwilioClient();
           sendResult = await twilio.sendSMS({
             to: to,
             body: `Template ${templateSid} content with variables: ${JSON.stringify(variables || {})}`
           });
         } else if (channel === "whatsapp") {
-          const { getSafeTwilioClient } = await import("../routes/real-api");
-          const twilio = getSafeTwilioClient();
+          const { getTwilioClient } = await import("../../shared/twilio-client");
+          const twilio = getTwilioClient();
           sendResult = await twilio.sendWhatsApp({
             to: to,
             body: `Template ${templateSid} content with variables: ${JSON.stringify(variables || {})}`
           });
-        } else if (channel === "email") {
+        }else if (channel === "email") {
           const sendGridModule = await import("../../shared/sendgrid-client");
           const sendGrid = sendGridModule.getSendGridClient();
           sendResult = await sendGrid.sendEmail({
@@ -213,26 +213,36 @@ router.post("/phase5/send-with-failover", async (req, res) => {
         let result;
         
         if (provider === "twilio") {
-          const { getSafeTwilioClient } = await import("../routes/real-api");
-          const twilio = getSafeTwilioClient();
+          const { getTwilioClient } = await import("../../shared/twilio-client");
+          const twilio = getTwilioClient();
           result = await twilio.sendSMS({
             to: to,
             body: message
           });
-        } else if (provider === "sinch") {
+        }else if (provider === "sinch") {
           const { SinchClient } = await import("../../shared/sinch-client");
           const sinch = new SinchClient({
             servicePlanId: process.env.SINCH_SERVICE_PLAN_ID || "placeholder_plan_id",
-            apiToken: process.env.SINCH_API_TOKEN || "placeholder_token"
+            apiToken: process.env.SINCH_API_TOKEN || "placeholder_token",
+            baseUrl: "https://sms.api.sinch.com"
           });
-          result = await sinch.sendSMS(to, message);
+          result = await sinch.sendSMS({
+            to: [to],
+            from: "ECHELONX",
+            body: message
+          });
         } else if (provider === "vonage") {
           const { VonageClient } = await import("../../shared/vonage-client");
           const vonage = new VonageClient({
             apiKey: process.env.VONAGE_API_KEY || "placeholder_key",
-            apiSecret: process.env.VONAGE_API_SECRET || "placeholder_secret"
+            apiSecret: process.env.VONAGE_API_SECRET || "placeholder_secret",
+            baseUrl: "https://rest.nexmo.com"
           });
-          result = await vonage.sendSMS(to, message);
+          result = await vonage.sendSMS({
+            to: to,
+            from: "ECHELONX",
+            text: message
+          });
         }
 
         await getXanoClient().createRecord("failover_messages", {
@@ -246,7 +256,9 @@ router.post("/phase5/send-with-failover", async (req, res) => {
         });
 
         const { QuickChartClient } = await import("../../shared/quickchart-client");
-        const quickChart = new QuickChartClient();
+        const quickChart = new QuickChartClient({
+          baseUrl: "https://quickchart.io"
+        });
         const chartUrl = await quickChart.generateChart({
           type: "doughnut",
           data: {
@@ -329,14 +341,18 @@ router.post("/phase5/check-bounce-rate", async (req, res) => {
       try {
         const { SlackClient } = await import("../../shared/slack-client");
         const slack = new SlackClient({
-          botToken: process.env.SLACK_BOT_TOKEN || "placeholder_token"
+          botToken: process.env.SLACK_BOT_TOKEN || "placeholder_token",
+          baseUrl: "https://slack.com/api"
         });
 
         const alertMessage = `🚨 ECHELONX ALERT: Bounce rate is ${bounceRate.toFixed(2)}% (above ${bounceThreshold}% threshold)\n` +
                            `📊 Stats: ${failedMessages}/${totalMessages} messages failed in last 24h\n` +
                            `🔗 Dashboard: https://app.echelonx.com/analytics`;
 
-        slackResult = await slack.sendMessage("#alerts", alertMessage);
+        slackResult = await slack.sendMessage({
+          channel: "#alerts",
+          text: alertMessage
+        });
       } catch (slackError) {
         console.warn("Slack alert failed:", slackError);
         slackResult = { demo_mode: true, error: slackError instanceof Error ? slackError.message : "Unknown error" };

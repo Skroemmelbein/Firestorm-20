@@ -1,6 +1,6 @@
 import express from "express";
 import { z } from "zod";
-import { xanoAPI } from "./api-integrations";
+import { getXanoClient } from "../../shared/xano-client";
 
 const router = express.Router();
 
@@ -384,7 +384,7 @@ router.post("/import-record", async (req, res) => {
       DescriptorAnalyzer.generateRepresentmentStrength(validatedRecord);
 
     // Check for duplicate records
-    const existingRecords = await xanoAPI.queryRecords("descriptor_history", {
+    const existingRecords = await getXanoClient().queryRecords("descriptor_history", {
       transactionId: validatedRecord.transactionId,
     });
 
@@ -399,19 +399,19 @@ router.post("/import-record", async (req, res) => {
     }
 
     // Add analysis results to record
-    validatedRecord.descriptorAnalysis = descriptorAnalysis;
-    validatedRecord.riskAnalysis = riskAnalysis;
-    validatedRecord.representmentStrength = representmentStrength;
-    validatedRecord.importedAt = new Date().toISOString();
+    (validatedRecord as any).descriptorAnalysis = descriptorAnalysis;
+    (validatedRecord as any).riskAnalysis = riskAnalysis;
+    (validatedRecord as any).representmentStrength = representmentStrength;
+    (validatedRecord as any).importedAt = new Date().toISOString();
 
     // Save to Xano
-    const savedRecord = await xanoAPI.createRecord(
+    const savedRecord = await getXanoClient().createRecord(
       "descriptor_history",
       validatedRecord,
     );
 
     // Create dispute readiness assessment
-    await xanoAPI.createRecord("dispute_readiness_assessments", {
+    await getXanoClient().createRecord("dispute_readiness_assessments", {
       transactionId: validatedRecord.transactionId,
       customerId: validatedRecord.customerId,
       descriptorQuality: descriptorAnalysis.recognizability,
@@ -474,7 +474,7 @@ router.post("/batch-import", async (req, res) => {
     };
 
     // Create batch record
-    const batchRecord = await xanoAPI.createRecord(
+    const batchRecord = await getXanoClient().createRecord(
       "descriptor_import_batches",
       {
         batchId: validatedBatch.batchId,
@@ -516,7 +516,7 @@ router.post("/batch-import", async (req, res) => {
           results.successful++;
         } else {
           // Check for duplicates
-          const existingRecords = await xanoAPI.queryRecords(
+          const existingRecords = await getXanoClient().queryRecords(
             "descriptor_history",
             {
               transactionId: record.transactionId,
@@ -551,11 +551,11 @@ router.post("/batch-import", async (req, res) => {
           }
 
           // Add analysis and metadata
-          record.descriptorAnalysis = descriptorAnalysis;
-          record.riskAnalysis = riskAnalysis;
-          record.representmentStrength = representmentStrength;
-          record.importBatch = validatedBatch.batchId;
-          record.importedAt = new Date().toISOString();
+          (record as any).descriptorAnalysis = descriptorAnalysis;
+          (record as any).riskAnalysis = riskAnalysis;
+          (record as any).representmentStrength = representmentStrength;
+          (record as any).importBatch = validatedBatch.batchId;
+          (record as any).importedAt = new Date().toISOString();
 
           let savedRecord;
 
@@ -565,7 +565,7 @@ router.post("/batch-import", async (req, res) => {
           ) {
             // Merge with existing record
             const mergedData = { ...existingRecords[0], ...record };
-            savedRecord = await xanoAPI.updateRecord(
+            savedRecord = await getXanoClient().updateRecord(
               "descriptor_history",
               existingRecords[0].id,
               mergedData,
@@ -579,7 +579,7 @@ router.post("/batch-import", async (req, res) => {
             });
           } else {
             // Create new record
-            savedRecord = await xanoAPI.createRecord(
+            savedRecord = await getXanoClient().createRecord(
               "descriptor_history",
               record,
             );
@@ -601,7 +601,7 @@ router.post("/batch-import", async (req, res) => {
             `📊 Progress: ${i + 1}/${validatedBatch.records.length} records processed`,
           );
 
-          await xanoAPI.updateRecord(
+          await getXanoClient().updateRecord(
             "descriptor_import_batches",
             batchRecord.id,
             {
@@ -634,7 +634,7 @@ router.post("/batch-import", async (req, res) => {
         : 0;
 
     // Update batch completion
-    await xanoAPI.updateRecord("descriptor_import_batches", batchRecord.id, {
+    await getXanoClient().updateRecord("descriptor_import_batches", batchRecord.id, {
       status: "completed",
       completedAt: new Date().toISOString(),
       processedRecords: validatedBatch.records.length,
@@ -672,7 +672,7 @@ router.get("/representment-evidence/:transactionId", async (req, res) => {
   try {
     const { transactionId } = req.params;
 
-    const records = await xanoAPI.queryRecords("descriptor_history", {
+    const records = await getXanoClient().queryRecords("descriptor_history", {
       transactionId: transactionId,
     });
 
@@ -686,12 +686,12 @@ router.get("/representment-evidence/:transactionId", async (req, res) => {
     const record = records[0];
 
     // Get related customer data
-    const customerRecords = await xanoAPI.queryRecords("customer_master", {
+    const customerRecords = await getXanoClient().queryRecords("customer_master", {
       customerId: record.customerId,
     });
 
     // Get consent events
-    const consentEvents = await xanoAPI.queryRecords("consent_tos_events", {
+    const consentEvents = await getXanoClient().queryRecords("consent_tos_events", {
       customerId: record.customerId,
     });
 
@@ -770,7 +770,7 @@ router.get("/dispute-readiness/:customerId", async (req, res) => {
     const { customerId } = req.params;
 
     // Get all descriptor history for customer
-    const records = await xanoAPI.queryRecords("descriptor_history", {
+    const records = await getXanoClient().queryRecords("descriptor_history", {
       customerId: customerId,
     });
 
