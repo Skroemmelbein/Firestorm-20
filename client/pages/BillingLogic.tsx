@@ -8,9 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  CreditCard, 
-  Database, 
+import {
+  CreditCard,
+  Database,
   Brain,
   Settings,
   Play,
@@ -29,7 +29,8 @@ import {
   RefreshCw,
   Clock,
   Eye,
-  EyeOff
+  EyeOff,
+  BarChart3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
