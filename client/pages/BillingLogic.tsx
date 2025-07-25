@@ -213,7 +213,18 @@ export default function BillingLogic() {
         }),
       });
 
-      const result = await response.json();
+      let result;
+      try {
+        result = await response.json();
+      } catch (parseError) {
+        // If JSON parsing fails, try to get text
+        const responseText = await response.text();
+        result = {
+          success: false,
+          message: `Response parsing error: ${responseText}`,
+        };
+      }
+
       setTestPaymentResult(result);
     } catch (error: any) {
       setTestPaymentResult({
