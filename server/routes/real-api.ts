@@ -645,4 +645,271 @@ router.post("/test/email", async (req, res) => {
   }
 });
 
+const getAssetReactorSafe = () => {
+  try {
+    const { initializeAssetReactor, getAssetReactor } = require("../../shared/asset-reactor");
+    
+    try {
+      return getAssetReactor();
+    } catch (initError) {
+      if (process.env.UNSPLASH_ACCESS_KEY && process.env.PEXELS_API_KEY && process.env.CLOUDINARY_CLOUD_NAME) {
+        initializeAssetReactor({
+          unsplash: {
+            accessKey: process.env.UNSPLASH_ACCESS_KEY,
+          },
+          pexels: {
+            apiKey: process.env.PEXELS_API_KEY,
+          },
+          cloudinary: {
+            cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+            apiKey: process.env.CLOUDINARY_API_KEY || '',
+            apiSecret: process.env.CLOUDINARY_API_SECRET || '',
+          },
+        });
+        return getAssetReactor();
+      }
+      throw initError;
+    }
+  } catch (error) {
+    throw new Error(
+      "Asset Reactor not initialized. Please configure Unsplash, Pexels, and Cloudinary credentials first.",
+    );
+  }
+};
+
+router.get("/assets/hero-image", async (req, res) => {
+  const { query, width, height } = req.query;
+  
+  try {
+    const assetReactor = getAssetReactorSafe();
+    
+    const asset = await assetReactor.getRandomHeroImage(
+      query as string,
+      width ? parseInt(width as string) : 1200,
+      height ? parseInt(height as string) : 630
+    );
+    
+    res.json({
+      success: true,
+      asset: asset,
+      message: "Hero image generated successfully"
+    });
+  } catch (error) {
+    // Fallback demo asset when API keys are not configured
+    const demoAsset = {
+      type: 'image' as const,
+      url: `https://picsum.photos/${width || 1200}/${height || 630}?random=${Date.now()}`,
+      originalUrl: 'https://picsum.photos/1200/630',
+      width: parseInt(width as string) || 1200,
+      height: parseInt(height as string) || 630,
+      description: `Demo hero image: ${query || 'random'}`,
+      source: 'demo' as const
+    };
+    
+    res.json({
+      success: true,
+      asset: demoAsset,
+      message: "Demo hero image generated (configure Unsplash API key for production)",
+      demo_mode: true,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.get("/assets/video-mms", async (req, res) => {
+  try {
+    const { query } = req.query;
+    if (!query) {
+      return res.status(400).json({
+        success: false,
+        error: "Query parameter is required"
+      });
+    }
+    
+    const assetReactor = getAssetReactorSafe();
+    const asset = await assetReactor.getVideoForMMS(query as string);
+    
+    res.json({
+      success: true,
+      asset: asset,
+      message: "MMS video generated successfully"
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/assets/hero-with-text", async (req, res) => {
+  const { text, query, textColor, textSize, effects } = req.body;
+  
+  if (!text) {
+    return res.status(400).json({
+      success: false,
+      error: "Text parameter is required"
+    });
+  }
+  
+  try {
+    const assetReactor = getAssetReactorSafe();
+    const asset = await assetReactor.generateHeroWithText(text, query, {
+      textColor,
+      textSize,
+      effects
+    });
+    
+    res.json({
+      success: true,
+      asset: asset,
+      message: "Hero image with text generated successfully"
+    });
+  } catch (error) {
+    const encodedText = encodeURIComponent(text);
+    const demoAsset = {
+      type: 'image' as const,
+      url: `https://via.placeholder.com/1200x630/1a1a1a/00CED1?text=${encodedText}`,
+      originalUrl: 'https://picsum.photos/1200/630',
+      width: 1200,
+      height: 630,
+      description: `Demo hero with text: ${text}`,
+      source: 'demo' as const
+    };
+    
+    res.json({
+      success: true,
+      asset: demoAsset,
+      message: "Demo hero with text generated (configure Cloudinary for production text overlays)",
+      demo_mode: true,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.get("/assets/health", async (req, res) => {
+  try {
+    const assetReactor = getAssetReactorSafe();
+    const health = await assetReactor.healthCheck();
+    
+    res.json({
+      success: true,
+      health: health,
+      message: "Asset Reactor health check completed"
+    });
+  } catch (error) {
+    // Fallback health check when credentials are not configured
+    const hasUnsplash = process.env.UNSPLASH_ACCESS_KEY && process.env.UNSPLASH_ACCESS_KEY !== 'your_unsplash_access_key_here';
+    const hasPexels = process.env.PEXELS_API_KEY && process.env.PEXELS_API_KEY !== 'your_pexels_api_key_here';
+    const hasCloudinary = process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_CLOUD_NAME !== 'your_cloudinary_cloud_name';
+    
+    res.json({
+      success: false,
+      health: {
+        unsplash: hasUnsplash,
+        pexels: hasPexels,
+        cloudinary: hasCloudinary
+      },
+      message: "Asset Reactor not configured - placeholder API keys detected",
+      error: error instanceof Error ? error.message : "Unknown error",
+      required_env_vars: [
+        "UNSPLASH_ACCESS_KEY (get from https://unsplash.com/developers)",
+        "PEXELS_API_KEY (get from https://www.pexels.com/api/)",
+        "CLOUDINARY_CLOUD_NAME (get from https://cloudinary.com/)"
+      ]
+    });
+  }
+});
+
+router.post("/test/sms-mms-rcs-with-assets", async (req, res) => {
+  try {
+    const { to, message, generateAsset, assetQuery } = req.body;
+    const twilio = getTwilioClientSafe();
+    
+    let mediaUrl: string[] = [];
+    
+    if (generateAsset) {
+      try {
+        const assetReactor = getAssetReactorSafe();
+        const asset = await assetReactor.getRandomHeroImage(assetQuery || "technology");
+        mediaUrl = [asset.url];
+      } catch (assetError) {
+        console.warn("Failed to generate asset, using fallback:", assetError);
+        mediaUrl = ["https://demo.cloudinary.com/sample.jpg"];
+      }
+    }
+    
+    const result = await twilio.sendSMS({
+      to: to || "+15558675310",
+      body: message || "Firestorm Phase 2 test with auto-generated assets 🚀",
+      mediaUrl: mediaUrl.length > 0 ? mediaUrl : undefined
+    });
+    
+    res.json({
+      success: true,
+      message: "SMS/MMS/RCS with assets sent successfully",
+      result: result,
+      generatedAsset: mediaUrl.length > 0 ? mediaUrl[0] : null
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/email-with-assets", async (req, res) => {
+  try {
+    const { to, subject, message, generateAsset, assetQuery, heroText } = req.body;
+    const sendGridModule = await import("../../shared/sendgrid-client");
+    const sendGrid = sendGridModule.getSendGridClient();
+    
+    let heroImageUrl = "https://demo.cloudinary.com/sample.jpg";
+    
+    if (generateAsset) {
+      try {
+        const assetReactor = getAssetReactorSafe();
+        if (heroText) {
+          const asset = await assetReactor.generateHeroWithText(heroText, assetQuery || "business");
+          heroImageUrl = asset.url;
+        } else {
+          const asset = await assetReactor.getRandomHeroImage(assetQuery || "business");
+          heroImageUrl = asset.url;
+        }
+      } catch (assetError) {
+        console.warn("Failed to generate asset, using fallback:", assetError);
+      }
+    }
+    
+    const result = await sendGrid.sendEmail({
+      to: to || "shannonkroemmelbein@gmail.com",
+      subject: subject || "ECELONX Phase 2 Test - Asset Reactor Operational",
+      html: `
+        <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #111111; color: white; padding: 0;">
+          <img src="${heroImageUrl}" alt="Generated Hero Image" style="width: 100%; height: 300px; object-fit: cover; border-radius: 8px 8px 0 0;">
+          <div style="padding: 40px;">
+            <h1 style="color: #00CED1; margin-top: 0;">ECELONX MESSAGE WAR MACHINE</h1>
+            <p style="color: #00E676; font-size: 18px;">Phase 2 Asset Reactor: ${message || 'Auto-generated assets operational'}</p>
+            <p style="color: #b3b3b3;">Generated Asset: ${heroImageUrl}</p>
+            <p style="color: #b3b3b3;">Test Time: ${new Date().toISOString()}</p>
+          </div>
+        </div>
+      `
+    });
+    
+    res.json({
+      success: true,
+      message: "Email with assets sent successfully", 
+      result: result,
+      generatedAsset: heroImageUrl
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
 export default router;
