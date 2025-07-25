@@ -294,6 +294,11 @@ export default function AdminDashboard() {
             </TabsTrigger>
           </TabsList>
 
+          {/* War Chest Import Tab */}
+          <TabsContent value="war-chest" className="space-y-4">
+            <WarChestImportManager />
+          </TabsContent>
+
           {/* Data Uploads Tab */}
           <TabsContent value="uploads" className="space-y-4">
             <Card className="glass-card corp-shadow">
