@@ -278,5 +278,8 @@ export function createServer() {
   // NMI status and account checking
   app.use("/api/nmi-status", nmiStatusCheckRouter);
 
+  // NMI test payment and connection validation
+  app.use("/api/nmi", nmiTestPaymentRouter);
+
   return app;
 }
