@@ -65,12 +65,40 @@ import nmiTransactionLogsRouter from "./routes/nmi-transaction-logs";
 import quickSetupRouter from "./routes/quick-setup";
 import nmiStatusCheckRouter from "./routes/nmi-status-check";
 import nmiTestPaymentRouter from "./routes/nmi-test-payment";
-import { startWarChestImport, getImportProgress, getImportStatus } from "./routes/war-chest-import";
-import { classifyClientStatus, batchClassifyClients, getClassificationStats, validateClassificationRules } from "./routes/status-classification";
-import { startLegacyVaultMigration, getLegacyMigrationProgress, validateLegacyTokens, getMigrationStats } from "./routes/nmi-legacy-integration";
-import { startTransactionLogMigration, getTransactionMigrationProgress, getTransactionMigrationStats } from "./routes/transaction-log-migration";
-import { processVaultExport, getVaultExportStatus, getACUUpdateStats, validateVaultIntegrity } from "./routes/vault-export-processing";
-import { processUpdatedCards, getCardUpdateStatus, retryFailedCardUpdates, validateCardUpdateBatch } from "./routes/updated-cards-handler";
+import {
+  startWarChestImport,
+  getImportProgress,
+  getImportStatus,
+} from "./routes/war-chest-import";
+import {
+  classifyClientStatus,
+  batchClassifyClients,
+  getClassificationStats,
+  validateClassificationRules,
+} from "./routes/status-classification";
+import {
+  startLegacyVaultMigration,
+  getLegacyMigrationProgress,
+  validateLegacyTokens,
+  getMigrationStats,
+} from "./routes/nmi-legacy-integration";
+import {
+  startTransactionLogMigration,
+  getTransactionMigrationProgress,
+  getTransactionMigrationStats,
+} from "./routes/transaction-log-migration";
+import {
+  processVaultExport,
+  getVaultExportStatus,
+  getACUUpdateStats,
+  validateVaultIntegrity,
+} from "./routes/vault-export-processing";
+import {
+  processUpdatedCards,
+  getCardUpdateStatus,
+  retryFailedCardUpdates,
+  validateCardUpdateBatch,
+} from "./routes/updated-cards-handler";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
@@ -304,7 +332,10 @@ export function createServer() {
   app.post("/api/status-classification/classify", classifyClientStatus);
   app.post("/api/status-classification/batch", batchClassifyClients);
   app.get("/api/status-classification/stats", getClassificationStats);
-  app.get("/api/status-classification/validate-rules", validateClassificationRules);
+  app.get(
+    "/api/status-classification/validate-rules",
+    validateClassificationRules,
+  );
 
   // NMI Legacy Integration - Customer vault token mapping
   app.post("/api/nmi-legacy/start-migration", startLegacyVaultMigration);
@@ -314,7 +345,10 @@ export function createServer() {
 
   // Transaction Log Migration - Historical transaction processing
   app.post("/api/transaction-migration/start", startTransactionLogMigration);
-  app.get("/api/transaction-migration/progress/:batchId", getTransactionMigrationProgress);
+  app.get(
+    "/api/transaction-migration/progress/:batchId",
+    getTransactionMigrationProgress,
+  );
   app.get("/api/transaction-migration/stats", getTransactionMigrationStats);
 
   // Vault Export Processing - ACU and delta data handling

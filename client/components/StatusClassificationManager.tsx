@@ -80,7 +80,9 @@ export default function StatusClassificationManager() {
   const [stats, setStats] = useState<ClassificationStats | null>(null);
   const [isClassifying, setIsClassifying] = useState(false);
   const [classificationProgress, setClassificationProgress] = useState(0);
-  const [recentClassifications, setRecentClassifications] = useState<ClassificationResult[]>([]);
+  const [recentClassifications, setRecentClassifications] = useState<
+    ClassificationResult[]
+  >([]);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
   // Load classification stats
@@ -92,25 +94,25 @@ export default function StatusClassificationManager() {
         REWRITE: 15200,
         FLIP: 3000,
         DORMANT: 4000,
-        DO_NOT_BILL: 4300
+        DO_NOT_BILL: 4300,
       },
       risk_distribution: {
         low: 45000,
         medium: 15000,
-        high: 5000
+        high: 5000,
       },
       estimated_recovery: {
         total_monthly_value: 2850000,
         high_confidence: 2100000,
         medium_confidence: 550000,
-        low_confidence: 200000
+        low_confidence: 200000,
       },
       compliance_reviews_required: 8300,
       processing_priorities: {
         HIGH: 42000,
         MEDIUM: 18000,
-        LOW: 5000
-      }
+        LOW: 5000,
+      },
     };
 
     setStats(mockStats);
@@ -121,12 +123,16 @@ export default function StatusClassificationManager() {
         client_id: "WC-001847",
         recommended_status: "BILL",
         confidence_score: 92,
-        reasoning: ["Recent successful payments", "Valid payment method", "Low risk profile"],
+        reasoning: [
+          "Recent successful payments",
+          "Valid payment method",
+          "Low risk profile",
+        ],
         risk_factors: [],
         required_actions: ["Continue billing cycle", "Monitor success rate"],
         estimated_recovery_value: 89.99,
         processing_priority: "HIGH",
-        compliance_review_required: false
+        compliance_review_required: false,
       },
       {
         client_id: "WC-002156",
@@ -135,9 +141,9 @@ export default function StatusClassificationManager() {
         reasoning: ["Legacy plan discontinuation", "Better plan available"],
         risk_factors: ["Plan migration risk"],
         required_actions: ["Map to new plan", "Customer notification"],
-        estimated_recovery_value: 156.50,
+        estimated_recovery_value: 156.5,
         processing_priority: "HIGH",
-        compliance_review_required: false
+        compliance_review_required: false,
       },
       {
         client_id: "WC-003421",
@@ -147,8 +153,8 @@ export default function StatusClassificationManager() {
         risk_factors: ["LEGAL_HOLD", "HIGH_RISK_PROFILE"],
         required_actions: ["Legal review required", "Preserve data only"],
         processing_priority: "HIGH",
-        compliance_review_required: true
-      }
+        compliance_review_required: true,
+      },
     ];
 
     setRecentClassifications(mockClassifications);
@@ -207,7 +213,7 @@ export default function StatusClassificationManager() {
 
     // Simulate classification progress
     const interval = setInterval(() => {
-      setClassificationProgress(prev => {
+      setClassificationProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setIsClassifying(false);
@@ -230,7 +236,8 @@ export default function StatusClassificationManager() {
             Status Classification Engine
           </h2>
           <p className="text-muted-foreground">
-            AI-powered client categorization: BILL • REWRITE • FLIP • DORMANT • DO NOT BILL
+            AI-powered client categorization: BILL • REWRITE • FLIP • DORMANT •
+            DO NOT BILL
           </p>
         </div>
         <div className="flex gap-3">
@@ -238,8 +245,8 @@ export default function StatusClassificationManager() {
             <Settings className="w-4 h-4" />
             Rules Engine
           </Button>
-          <Button 
-            onClick={startClassification} 
+          <Button
+            onClick={startClassification}
             disabled={isClassifying}
             className="gap-2"
           >
@@ -269,7 +276,9 @@ export default function StatusClassificationManager() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Progress: {classificationProgress}%</span>
-                <span>ETA: {Math.round((100 - classificationProgress) * 0.5)}s</span>
+                <span>
+                  ETA: {Math.round((100 - classificationProgress) * 0.5)}s
+                </span>
               </div>
               <Progress value={classificationProgress} className="h-2" />
             </div>
@@ -279,65 +288,110 @@ export default function StatusClassificationManager() {
 
       {/* Overview Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedStatus("BILL")}>
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => setSelectedStatus("BILL")}
+        >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">BILL Status</p>
-                <p className="text-2xl font-bold text-green-600">{stats.status_breakdown.BILL.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Active billing clients</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  BILL Status
+                </p>
+                <p className="text-2xl font-bold text-green-600">
+                  {stats.status_breakdown.BILL.toLocaleString()}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Active billing clients
+                </p>
               </div>
               <CheckCircle className="w-8 h-8 text-green-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedStatus("REWRITE")}>
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => setSelectedStatus("REWRITE")}
+        >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">REWRITE Status</p>
-                <p className="text-2xl font-bold text-orange-600">{stats.status_breakdown.REWRITE.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Plan migration needed</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  REWRITE Status
+                </p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {stats.status_breakdown.REWRITE.toLocaleString()}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Plan migration needed
+                </p>
               </div>
               <RotateCcw className="w-8 h-8 text-orange-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedStatus("FLIP")}>
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => setSelectedStatus("FLIP")}
+        >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">FLIP Status</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.status_breakdown.FLIP.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Processor change</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  FLIP Status
+                </p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {stats.status_breakdown.FLIP.toLocaleString()}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Processor change
+                </p>
               </div>
               <Zap className="w-8 h-8 text-blue-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedStatus("DORMANT")}>
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => setSelectedStatus("DORMANT")}
+        >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">DORMANT Status</p>
-                <p className="text-2xl font-bold text-gray-600">{stats.status_breakdown.DORMANT.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Inactive accounts</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  DORMANT Status
+                </p>
+                <p className="text-2xl font-bold text-gray-600">
+                  {stats.status_breakdown.DORMANT.toLocaleString()}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Inactive accounts
+                </p>
               </div>
               <PauseCircle className="w-8 h-8 text-gray-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setSelectedStatus("DO_NOT_BILL")}>
+        <Card
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => setSelectedStatus("DO_NOT_BILL")}
+        >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">DO NOT BILL</p>
-                <p className="text-2xl font-bold text-red-600">{stats.status_breakdown.DO_NOT_BILL.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Compliance protection</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  DO NOT BILL
+                </p>
+                <p className="text-2xl font-bold text-red-600">
+                  {stats.status_breakdown.DO_NOT_BILL.toLocaleString()}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Compliance protection
+                </p>
               </div>
               <Shield className="w-8 h-8 text-red-500" />
             </div>
@@ -350,7 +404,9 @@ export default function StatusClassificationManager() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="risk-analysis">Risk Analysis</TabsTrigger>
           <TabsTrigger value="recovery-projections">Recovery</TabsTrigger>
-          <TabsTrigger value="recent-classifications">Recent Results</TabsTrigger>
+          <TabsTrigger value="recent-classifications">
+            Recent Results
+          </TabsTrigger>
           <TabsTrigger value="compliance">Compliance</TabsTrigger>
         </TabsList>
 
@@ -359,32 +415,41 @@ export default function StatusClassificationManager() {
             <Card>
               <CardHeader>
                 <CardTitle>Classification Summary</CardTitle>
-                <CardDescription>
-                  65K client analysis breakdown
-                </CardDescription>
+                <CardDescription>65K client analysis breakdown</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {Object.entries(stats.status_breakdown).map(([status, count]) => {
-                    const StatusIcon = getStatusIcon(status);
-                    const percentage = Math.round((count / stats.total_clients_classified) * 100);
-                    
-                    return (
-                      <div key={status} className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <StatusIcon className="w-5 h-5" />
-                          <div>
-                            <div className="font-medium">{status}</div>
-                            <div className="text-sm text-muted-foreground">{percentage}% of total</div>
+                  {Object.entries(stats.status_breakdown).map(
+                    ([status, count]) => {
+                      const StatusIcon = getStatusIcon(status);
+                      const percentage = Math.round(
+                        (count / stats.total_clients_classified) * 100,
+                      );
+
+                      return (
+                        <div
+                          key={status}
+                          className="flex items-center justify-between"
+                        >
+                          <div className="flex items-center gap-3">
+                            <StatusIcon className="w-5 h-5" />
+                            <div>
+                              <div className="font-medium">{status}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {percentage}% of total
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-semibold">
+                              {count.toLocaleString()}
+                            </div>
+                            <Progress value={percentage} className="w-20 h-2" />
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="font-semibold">{count.toLocaleString()}</div>
-                          <Progress value={percentage} className="w-20 h-2" />
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    },
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -398,22 +463,35 @@ export default function StatusClassificationManager() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {Object.entries(stats.processing_priorities).map(([priority, count]) => {
-                    const percentage = Math.round((count / stats.total_clients_classified) * 100);
-                    
-                    return (
-                      <div key={priority} className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Badge className={getPriorityColor(priority)}>{priority}</Badge>
-                          <span className="font-medium">{count.toLocaleString()} clients</span>
+                  {Object.entries(stats.processing_priorities).map(
+                    ([priority, count]) => {
+                      const percentage = Math.round(
+                        (count / stats.total_clients_classified) * 100,
+                      );
+
+                      return (
+                        <div
+                          key={priority}
+                          className="flex items-center justify-between"
+                        >
+                          <div className="flex items-center gap-3">
+                            <Badge className={getPriorityColor(priority)}>
+                              {priority}
+                            </Badge>
+                            <span className="font-medium">
+                              {count.toLocaleString()} clients
+                            </span>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-sm text-muted-foreground">
+                              {percentage}%
+                            </div>
+                            <Progress value={percentage} className="w-16 h-2" />
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-sm text-muted-foreground">{percentage}%</div>
-                          <Progress value={percentage} className="w-16 h-2" />
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    },
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -426,9 +504,15 @@ export default function StatusClassificationManager() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Low Risk</p>
-                    <p className="text-2xl font-bold text-green-600">{stats.risk_distribution.low.toLocaleString()}</p>
-                    <p className="text-xs text-muted-foreground">Risk score 0-30</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Low Risk
+                    </p>
+                    <p className="text-2xl font-bold text-green-600">
+                      {stats.risk_distribution.low.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Risk score 0-30
+                    </p>
                   </div>
                   <CheckCircle className="w-8 h-8 text-green-500" />
                 </div>
@@ -439,9 +523,15 @@ export default function StatusClassificationManager() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Medium Risk</p>
-                    <p className="text-2xl font-bold text-yellow-600">{stats.risk_distribution.medium.toLocaleString()}</p>
-                    <p className="text-xs text-muted-foreground">Risk score 31-60</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Medium Risk
+                    </p>
+                    <p className="text-2xl font-bold text-yellow-600">
+                      {stats.risk_distribution.medium.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Risk score 31-60
+                    </p>
                   </div>
                   <AlertTriangle className="w-8 h-8 text-yellow-500" />
                 </div>
@@ -452,9 +542,15 @@ export default function StatusClassificationManager() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">High Risk</p>
-                    <p className="text-2xl font-bold text-red-600">{stats.risk_distribution.high.toLocaleString()}</p>
-                    <p className="text-xs text-muted-foreground">Risk score 61+</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      High Risk
+                    </p>
+                    <p className="text-2xl font-bold text-red-600">
+                      {stats.risk_distribution.high.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Risk score 61+
+                    </p>
                   </div>
                   <XCircle className="w-8 h-8 text-red-500" />
                 </div>
@@ -478,27 +574,51 @@ export default function StatusClassificationManager() {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="text-center p-4 bg-green-50 rounded-lg">
                   <div className="text-2xl font-bold text-green-600">
-                    ${(stats.estimated_recovery.total_monthly_value / 1000).toFixed(0)}K
+                    $
+                    {(
+                      stats.estimated_recovery.total_monthly_value / 1000
+                    ).toFixed(0)}
+                    K
                   </div>
-                  <div className="text-sm text-muted-foreground">Total Monthly</div>
+                  <div className="text-sm text-muted-foreground">
+                    Total Monthly
+                  </div>
                 </div>
                 <div className="text-center p-4 bg-blue-50 rounded-lg">
                   <div className="text-2xl font-bold text-blue-600">
-                    ${(stats.estimated_recovery.high_confidence / 1000).toFixed(0)}K
+                    $
+                    {(stats.estimated_recovery.high_confidence / 1000).toFixed(
+                      0,
+                    )}
+                    K
                   </div>
-                  <div className="text-sm text-muted-foreground">High Confidence</div>
+                  <div className="text-sm text-muted-foreground">
+                    High Confidence
+                  </div>
                 </div>
                 <div className="text-center p-4 bg-yellow-50 rounded-lg">
                   <div className="text-2xl font-bold text-yellow-600">
-                    ${(stats.estimated_recovery.medium_confidence / 1000).toFixed(0)}K
+                    $
+                    {(
+                      stats.estimated_recovery.medium_confidence / 1000
+                    ).toFixed(0)}
+                    K
                   </div>
-                  <div className="text-sm text-muted-foreground">Medium Confidence</div>
+                  <div className="text-sm text-muted-foreground">
+                    Medium Confidence
+                  </div>
                 </div>
                 <div className="text-center p-4 bg-gray-50 rounded-lg">
                   <div className="text-2xl font-bold text-gray-600">
-                    ${(stats.estimated_recovery.low_confidence / 1000).toFixed(0)}K
+                    $
+                    {(stats.estimated_recovery.low_confidence / 1000).toFixed(
+                      0,
+                    )}
+                    K
                   </div>
-                  <div className="text-sm text-muted-foreground">Low Confidence</div>
+                  <div className="text-sm text-muted-foreground">
+                    Low Confidence
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -509,7 +629,7 @@ export default function StatusClassificationManager() {
           <div className="space-y-4">
             {recentClassifications.map((result) => {
               const StatusIcon = getStatusIcon(result.recommended_status);
-              
+
               return (
                 <Card key={result.client_id}>
                   <CardContent className="p-6">
@@ -517,15 +637,25 @@ export default function StatusClassificationManager() {
                       <div className="flex items-center gap-3">
                         <StatusIcon className="w-5 h-5" />
                         <div>
-                          <div className="font-semibold">{result.client_id}</div>
-                          <Badge className={getStatusColor(result.recommended_status)}>
+                          <div className="font-semibold">
+                            {result.client_id}
+                          </div>
+                          <Badge
+                            className={getStatusColor(
+                              result.recommended_status,
+                            )}
+                          >
                             {result.recommended_status}
                           </Badge>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm text-muted-foreground">Confidence</div>
-                        <div className="font-semibold">{result.confidence_score}%</div>
+                        <div className="text-sm text-muted-foreground">
+                          Confidence
+                        </div>
+                        <div className="font-semibold">
+                          {result.confidence_score}%
+                        </div>
                       </div>
                     </div>
 
@@ -534,17 +664,23 @@ export default function StatusClassificationManager() {
                         <div className="font-medium mb-2">Reasoning</div>
                         <ul className="space-y-1">
                           {result.reasoning.slice(0, 2).map((reason, i) => (
-                            <li key={i} className="text-muted-foreground">• {reason}</li>
+                            <li key={i} className="text-muted-foreground">
+                              • {reason}
+                            </li>
                           ))}
                         </ul>
                       </div>
-                      
+
                       <div>
                         <div className="font-medium mb-2">Required Actions</div>
                         <ul className="space-y-1">
-                          {result.required_actions.slice(0, 2).map((action, i) => (
-                            <li key={i} className="text-muted-foreground">• {action}</li>
-                          ))}
+                          {result.required_actions
+                            .slice(0, 2)
+                            .map((action, i) => (
+                              <li key={i} className="text-muted-foreground">
+                                • {action}
+                              </li>
+                            ))}
                         </ul>
                       </div>
 
@@ -553,20 +689,28 @@ export default function StatusClassificationManager() {
                         <div className="space-y-1">
                           <div className="flex justify-between">
                             <span>Priority:</span>
-                            <Badge className={getPriorityColor(result.processing_priority)}>
+                            <Badge
+                              className={getPriorityColor(
+                                result.processing_priority,
+                              )}
+                            >
                               {result.processing_priority}
                             </Badge>
                           </div>
                           {result.estimated_recovery_value && (
                             <div className="flex justify-between">
                               <span>Recovery:</span>
-                              <span className="font-medium">${result.estimated_recovery_value}</span>
+                              <span className="font-medium">
+                                ${result.estimated_recovery_value}
+                              </span>
                             </div>
                           )}
                           {result.compliance_review_required && (
                             <div className="flex justify-between">
                               <span>Compliance:</span>
-                              <Badge variant="destructive">Review Required</Badge>
+                              <Badge variant="destructive">
+                                Review Required
+                              </Badge>
                             </div>
                           )}
                         </div>
@@ -595,16 +739,15 @@ export default function StatusClassificationManager() {
             <Shield className="h-4 w-4" />
             <AlertTitle>Compliance Reviews Required</AlertTitle>
             <AlertDescription>
-              {stats.compliance_reviews_required.toLocaleString()} clients require manual compliance review before processing.
+              {stats.compliance_reviews_required.toLocaleString()} clients
+              require manual compliance review before processing.
             </AlertDescription>
           </Alert>
 
           <Card>
             <CardHeader>
               <CardTitle>Compliance Protection Status</CardTitle>
-              <CardDescription>
-                Legal and regulatory safeguards
-              </CardDescription>
+              <CardDescription>Legal and regulatory safeguards</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -643,7 +786,9 @@ export default function StatusClassificationManager() {
                     </div>
                     <div className="flex justify-between">
                       <span>False positive rate:</span>
-                      <span className="font-medium text-green-600">&lt; 2%</span>
+                      <span className="font-medium text-green-600">
+                        &lt; 2%
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Protection accuracy:</span>

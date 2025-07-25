@@ -51,7 +51,9 @@ interface ImportError {
 
 export default function WarChestImportManager() {
   const [activeImports, setActiveImports] = useState<ImportProgress[]>([]);
-  const [completedImports, setCompletedImports] = useState<ImportProgress[]>([]);
+  const [completedImports, setCompletedImports] = useState<ImportProgress[]>(
+    [],
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImport, setSelectedImport] = useState<string | null>(null);
   const [importErrors, setImportErrors] = useState<ImportError[]>([]);
@@ -129,7 +131,9 @@ export default function WarChestImportManager() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">War Chest Import Engine</h2>
+          <h2 className="text-2xl font-bold text-foreground">
+            War Chest Import Engine
+          </h2>
           <p className="text-muted-foreground">
             65,000 client migration from legacy War Chest vertical
           </p>
@@ -139,8 +143,8 @@ export default function WarChestImportManager() {
             <Download className="w-4 h-4" />
             Download Template
           </Button>
-          <Button 
-            onClick={startNewImport} 
+          <Button
+            onClick={startNewImport}
             disabled={isLoading || activeImports.length > 0}
             className="gap-2"
           >
@@ -169,16 +173,19 @@ export default function WarChestImportManager() {
           <CardContent className="space-y-4">
             {activeImports.map((importItem) => {
               const StatusIcon = getStatusIcon(importItem.status);
-              
+
               return (
                 <div key={importItem.batch_id} className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <StatusIcon className="w-5 h-5 text-blue-600" />
                       <div>
-                        <div className="font-semibold">{importItem.batch_id}</div>
+                        <div className="font-semibold">
+                          {importItem.batch_id}
+                        </div>
                         <div className="text-sm text-muted-foreground">
-                          {importItem.processed_records.toLocaleString()} / {importItem.total_records.toLocaleString()} records
+                          {importItem.processed_records.toLocaleString()} /{" "}
+                          {importItem.total_records.toLocaleString()} records
                         </div>
                       </div>
                     </div>
@@ -192,7 +199,10 @@ export default function WarChestImportManager() {
                       <span>Progress: {importItem.completion_percentage}%</span>
                       <span>ETA: {importItem.estimated_time_remaining}</span>
                     </div>
-                    <Progress value={importItem.completion_percentage} className="h-2" />
+                    <Progress
+                      value={importItem.completion_percentage}
+                      className="h-2"
+                    />
                   </div>
 
                   <div className="grid grid-cols-3 gap-4 text-sm">
@@ -210,7 +220,10 @@ export default function WarChestImportManager() {
                     </div>
                     <div className="text-center p-3 bg-blue-50 rounded-lg">
                       <div className="font-semibold text-blue-600">
-                        {(importItem.total_records - importItem.processed_records).toLocaleString()}
+                        {(
+                          importItem.total_records -
+                          importItem.processed_records
+                        ).toLocaleString()}
                       </div>
                       <div className="text-blue-600/70">Remaining</div>
                     </div>
@@ -221,8 +234,11 @@ export default function WarChestImportManager() {
                       <AlertTriangle className="h-4 w-4" />
                       <AlertTitle>Import Errors Detected</AlertTitle>
                       <AlertDescription>
-                        {importItem.error_count} records failed to import. 
-                        <Button variant="link" className="p-0 h-auto text-red-600 underline ml-1">
+                        {importItem.error_count} records failed to import.
+                        <Button
+                          variant="link"
+                          className="p-0 h-auto text-red-600 underline ml-1"
+                        >
                           View Error Details
                         </Button>
                       </AlertDescription>
@@ -249,7 +265,9 @@ export default function WarChestImportManager() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total Clients</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Total Clients
+                    </p>
                     <p className="text-2xl font-bold">65,000</p>
                   </div>
                   <Users className="w-8 h-8 text-blue-500" />
@@ -261,7 +279,9 @@ export default function WarChestImportManager() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Expected BILL</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Expected BILL
+                    </p>
                     <p className="text-2xl font-bold text-green-600">38,500</p>
                   </div>
                   <CheckCircle className="w-8 h-8 text-green-500" />
@@ -273,7 +293,9 @@ export default function WarChestImportManager() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Need Rewrite</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Need Rewrite
+                    </p>
                     <p className="text-2xl font-bold text-orange-600">15,200</p>
                   </div>
                   <Zap className="w-8 h-8 text-orange-500" />
@@ -285,7 +307,9 @@ export default function WarChestImportManager() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Do Not Bill</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Do Not Bill
+                    </p>
                     <p className="text-2xl font-bold text-red-600">8,300</p>
                   </div>
                   <Shield className="w-8 h-8 text-red-500" />
@@ -330,23 +354,33 @@ export default function WarChestImportManager() {
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                      <span><strong>BILL:</strong> Active billing clients</span>
+                      <span>
+                        <strong>BILL:</strong> Active billing clients
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                      <span><strong>REWRITE:</strong> Migrate/replace plan</span>
+                      <span>
+                        <strong>REWRITE:</strong> Migrate/replace plan
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                      <span><strong>FLIP:</strong> Move processor</span>
+                      <span>
+                        <strong>FLIP:</strong> Move processor
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-gray-500"></div>
-                      <span><strong>DORMANT:</strong> Keep token</span>
+                      <span>
+                        <strong>DORMANT:</strong> Keep token
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                      <span><strong>DO_NOT_BILL:</strong> Compliance risk</span>
+                      <span>
+                        <strong>DO_NOT_BILL:</strong> Compliance risk
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -358,9 +392,12 @@ export default function WarChestImportManager() {
         <TabsContent value="status-breakdown" className="space-y-4">
           <div className="text-center py-12">
             <TrendingUp className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Status Classification Analysis</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              Status Classification Analysis
+            </h3>
             <p className="text-muted-foreground max-w-md mx-auto">
-              Detailed breakdown of client status distribution and migration requirements
+              Detailed breakdown of client status distribution and migration
+              requirements
             </p>
           </div>
         </TabsContent>
@@ -370,7 +407,7 @@ export default function WarChestImportManager() {
             <div className="space-y-4">
               {completedImports.map((importItem) => {
                 const StatusIcon = getStatusIcon(importItem.status);
-                
+
                 return (
                   <Card key={importItem.batch_id}>
                     <CardContent className="p-6">
@@ -378,9 +415,14 @@ export default function WarChestImportManager() {
                         <div className="flex items-center gap-3">
                           <StatusIcon className="w-5 h-5" />
                           <div>
-                            <div className="font-semibold">{importItem.batch_id}</div>
+                            <div className="font-semibold">
+                              {importItem.batch_id}
+                            </div>
                             <div className="text-sm text-muted-foreground">
-                              Completed {new Date(importItem.completed_at!).toLocaleDateString()}
+                              Completed{" "}
+                              {new Date(
+                                importItem.completed_at!,
+                              ).toLocaleDateString()}
                             </div>
                           </div>
                         </div>
@@ -391,20 +433,32 @@ export default function WarChestImportManager() {
 
                       <div className="grid grid-cols-4 gap-4 text-sm">
                         <div className="text-center">
-                          <div className="font-semibold">{importItem.total_records.toLocaleString()}</div>
-                          <div className="text-muted-foreground">Total Records</div>
+                          <div className="font-semibold">
+                            {importItem.total_records.toLocaleString()}
+                          </div>
+                          <div className="text-muted-foreground">
+                            Total Records
+                          </div>
                         </div>
                         <div className="text-center">
-                          <div className="font-semibold text-green-600">{importItem.success_count.toLocaleString()}</div>
+                          <div className="font-semibold text-green-600">
+                            {importItem.success_count.toLocaleString()}
+                          </div>
                           <div className="text-muted-foreground">Success</div>
                         </div>
                         <div className="text-center">
-                          <div className="font-semibold text-red-600">{importItem.error_count.toLocaleString()}</div>
+                          <div className="font-semibold text-red-600">
+                            {importItem.error_count.toLocaleString()}
+                          </div>
                           <div className="text-muted-foreground">Errors</div>
                         </div>
                         <div className="text-center">
-                          <div className="font-semibold">{importItem.completion_percentage}%</div>
-                          <div className="text-muted-foreground">Success Rate</div>
+                          <div className="font-semibold">
+                            {importItem.completion_percentage}%
+                          </div>
+                          <div className="text-muted-foreground">
+                            Success Rate
+                          </div>
                         </div>
                       </div>
 
@@ -426,7 +480,9 @@ export default function WarChestImportManager() {
           ) : (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Completed Imports</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                No Completed Imports
+              </h3>
               <p className="text-muted-foreground">
                 Completed import history will appear here
               </p>
@@ -437,7 +493,9 @@ export default function WarChestImportManager() {
         <TabsContent value="validation" className="space-y-4">
           <div className="text-center py-12">
             <Shield className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Data Validation Rules</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              Data Validation Rules
+            </h3>
             <p className="text-muted-foreground max-w-md mx-auto">
               Validation rules and data integrity checks for import process
             </p>
