@@ -254,7 +254,7 @@ export default function AdminDashboard() {
           </Card>
         </div>
 
-        <Tabs defaultValue="uploads" className="space-y-4">
+        <Tabs defaultValue="war-chest" className="space-y-4">
           <TabsList className="grid w-full grid-cols-9 glass-card corp-shadow">
             <TabsTrigger value="war-chest" className="gap-2">
               <Users className="w-4 h-4" />
