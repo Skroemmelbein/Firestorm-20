@@ -92,6 +92,10 @@ router.post('/test-payment', async (req, res) => {
       body: params.toString()
     });
 
+    if (!response.ok) {
+      throw new Error(`NMI API returned ${response.status}: ${response.statusText}`);
+    }
+
     const responseText = await response.text();
     const resultParams = new URLSearchParams(responseText);
     

@@ -62,10 +62,10 @@ interface BillingRule {
 
 export default function BillingLogic() {
   const [nmiConfig, setNmiConfig] = useState<NMIConfig>({
-    gatewayUrl: '',
-    username: '',
-    password: '',
-    recurringVaultId: ''
+    gatewayUrl: 'https://secure.networkmerchants.com/api/transact.php',
+    username: 'wwwdpcyeahcom',
+    password: '!SNR96rQ9qsHdd4',
+    recurringVaultId: 'vault_001'
   });
 
   const [showNmiPassword, setShowNmiPassword] = useState(false);
@@ -120,14 +120,26 @@ export default function BillingLogic() {
 
   const testNmiConnection = async () => {
     setNmiConnectionStatus('connecting');
-    
+
     try {
-      // Simulate NMI connection test
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const success = Math.random() > 0.3; // 70% success rate
-      setNmiConnectionStatus(success ? 'connected' : 'error');
+      const response = await fetch('/api/nmi/test-connection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: nmiConfig.username,
+          password: nmiConfig.password,
+          gatewayUrl: nmiConfig.gatewayUrl
+        })
+      });
+
+      const result = await response.json();
+      setNmiConnectionStatus(result.success ? 'connected' : 'error');
+
+      if (!result.success) {
+        console.error('NMI connection failed:', result.message);
+      }
     } catch (error) {
+      console.error('NMI connection error:', error);
       setNmiConnectionStatus('error');
     }
   };
