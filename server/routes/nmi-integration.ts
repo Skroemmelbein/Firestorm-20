@@ -9,6 +9,8 @@ const NMI_CONFIG = {
   recurringUrl: process.env.NMI_RECURRING_URL || "https://secure.nmi.com/api/recurring.php",
   username: process.env.NMI_USERNAME,
   password: process.env.NMI_PASSWORD,
+  apiKey: process.env.NMI_API_KEY, // Main API key for transactions
+  vaultKey: process.env.NMI_VAULT_KEY, // Vault-specific key
   recurringVaultId: process.env.NMI_RECURRING_VAULT_ID
 };
 
