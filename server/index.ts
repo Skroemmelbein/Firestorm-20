@@ -53,6 +53,7 @@ import realApiRouter from "./routes/real-api";
 import xanoSetupRouter from "./routes/xano-setup";
 import twilioSidDiscoveryRouter from "./routes/twilio-sid-discovery";
 import environmentScannerRouter from "./routes/environment-scanner";
+import nmiIntegrationRouter from "./routes/nmi-integration";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
@@ -232,6 +233,9 @@ export function createServer() {
 
   // Environment credential scanner routes
   app.use("/api/environment", environmentScannerRouter);
+
+  // NMI integration routes
+  app.use("/api/nmi", nmiIntegrationRouter);
 
   return app;
 }
