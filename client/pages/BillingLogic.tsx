@@ -127,6 +127,8 @@ export default function BillingLogic() {
   const [isAiThinking, setIsAiThinking] = useState(false);
   const [isTestingPayment, setIsTestingPayment] = useState(false);
   const [testPaymentResult, setTestPaymentResult] = useState<any>(null);
+  const [rateLimitStatus, setRateLimitStatus] = useState<any>(null);
+  const [lastError, setLastError] = useState<string>("");
 
   const [nmiConnectionStatus, setNmiConnectionStatus] = useState<
     "disconnected" | "connecting" | "connected" | "error"
@@ -146,10 +148,32 @@ export default function BillingLogic() {
     limit: 50,
   });
 
+  const checkRateLimitStatus = async () => {
+    try {
+      const response = await fetch("/api/nmi/rate-limit-status");
+      const result = await response.json();
+      setRateLimitStatus(result);
+      return result;
+    } catch (error) {
+      console.error("Rate limit check failed:", error);
+      return null;
+    }
+  };
+
   const testNmiConnection = async () => {
     setNmiConnectionStatus("connecting");
+    setLastError("");
 
     try {
+      // Check rate limits first
+      const rateStatus = await checkRateLimitStatus();
+      if (rateStatus && !rateStatus.canMakeRequest) {
+        const waitMinutes = Math.ceil(rateStatus.waitTime / 60000);
+        setLastError(`Rate limit active. Please wait ${waitMinutes} minute(s) before testing.`);
+        setNmiConnectionStatus("error");
+        return;
+      }
+
       const response = await fetch("/api/nmi/test-connection", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -161,14 +185,22 @@ export default function BillingLogic() {
       });
 
       const result = await response.json();
-      setNmiConnectionStatus(result.success ? "connected" : "error");
 
-      if (!result.success) {
-        console.error("NMI connection failed:", result.message);
+      if (result.success) {
+        setNmiConnectionStatus("connected");
+        setLastError("");
+      } else {
+        setNmiConnectionStatus("error");
+        setLastError(result.message || "Connection failed");
+
+        if (result.suggestion) {
+          setLastError(`${result.message}. ${result.suggestion}`);
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("NMI connection error:", error);
       setNmiConnectionStatus("error");
+      setLastError(error.message || "Connection test failed");
     }
   };
 
@@ -190,8 +222,23 @@ export default function BillingLogic() {
   const testNmiPayment = async () => {
     setIsTestingPayment(true);
     setTestPaymentResult(null);
+    setLastError("");
 
     try {
+      // Check rate limits first
+      const rateStatus = await checkRateLimitStatus();
+      if (rateStatus && !rateStatus.canMakeRequest) {
+        const waitMinutes = Math.ceil(rateStatus.waitTime / 60000);
+        setTestPaymentResult({
+          success: false,
+          message: "Rate Limit Active",
+          suggestion: `Please wait ${waitMinutes} minute(s) before testing payments. This prevents NMI activity limit errors.`,
+          waitTime: rateStatus.waitTime
+        });
+        setIsTestingPayment(false);
+        return;
+      }
+
       const response = await fetch("/api/nmi/test-payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -226,6 +273,10 @@ export default function BillingLogic() {
       }
 
       setTestPaymentResult(result);
+
+      // Update rate limit status after request
+      setTimeout(() => checkRateLimitStatus(), 1000);
+
     } catch (error: any) {
       setTestPaymentResult({
         success: false,
@@ -515,13 +566,23 @@ export default function BillingLogic() {
                     </Button>
                   </div>
 
+                  {/* Rate Limit Status */}
+                  {rateLimitStatus && !rateLimitStatus.canMakeRequest && (
+                    <Alert variant="destructive">
+                      <Clock className="h-4 w-4" />
+                      <AlertTitle>Rate Limit Active</AlertTitle>
+                      <AlertDescription>
+                        Next request available in {Math.ceil(rateLimitStatus.waitTime / 60000)} minute(s) to prevent NMI activity limits.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
                   {nmiConnectionStatus === "error" && (
                     <Alert variant="destructive">
                       <AlertTriangle className="h-4 w-4" />
                       <AlertTitle>Connection Failed</AlertTitle>
                       <AlertDescription>
-                        Unable to connect to NMI. Please check your credentials
-                        and gateway URL.
+                        {lastError || "Unable to connect to NMI. Please check your credentials and gateway URL."}
                       </AlertDescription>
                     </Alert>
                   )}
@@ -651,7 +712,9 @@ export default function BillingLogic() {
                   <Button
                     onClick={testNmiPayment}
                     disabled={
-                      isTestingPayment || nmiConnectionStatus !== "connected"
+                      isTestingPayment ||
+                      nmiConnectionStatus !== "connected" ||
+                      (rateLimitStatus && !rateLimitStatus.canMakeRequest)
                     }
                     size="lg"
                     className="gap-2 px-8"
@@ -677,6 +740,17 @@ export default function BillingLogic() {
                     <AlertDescription>
                       Please test your NMI connection in the "NMI Setup" tab
                       before running payment tests.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                {rateLimitStatus && !rateLimitStatus.canMakeRequest && (
+                  <Alert variant="destructive">
+                    <Clock className="h-4 w-4" />
+                    <AlertTitle>Rate Limit Active</AlertTitle>
+                    <AlertDescription>
+                      Please wait {Math.ceil(rateLimitStatus.waitTime / 60000)} minute(s) before testing payments.
+                      This prevents NMI activity limit errors. Next available: {new Date(Date.now() + rateLimitStatus.waitTime).toLocaleTimeString()}
                     </AlertDescription>
                   </Alert>
                 )}
@@ -743,13 +817,30 @@ export default function BillingLogic() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setTestPaymentResult(null)}
+                            onClick={() => {
+                              setTestPaymentResult(null);
+                              checkRateLimitStatus();
+                            }}
                           >
                             Clear Results
                           </Button>
                           {testPaymentResult.success && (
                             <Button variant="outline" size="sm">
                               View in Dashboard
+                            </Button>
+                          )}
+                          {!testPaymentResult.success && testPaymentResult.waitTime && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setTimeout(() => {
+                                  setTestPaymentResult(null);
+                                  checkRateLimitStatus();
+                                }, testPaymentResult.waitTime);
+                              }}
+                            >
+                              Auto-Retry in {Math.ceil(testPaymentResult.waitTime / 60000)}m
                             </Button>
                           )}
                         </div>
