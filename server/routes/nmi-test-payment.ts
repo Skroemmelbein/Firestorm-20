@@ -2,6 +2,54 @@ import express from "express";
 
 const router = express.Router();
 
+// Rate limiting for NMI requests
+const rateLimiter = {
+  lastRequest: 0,
+  minInterval: 10000, // 10 seconds between requests
+  failureCount: 0,
+  backoffTime: 0,
+
+  canMakeRequest(): { allowed: boolean; waitTime: number } {
+    const now = Date.now();
+    const timeSinceLastRequest = now - this.lastRequest;
+
+    // If we have failures, implement exponential backoff
+    if (this.failureCount > 0) {
+      const backoffMinutes = Math.min(this.failureCount * 5, 30); // Max 30 minutes
+      this.backoffTime = backoffMinutes * 60 * 1000;
+
+      if (timeSinceLastRequest < this.backoffTime) {
+        return {
+          allowed: false,
+          waitTime: this.backoffTime - timeSinceLastRequest
+        };
+      }
+    }
+
+    // Standard rate limiting
+    if (timeSinceLastRequest < this.minInterval) {
+      return {
+        allowed: false,
+        waitTime: this.minInterval - timeSinceLastRequest
+      };
+    }
+
+    return { allowed: true, waitTime: 0 };
+  },
+
+  recordRequest() {
+    this.lastRequest = Date.now();
+  },
+
+  recordFailure() {
+    this.failureCount++;
+  },
+
+  recordSuccess() {
+    this.failureCount = Math.max(0, this.failureCount - 1);
+  }
+};
+
 // NMI Configuration
 const NMI_CONFIG = {
   gatewayUrl:
@@ -29,11 +77,133 @@ interface TestPaymentRequest {
 }
 
 /**
+ * Validate NMI connection without processing a transaction
+ */
+router.post("/test-connection", async (req, res) => {
+  try {
+    const { username, password, gatewayUrl } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Username and password are required"
+      });
+    }
+
+    // Check rate limiting
+    const rateLimitCheck = rateLimiter.canMakeRequest();
+    if (!rateLimitCheck.allowed) {
+      const waitMinutes = Math.ceil(rateLimitCheck.waitTime / 60000);
+      return res.status(429).json({
+        success: false,
+        message: `Rate limit exceeded. Please wait ${waitMinutes} minute(s) before trying again.`,
+        waitTime: rateLimitCheck.waitTime,
+        retryAfter: new Date(Date.now() + rateLimitCheck.waitTime).toISOString()
+      });
+    }
+
+    // Prepare minimal validation request
+    const params = new URLSearchParams({
+      username: username,
+      password: password,
+      type: "validate",
+      amount: "0.00"
+    });
+
+    console.log("🔍 Testing NMI connection validation...");
+    rateLimiter.recordRequest();
+
+    const response = await fetch(gatewayUrl || NMI_CONFIG.gatewayUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent": "ECELONX-Validation/1.0",
+      },
+      body: params.toString(),
+    });
+
+    if (!response.ok) {
+      rateLimiter.recordFailure();
+      throw new Error(`NMI API returned ${response.status}: ${response.statusText}`);
+    }
+
+    const responseText = await response.text();
+    const resultParams = new URLSearchParams(responseText);
+    const responseCode = resultParams.get("response");
+    const responseTextValue = resultParams.get("responsetext") || "";
+
+    console.log("📝 NMI Connection Response:", responseText);
+
+    // Check for specific error conditions
+    if (responseTextValue.toLowerCase().includes('activity limit exceeded') || responseCode === '203') {
+      rateLimiter.recordFailure();
+      return res.status(429).json({
+        success: false,
+        message: "NMI Activity Limit Exceeded",
+        suggestion: "Your NMI account has reached its activity limit. Please wait 30 minutes or contact NMI support to increase limits.",
+        waitTime: 30 * 60 * 1000, // 30 minutes
+        nmi_response: {
+          code: responseCode,
+          text: responseTextValue
+        }
+      });
+    }
+
+    if (responseTextValue.toLowerCase().includes('invalid') && responseTextValue.toLowerCase().includes('login')) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid NMI Credentials",
+        suggestion: "Please check your NMI username and password.",
+        nmi_response: {
+          code: responseCode,
+          text: responseTextValue
+        }
+      });
+    }
+
+    // Connection successful
+    rateLimiter.recordSuccess();
+    res.json({
+      success: true,
+      message: "NMI connection validated successfully",
+      nmi_response: {
+        code: responseCode,
+        text: responseTextValue
+      },
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error: any) {
+    console.error("💥 NMI connection test error:", error);
+    rateLimiter.recordFailure();
+
+    res.status(500).json({
+      success: false,
+      message: error.message || "Connection test failed",
+      error: error.toString(),
+    });
+  }
+});
+
+/**
  * Process a test payment transaction
  */
 router.post("/test-payment", async (req, res) => {
   try {
     const { amount, customer, paymentMethod }: TestPaymentRequest = req.body;
+
+    // Check rate limiting first
+    const rateLimitCheck = rateLimiter.canMakeRequest();
+    if (!rateLimitCheck.allowed) {
+      const waitMinutes = Math.ceil(rateLimitCheck.waitTime / 60000);
+      return res.status(429).json({
+        success: false,
+        message: `Rate limit exceeded. Please wait ${waitMinutes} minute(s) before trying again.`,
+        suggestion: "Too many requests to NMI. This helps prevent activity limit errors.",
+        waitTime: rateLimitCheck.waitTime,
+        retryAfter: new Date(Date.now() + rateLimitCheck.waitTime).toISOString()
+      });
+    }
 
     // Validate request
     if (!amount || amount <= 0) {
@@ -83,6 +253,9 @@ router.post("/test-payment", async (req, res) => {
       cardLast4: paymentMethod.cardNumber?.slice(-4),
     });
 
+    // Record the request for rate limiting
+    rateLimiter.recordRequest();
+
     // Send request to NMI
     const response = await fetch(NMI_CONFIG.gatewayUrl, {
       method: "POST",
@@ -94,6 +267,7 @@ router.post("/test-payment", async (req, res) => {
     });
 
     if (!response.ok) {
+      rateLimiter.recordFailure();
       throw new Error(
         `NMI API returned ${response.status}: ${response.statusText}`,
       );
@@ -127,6 +301,7 @@ router.post("/test-payment", async (req, res) => {
 
     if (isSuccess) {
       console.log("✅ Test payment successful:", result.transactionId);
+      rateLimiter.recordSuccess();
 
       // Log successful test transaction
       res.json({
@@ -140,19 +315,26 @@ router.post("/test-payment", async (req, res) => {
       // Handle specific NMI error cases
       let errorMessage = result.responseText || 'Payment declined';
       let suggestion = '';
+      let statusCode = 400;
 
-      if (result.responseText?.includes('Activity limit exceeded')) {
+      if (result.responseText?.toLowerCase().includes('activity limit exceeded') || result.responseCode === '203') {
+        rateLimiter.recordFailure();
         errorMessage = 'NMI Activity Limit Exceeded';
-        suggestion = 'Too many test transactions. Wait a few minutes or contact NMI support to increase limits.';
-      } else if (result.responseText?.includes('Invalid credentials')) {
+        suggestion = 'Your NMI account has reached its activity limit. Please wait 30 minutes or contact NMI support to increase limits.';
+        statusCode = 429;
+      } else if (result.responseText?.toLowerCase().includes('invalid credentials') || result.responseText?.toLowerCase().includes('invalid login')) {
         errorMessage = 'Invalid NMI Credentials';
         suggestion = 'Check your NMI username and password in the configuration.';
-      } else if (result.responseText?.includes('Invalid card')) {
+        statusCode = 401;
+      } else if (result.responseText?.toLowerCase().includes('invalid card')) {
         errorMessage = 'Invalid Test Card';
         suggestion = 'The test card number may not be valid for your NMI configuration.';
+      } else {
+        // Other failures might be temporary, so record for backoff
+        rateLimiter.recordFailure();
       }
 
-      res.status(400).json({
+      res.status(statusCode).json({
         success: false,
         message: errorMessage,
         suggestion: suggestion,
@@ -166,6 +348,7 @@ router.post("/test-payment", async (req, res) => {
     }
   } catch (error: any) {
     console.error("💥 NMI test payment error:", error);
+    rateLimiter.recordFailure();
 
     res.status(500).json({
       success: false,
@@ -173,6 +356,22 @@ router.post("/test-payment", async (req, res) => {
       error: error.toString(),
     });
   }
+});
+
+/**
+ * Get rate limiter status
+ */
+router.get("/rate-limit-status", (req, res) => {
+  const rateLimitCheck = rateLimiter.canMakeRequest();
+
+  res.json({
+    success: true,
+    canMakeRequest: rateLimitCheck.allowed,
+    waitTime: rateLimitCheck.waitTime,
+    failureCount: rateLimiter.failureCount,
+    nextAvailableTime: rateLimitCheck.allowed ? null : new Date(Date.now() + rateLimitCheck.waitTime).toISOString(),
+    minInterval: rateLimiter.minInterval
+  });
 });
 
 /**
