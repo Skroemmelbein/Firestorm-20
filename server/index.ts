@@ -69,6 +69,8 @@ import { startWarChestImport, getImportProgress, getImportStatus } from "./route
 import { classifyClientStatus, batchClassifyClients, getClassificationStats, validateClassificationRules } from "./routes/status-classification";
 import { startLegacyVaultMigration, getLegacyMigrationProgress, validateLegacyTokens, getMigrationStats } from "./routes/nmi-legacy-integration";
 import { startTransactionLogMigration, getTransactionMigrationProgress, getTransactionMigrationStats } from "./routes/transaction-log-migration";
+import { processVaultExport, getVaultExportStatus, getACUUpdateStats, validateVaultIntegrity } from "./routes/vault-export-processing";
+import { processUpdatedCards, getCardUpdateStatus, retryFailedCardUpdates, validateCardUpdateBatch } from "./routes/updated-cards-handler";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
