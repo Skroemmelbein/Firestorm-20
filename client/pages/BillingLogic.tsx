@@ -22,37 +22,22 @@ import {
 } from "@/components/ui/select";
 import {
   CreditCard,
-  Database,
   Brain,
   Settings,
   Play,
   Pause,
-  RotateCcw,
   DollarSign,
-  Calendar,
-  Users,
   TrendingUp,
-  AlertTriangle,
-  CheckCircle,
   MessageSquare,
   Zap,
-  Upload,
   Download,
   RefreshCw,
-  Clock,
-  Eye,
-  EyeOff,
   BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
 
-interface NMIConfig {
-  gatewayUrl: string;
-  username: string;
-  password: string;
-  recurringVaultId: string;
-}
+
 
 interface BillingPlan {
   id: string;
@@ -74,14 +59,7 @@ interface BillingRule {
 }
 
 export default function BillingLogic() {
-  const [nmiConfig, setNmiConfig] = useState<NMIConfig>({
-    gatewayUrl: "https://secure.networkmerchants.com/api/transact.php",
-    username: "wwwdpcyeahcom",
-    password: "!SNR96rQ9qsHdd4",
-    recurringVaultId: "vault_001",
-  });
 
-  const [showNmiPassword, setShowNmiPassword] = useState(false);
   const [billingPlans, setBillingPlans] = useState<BillingPlan[]>([
     {
       id: "1",
@@ -130,12 +108,7 @@ export default function BillingLogic() {
   const [rateLimitStatus, setRateLimitStatus] = useState<any>(null);
   const [lastError, setLastError] = useState<string>("");
 
-  const [nmiConnectionStatus, setNmiConnectionStatus] = useState<
-    "disconnected" | "connecting" | "connected" | "error"
-  >("disconnected");
-  const [xanoSyncStatus, setXanoSyncStatus] = useState<
-    "idle" | "syncing" | "completed" | "error"
-  >("idle");
+
 
   // Transaction logs state
   const [transactionLogs, setTransactionLogs] = useState<any[]>([]);
@@ -148,76 +121,7 @@ export default function BillingLogic() {
     limit: 50,
   });
 
-  const checkRateLimitStatus = async () => {
-    try {
-      const response = await fetch("/api/nmi/rate-limit-status");
-      const result = await response.json();
-      setRateLimitStatus(result);
-      return result;
-    } catch (error) {
-      console.error("Rate limit check failed:", error);
-      return null;
-    }
-  };
 
-  const testNmiConnection = async () => {
-    setNmiConnectionStatus("connecting");
-    setLastError("");
-
-    try {
-      // Check rate limits first
-      const rateStatus = await checkRateLimitStatus();
-      if (rateStatus && !rateStatus.canMakeRequest) {
-        const waitMinutes = Math.ceil(rateStatus.waitTime / 60000);
-        setLastError(`Rate limit active. Please wait ${waitMinutes} minute(s) before testing.`);
-        setNmiConnectionStatus("error");
-        return;
-      }
-
-      const response = await fetch("/api/nmi/test-connection", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: nmiConfig.username,
-          password: nmiConfig.password,
-          gatewayUrl: nmiConfig.gatewayUrl,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setNmiConnectionStatus("connected");
-        setLastError("");
-      } else {
-        setNmiConnectionStatus("error");
-        setLastError(result.message || "Connection failed");
-
-        if (result.suggestion) {
-          setLastError(`${result.message}. ${result.suggestion}`);
-        }
-      }
-    } catch (error: any) {
-      console.error("NMI connection error:", error);
-      setNmiConnectionStatus("error");
-      setLastError(error.message || "Connection test failed");
-    }
-  };
-
-  const syncToXano = async () => {
-    setXanoSyncStatus("syncing");
-
-    try {
-      // Simulate Xano sync
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      setXanoSyncStatus("completed");
-
-      // Reset after a delay
-      setTimeout(() => setXanoSyncStatus("idle"), 3000);
-    } catch (error) {
-      setXanoSyncStatus("error");
-    }
-  };
 
   const testNmiPayment = async () => {
     setIsTestingPayment(true);
@@ -336,25 +240,7 @@ export default function BillingLogic() {
     }
   };
 
-  const StatusIndicator = ({ status }: { status: string }) => {
-    const config = {
-      connected: { color: "text-green-500", icon: CheckCircle },
-      connecting: { color: "text-yellow-500", icon: RefreshCw },
-      syncing: { color: "text-blue-500", icon: RefreshCw },
-      completed: { color: "text-green-500", icon: CheckCircle },
-      error: { color: "text-red-500", icon: AlertTriangle },
-      disconnected: { color: "text-gray-500", icon: AlertTriangle },
-      idle: { color: "text-gray-500", icon: Clock },
-    };
 
-    const { color, icon: Icon } =
-      config[status as keyof typeof config] || config.idle;
-    const isSpinning = status === "connecting" || status === "syncing";
-
-    return (
-      <Icon className={cn("w-4 h-4", color, isSpinning && "animate-spin")} />
-    );
-  };
 
   const generateCSV = (transactions: any[]) => {
     const headers = [
