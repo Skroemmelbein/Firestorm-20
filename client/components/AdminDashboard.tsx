@@ -1,13 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   TrendingUp,
   TrendingDown,
   DollarSign,
@@ -25,9 +37,9 @@ import {
   Calendar,
   Zap,
   Shield,
-  Target
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+  Target,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface BillingKPI {
   approvalRate: number;
@@ -65,43 +77,105 @@ export default function AdminDashboard() {
     activeSubscriptions: 2847,
     churnRate: 2.1,
     retrySuccessRate: 68.5,
-    totalRevenue: 1256900
+    totalRevenue: 1256900,
   });
 
   const [declineInsights, setDeclineInsights] = useState<DeclineInsight[]>([
-    { response_code: '05', response_text: 'Do not honor', decline_count: 156, card_brand: 'visa', retry_stage: 'initial', percentage: 34.2 },
-    { response_code: '51', response_text: 'Insufficient funds', decline_count: 98, card_brand: 'mastercard', retry_stage: 'initial', percentage: 21.5 },
-    { response_code: '14', response_text: 'Invalid card number', decline_count: 67, card_brand: 'visa', retry_stage: 'retry_1', percentage: 14.7 },
-    { response_code: '54', response_text: 'Expired card', decline_count: 45, card_brand: 'amex', retry_stage: 'initial', percentage: 9.9 },
-    { response_code: '61', response_text: 'Exceeds withdrawal limit', decline_count: 32, card_brand: 'discover', retry_stage: 'retry_2', percentage: 7.0 }
+    {
+      response_code: "05",
+      response_text: "Do not honor",
+      decline_count: 156,
+      card_brand: "visa",
+      retry_stage: "initial",
+      percentage: 34.2,
+    },
+    {
+      response_code: "51",
+      response_text: "Insufficient funds",
+      decline_count: 98,
+      card_brand: "mastercard",
+      retry_stage: "initial",
+      percentage: 21.5,
+    },
+    {
+      response_code: "14",
+      response_text: "Invalid card number",
+      decline_count: 67,
+      card_brand: "visa",
+      retry_stage: "retry_1",
+      percentage: 14.7,
+    },
+    {
+      response_code: "54",
+      response_text: "Expired card",
+      decline_count: 45,
+      card_brand: "amex",
+      retry_stage: "initial",
+      percentage: 9.9,
+    },
+    {
+      response_code: "61",
+      response_text: "Exceeds withdrawal limit",
+      decline_count: 32,
+      card_brand: "discover",
+      retry_stage: "retry_2",
+      percentage: 7.0,
+    },
   ]);
 
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([
-    { id: 1, user_email: 'user1@example.com', plan_name: 'Premium Monthly', status: 'active', amount_cents: 4999, next_bill_at: '2024-02-15', retries: 0, last_attempt_at: '2024-01-15' },
-    { id: 2, user_email: 'user2@example.com', plan_name: 'Basic Monthly', status: 'past_due', amount_cents: 2999, next_bill_at: '2024-02-10', retries: 2, last_attempt_at: '2024-02-12' },
-    { id: 3, user_email: 'user3@example.com', plan_name: 'Premium Yearly', status: 'active', amount_cents: 49999, next_bill_at: '2024-12-01', retries: 0, last_attempt_at: '2024-01-01' }
+    {
+      id: 1,
+      user_email: "user1@example.com",
+      plan_name: "Premium Monthly",
+      status: "active",
+      amount_cents: 4999,
+      next_bill_at: "2024-02-15",
+      retries: 0,
+      last_attempt_at: "2024-01-15",
+    },
+    {
+      id: 2,
+      user_email: "user2@example.com",
+      plan_name: "Basic Monthly",
+      status: "past_due",
+      amount_cents: 2999,
+      next_bill_at: "2024-02-10",
+      retries: 2,
+      last_attempt_at: "2024-02-12",
+    },
+    {
+      id: 3,
+      user_email: "user3@example.com",
+      plan_name: "Premium Yearly",
+      status: "active",
+      amount_cents: 49999,
+      next_bill_at: "2024-12-01",
+      retries: 0,
+      last_attempt_at: "2024-01-01",
+    },
   ]);
 
   const [loading, setLoading] = useState(false);
   const [testingEnabled, setTestingEnabled] = useState(true);
-  const [descriptorBase, setDescriptorBase] = useState('ECELONX Subscription');
+  const [descriptorBase, setDescriptorBase] = useState("ECELONX Subscription");
   const [networkTokensEnabled, setNetworkTokensEnabled] = useState(false);
   const [autoUpdaterEnabled, setAutoUpdaterEnabled] = useState(true);
 
   // Filters
-  const [dateRange, setDateRange] = useState('7d');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [dateRange, setDateRange] = useState("7d");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const formatAmount = (cents: number) => `$${(cents / 100).toLocaleString()}`;
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'active':
+      case "active":
         return <Badge className="bg-green-100 text-green-800">Active</Badge>;
-      case 'past_due':
+      case "past_due":
         return <Badge variant="destructive">Past Due</Badge>;
-      case 'canceled':
+      case "canceled":
         return <Badge variant="outline">Canceled</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
@@ -110,27 +184,32 @@ export default function AdminDashboard() {
 
   const getDeclineColor = (responseCode: string) => {
     switch (responseCode) {
-      case '05': return 'text-red-600';
-      case '51': return 'text-orange-600';
-      case '14': return 'text-purple-600';
-      case '54': return 'text-blue-600';
-      default: return 'text-gray-600';
+      case "05":
+        return "text-red-600";
+      case "51":
+        return "text-orange-600";
+      case "14":
+        return "text-purple-600";
+      case "54":
+        return "text-blue-600";
+      default:
+        return "text-gray-600";
     }
   };
 
   const handleForceRebill = async (subscriptionId: number) => {
-    if (!confirm('Force rebill this subscription now?')) return;
+    if (!confirm("Force rebill this subscription now?")) return;
 
     setLoading(true);
     try {
-      const response = await fetch('/api/billing/charge-recurring', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subscription_id: subscriptionId })
+      const response = await fetch("/api/billing/charge-recurring", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subscription_id: subscriptionId }),
       });
 
       const result = await response.json();
-      
+
       if (result.success) {
         // Refresh subscription data
         loadDashboardData();
@@ -138,32 +217,34 @@ export default function AdminDashboard() {
         alert(`Rebill failed: ${result.message}`);
       }
     } catch (error) {
-      alert('Error processing rebill');
+      alert("Error processing rebill");
     } finally {
       setLoading(false);
     }
   };
 
   const handleRunBillingCycle = async () => {
-    if (!confirm('Run billing cycle for all due subscriptions?')) return;
+    if (!confirm("Run billing cycle for all due subscriptions?")) return;
 
     setLoading(true);
     try {
-      const response = await fetch('/api/billing/run-recurring-billing', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+      const response = await fetch("/api/billing/run-recurring-billing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
       });
 
       const result = await response.json();
-      
+
       if (result.success) {
-        alert(`Billing cycle complete: ${result.summary.successful} successful, ${result.summary.failed} failed`);
+        alert(
+          `Billing cycle complete: ${result.summary.successful} successful, ${result.summary.failed} failed`,
+        );
         loadDashboardData();
       } else {
         alert(`Billing cycle failed: ${result.message}`);
       }
     } catch (error) {
-      alert('Error running billing cycle');
+      alert("Error running billing cycle");
     } finally {
       setLoading(false);
     }
@@ -172,13 +253,14 @@ export default function AdminDashboard() {
   const handleSimulateCycle = () => {
     // For testing - simulate various scenarios
     const scenarios = [
-      'Successful payment',
-      'Insufficient funds (retry scheduled)',
-      'Expired card (requires update)',
-      'Do not honor (retry with descriptor variation)'
+      "Successful payment",
+      "Insufficient funds (retry scheduled)",
+      "Expired card (requires update)",
+      "Do not honor (retry with descriptor variation)",
     ];
-    
-    const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+
+    const randomScenario =
+      scenarios[Math.floor(Math.random() * scenarios.length)];
     alert(`Simulated: ${randomScenario}`);
   };
 
@@ -187,9 +269,13 @@ export default function AdminDashboard() {
     // For now, using mock data
   };
 
-  const filteredSubscriptions = subscriptions.filter(sub => {
-    if (statusFilter !== 'all' && sub.status !== statusFilter) return false;
-    if (searchTerm && !sub.user_email.toLowerCase().includes(searchTerm.toLowerCase())) return false;
+  const filteredSubscriptions = subscriptions.filter((sub) => {
+    if (statusFilter !== "all" && sub.status !== statusFilter) return false;
+    if (
+      searchTerm &&
+      !sub.user_email.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+      return false;
     return true;
   });
 
@@ -199,7 +285,9 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Billing Dashboard</h1>
-          <p className="text-gray-600">High-approval recurring billing management</p>
+          <p className="text-gray-600">
+            High-approval recurring billing management
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={loadDashboardData}>
@@ -220,7 +308,9 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Approval Rate</p>
-                <p className="text-2xl font-bold text-green-600">{kpis.approvalRate}%</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {kpis.approvalRate}%
+                </p>
               </div>
               <TrendingUp className="w-8 h-8 text-green-600" />
             </div>
@@ -244,7 +334,9 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Active Subs</p>
-                <p className="text-2xl font-bold">{kpis.activeSubscriptions.toLocaleString()}</p>
+                <p className="text-2xl font-bold">
+                  {kpis.activeSubscriptions.toLocaleString()}
+                </p>
               </div>
               <Users className="w-8 h-8 text-purple-600" />
             </div>
@@ -256,7 +348,9 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Churn Rate</p>
-                <p className="text-2xl font-bold text-orange-600">{kpis.churnRate}%</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {kpis.churnRate}%
+                </p>
               </div>
               <TrendingDown className="w-8 h-8 text-orange-600" />
             </div>
@@ -268,7 +362,9 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Retry Success</p>
-                <p className="text-2xl font-bold text-cyan-600">{kpis.retrySuccessRate}%</p>
+                <p className="text-2xl font-bold text-cyan-600">
+                  {kpis.retrySuccessRate}%
+                </p>
               </div>
               <RefreshCw className="w-8 h-8 text-cyan-600" />
             </div>
@@ -280,7 +376,9 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold">{formatAmount(kpis.totalRevenue)}</p>
+                <p className="text-2xl font-bold">
+                  {formatAmount(kpis.totalRevenue)}
+                </p>
               </div>
               <Target className="w-8 h-8 text-indigo-600" />
             </div>
@@ -308,7 +406,9 @@ export default function AdminDashboard() {
                   <BarChart3 className="w-5 h-5" />
                   Revenue Trend
                 </CardTitle>
-                <CardDescription>Monthly recurring revenue over time</CardDescription>
+                <CardDescription>
+                  Monthly recurring revenue over time
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-48 flex items-center justify-center text-gray-500">
@@ -324,11 +424,19 @@ export default function AdminDashboard() {
                 <CardDescription>Common administrative tasks</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start" onClick={handleRunBillingCycle}>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={handleRunBillingCycle}
+                >
                   <Play className="w-4 h-4 mr-2" />
                   Run Billing Cycle
                 </Button>
-                <Button variant="outline" className="w-full justify-start" onClick={handleSimulateCycle}>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={handleSimulateCycle}
+                >
                   <Zap className="w-4 h-4 mr-2" />
                   Simulate Cycle (QA)
                 </Button>
@@ -348,27 +456,59 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Latest billing events and transactions</CardDescription>
+              <CardDescription>
+                Latest billing events and transactions
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 {[
-                  { time: '2 min ago', event: 'Successful MIT charge: user@example.com', type: 'success' },
-                  { time: '5 min ago', event: 'Retry scheduled: Insufficient funds', type: 'warning' },
-                  { time: '12 min ago', event: 'New subscription created: Premium Monthly', type: 'info' },
-                  { time: '18 min ago', event: 'Card updated via CIT: user2@example.com', type: 'info' },
-                  { time: '1 hour ago', event: 'Billing cycle completed: 95.2% success rate', type: 'success' }
+                  {
+                    time: "2 min ago",
+                    event: "Successful MIT charge: user@example.com",
+                    type: "success",
+                  },
+                  {
+                    time: "5 min ago",
+                    event: "Retry scheduled: Insufficient funds",
+                    type: "warning",
+                  },
+                  {
+                    time: "12 min ago",
+                    event: "New subscription created: Premium Monthly",
+                    type: "info",
+                  },
+                  {
+                    time: "18 min ago",
+                    event: "Card updated via CIT: user2@example.com",
+                    type: "info",
+                  },
+                  {
+                    time: "1 hour ago",
+                    event: "Billing cycle completed: 95.2% success rate",
+                    type: "success",
+                  },
                 ].map((activity, index) => (
-                  <div key={index} className="flex items-center gap-3 p-2 rounded-lg bg-gray-50">
-                    <div className={cn(
-                      "w-2 h-2 rounded-full",
-                      activity.type === 'success' ? 'bg-green-500' :
-                      activity.type === 'warning' ? 'bg-orange-500' : 'bg-blue-500'
-                    )} />
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 p-2 rounded-lg bg-gray-50"
+                  >
+                    <div
+                      className={cn(
+                        "w-2 h-2 rounded-full",
+                        activity.type === "success"
+                          ? "bg-green-500"
+                          : activity.type === "warning"
+                            ? "bg-orange-500"
+                            : "bg-blue-500",
+                      )}
+                    />
                     <div className="flex-1">
                       <span className="text-sm">{activity.event}</span>
                     </div>
-                    <span className="text-xs text-gray-500">{activity.time}</span>
+                    <span className="text-xs text-gray-500">
+                      {activity.time}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -421,17 +561,26 @@ export default function AdminDashboard() {
           {/* Subscriptions Table */}
           <Card>
             <CardHeader>
-              <CardTitle>Subscriptions ({filteredSubscriptions.length})</CardTitle>
-              <CardDescription>Manage customer subscriptions and billing</CardDescription>
+              <CardTitle>
+                Subscriptions ({filteredSubscriptions.length})
+              </CardTitle>
+              <CardDescription>
+                Manage customer subscriptions and billing
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {filteredSubscriptions.map((subscription) => (
-                  <div key={subscription.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div
+                    key={subscription.id}
+                    className="flex items-center justify-between p-4 border rounded-lg"
+                  >
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
                       <div>
                         <p className="font-medium">{subscription.user_email}</p>
-                        <p className="text-sm text-gray-500">{subscription.plan_name}</p>
+                        <p className="text-sm text-gray-500">
+                          {subscription.plan_name}
+                        </p>
                       </div>
                       <div>
                         {getStatusBadge(subscription.status)}
@@ -442,12 +591,16 @@ export default function AdminDashboard() {
                         )}
                       </div>
                       <div>
-                        <p className="font-medium">{formatAmount(subscription.amount_cents)}</p>
-                        <p className="text-sm text-gray-500">Next: {subscription.next_bill_at}</p>
+                        <p className="font-medium">
+                          {formatAmount(subscription.amount_cents)}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Next: {subscription.next_bill_at}
+                        </p>
                       </div>
                       <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => handleForceRebill(subscription.id)}
                           disabled={loading}
@@ -481,18 +634,28 @@ export default function AdminDashboard() {
             <CardContent>
               <div className="space-y-4">
                 {declineInsights.map((insight, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 border rounded-lg"
+                  >
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
-                        <div className={cn("font-mono text-sm px-2 py-1 rounded", getDeclineColor(insight.response_code))}>
+                        <div
+                          className={cn(
+                            "font-mono text-sm px-2 py-1 rounded",
+                            getDeclineColor(insight.response_code),
+                          )}
+                        >
                           {insight.response_code}
                         </div>
-                        <span className="font-medium">{insight.response_text}</span>
+                        <span className="font-medium">
+                          {insight.response_text}
+                        </span>
                         <Badge variant="outline" className="capitalize">
                           {insight.card_brand}
                         </Badge>
                         <Badge variant="secondary">
-                          {insight.retry_stage.replace('_', ' ')}
+                          {insight.retry_stage.replace("_", " ")}
                         </Badge>
                       </div>
                       <div className="mt-2 flex items-center gap-4">
@@ -500,7 +663,7 @@ export default function AdminDashboard() {
                           {insight.decline_count} occurrences
                         </span>
                         <div className="flex-1 bg-gray-200 rounded-full h-2">
-                          <div 
+                          <div
                             className="bg-red-500 h-2 rounded-full"
                             style={{ width: `${insight.percentage}%` }}
                           />
@@ -520,7 +683,9 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Optimization Recommendations</CardTitle>
-              <CardDescription>AI-powered suggestions to improve approval rates</CardDescription>
+              <CardDescription>
+                AI-powered suggestions to improve approval rates
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -528,21 +693,24 @@ export default function AdminDashboard() {
                   <Target className="h-4 w-4" />
                   <AlertTitle>High "Do Not Honor" Rates</AlertTitle>
                   <AlertDescription>
-                    Consider implementing descriptor variation for retry attempts to reduce issuer soft blocks.
+                    Consider implementing descriptor variation for retry
+                    attempts to reduce issuer soft blocks.
                   </AlertDescription>
                 </Alert>
                 <Alert>
                   <Calendar className="h-4 w-4" />
                   <AlertTitle>Expired Card Pattern</AlertTitle>
                   <AlertDescription>
-                    9.9% of declines are expired cards. Enable Automatic Card Updater to reduce these failures.
+                    9.9% of declines are expired cards. Enable Automatic Card
+                    Updater to reduce these failures.
                   </AlertDescription>
                 </Alert>
                 <Alert>
                   <CreditCard className="h-4 w-4" />
                   <AlertTitle>Visa Performance</AlertTitle>
                   <AlertDescription>
-                    Visa cards show higher decline rates on retries. Consider Network Tokenization for improved routing.
+                    Visa cards show higher decline rates on retries. Consider
+                    Network Tokenization for improved routing.
                   </AlertDescription>
                 </Alert>
               </div>
@@ -557,7 +725,9 @@ export default function AdminDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle>Payment Settings</CardTitle>
-                <CardDescription>Configure payment processing behavior</CardDescription>
+                <CardDescription>
+                  Configure payment processing behavior
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -576,12 +746,16 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <Label>Network Tokens</Label>
-                    <p className="text-sm text-gray-500">Enhanced security and approval rates</p>
+                    <p className="text-sm text-gray-500">
+                      Enhanced security and approval rates
+                    </p>
                   </div>
-                  <Button 
+                  <Button
                     variant={networkTokensEnabled ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setNetworkTokensEnabled(!networkTokensEnabled)}
+                    onClick={() =>
+                      setNetworkTokensEnabled(!networkTokensEnabled)
+                    }
                   >
                     {networkTokensEnabled ? "ON" : "OFF"}
                   </Button>
@@ -590,9 +764,11 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <Label>Automatic Card Updater</Label>
-                    <p className="text-sm text-gray-500">Auto-update expired card information</p>
+                    <p className="text-sm text-gray-500">
+                      Auto-update expired card information
+                    </p>
                   </div>
-                  <Button 
+                  <Button
                     variant={autoUpdaterEnabled ? "default" : "outline"}
                     size="sm"
                     onClick={() => setAutoUpdaterEnabled(!autoUpdaterEnabled)}
@@ -660,7 +836,11 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Button variant="outline" onClick={handleSimulateCycle} className="h-20 flex-col gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleSimulateCycle}
+                  className="h-20 flex-col gap-2"
+                >
                   <Play className="w-5 h-5" />
                   <span>Simulate Billing Cycle</span>
                 </Button>
@@ -682,7 +862,9 @@ export default function AdminDashboard() {
               </div>
 
               <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <h4 className="font-medium text-yellow-800 mb-2">Testing Matrix</h4>
+                <h4 className="font-medium text-yellow-800 mb-2">
+                  Testing Matrix
+                </h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>✅ CIT Success + Token Created</span>
