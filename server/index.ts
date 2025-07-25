@@ -59,6 +59,7 @@ import subscriptionManagementRouter from "./routes/subscription-management";
 import billingXanoModelsRouter from "./routes/billing-xano-models";
 import billingPaymentsRouter from "./routes/billing-payments";
 import billingRetryLogicRouter from "./routes/billing-retry-logic";
+import billingTokenizationRouter from "./routes/billing-tokenization";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
@@ -256,6 +257,9 @@ export function createServer() {
 
   // Billing retry and descriptor policy logic
   app.use("/api/billing-retry", billingRetryLogicRouter);
+
+  // Billing tokenization and automatic card updater
+  app.use("/api/billing-tokens", billingTokenizationRouter);
 
   return app;
 }
