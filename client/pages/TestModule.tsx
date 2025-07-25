@@ -97,7 +97,7 @@ export default function TestModule() {
         // Success case
         try {
           result = await response.json();
-          errorMessage = result.message || "✅ SMS sent successfully!";
+          errorMessage = (result as any).message || "✅ SMS sent successfully!";
         } catch (e) {
           errorMessage = "✅ SMS sent successfully!";
           result = { success: true };

@@ -1,5 +1,6 @@
 import express from "express";
 import fetch from "node-fetch";
+import { getXanoClient } from "../../shared/xano-client";
 
 const router = express.Router();
 
@@ -139,14 +140,14 @@ class TwilioAPI {
     const result = await response.json();
 
     // Log to Xano
-    await xanoAPI.makeRequest("/conversations", "POST", {
+    await getXanoClient().createRecord("conversations", {
       customer_phone: to,
       campaign_id: campaignId,
       channel: "sms",
       direction: "outbound",
       content: message,
-      twilio_sid: result.sid,
-      twilio_status: result.status,
+      twilio_sid: (result as any).sid,
+      twilio_status: (result as any).status,
     });
 
     return result;
@@ -172,14 +173,14 @@ class TwilioAPI {
     const result = await response.json();
 
     // Log to Xano
-    await xanoAPI.makeRequest("/conversations", "POST", {
+    await getXanoClient().createRecord("conversations", {
       customer_phone: to,
       campaign_id: campaignId,
       channel: "voice",
       direction: "outbound",
       content: script,
-      twilio_sid: result.sid,
-      twilio_status: result.status,
+      twilio_sid: (result as any).sid,
+      twilio_status: (result as any).status,
     });
 
     return result;
@@ -439,7 +440,7 @@ router.post("/webhooks/twilio/sms", async (req, res) => {
     const { From, Body, MessageSid } = req.body;
 
     // Log incoming message to Xano
-    await xanoAPI.makeRequest("/conversations", "POST", {
+    await getXanoClient().createRecord("conversations", {
       customer_phone: From,
       channel: "sms",
       direction: "inbound",
@@ -462,7 +463,7 @@ router.post("/webhooks/twilio/status", async (req, res) => {
     const { MessageSid, MessageStatus } = req.body;
 
     // Update message status in Xano
-    await xanoAPI.makeRequest("/conversations/update-status", "POST", {
+    await getXanoClient().createRecord("conversations", {
       twilio_sid: MessageSid,
       status: MessageStatus,
     });

@@ -1,7 +1,7 @@
 import express from "express";
 import { z } from "zod";
 import crypto from "crypto";
-import { xanoAPI } from "./api-integrations";
+import { getXanoClient } from "../../shared/xano-client";
 
 const router = express.Router();
 
@@ -415,10 +415,10 @@ router.post("/import-event", async (req, res) => {
     );
 
     // Generate evidence hash
-    validatedEvent.evidenceHash =
+    (validatedEvent as any).evidenceHash =
       EvidenceHashGenerator.generateHash(validatedEvent);
-    validatedEvent.evidenceStorage =
-      EvidenceHashGenerator.generateSecureStorage(validatedEvent.evidenceHash);
+    (validatedEvent as any).evidenceStorage =
+      EvidenceHashGenerator.generateSecureStorage((validatedEvent as any).evidenceHash);
 
     // Validate compliance requirements
     const validation = ConsentValidator.validateEvent(validatedEvent);
@@ -430,7 +430,7 @@ router.post("/import-event", async (req, res) => {
     }
 
     // Check for duplicate events
-    const existingEvents = await xanoAPI.queryRecords("consent_tos_events", {
+    const existingEvents = await getXanoClient().queryRecords("consent_tos_events", {
       eventId: validatedEvent.eventId,
     });
 
@@ -445,21 +445,21 @@ router.post("/import-event", async (req, res) => {
     }
 
     // Add import metadata
-    validatedEvent.importedAt = new Date().toISOString();
-    validatedEvent.validationScore = validation.score;
-    validatedEvent.validationIssues = validation.issues;
+    (validatedEvent as any).importedAt = new Date().toISOString();
+    (validatedEvent as any).validationScore = validation.score;
+    (validatedEvent as any).validationIssues = validation.issues;
 
     // Save to Xano
-    const savedEvent = await xanoAPI.createRecord(
+    const savedEvent = await getXanoClient().createRecord(
       "consent_tos_events",
       validatedEvent,
     );
 
     // Update customer's consent summary
-    await this.updateCustomerConsentSummary(validatedEvent.customerId);
+    await updateCustomerConsentSummary(validatedEvent.customerId);
 
     // Log compliance audit
-    await xanoAPI.createRecord("compliance_audit_log", {
+    await getXanoClient().createRecord("compliance_audit_log", {
       eventType: "consent_import",
       customerId: validatedEvent.customerId,
       eventId: validatedEvent.eventId,
@@ -515,7 +515,7 @@ router.post("/batch-import", async (req, res) => {
     };
 
     // Create batch record
-    const batchRecord = await xanoAPI.createRecord("consent_import_batches", {
+    const batchRecord = await getXanoClient().createRecord("consent_import_batches", {
       batchId: validatedBatch.batchId,
       source: validatedBatch.source,
       totalRecords: validatedBatch.events.length,
@@ -532,9 +532,9 @@ router.post("/batch-import", async (req, res) => {
 
       try {
         // Generate evidence hash
-        event.evidenceHash = EvidenceHashGenerator.generateHash(event);
-        event.evidenceStorage = EvidenceHashGenerator.generateSecureStorage(
-          event.evidenceHash,
+        (event as any).evidenceHash = EvidenceHashGenerator.generateHash(event);
+        (event as any).evidenceStorage = EvidenceHashGenerator.generateSecureStorage(
+          (event as any).evidenceHash,
         );
 
         // Validate compliance
@@ -554,7 +554,7 @@ router.post("/batch-import", async (req, res) => {
           results.successful++;
         } else {
           // Check for duplicates
-          const existingEvents = await xanoAPI.queryRecords(
+          const existingEvents = await getXanoClient().queryRecords(
             "consent_tos_events",
             {
               eventId: event.eventId,
@@ -589,12 +589,12 @@ router.post("/batch-import", async (req, res) => {
           }
 
           // Add metadata and save
-          event.importBatch = validatedBatch.batchId;
-          event.importedAt = new Date().toISOString();
-          event.validationScore = validation.score;
-          event.validationIssues = validation.issues;
+          (event as any).importBatch = validatedBatch.batchId;
+          (event as any).importedAt = new Date().toISOString();
+          (event as any).validationScore = validation.score;
+          (event as any).validationIssues = validation.issues;
 
-          const savedEvent = await xanoAPI.createRecord(
+          const savedEvent = await getXanoClient().createRecord(
             "consent_tos_events",
             event,
           );
@@ -616,7 +616,7 @@ router.post("/batch-import", async (req, res) => {
             `📊 Progress: ${i + 1}/${validatedBatch.events.length} events processed`,
           );
 
-          await xanoAPI.updateRecord("consent_import_batches", batchRecord.id, {
+          await getXanoClient().updateRecord("consent_import_batches", batchRecord.id, {
             processedRecords: i + 1,
             successfulRecords: results.successful,
             failedRecords: results.failed,
@@ -645,7 +645,7 @@ router.post("/batch-import", async (req, res) => {
         : 0;
 
     // Update batch completion
-    await xanoAPI.updateRecord("consent_import_batches", batchRecord.id, {
+    await getXanoClient().updateRecord("consent_import_batches", batchRecord.id, {
       status: "completed",
       completedAt: new Date().toISOString(),
       processedRecords: validatedBatch.events.length,
@@ -684,7 +684,7 @@ router.get("/customer/:customerId/analysis", async (req, res) => {
     const { customerId } = req.params;
 
     // Get all consent events for customer
-    const events = await xanoAPI.queryRecords("consent_tos_events", {
+    const events = await getXanoClient().queryRecords("consent_tos_events", {
       customerId: customerId,
     });
 
@@ -702,7 +702,7 @@ router.get("/customer/:customerId/analysis", async (req, res) => {
     );
 
     // Get recent compliance audit logs
-    const auditLogs = await xanoAPI.queryRecords("compliance_audit_log", {
+    const auditLogs = await getXanoClient().queryRecords("compliance_audit_log", {
       customerId: customerId,
     });
 
@@ -728,7 +728,7 @@ router.get("/compliance-report/:customerId", async (req, res) => {
     const { customerId } = req.params;
     const { eventTypes } = req.query;
 
-    let events = await xanoAPI.queryRecords("consent_tos_events", {
+    let events = await getXanoClient().queryRecords("consent_tos_events", {
       customerId: customerId,
     });
 
@@ -852,7 +852,7 @@ router.get("/compliance-report/:customerId", async (req, res) => {
 async function updateCustomerConsentSummary(customerId: string) {
   try {
     // Get all events for this customer
-    const events = await xanoAPI.queryRecords("consent_tos_events", {
+    const events = await getXanoClient().queryRecords("consent_tos_events", {
       customerId: customerId,
     });
 
@@ -863,7 +863,7 @@ async function updateCustomerConsentSummary(customerId: string) {
     );
 
     // Update or create consent summary record
-    const existingSummary = await xanoAPI.queryRecords(
+    const existingSummary = await getXanoClient().queryRecords(
       "customer_consent_summary",
       {
         customerId: customerId,
@@ -881,13 +881,13 @@ async function updateCustomerConsentSummary(customerId: string) {
     };
 
     if (existingSummary.length > 0) {
-      await xanoAPI.updateRecord(
+      await getXanoClient().updateRecord(
         "customer_consent_summary",
         existingSummary[0].id,
         summaryData,
       );
     } else {
-      await xanoAPI.createRecord("customer_consent_summary", summaryData);
+      await getXanoClient().createRecord("customer_consent_summary", summaryData);
     }
   } catch (error: any) {
     console.error(

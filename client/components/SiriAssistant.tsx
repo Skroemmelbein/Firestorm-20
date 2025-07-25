@@ -64,7 +64,7 @@ export default function SiriAssistant({ onClose }: SiriAssistantProps) {
     },
   ]);
 
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesis | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 

@@ -367,7 +367,7 @@ export default function XanoTableManager() {
 
               <div className="text-xs text-[#737373] text-center">
                 Setup completed at{" "}
-                {new Date(setupResult.timestamp || Date.now()).toLocaleString()}
+                {new Date((setupResult as any).timestamp || Date.now()).toLocaleString()}
               </div>
             </div>
           )}
