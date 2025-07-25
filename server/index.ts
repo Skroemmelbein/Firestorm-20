@@ -3,6 +3,9 @@ import express from 'express';
 export function createServer() {
   const app = express();
 
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
   // Automatically load all route files in server/routes/
   const routes = import.meta.glob('./routes/**/*.ts', { eager: true });
 

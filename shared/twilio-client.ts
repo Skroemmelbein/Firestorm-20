@@ -124,6 +124,9 @@ export class TwilioClient {
       To: message.to,
       From: message.from || this.config.phoneNumber,
       Body: message.body,
+      ...(process.env.TWILIO_MESSAGING_SERVICE_SID && {
+        MessagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID
+      })
     };
 
     if (message.mediaUrl && message.mediaUrl.length > 0) {

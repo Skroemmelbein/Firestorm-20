@@ -17,8 +17,21 @@ const getXanoClientSafe = () => {
 
 const getTwilioClientSafe = () => {
   try {
-    const { getTwilioClient } = require("../../shared/twilio-client");
-    return getTwilioClient();
+    const { initializeTwilio, getTwilioClient } = require("../../shared/twilio-client");
+    
+    try {
+      return getTwilioClient();
+    } catch (initError) {
+      if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
+        initializeTwilio({
+          accountSid: process.env.TWILIO_ACCOUNT_SID,
+          authToken: process.env.TWILIO_AUTH_TOKEN,
+          phoneNumber: process.env.TWILIO_PHONE_NUMBER,
+        });
+        return getTwilioClient();
+      }
+      throw initError;
+    }
   } catch (error) {
     throw new Error(
       "Twilio client not initialized. Please configure Twilio credentials first.",
@@ -514,6 +527,121 @@ router.post("/webhooks/twilio/status", async (req, res) => {
   } catch (error) {
     console.error("Error handling status webhook:", error);
     res.status(500).send("Error");
+  }
+});
+
+router.post("/events", async (req, res) => {
+  try {
+    const eventData = req.body;
+    const userAgent = req.headers['user-agent'] || '';
+    
+    console.log("📨 Unified webhook event received:", {
+      userAgent,
+      eventType: eventData.event_type || eventData.MessageStatus || 'unknown',
+      timestamp: new Date().toISOString()
+    });
+
+    if (eventData.MessageSid || userAgent.includes('TwilioProxy')) {
+      // Twilio event (SMS/MMS/RCS status or incoming message)
+      if (eventData.MessageStatus) {
+        const twilio = getTwilioClientSafe();
+        await twilio.handleStatusWebhook(eventData);
+      } else if (eventData.Body) {
+        const twilio = getTwilioClientSafe();
+        await twilio.handleIncomingSMS(eventData);
+      }
+    } else if (eventData.event_type || userAgent.includes('SendGrid')) {
+      console.log("📧 SendGrid event:", {
+        event: eventData.event_type,
+        email: eventData.email,
+        timestamp: eventData.timestamp,
+        sg_event_id: eventData.sg_event_id
+      });
+      
+      try {
+        const xano = getXanoClientSafe();
+        await xano.createCommunication({
+          channel: "email",
+          direction: "inbound",
+          to_email: eventData.email,
+          content: `SendGrid Event: ${eventData.event_type}`,
+          status: eventData.event_type,
+          provider: "sendgrid",
+          provider_id: eventData.sg_event_id,
+          delivered_at: eventData.timestamp ? new Date(eventData.timestamp * 1000).toISOString() : new Date().toISOString(),
+          created_at: new Date().toISOString(),
+        });
+      } catch (error) {
+        console.error("Failed to log SendGrid event to Xano:", error);
+      }
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: "Event processed successfully",
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error("Error processing unified webhook event:", error);
+    res.status(500).json({ 
+      success: false, 
+      error: error instanceof Error ? error.message : "Unknown error" 
+    });
+  }
+});
+
+router.post("/test/sms-mms-rcs", async (req, res) => {
+  try {
+    const { to, message, mediaUrl } = req.body;
+    const twilio = getTwilioClientSafe();
+    
+    const result = await twilio.sendSMS({
+      to: to || "+15558675310",
+      body: message || "Firestorm Phase 1 test 🚀",
+      mediaUrl: mediaUrl ? [mediaUrl] : ["https://demo.cloudinary.com/sample.jpg"]
+    });
+    
+    res.json({
+      success: true,
+      message: "SMS/MMS/RCS test sent successfully",
+      result: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/email", async (req, res) => {
+  try {
+    const { to, subject, message } = req.body;
+    const sendGridModule = await import("../../shared/sendgrid-client");
+    const sendGrid = sendGridModule.getSendGridClient();
+    
+    const result = await sendGrid.sendEmail({
+      to: to || "shannonkroemmelbein@gmail.com",
+      subject: subject || "ECELONX Phase 1 Test - System Operational",
+      html: `
+        <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #111111; color: white; padding: 40px;">
+          <h1 style="color: #00CED1;">ECELONX MESSAGE WAR MACHINE</h1>
+          <p style="color: #00E676;">Phase 1 Ignition: ${message || 'All systems operational'}</p>
+          <p style="color: #b3b3b3;">Test Time: ${new Date().toISOString()}</p>
+        </div>
+      `
+    });
+    
+    res.json({
+      success: true,
+      message: "Email test sent successfully", 
+      result: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
   }
 });
 

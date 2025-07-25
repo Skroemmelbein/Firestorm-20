@@ -109,8 +109,8 @@ export function getSendGridClient(): SendGridClient {
     // Try to auto-initialize if we have the API key
     if (
       process.env.SENDGRID_API_KEY &&
-      process.env.SENDGRID_API_KEY !==
-        "SG.placeholder_key_replace_with_real_sendgrid_api_key"
+      process.env.SENDGRID_API_KEY !== "SG.placeholder_key_replace_with_real_sendgrid_api_key" &&
+      process.env.SENDGRID_API_KEY.startsWith("SG.")
     ) {
       sendGridClient = new SendGridClient({
         apiKey: process.env.SENDGRID_API_KEY,
@@ -122,7 +122,7 @@ export function getSendGridClient(): SendGridClient {
     }
 
     throw new Error(
-      "SendGrid client not initialized. Call initializeSendGrid() first or set SENDGRID_API_KEY environment variable.",
+      "SendGrid client not initialized. Please set a valid SENDGRID_API_KEY environment variable (starts with 'SG.').",
     );
   }
   return sendGridClient;
