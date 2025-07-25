@@ -64,6 +64,7 @@ import billingAnalyticsRouter from "./routes/billing-analytics";
 import nmiTransactionLogsRouter from "./routes/nmi-transaction-logs";
 import quickSetupRouter from "./routes/quick-setup";
 import nmiStatusCheckRouter from "./routes/nmi-status-check";
+import nmiTestPaymentRouter from "./routes/nmi-test-payment";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
