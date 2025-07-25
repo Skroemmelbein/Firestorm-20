@@ -65,6 +65,7 @@ import nmiTransactionLogsRouter from "./routes/nmi-transaction-logs";
 import quickSetupRouter from "./routes/quick-setup";
 import nmiStatusCheckRouter from "./routes/nmi-status-check";
 import nmiTestPaymentRouter from "./routes/nmi-test-payment";
+import { startWarChestImport, getImportProgress, getImportStatus } from "./routes/war-chest-import";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
