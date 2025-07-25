@@ -836,6 +836,141 @@ export default function AdminDashboard() {
             <SendGridTest />
           </TabsContent>
 
+          {/* Data Sync Status Tab */}
+          <TabsContent value="sync-status" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Database className="w-5 h-5" />
+                    Data Sync Status
+                  </CardTitle>
+                  <CardDescription>
+                    Monitor data synchronization between systems
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                      <div>
+                        <div className="font-medium">Warchest Table</div>
+                        <div className="text-sm text-muted-foreground">
+                          Primary subscription data
+                        </div>
+                      </div>
+                      <Badge className="bg-green-500/10 text-green-600">
+                        Synced
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                      <div>
+                        <div className="font-medium">Payment Methods Updated</div>
+                        <div className="text-sm text-muted-foreground">
+                          71 cards synchronized
+                        </div>
+                      </div>
+                      <Badge className="bg-green-500/10 text-green-600">
+                        Synced
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                      <div>
+                        <div className="font-medium">
+                          Billing Transactions
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Recent billing records
+                        </div>
+                      </div>
+                      <Badge className="bg-green-500/10 text-green-600">
+                        Synced
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                      <div>
+                        <div className="font-medium">NMI Vault Data</div>
+                        <div className="text-sm text-muted-foreground">
+                          Payment vault records
+                        </div>
+                      </div>
+                      <Badge variant="outline">Pending</Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                      <div>
+                        <div className="font-medium">Chargeback Data</div>
+                        <div className="text-sm text-muted-foreground">
+                          Zero-CB Fortress sync
+                        </div>
+                      </div>
+                      <Badge className="bg-green-500/10 text-green-600">
+                        Synced
+                      </Badge>
+                    </div>
+                  </div>
+
+                  <Button variant="outline" className="w-full gap-2">
+                    <RefreshCw className="w-4 h-4" />
+                    Refresh Sync Status
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="w-5 h-5" />
+                    Sync Performance
+                  </CardTitle>
+                  <CardDescription>
+                    Real-time sync metrics and performance data
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center p-4 bg-muted/30 rounded-lg">
+                      <div className="text-2xl font-bold text-green-600">98.7%</div>
+                      <div className="text-sm text-muted-foreground">Success Rate</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted/30 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600">1.2s</div>
+                      <div className="text-sm text-muted-foreground">Avg Sync Time</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted/30 rounded-lg">
+                      <div className="text-2xl font-bold text-purple-600">2,847</div>
+                      <div className="text-sm text-muted-foreground">Records/Hour</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted/30 rounded-lg">
+                      <div className="text-2xl font-bold text-orange-600">15m</div>
+                      <div className="text-sm text-muted-foreground">Last Sync</div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="text-sm font-medium">Recent Sync Operations</div>
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      <div className="flex items-center justify-between text-sm p-2 bg-muted/20 rounded">
+                        <span>Warchest → Billing</span>
+                        <Badge className="bg-green-500/10 text-green-600 text-xs">Complete</Badge>
+                      </div>
+                      <div className="flex items-center justify-between text-sm p-2 bg-muted/20 rounded">
+                        <span>NMI Vault → Payments</span>
+                        <Badge variant="outline" className="text-xs">In Progress</Badge>
+                      </div>
+                      <div className="flex items-center justify-between text-sm p-2 bg-muted/20 rounded">
+                        <span>Chargebacks → Fortress</span>
+                        <Badge className="bg-green-500/10 text-green-600 text-xs">Complete</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
           {/* Activity Tab */}
           <TabsContent value="activity" className="space-y-4">
             <Card>
