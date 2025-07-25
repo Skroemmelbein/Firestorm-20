@@ -123,7 +123,8 @@ app.use((err: any, req: any, res: any, next: any) => {
   res.status(500).json({
     success: false,
     message: "Internal server error",
-    error: process.env.NODE_ENV === "development" ? err.message : "Server error",
+    error:
+      process.env.NODE_ENV === "development" ? err.message : "Server error",
   });
 });
 

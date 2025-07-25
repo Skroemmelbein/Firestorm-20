@@ -9,85 +9,130 @@ const CUSTOMER_MASTER_TABLES = [
     name: "customer_master",
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
-      
+
       // Core Identity
       { name: "customerId", type: "text", unique: true, indexed: true },
       { name: "legalFirstName", type: "text", required: true },
       { name: "legalLastName", type: "text", required: true },
       { name: "emailAddress", type: "text", unique: true, indexed: true },
       { name: "phoneNumber", type: "text", indexed: true },
-      
+
       // Additional Identity
       { name: "middleName", type: "text" },
       { name: "suffix", type: "text" },
       { name: "dateOfBirth", type: "date" },
       { name: "socialSecurityLastFour", type: "text", indexed: true },
-      
+
       // Billing Address (JSON structure)
       { name: "billingAddress", type: "json" },
-      
+
       // Legal & Compliance
-      { name: "kycStatus", type: "enum", values: ["verified", "pending", "failed", "not_required"], default: "pending" },
-      { name: "amlStatus", type: "enum", values: ["clear", "flagged", "under_review", "rejected"], default: "clear" },
+      {
+        name: "kycStatus",
+        type: "enum",
+        values: ["verified", "pending", "failed", "not_required"],
+        default: "pending",
+      },
+      {
+        name: "amlStatus",
+        type: "enum",
+        values: ["clear", "flagged", "under_review", "rejected"],
+        default: "clear",
+      },
       { name: "consentToSMarketingDate", type: "timestamp" },
       { name: "consentToEmail", type: "boolean", default: false },
       { name: "consentToSMS", type: "boolean", default: false },
       { name: "consentToAutoDialer", type: "boolean", default: false },
       { name: "tcpaConsentDate", type: "timestamp" },
       { name: "privacyPolicyAcceptedDate", type: "timestamp" },
-      
+
       // Financial Information
-      { name: "estimatedAnnualIncome", type: "decimal", precision: 12, scale: 2 },
-      { name: "bankAccountType", type: "enum", values: ["checking", "savings", "business", "unknown"] },
+      {
+        name: "estimatedAnnualIncome",
+        type: "decimal",
+        precision: 12,
+        scale: 2,
+      },
+      {
+        name: "bankAccountType",
+        type: "enum",
+        values: ["checking", "savings", "business", "unknown"],
+      },
       { name: "creditScore", type: "integer" },
-      
+
       // Historical Data
       { name: "customerSince", type: "timestamp", indexed: true },
       { name: "lastLoginDate", type: "timestamp" },
-      { name: "totalLifetimeValue", type: "decimal", precision: 12, scale: 2, default: 0 },
+      {
+        name: "totalLifetimeValue",
+        type: "decimal",
+        precision: 12,
+        scale: 2,
+        default: 0,
+      },
       { name: "totalTransactions", type: "integer", default: 0 },
       { name: "lastTransactionDate", type: "timestamp" },
-      
+
       // Risk Assessment
       { name: "fraudScore", type: "integer", default: 0 },
       { name: "chargebackHistory", type: "integer", default: 0 },
       { name: "disputeHistory", type: "integer", default: 0 },
-      { name: "riskTier", type: "enum", values: ["low", "medium", "high", "blocked"], default: "low" },
-      
+      {
+        name: "riskTier",
+        type: "enum",
+        values: ["low", "medium", "high", "blocked"],
+        default: "low",
+      },
+
       // Account Status
-      { name: "accountStatus", type: "enum", values: ["active", "suspended", "closed", "pending_verification"], default: "active" },
+      {
+        name: "accountStatus",
+        type: "enum",
+        values: ["active", "suspended", "closed", "pending_verification"],
+        default: "active",
+      },
       { name: "suspensionReason", type: "text" },
       { name: "closureDate", type: "timestamp" },
       { name: "closureReason", type: "text" },
-      
+
       // Communication Preferences
       { name: "preferredLanguage", type: "text", default: "en" },
       { name: "timezone", type: "text", default: "America/New_York" },
-      { name: "communicationFrequency", type: "enum", values: ["daily", "weekly", "monthly", "never"], default: "weekly" },
-      
+      {
+        name: "communicationFrequency",
+        type: "enum",
+        values: ["daily", "weekly", "monthly", "never"],
+        default: "weekly",
+      },
+
       // Source Tracking
       { name: "acquisitionChannel", type: "text" },
       { name: "referralSource", type: "text" },
       { name: "campaignId", type: "text" },
-      
+
       // Data Quality
       { name: "dataQualityScore", type: "integer", default: 50 },
       { name: "lastVerificationDate", type: "timestamp" },
-      { name: "verificationMethod", type: "enum", values: ["manual", "automated", "third_party", "none"], default: "none" },
-      
+      {
+        name: "verificationMethod",
+        type: "enum",
+        values: ["manual", "automated", "third_party", "none"],
+        default: "none",
+      },
+
       // Additional Metadata
       { name: "tags", type: "json" },
       { name: "notes", type: "text" },
       { name: "importSource", type: "text", default: "war_chest" },
       { name: "importBatch", type: "text", indexed: true },
-      
+
       // System Fields
       { name: "importedAt", type: "timestamp" },
       { name: "lastUpdatedAt", type: "timestamp" },
       { name: "version", type: "integer", default: 1 },
       { name: "created_at", type: "timestamp" },
-      { name: "updated_at", type: "timestamp" }
-    ]
+      { name: "updated_at", type: "timestamp" },
+    ],
   },
 
   {
@@ -101,15 +146,30 @@ const CUSTOMER_MASTER_TABLES = [
       { name: "successfulRecords", type: "integer", default: 0 },
       { name: "failedRecords", type: "integer", default: 0 },
       { name: "skippedRecords", type: "integer", default: 0 },
-      { name: "status", type: "enum", values: ["pending", "processing", "completed", "failed"], default: "pending" },
-      { name: "processingMode", type: "enum", values: ["validate_only", "import", "merge"], default: "import" },
-      { name: "duplicateHandling", type: "enum", values: ["skip", "merge", "create_new", "error"], default: "merge" },
+      {
+        name: "status",
+        type: "enum",
+        values: ["pending", "processing", "completed", "failed"],
+        default: "pending",
+      },
+      {
+        name: "processingMode",
+        type: "enum",
+        values: ["validate_only", "import", "merge"],
+        default: "import",
+      },
+      {
+        name: "duplicateHandling",
+        type: "enum",
+        values: ["skip", "merge", "create_new", "error"],
+        default: "merge",
+      },
       { name: "startedAt", type: "timestamp" },
       { name: "completedAt", type: "timestamp" },
       { name: "errorMessage", type: "text" },
       { name: "created_at", type: "timestamp" },
-      { name: "updated_at", type: "timestamp" }
-    ]
+      { name: "updated_at", type: "timestamp" },
+    ],
   },
 
   {
@@ -119,7 +179,12 @@ const CUSTOMER_MASTER_TABLES = [
       { name: "batchId", type: "text", indexed: true },
       { name: "entityType", type: "text", indexed: true },
       { name: "entityId", type: "integer", indexed: true },
-      { name: "action", type: "enum", values: ["import", "merge", "update", "validate", "skip"], indexed: true },
+      {
+        name: "action",
+        type: "enum",
+        values: ["import", "merge", "update", "validate", "skip"],
+        indexed: true,
+      },
       { name: "sourceData", type: "json" },
       { name: "enrichedData", type: "json" },
       { name: "duplicatesFound", type: "integer", default: 0 },
@@ -127,8 +192,8 @@ const CUSTOMER_MASTER_TABLES = [
       { name: "processingTimeMs", type: "integer" },
       { name: "errorMessage", type: "text" },
       { name: "importedAt", type: "timestamp", indexed: true },
-      { name: "created_at", type: "timestamp" }
-    ]
+      { name: "created_at", type: "timestamp" },
+    ],
   },
 
   {
@@ -137,67 +202,159 @@ const CUSTOMER_MASTER_TABLES = [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
       { name: "sourceCustomerId", type: "text", indexed: true },
       { name: "targetCustomerId", type: "text", indexed: true },
-      { name: "sourceXanoId", type: "integer", foreign_key: "customer_master.id" },
-      { name: "targetXanoId", type: "integer", foreign_key: "customer_master.id" },
-      { name: "matchType", type: "enum", values: ["email_exact", "phone_exact", "name_address_fuzzy", "ssn_last4"], indexed: true },
+      {
+        name: "sourceXanoId",
+        type: "integer",
+        foreign_key: "customer_master.id",
+      },
+      {
+        name: "targetXanoId",
+        type: "integer",
+        foreign_key: "customer_master.id",
+      },
+      {
+        name: "matchType",
+        type: "enum",
+        values: [
+          "email_exact",
+          "phone_exact",
+          "name_address_fuzzy",
+          "ssn_last4",
+        ],
+        indexed: true,
+      },
       { name: "confidence", type: "decimal", precision: 3, scale: 2 },
       { name: "matchDetails", type: "json" },
-      { name: "status", type: "enum", values: ["detected", "reviewed", "merged", "ignored"], default: "detected" },
+      {
+        name: "status",
+        type: "enum",
+        values: ["detected", "reviewed", "merged", "ignored"],
+        default: "detected",
+      },
       { name: "reviewedBy", type: "text" },
       { name: "reviewedAt", type: "timestamp" },
       { name: "resolution", type: "text" },
       { name: "created_at", type: "timestamp", indexed: true },
-      { name: "updated_at", type: "timestamp" }
-    ]
+      { name: "updated_at", type: "timestamp" },
+    ],
   },
 
   {
     name: "customer_consent_history",
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
-      { name: "customerId", type: "text", foreign_key: "customer_master.customerId", indexed: true },
-      { name: "consentType", type: "enum", values: ["email", "sms", "auto_dialer", "marketing", "privacy_policy", "terms_of_service"], indexed: true },
+      {
+        name: "customerId",
+        type: "text",
+        foreign_key: "customer_master.customerId",
+        indexed: true,
+      },
+      {
+        name: "consentType",
+        type: "enum",
+        values: [
+          "email",
+          "sms",
+          "auto_dialer",
+          "marketing",
+          "privacy_policy",
+          "terms_of_service",
+        ],
+        indexed: true,
+      },
       { name: "consentStatus", type: "boolean" },
       { name: "consentDate", type: "timestamp", indexed: true },
       { name: "ipAddress", type: "text" },
       { name: "userAgent", type: "text" },
       { name: "consentHash", type: "text" },
       { name: "documentVersion", type: "text" },
-      { name: "source", type: "enum", values: ["import", "web", "api", "manual"], default: "import" },
+      {
+        name: "source",
+        type: "enum",
+        values: ["import", "web", "api", "manual"],
+        default: "import",
+      },
       { name: "notes", type: "text" },
-      { name: "created_at", type: "timestamp" }
-    ]
+      { name: "created_at", type: "timestamp" },
+    ],
   },
 
   {
     name: "customer_risk_events",
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
-      { name: "customerId", type: "text", foreign_key: "customer_master.customerId", indexed: true },
-      { name: "eventType", type: "enum", values: ["chargeback", "dispute", "fraud_alert", "kyc_failure", "aml_flag", "payment_failure"], indexed: true },
-      { name: "severity", type: "enum", values: ["low", "medium", "high", "critical"], default: "medium" },
+      {
+        name: "customerId",
+        type: "text",
+        foreign_key: "customer_master.customerId",
+        indexed: true,
+      },
+      {
+        name: "eventType",
+        type: "enum",
+        values: [
+          "chargeback",
+          "dispute",
+          "fraud_alert",
+          "kyc_failure",
+          "aml_flag",
+          "payment_failure",
+        ],
+        indexed: true,
+      },
+      {
+        name: "severity",
+        type: "enum",
+        values: ["low", "medium", "high", "critical"],
+        default: "medium",
+      },
       { name: "description", type: "text" },
       { name: "eventData", type: "json" },
-      { name: "resolvedStatus", type: "enum", values: ["open", "investigating", "resolved", "closed"], default: "open" },
+      {
+        name: "resolvedStatus",
+        type: "enum",
+        values: ["open", "investigating", "resolved", "closed"],
+        default: "open",
+      },
       { name: "resolvedAt", type: "timestamp" },
       { name: "resolvedBy", type: "text" },
       { name: "resolutionNotes", type: "text" },
       { name: "impactOnRiskScore", type: "integer", default: 0 },
       { name: "eventDate", type: "timestamp", indexed: true },
-      { name: "created_at", type: "timestamp" }
-    ]
+      { name: "created_at", type: "timestamp" },
+    ],
   },
 
   {
     name: "customer_communication_log",
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
-      { name: "customerId", type: "text", foreign_key: "customer_master.customerId", indexed: true },
-      { name: "communicationType", type: "enum", values: ["email", "sms", "phone", "mail", "portal_message"], indexed: true },
-      { name: "direction", type: "enum", values: ["inbound", "outbound"], indexed: true },
+      {
+        name: "customerId",
+        type: "text",
+        foreign_key: "customer_master.customerId",
+        indexed: true,
+      },
+      {
+        name: "communicationType",
+        type: "enum",
+        values: ["email", "sms", "phone", "mail", "portal_message"],
+        indexed: true,
+      },
+      {
+        name: "direction",
+        type: "enum",
+        values: ["inbound", "outbound"],
+        indexed: true,
+      },
       { name: "subject", type: "text" },
       { name: "content", type: "text" },
-      { name: "status", type: "enum", values: ["sent", "delivered", "failed", "bounced", "opened", "replied"], indexed: true },
+      {
+        name: "status",
+        type: "enum",
+        values: ["sent", "delivered", "failed", "bounced", "opened", "replied"],
+        indexed: true,
+      },
       { name: "provider", type: "text" },
       { name: "providerId", type: "text" },
       { name: "cost", type: "decimal", precision: 8, scale: 4 },
@@ -206,8 +363,8 @@ const CUSTOMER_MASTER_TABLES = [
       { name: "readAt", type: "timestamp" },
       { name: "repliedAt", type: "timestamp" },
       { name: "metadata", type: "json" },
-      { name: "created_at", type: "timestamp" }
-    ]
+      { name: "created_at", type: "timestamp" },
+    ],
   },
 
   {
@@ -215,12 +372,41 @@ const CUSTOMER_MASTER_TABLES = [
     columns: [
       { name: "id", type: "integer", auto_increment: true, primary_key: true },
       { name: "customerId", type: "text", unique: true, indexed: true },
-      { name: "xanoCustomerId", type: "integer", foreign_key: "customer_master.id" },
+      {
+        name: "xanoCustomerId",
+        type: "integer",
+        foreign_key: "customer_master.id",
+      },
       { name: "originalVertical", type: "text", default: "war_chest" },
-      { name: "migrationStatus", type: "enum", values: ["pending", "in_progress", "completed", "failed", "skipped"], default: "pending" },
-      { name: "migrationStage", type: "enum", values: ["customer_data", "payment_methods", "transaction_history", "consent_records", "finalization"], default: "customer_data" },
-      { name: "statusClassification", type: "enum", values: ["BILL", "REWRITE", "FLIP", "DORMANT", "DO_NOT_BILL"] },
-      { name: "migrationPriority", type: "enum", values: ["low", "medium", "high", "critical"], default: "medium" },
+      {
+        name: "migrationStatus",
+        type: "enum",
+        values: ["pending", "in_progress", "completed", "failed", "skipped"],
+        default: "pending",
+      },
+      {
+        name: "migrationStage",
+        type: "enum",
+        values: [
+          "customer_data",
+          "payment_methods",
+          "transaction_history",
+          "consent_records",
+          "finalization",
+        ],
+        default: "customer_data",
+      },
+      {
+        name: "statusClassification",
+        type: "enum",
+        values: ["BILL", "REWRITE", "FLIP", "DORMANT", "DO_NOT_BILL"],
+      },
+      {
+        name: "migrationPriority",
+        type: "enum",
+        values: ["low", "medium", "high", "critical"],
+        default: "medium",
+      },
       { name: "estimatedValue", type: "decimal", precision: 12, scale: 2 },
       { name: "lastContactDate", type: "timestamp" },
       { name: "nextActionDate", type: "timestamp" },
@@ -231,9 +417,9 @@ const CUSTOMER_MASTER_TABLES = [
       { name: "completedAt", type: "timestamp" },
       { name: "assignedTo", type: "text" },
       { name: "created_at", type: "timestamp", indexed: true },
-      { name: "updated_at", type: "timestamp" }
-    ]
-  }
+      { name: "updated_at", type: "timestamp" },
+    ],
+  },
 ];
 
 /**
@@ -243,7 +429,9 @@ router.post("/create-customer-master-tables", async (req, res) => {
   try {
     const results = [];
 
-    console.log("🏗️  Creating Customer Master Import tables for NMI upgrade...");
+    console.log(
+      "🏗️  Creating Customer Master Import tables for NMI upgrade...",
+    );
 
     for (const table of CUSTOMER_MASTER_TABLES) {
       try {
@@ -292,7 +480,7 @@ router.post("/create-customer-master-tables", async (req, res) => {
         "Data quality scoring & enrichment",
         "War Chest migration status tracking",
         "Complete audit trail for GDPR compliance",
-        "Batch import processing with progress tracking"
+        "Batch import processing with progress tracking",
       ],
     });
   } catch (error: any) {
@@ -320,19 +508,19 @@ router.post("/seed-customer-data", async (req, res) => {
           city: "New York",
           state: "NY",
           zipCode: "10001",
-          country: "US"
+          country: "US",
         },
         kycStatus: "verified",
         consentToEmail: true,
         consentToSMS: true,
         customerSince: "2022-01-15T00:00:00Z",
-        totalLifetimeValue: 2500.00,
+        totalLifetimeValue: 2500.0,
         totalTransactions: 25,
         fraudScore: 15,
         riskTier: "low",
         dataQualityScore: 95,
         tags: ["high_value", "verified_low_risk"],
-        importSource: "war_chest"
+        importSource: "war_chest",
       },
       {
         customerId: "WC-000002",
@@ -345,19 +533,19 @@ router.post("/seed-customer-data", async (req, res) => {
           city: "Los Angeles",
           state: "CA",
           zipCode: "90210",
-          country: "US"
+          country: "US",
         },
         kycStatus: "pending",
         consentToEmail: true,
         consentToSMS: false,
         customerSince: "2023-03-20T00:00:00Z",
-        totalLifetimeValue: 850.00,
+        totalLifetimeValue: 850.0,
         totalTransactions: 8,
         fraudScore: 25,
         riskTier: "low",
         dataQualityScore: 78,
         tags: ["recent_customer"],
-        importSource: "war_chest"
+        importSource: "war_chest",
       },
       {
         customerId: "WC-000003",
@@ -371,22 +559,22 @@ router.post("/seed-customer-data", async (req, res) => {
           city: "Chicago",
           state: "IL",
           zipCode: "60601",
-          country: "US"
+          country: "US",
         },
         kycStatus: "verified",
         consentToEmail: true,
         consentToSMS: true,
         consentToAutoDialer: true,
         customerSince: "2021-11-10T00:00:00Z",
-        totalLifetimeValue: 15600.00,
+        totalLifetimeValue: 15600.0,
         totalTransactions: 156,
         fraudScore: 5,
         chargebackHistory: 0,
         riskTier: "low",
         dataQualityScore: 98,
         tags: ["high_value", "frequent_customer", "verified_low_risk"],
-        importSource: "war_chest"
-      }
+        importSource: "war_chest",
+      },
     ];
 
     const results = [];
@@ -399,12 +587,12 @@ router.post("/seed-customer-data", async (req, res) => {
         customer.version = 1;
 
         const result = await xanoAPI.createRecord("customer_master", customer);
-        
+
         results.push({
           customerId: customer.customerId,
           status: "created",
           xanoId: result.id,
-          dataQualityScore: customer.dataQualityScore
+          dataQualityScore: customer.dataQualityScore,
         });
       } catch (error: any) {
         results.push({
@@ -442,7 +630,7 @@ router.get("/health-check", async (req, res) => {
         highRiskCustomers: 0,
         activeBatches: 0,
         totalBatches: 0,
-        averageDataQuality: 0
+        averageDataQuality: 0,
       },
     };
 
@@ -458,21 +646,30 @@ router.get("/health-check", async (req, res) => {
         // Update summary
         if (table.name === "customer_master") {
           health.summary.totalCustomers = records.length;
-          health.summary.verifiedCustomers = records.filter((c: any) => c.kycStatus === "verified").length;
-          health.summary.highQualityCustomers = records.filter((c: any) => (c.dataQualityScore || 0) >= 80).length;
-          health.summary.highRiskCustomers = records.filter((c: any) => c.riskTier === "high").length;
-          
+          health.summary.verifiedCustomers = records.filter(
+            (c: any) => c.kycStatus === "verified",
+          ).length;
+          health.summary.highQualityCustomers = records.filter(
+            (c: any) => (c.dataQualityScore || 0) >= 80,
+          ).length;
+          health.summary.highRiskCustomers = records.filter(
+            (c: any) => c.riskTier === "high",
+          ).length;
+
           if (records.length > 0) {
             health.summary.averageDataQuality = Math.round(
-              records.reduce((sum: number, c: any) => sum + (c.dataQualityScore || 0), 0) / records.length
+              records.reduce(
+                (sum: number, c: any) => sum + (c.dataQualityScore || 0),
+                0,
+              ) / records.length,
             );
           }
         }
-        
+
         if (table.name === "import_batches") {
           health.summary.totalBatches = records.length;
-          health.summary.activeBatches = records.filter((b: any) => 
-            b.status === "processing" || b.status === "pending"
+          health.summary.activeBatches = records.filter(
+            (b: any) => b.status === "processing" || b.status === "pending",
           ).length;
         }
       } catch (error) {
