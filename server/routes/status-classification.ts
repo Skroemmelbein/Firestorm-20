@@ -483,7 +483,7 @@ export const batchClassifyClients: RequestHandler = async (req, res) => {
       success: true,
       total_processed: clients.length,
       successful_classifications: results.length,
-      errors: errors.length,
+      errorCount: errors.length,
       results,
       errors: errors.slice(0, 10), // Limit error details
       timestamp: new Date().toISOString(),
