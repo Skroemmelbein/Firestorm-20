@@ -137,10 +137,31 @@ router.post("/test-payment", async (req, res) => {
     } else {
       console.log("❌ Test payment failed:", result.responseText);
 
+      // Handle specific NMI error cases
+      let errorMessage = result.responseText || 'Payment declined';
+      let suggestion = '';
+
+      if (result.responseText?.includes('Activity limit exceeded')) {
+        errorMessage = 'NMI Activity Limit Exceeded';
+        suggestion = 'Too many test transactions. Wait a few minutes or contact NMI support to increase limits.';
+      } else if (result.responseText?.includes('Invalid credentials')) {
+        errorMessage = 'Invalid NMI Credentials';
+        suggestion = 'Check your NMI username and password in the configuration.';
+      } else if (result.responseText?.includes('Invalid card')) {
+        errorMessage = 'Invalid Test Card';
+        suggestion = 'The test card number may not be valid for your NMI configuration.';
+      }
+
       res.status(400).json({
         success: false,
-        message: result.responseText || "Payment declined",
+        message: errorMessage,
+        suggestion: suggestion,
         transaction: result,
+        nmi_response: {
+          code: result.responseCode,
+          text: result.responseText,
+          transaction_id: result.transactionId
+        }
       });
     }
   } catch (error: any) {
