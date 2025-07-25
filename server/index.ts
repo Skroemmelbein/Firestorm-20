@@ -74,16 +74,18 @@ app.use("*", (req, res) => {
   });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 RecurFlow Enterprise API Server running on port ${PORT}`);
-  console.log(`📱 Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log(`🏗️  NMI Upgrade Project APIs mounted and ready`);
-});
-
 // Export for Vite
 export function createServer() {
   return app;
+}
+
+// Only start server if this file is run directly (not imported)
+if (import.meta.url === `file://${process.argv[1]}`) {
+  app.listen(PORT, () => {
+    console.log(`🚀 RecurFlow Enterprise API Server running on port ${PORT}`);
+    console.log(`📱 Environment: ${process.env.NODE_ENV || "development"}`);
+    console.log(`🏗️  NMI Upgrade Project APIs mounted and ready`);
+  });
 }
 
 export default app;
