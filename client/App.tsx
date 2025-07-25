@@ -68,6 +68,12 @@ export default function App() {
                 <Route path="/twilio-vault" element={<TwilioVault />} />
                 <Route path="/test" element={<TestModule />} />
                 <Route path="/settings" element={<Integrations />} />
+                <Route path="/settings/nmi" element={<BillingLogic />} />
+                <Route path="/billing/gateway" element={<BillingLogic />} />
+                <Route path="/billing/logs" element={<BillingLogic />} />
+                <Route path="/admin/sync-status" element={<AdminDashboard />} />
+                <Route path="/admin/sync" element={<AdminDashboard />} />
+                <Route path="/admin/tables" element={<AdminDashboard />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
