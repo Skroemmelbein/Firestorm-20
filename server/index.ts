@@ -80,4 +80,9 @@ app.listen(PORT, () => {
   console.log(`🏗️  NMI Upgrade Project APIs mounted and ready`);
 });
 
+// Export for Vite
+export function createServer() {
+  return app;
+}
+
 export default app;
