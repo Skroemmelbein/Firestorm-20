@@ -58,6 +58,7 @@ import xanoSubscriptionTablesRouter from "./routes/xano-subscription-tables";
 import subscriptionManagementRouter from "./routes/subscription-management";
 import billingXanoModelsRouter from "./routes/billing-xano-models";
 import billingPaymentsRouter from "./routes/billing-payments";
+import billingRetryLogicRouter from "./routes/billing-retry-logic";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
@@ -252,6 +253,9 @@ export function createServer() {
 
   // High-approval billing payment processing
   app.use("/api/billing", billingPaymentsRouter);
+
+  // Billing retry and descriptor policy logic
+  app.use("/api/billing-retry", billingRetryLogicRouter);
 
   return app;
 }
