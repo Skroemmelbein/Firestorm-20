@@ -25,6 +25,7 @@ import {
   Send,
   TrendingUp,
   Upload,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
