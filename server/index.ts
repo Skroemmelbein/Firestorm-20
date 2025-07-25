@@ -66,6 +66,9 @@ import quickSetupRouter from "./routes/quick-setup";
 import nmiStatusCheckRouter from "./routes/nmi-status-check";
 import nmiTestPaymentRouter from "./routes/nmi-test-payment";
 import { startWarChestImport, getImportProgress, getImportStatus } from "./routes/war-chest-import";
+import { classifyClientStatus, batchClassifyClients, getClassificationStats, validateClassificationRules } from "./routes/status-classification";
+import { startLegacyVaultMigration, getLegacyMigrationProgress, validateLegacyTokens, getMigrationStats } from "./routes/nmi-legacy-integration";
+import { startTransactionLogMigration, getTransactionMigrationProgress, getTransactionMigrationStats } from "./routes/transaction-log-migration";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
