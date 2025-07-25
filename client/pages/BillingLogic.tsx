@@ -118,6 +118,15 @@ export default function BillingLogic() {
   const [nmiConnectionStatus, setNmiConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected' | 'error'>('disconnected');
   const [xanoSyncStatus, setXanoSyncStatus] = useState<'idle' | 'syncing' | 'completed' | 'error'>('idle');
 
+  // Transaction logs state
+  const [transactionLogs, setTransactionLogs] = useState<any[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+  const [logQuery, setLogQuery] = useState({
+    start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    end_date: new Date().toISOString().split('T')[0],
+    limit: 50
+  });
+
   const testNmiConnection = async () => {
     setNmiConnectionStatus('connecting');
 
@@ -222,6 +231,29 @@ export default function BillingLogic() {
     }
   };
 
+  const fetchTransactionLogs = async () => {
+    setLoadingLogs(true);
+    try {
+      const response = await fetch('/api/nmi-logs/get-transaction-logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(logQuery)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setTransactionLogs(result.transactions || []);
+      } else {
+        alert(`Failed to fetch logs: ${result.message}`);
+      }
+    } catch (error: any) {
+      alert(`Error fetching logs: ${error.message}`);
+    } finally {
+      setLoadingLogs(false);
+    }
+  };
+
   const StatusIndicator = ({ status }: { status: string }) => {
     const config = {
       connected: { color: 'text-green-500', icon: CheckCircle },
@@ -239,6 +271,33 @@ export default function BillingLogic() {
     return (
       <Icon className={cn('w-4 h-4', color, isSpinning && 'animate-spin')} />
     );
+  };
+
+  const generateCSV = (transactions: any[]) => {
+    const headers = ['Transaction ID', 'Order ID', 'Amount', 'Status', 'Response Code', 'Response Text', 'Date', 'Card Type', 'Card Last 4'];
+    const rows = transactions.map(t => [
+      t.transaction_id,
+      t.order_id,
+      t.formatted_amount,
+      t.response_category,
+      t.gateway_response.response_code,
+      t.gateway_response.response_text,
+      t.formatted_date,
+      t.card_type,
+      t.card_last_four
+    ]);
+
+    return [headers, ...rows].map(row => row.map(field => `"${field}"`).join(',')).join('\n');
+  };
+
+  const downloadCSV = (csv: string, filename: string) => {
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -259,7 +318,7 @@ export default function BillingLogic() {
         </div>
 
         <Tabs defaultValue="nmi-setup" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="nmi-setup" className="gap-2">
               <CreditCard className="w-4 h-4" />
               NMI Setup
@@ -267,6 +326,10 @@ export default function BillingLogic() {
             <TabsTrigger value="test-payment" className="gap-2">
               <Play className="w-4 h-4" />
               Test $1
+            </TabsTrigger>
+            <TabsTrigger value="transaction-logs" className="gap-2">
+              <BarChart3 className="w-4 h-4" />
+              NMI Logs
             </TabsTrigger>
             <TabsTrigger value="billing-plans" className="gap-2">
               <DollarSign className="w-4 h-4" />
@@ -562,6 +625,131 @@ export default function BillingLogic() {
                       </div>
                     </CardContent>
                   </Card>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Transaction Logs Tab */}
+          <TabsContent value="transaction-logs" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  NMI Transaction Logs
+                </CardTitle>
+                <CardDescription>
+                  Retrieve and analyze transaction logs directly from NMI
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Query Controls */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
+                  <div className="space-y-2">
+                    <Label>Start Date</Label>
+                    <Input
+                      type="date"
+                      value={logQuery.start_date}
+                      onChange={(e) => setLogQuery(prev => ({ ...prev, start_date: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>End Date</Label>
+                    <Input
+                      type="date"
+                      value={logQuery.end_date}
+                      onChange={(e) => setLogQuery(prev => ({ ...prev, end_date: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Limit</Label>
+                    <Input
+                      type="number"
+                      value={logQuery.limit}
+                      onChange={(e) => setLogQuery(prev => ({ ...prev, limit: parseInt(e.target.value) }))}
+                      min="1"
+                      max="1000"
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <Button
+                      onClick={fetchTransactionLogs}
+                      disabled={loadingLogs}
+                      className="w-full"
+                    >
+                      {loadingLogs ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                          Loading...
+                        </>
+                      ) : (
+                        <>
+                          <Download className="w-4 h-4 mr-2" />
+                          Get Logs
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Transaction Logs Display */}
+                {transactionLogs.length > 0 ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">Found {transactionLogs.length} transactions</h4>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const csv = generateCSV(transactionLogs);
+                          downloadCSV(csv, 'nmi-transactions.csv');
+                        }}
+                      >
+                        <Download className="w-3 h-3 mr-1" />
+                        Export CSV
+                      </Button>
+                    </div>
+
+                    <div className="max-h-96 overflow-y-auto border rounded-lg">
+                      {transactionLogs.map((transaction, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 border-b last:border-b-0">
+                          <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-3 text-sm">
+                            <div>
+                              <div className="font-medium">{transaction.transaction_id}</div>
+                              <div className="text-gray-500">{transaction.order_id}</div>
+                            </div>
+                            <div>
+                              <div className="font-medium">{transaction.formatted_amount}</div>
+                              <div className="text-gray-500">{transaction.card_type} ••••{transaction.card_last_four}</div>
+                            </div>
+                            <div>
+                              <Badge
+                                variant={transaction.is_approved ? "default" : "destructive"}
+                                className={transaction.is_approved ? "bg-green-100 text-green-800" : ""}
+                              >
+                                {transaction.response_category}
+                              </Badge>
+                              <div className="text-gray-500 mt-1">Code: {transaction.gateway_response.response_code}</div>
+                            </div>
+                            <div>
+                              <div className="text-gray-500">{transaction.formatted_date}</div>
+                              <div className="text-gray-500">{transaction.type}</div>
+                            </div>
+                            <div className="text-right">
+                              <Button variant="ghost" size="sm">
+                                <Eye className="w-3 h-3 mr-1" />
+                                Details
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    {loadingLogs ? 'Loading transaction logs...' : 'No transaction logs found. Click "Get Logs" to fetch from NMI.'}
+                  </div>
                 )}
               </CardContent>
             </Card>
