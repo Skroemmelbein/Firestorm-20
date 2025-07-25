@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 // Load environment variables
 dotenv.config();
 
-// Import all route modules
+// Import existing route modules
 import apiIntegrationsRouter from "./routes/api-integrations";
 import autoNotifyRouter from "./routes/auto-notify";
 import billingAnalyticsRouter from "./routes/billing-analytics";
@@ -14,33 +14,7 @@ import billingRetryLogicRouter from "./routes/billing-retry-logic";
 import billingTokenizationRouter from "./routes/billing-tokenization";
 import billingXanoModelsRouter from "./routes/billing-xano-models";
 import conversationsApiRouter from "./routes/conversations-api";
-import customersRouter from "./routes/customers";
-import dataValidationRouter from "./routes/data-validation";
-import debugApiRouter from "./routes/debug-api";
-import fraudDetectionRouter from "./routes/fraud-detection";
-import kycManagementRouter from "./routes/kyc-management";
-import leadScoringRouter from "./routes/lead-scoring";
-import memberBenefitsRouter from "./routes/member-benefits";
-import nmiAdvancedRouter from "./routes/nmi-advanced";
-import nmiGatewayRouter from "./routes/nmi-gateway";
-import nmiRecurringRouter from "./routes/nmi-recurring";
-import nmiWebhooksRouter from "./routes/nmi-webhooks";
-import notificationWorkflowsRouter from "./routes/notification-workflows";
-import paymentOptimizationRouter from "./routes/payment-optimization";
-import quickBooksRouter from "./routes/quickbooks";
-import recurlyIntegrationRouter from "./routes/recurly-integration";
-import sendgridIntegrationRouter from "./routes/sendgrid-integration";
-import smsManagementRouter from "./routes/sms-management";
-import stripeIntegrationRouter from "./routes/stripe-integration";
 import subscriptionManagementRouter from "./routes/subscription-management";
-import supportTicketsRouter from "./routes/support-tickets";
-import systemHealthRouter from "./routes/system-health";
-import telephonyRouter from "./routes/telephony";
-import twilioIntegrationRouter from "./routes/twilio-integration";
-import userManagementRouter from "./routes/user-management";
-import voiceManagementRouter from "./routes/voice-management";
-import webhookProcessingRouter from "./routes/webhook-processing";
-import xanoBuilderRouter from "./routes/xano-builder";
 
 // NMI Upgrade Project Routes
 import warChestImportRouter from "./routes/war-chest-import";
@@ -54,6 +28,30 @@ import customerMasterXanoTablesRouter from "./routes/customer-master-xano-tables
 import consentTosImportRouter from "./routes/consent-tos-import";
 import consentTosXanoTablesRouter from "./routes/consent-tos-xano-tables";
 import descriptorHistoryImportRouter from "./routes/descriptor-history-import";
+
+// Other existing routes
+import demoRouter from "./routes/demo";
+import environmentScannerRouter from "./routes/environment-scanner";
+import integrationsConfigRouter from "./routes/integrations-config";
+import nmiIntegrationRouter from "./routes/nmi-integration";
+import nmiStatusCheckRouter from "./routes/nmi-status-check";
+import nmiTestPaymentRouter from "./routes/nmi-test-payment";
+import nmiTransactionLogsRouter from "./routes/nmi-transaction-logs";
+import progressNotifierRouter from "./routes/progress-notifier";
+import quickSetupRouter from "./routes/quick-setup";
+import rcsApiRouter from "./routes/rcs-api";
+import realApiRouter from "./routes/real-api";
+import smsApiRouter from "./routes/sms-api";
+import studioFlowsRouter from "./routes/studio-flows";
+import testSendgridRouter from "./routes/test-sendgrid";
+import testSmsRouter from "./routes/test-sms";
+import testTwilioRouter from "./routes/test-twilio";
+import testXanoRouter from "./routes/test-xano";
+import twilioSidDiscoveryRouter from "./routes/twilio-sid-discovery";
+import twilioVaultRouter from "./routes/twilio-vault";
+import xanoSetupRouter from "./routes/xano-setup";
+import xanoSubscriptionTablesRouter from "./routes/xano-subscription-tables";
+import xanoTableSetupRouter from "./routes/xano-table-setup";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -82,33 +80,7 @@ app.use("/api/billing-retry-logic", billingRetryLogicRouter);
 app.use("/api/billing-tokenization", billingTokenizationRouter);
 app.use("/api/billing-xano-models", billingXanoModelsRouter);
 app.use("/api/conversations", conversationsApiRouter);
-app.use("/api/customers", customersRouter);
-app.use("/api/data-validation", dataValidationRouter);
-app.use("/api/debug", debugApiRouter);
-app.use("/api/fraud-detection", fraudDetectionRouter);
-app.use("/api/kyc-management", kycManagementRouter);
-app.use("/api/lead-scoring", leadScoringRouter);
-app.use("/api/member-benefits", memberBenefitsRouter);
-app.use("/api/nmi-advanced", nmiAdvancedRouter);
-app.use("/api/nmi-gateway", nmiGatewayRouter);
-app.use("/api/nmi-recurring", nmiRecurringRouter);
-app.use("/api/nmi-webhooks", nmiWebhooksRouter);
-app.use("/api/notification-workflows", notificationWorkflowsRouter);
-app.use("/api/payment-optimization", paymentOptimizationRouter);
-app.use("/api/quickbooks", quickBooksRouter);
-app.use("/api/recurly-integration", recurlyIntegrationRouter);
-app.use("/api/sendgrid-integration", sendgridIntegrationRouter);
-app.use("/api/sms-management", smsManagementRouter);
-app.use("/api/stripe-integration", stripeIntegrationRouter);
 app.use("/api/subscription-management", subscriptionManagementRouter);
-app.use("/api/support-tickets", supportTicketsRouter);
-app.use("/api/system-health", systemHealthRouter);
-app.use("/api/telephony", telephonyRouter);
-app.use("/api/twilio-integration", twilioIntegrationRouter);
-app.use("/api/user-management", userManagementRouter);
-app.use("/api/voice-management", voiceManagementRouter);
-app.use("/api/webhook-processing", webhookProcessingRouter);
-app.use("/api/xano-builder", xanoBuilderRouter);
 
 // NMI Upgrade Project API Routes
 app.use("/api/war-chest-import", warChestImportRouter);
@@ -123,14 +95,37 @@ app.use("/api/consent-tos-import", consentTosImportRouter);
 app.use("/api/consent-tos-xano-tables", consentTosXanoTablesRouter);
 app.use("/api/descriptor-history-import", descriptorHistoryImportRouter);
 
+// Other API Routes
+app.use("/api/demo", demoRouter);
+app.use("/api/environment-scanner", environmentScannerRouter);
+app.use("/api/integrations-config", integrationsConfigRouter);
+app.use("/api/nmi-integration", nmiIntegrationRouter);
+app.use("/api/nmi-status-check", nmiStatusCheckRouter);
+app.use("/api/nmi-test-payment", nmiTestPaymentRouter);
+app.use("/api/nmi-transaction-logs", nmiTransactionLogsRouter);
+app.use("/api/progress-notifier", progressNotifierRouter);
+app.use("/api/quick-setup", quickSetupRouter);
+app.use("/api/rcs-api", rcsApiRouter);
+app.use("/api/real-api", realApiRouter);
+app.use("/api/sms-api", smsApiRouter);
+app.use("/api/studio-flows", studioFlowsRouter);
+app.use("/api/test-sendgrid", testSendgridRouter);
+app.use("/api/test-sms", testSmsRouter);
+app.use("/api/test-twilio", testTwilioRouter);
+app.use("/api/test-xano", testXanoRouter);
+app.use("/api/twilio-sid-discovery", twilioSidDiscoveryRouter);
+app.use("/api/twilio-vault", twilioVaultRouter);
+app.use("/api/xano-setup", xanoSetupRouter);
+app.use("/api/xano-subscription-tables", xanoSubscriptionTablesRouter);
+app.use("/api/xano-table-setup", xanoTableSetupRouter);
+
 // Global error handler
 app.use((err: any, req: any, res: any, next: any) => {
   console.error("Unhandled error:", err);
   res.status(500).json({
     success: false,
     message: "Internal server error",
-    error:
-      process.env.NODE_ENV === "development" ? err.message : "Server error",
+    error: process.env.NODE_ENV === "development" ? err.message : "Server error",
   });
 });
 
