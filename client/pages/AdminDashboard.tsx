@@ -50,6 +50,7 @@ import SendGridTest from "@/components/SendGridTest";
 import XanoTableManager from "@/components/XanoTableManager";
 import SkinCustomizer from "@/components/SkinCustomizer";
 import RCSManager from "@/components/RCSManager";
+import WarChestImportManager from "@/components/WarChestImportManager";
 
 interface TableUpload {
   id: string;
