@@ -290,5 +290,10 @@ export function createServer() {
   // NMI test payment and connection validation
   app.use("/api/nmi", nmiTestPaymentRouter);
 
+  // War Chest Import Engine - 65K client migration
+  app.post("/api/war-chest-import/start", startWarChestImport);
+  app.get("/api/war-chest-import/progress/:batchId", getImportProgress);
+  app.get("/api/war-chest-import/status", getImportStatus);
+
   return app;
 }
