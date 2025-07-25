@@ -342,7 +342,7 @@ router.get("/members/:id/benefits", async (req, res) => {
 
 router.post("/benefits", async (req, res) => {
   try {
-    const xano = getXanoClient();
+    const xano = getXanoClientSafe();
     const benefit = await xano.createBenefit(req.body);
     res.json(benefit);
   } catch (error) {
@@ -353,7 +353,7 @@ router.post("/benefits", async (req, res) => {
 
 router.post("/benefits/:id/use", async (req, res) => {
   try {
-    const xano = getXanoClient();
+    const xano = getXanoClientSafe();
     const { member_id, usage_details } = req.body;
 
     await xano.useBenefit(member_id, parseInt(req.params.id), usage_details);
@@ -445,7 +445,7 @@ router.post("/email/send", async (req, res) => {
 // Voice API
 router.post("/voice/call", async (req, res) => {
   try {
-    const twilio = getTwilioClient();
+    const twilio = getTwilioClientSafe();
     const { to, from, url, twiml } = req.body;
 
     const result = await twilio.makeCall({
@@ -465,7 +465,7 @@ router.post("/voice/call", async (req, res) => {
 // Communications API
 router.get("/communications", async (req, res) => {
   try {
-    const xano = getXanoClient();
+    const xano = getXanoClientSafe();
     const { member_id, channel, direction, limit } = req.query;
 
     const communications = await xano.getCommunications({
@@ -485,7 +485,7 @@ router.get("/communications", async (req, res) => {
 // Analytics API
 router.get("/analytics/dashboard", async (req, res) => {
   try {
-    const xano = getXanoClient();
+    const xano = getXanoClientSafe();
     const stats = await xano.getDashboardStats();
     res.json(stats);
   } catch (error) {
@@ -497,7 +497,7 @@ router.get("/analytics/dashboard", async (req, res) => {
 // Twilio Webhooks
 router.post("/webhooks/twilio/incoming", async (req, res) => {
   try {
-    const twilio = getTwilioClient();
+    const twilio = getTwilioClientSafe();
     await twilio.handleIncomingSMS(req.body);
     res.status(200).send("OK");
   } catch (error) {
@@ -508,7 +508,7 @@ router.post("/webhooks/twilio/incoming", async (req, res) => {
 
 router.post("/webhooks/twilio/status", async (req, res) => {
   try {
-    const twilio = getTwilioClient();
+    const twilio = getTwilioClientSafe();
     await twilio.handleStatusWebhook(req.body);
     res.status(200).send("OK");
   } catch (error) {
