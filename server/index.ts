@@ -94,6 +94,14 @@ export function createServer() {
     "XANO_DATABASE_ID:",
     process.env.XANO_DATABASE_ID ? "PRESENT" : "MISSING",
   );
+  console.log(
+    "NMI_USERNAME:",
+    process.env.NMI_USERNAME ? "PRESENT" : "MISSING",
+  );
+  console.log(
+    "NMI_PASSWORD:",
+    process.env.NMI_PASSWORD ? "PRESENT" : "MISSING",
+  );
 
   // Initialize real integrations with environment variables - NO MOCKS
   if (
