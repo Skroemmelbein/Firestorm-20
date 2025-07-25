@@ -56,6 +56,7 @@ import environmentScannerRouter from "./routes/environment-scanner";
 import nmiIntegrationRouter from "./routes/nmi-integration";
 import xanoSubscriptionTablesRouter from "./routes/xano-subscription-tables";
 import subscriptionManagementRouter from "./routes/subscription-management";
+import billingXanoModelsRouter from "./routes/billing-xano-models";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
@@ -244,6 +245,9 @@ export function createServer() {
 
   // Subscription management routes
   app.use("/api/subscriptions", subscriptionManagementRouter);
+
+  // High-approval billing stack models
+  app.use("/api/billing-stack", billingXanoModelsRouter);
 
   return app;
 }
