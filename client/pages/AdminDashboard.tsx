@@ -865,7 +865,9 @@ export default function AdminDashboard() {
 
                     <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                       <div>
-                        <div className="font-medium">Payment Methods Updated</div>
+                        <div className="font-medium">
+                          Payment Methods Updated
+                        </div>
                         <div className="text-sm text-muted-foreground">
                           71 cards synchronized
                         </div>
@@ -877,9 +879,7 @@ export default function AdminDashboard() {
 
                     <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                       <div>
-                        <div className="font-medium">
-                          Billing Transactions
-                        </div>
+                        <div className="font-medium">Billing Transactions</div>
                         <div className="text-sm text-muted-foreground">
                           Recent billing records
                         </div>
@@ -932,37 +932,61 @@ export default function AdminDashboard() {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center p-4 bg-muted/30 rounded-lg">
-                      <div className="text-2xl font-bold text-green-600">98.7%</div>
-                      <div className="text-sm text-muted-foreground">Success Rate</div>
+                      <div className="text-2xl font-bold text-green-600">
+                        98.7%
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Success Rate
+                      </div>
                     </div>
                     <div className="text-center p-4 bg-muted/30 rounded-lg">
-                      <div className="text-2xl font-bold text-blue-600">1.2s</div>
-                      <div className="text-sm text-muted-foreground">Avg Sync Time</div>
+                      <div className="text-2xl font-bold text-blue-600">
+                        1.2s
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Avg Sync Time
+                      </div>
                     </div>
                     <div className="text-center p-4 bg-muted/30 rounded-lg">
-                      <div className="text-2xl font-bold text-purple-600">2,847</div>
-                      <div className="text-sm text-muted-foreground">Records/Hour</div>
+                      <div className="text-2xl font-bold text-purple-600">
+                        2,847
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Records/Hour
+                      </div>
                     </div>
                     <div className="text-center p-4 bg-muted/30 rounded-lg">
-                      <div className="text-2xl font-bold text-orange-600">15m</div>
-                      <div className="text-sm text-muted-foreground">Last Sync</div>
+                      <div className="text-2xl font-bold text-orange-600">
+                        15m
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Last Sync
+                      </div>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <div className="text-sm font-medium">Recent Sync Operations</div>
+                    <div className="text-sm font-medium">
+                      Recent Sync Operations
+                    </div>
                     <div className="space-y-2 max-h-40 overflow-y-auto">
                       <div className="flex items-center justify-between text-sm p-2 bg-muted/20 rounded">
                         <span>Warchest → Billing</span>
-                        <Badge className="bg-green-500/10 text-green-600 text-xs">Complete</Badge>
+                        <Badge className="bg-green-500/10 text-green-600 text-xs">
+                          Complete
+                        </Badge>
                       </div>
                       <div className="flex items-center justify-between text-sm p-2 bg-muted/20 rounded">
                         <span>NMI Vault → Payments</span>
-                        <Badge variant="outline" className="text-xs">In Progress</Badge>
+                        <Badge variant="outline" className="text-xs">
+                          In Progress
+                        </Badge>
                       </div>
                       <div className="flex items-center justify-between text-sm p-2 bg-muted/20 rounded">
                         <span>Chargebacks → Fortress</span>
-                        <Badge className="bg-green-500/10 text-green-600 text-xs">Complete</Badge>
+                        <Badge className="bg-green-500/10 text-green-600 text-xs">
+                          Complete
+                        </Badge>
                       </div>
                     </div>
                   </div>

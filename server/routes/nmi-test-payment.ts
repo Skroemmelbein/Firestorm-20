@@ -21,7 +21,7 @@ const rateLimiter = {
       if (timeSinceLastRequest < this.backoffTime) {
         return {
           allowed: false,
-          waitTime: this.backoffTime - timeSinceLastRequest
+          waitTime: this.backoffTime - timeSinceLastRequest,
         };
       }
     }
@@ -30,7 +30,7 @@ const rateLimiter = {
     if (timeSinceLastRequest < this.minInterval) {
       return {
         allowed: false,
-        waitTime: this.minInterval - timeSinceLastRequest
+        waitTime: this.minInterval - timeSinceLastRequest,
       };
     }
 
@@ -47,7 +47,7 @@ const rateLimiter = {
 
   recordSuccess() {
     this.failureCount = Math.max(0, this.failureCount - 1);
-  }
+  },
 };
 
 // NMI Configuration
@@ -86,7 +86,7 @@ router.post("/test-connection", async (req, res) => {
     if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: "Username and password are required"
+        message: "Username and password are required",
       });
     }
 
@@ -98,7 +98,9 @@ router.post("/test-connection", async (req, res) => {
         success: false,
         message: `Rate limit exceeded. Please wait ${waitMinutes} minute(s) before trying again.`,
         waitTime: rateLimitCheck.waitTime,
-        retryAfter: new Date(Date.now() + rateLimitCheck.waitTime).toISOString()
+        retryAfter: new Date(
+          Date.now() + rateLimitCheck.waitTime,
+        ).toISOString(),
       });
     }
 
@@ -107,7 +109,7 @@ router.post("/test-connection", async (req, res) => {
       username: username,
       password: password,
       type: "validate",
-      amount: "0.00"
+      amount: "0.00",
     });
 
     console.log("🔍 Testing NMI connection validation...");
@@ -124,7 +126,9 @@ router.post("/test-connection", async (req, res) => {
 
     if (!response.ok) {
       rateLimiter.recordFailure();
-      throw new Error(`NMI API returned ${response.status}: ${response.statusText}`);
+      throw new Error(
+        `NMI API returned ${response.status}: ${response.statusText}`,
+      );
     }
 
     const responseText = await response.text();
@@ -135,29 +139,36 @@ router.post("/test-connection", async (req, res) => {
     console.log("📝 NMI Connection Response:", responseText);
 
     // Check for specific error conditions
-    if (responseTextValue.toLowerCase().includes('activity limit exceeded') || responseCode === '203') {
+    if (
+      responseTextValue.toLowerCase().includes("activity limit exceeded") ||
+      responseCode === "203"
+    ) {
       rateLimiter.recordFailure();
       return res.status(429).json({
         success: false,
         message: "NMI Activity Limit Exceeded",
-        suggestion: "Your NMI account has reached its activity limit. Please wait 30 minutes or contact NMI support to increase limits.",
+        suggestion:
+          "Your NMI account has reached its activity limit. Please wait 30 minutes or contact NMI support to increase limits.",
         waitTime: 30 * 60 * 1000, // 30 minutes
         nmi_response: {
           code: responseCode,
-          text: responseTextValue
-        }
+          text: responseTextValue,
+        },
       });
     }
 
-    if (responseTextValue.toLowerCase().includes('invalid') && responseTextValue.toLowerCase().includes('login')) {
+    if (
+      responseTextValue.toLowerCase().includes("invalid") &&
+      responseTextValue.toLowerCase().includes("login")
+    ) {
       return res.status(401).json({
         success: false,
         message: "Invalid NMI Credentials",
         suggestion: "Please check your NMI username and password.",
         nmi_response: {
           code: responseCode,
-          text: responseTextValue
-        }
+          text: responseTextValue,
+        },
       });
     }
 
@@ -168,11 +179,10 @@ router.post("/test-connection", async (req, res) => {
       message: "NMI connection validated successfully",
       nmi_response: {
         code: responseCode,
-        text: responseTextValue
+        text: responseTextValue,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error: any) {
     console.error("💥 NMI connection test error:", error);
     rateLimiter.recordFailure();
@@ -199,9 +209,12 @@ router.post("/test-payment", async (req, res) => {
       return res.status(429).json({
         success: false,
         message: `Rate limit exceeded. Please wait ${waitMinutes} minute(s) before trying again.`,
-        suggestion: "Too many requests to NMI. This helps prevent activity limit errors.",
+        suggestion:
+          "Too many requests to NMI. This helps prevent activity limit errors.",
         waitTime: rateLimitCheck.waitTime,
-        retryAfter: new Date(Date.now() + rateLimitCheck.waitTime).toISOString()
+        retryAfter: new Date(
+          Date.now() + rateLimitCheck.waitTime,
+        ).toISOString(),
       });
     }
 
@@ -313,22 +326,33 @@ router.post("/test-payment", async (req, res) => {
       console.log("❌ Test payment failed:", result.responseText);
 
       // Handle specific NMI error cases
-      let errorMessage = result.responseText || 'Payment declined';
-      let suggestion = '';
+      let errorMessage = result.responseText || "Payment declined";
+      let suggestion = "";
       let statusCode = 400;
 
-      if (result.responseText?.toLowerCase().includes('activity limit exceeded') || result.responseCode === '203') {
+      if (
+        result.responseText
+          ?.toLowerCase()
+          .includes("activity limit exceeded") ||
+        result.responseCode === "203"
+      ) {
         rateLimiter.recordFailure();
-        errorMessage = 'NMI Activity Limit Exceeded';
-        suggestion = 'Your NMI account has reached its activity limit. Please wait 30 minutes or contact NMI support to increase limits.';
+        errorMessage = "NMI Activity Limit Exceeded";
+        suggestion =
+          "Your NMI account has reached its activity limit. Please wait 30 minutes or contact NMI support to increase limits.";
         statusCode = 429;
-      } else if (result.responseText?.toLowerCase().includes('invalid credentials') || result.responseText?.toLowerCase().includes('invalid login')) {
-        errorMessage = 'Invalid NMI Credentials';
-        suggestion = 'Check your NMI username and password in the configuration.';
+      } else if (
+        result.responseText?.toLowerCase().includes("invalid credentials") ||
+        result.responseText?.toLowerCase().includes("invalid login")
+      ) {
+        errorMessage = "Invalid NMI Credentials";
+        suggestion =
+          "Check your NMI username and password in the configuration.";
         statusCode = 401;
-      } else if (result.responseText?.toLowerCase().includes('invalid card')) {
-        errorMessage = 'Invalid Test Card';
-        suggestion = 'The test card number may not be valid for your NMI configuration.';
+      } else if (result.responseText?.toLowerCase().includes("invalid card")) {
+        errorMessage = "Invalid Test Card";
+        suggestion =
+          "The test card number may not be valid for your NMI configuration.";
       } else {
         // Other failures might be temporary, so record for backoff
         rateLimiter.recordFailure();
@@ -342,8 +366,8 @@ router.post("/test-payment", async (req, res) => {
         nmi_response: {
           code: result.responseCode,
           text: result.responseText,
-          transaction_id: result.transactionId
-        }
+          transaction_id: result.transactionId,
+        },
       });
     }
   } catch (error: any) {
@@ -369,8 +393,10 @@ router.get("/rate-limit-status", (req, res) => {
     canMakeRequest: rateLimitCheck.allowed,
     waitTime: rateLimitCheck.waitTime,
     failureCount: rateLimiter.failureCount,
-    nextAvailableTime: rateLimitCheck.allowed ? null : new Date(Date.now() + rateLimitCheck.waitTime).toISOString(),
-    minInterval: rateLimiter.minInterval
+    nextAvailableTime: rateLimitCheck.allowed
+      ? null
+      : new Date(Date.now() + rateLimitCheck.waitTime).toISOString(),
+    minInterval: rateLimiter.minInterval,
   });
 });
 

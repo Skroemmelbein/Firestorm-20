@@ -76,7 +76,9 @@ export default function Settings() {
       const rateStatus = await checkRateLimitStatus();
       if (rateStatus && !rateStatus.canMakeRequest) {
         const waitMinutes = Math.ceil(rateStatus.waitTime / 60000);
-        setLastError(`Rate limit active. Please wait ${waitMinutes} minute(s) before testing.`);
+        setLastError(
+          `Rate limit active. Please wait ${waitMinutes} minute(s) before testing.`,
+        );
         setNmiConnectionStatus("error");
         return;
       }
@@ -138,7 +140,8 @@ export default function Settings() {
               System Settings
             </h1>
             <p className="text-muted-foreground">
-              Configure integrations, system settings, and administrative options
+              Configure integrations, system settings, and administrative
+              options
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -183,7 +186,8 @@ export default function Settings() {
                     NMI Recurring Vault Configuration
                   </CardTitle>
                   <CardDescription>
-                    Configure your NMI gateway for recurring subscription billing
+                    Configure your NMI gateway for recurring subscription
+                    billing
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -249,7 +253,9 @@ export default function Settings() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="recurring-vault-id">Recurring Vault ID</Label>
+                    <Label htmlFor="recurring-vault-id">
+                      Recurring Vault ID
+                    </Label>
                     <Input
                       id="recurring-vault-id"
                       placeholder="vault_12345"
@@ -262,7 +268,8 @@ export default function Settings() {
                       }
                     />
                     <p className="text-xs text-muted-foreground">
-                      Use recurring vault, not customer vault for subscription billing
+                      Use recurring vault, not customer vault for subscription
+                      billing
                     </p>
                   </div>
 
@@ -276,9 +283,7 @@ export default function Settings() {
                         ? "Testing..."
                         : "Test Connection"}
                     </Button>
-                    <Button
-                      disabled={nmiConnectionStatus !== "connected"}
-                    >
+                    <Button disabled={nmiConnectionStatus !== "connected"}>
                       Save Configuration
                     </Button>
                   </div>
@@ -289,7 +294,9 @@ export default function Settings() {
                       <Clock className="h-4 w-4" />
                       <AlertTitle>Rate Limit Active</AlertTitle>
                       <AlertDescription>
-                        Next request available in {Math.ceil(rateLimitStatus.waitTime / 60000)} minute(s) to prevent NMI activity limits.
+                        Next request available in{" "}
+                        {Math.ceil(rateLimitStatus.waitTime / 60000)} minute(s)
+                        to prevent NMI activity limits.
                       </AlertDescription>
                     </Alert>
                   )}
@@ -299,7 +306,8 @@ export default function Settings() {
                       <AlertTriangle className="h-4 w-4" />
                       <AlertTitle>Connection Failed</AlertTitle>
                       <AlertDescription>
-                        {lastError || "Unable to connect to NMI. Please check your credentials and gateway URL."}
+                        {lastError ||
+                          "Unable to connect to NMI. Please check your credentials and gateway URL."}
                       </AlertDescription>
                     </Alert>
                   )}
@@ -309,7 +317,8 @@ export default function Settings() {
                       <CheckCircle className="h-4 w-4" />
                       <AlertTitle>Connected Successfully</AlertTitle>
                       <AlertDescription>
-                        NMI Recurring Vault is connected and ready for billing operations.
+                        NMI Recurring Vault is connected and ready for billing
+                        operations.
                       </AlertDescription>
                     </Alert>
                   )}
@@ -338,12 +347,16 @@ export default function Settings() {
                           </div>
                         </div>
                       </div>
-                      <Badge className={
-                        nmiConnectionStatus === "connected" 
-                          ? "bg-green-500/10 text-green-600"
-                          : "bg-red-500/10 text-red-600"
-                      }>
-                        {nmiConnectionStatus === "connected" ? "Connected" : "Disconnected"}
+                      <Badge
+                        className={
+                          nmiConnectionStatus === "connected"
+                            ? "bg-green-500/10 text-green-600"
+                            : "bg-red-500/10 text-red-600"
+                        }
+                      >
+                        {nmiConnectionStatus === "connected"
+                          ? "Connected"
+                          : "Disconnected"}
                       </Badge>
                     </div>
 
@@ -406,7 +419,9 @@ export default function Settings() {
           <TabsContent value="system-config" className="space-y-4">
             <div className="text-center py-12">
               <SettingsIcon className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">System Configuration</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                System Configuration
+              </h3>
               <p className="text-muted-foreground max-w-md mx-auto">
                 General system settings, themes, and operational parameters
               </p>
@@ -436,7 +451,9 @@ export default function Settings() {
           <TabsContent value="notifications" className="space-y-4">
             <div className="text-center py-12">
               <Mail className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Notification Settings</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Notification Settings
+              </h3>
               <p className="text-muted-foreground max-w-md mx-auto">
                 Configure email alerts, SMS notifications, and system messaging
               </p>
@@ -453,7 +470,8 @@ export default function Settings() {
               <Database className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
               <h3 className="text-lg font-semibold mb-2">Advanced Settings</h3>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Database connections, environment variables, and system diagnostics
+                Database connections, environment variables, and system
+                diagnostics
               </p>
               <Button className="mt-6">
                 <Database className="w-4 h-4 mr-2" />

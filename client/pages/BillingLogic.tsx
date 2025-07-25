@@ -37,8 +37,6 @@ import {
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
 
-
-
 interface BillingPlan {
   id: string;
   name: string;
@@ -59,7 +57,6 @@ interface BillingRule {
 }
 
 export default function BillingLogic() {
-
   const [billingPlans, setBillingPlans] = useState<BillingPlan[]>([
     {
       id: "1",
@@ -108,8 +105,6 @@ export default function BillingLogic() {
   const [rateLimitStatus, setRateLimitStatus] = useState<any>(null);
   const [lastError, setLastError] = useState<string>("");
 
-
-
   // Transaction logs state
   const [transactionLogs, setTransactionLogs] = useState<any[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
@@ -120,8 +115,6 @@ export default function BillingLogic() {
     end_date: new Date().toISOString().split("T")[0],
     limit: 50,
   });
-
-
 
   const testNmiPayment = async () => {
     setIsTestingPayment(true);
@@ -137,7 +130,7 @@ export default function BillingLogic() {
           success: false,
           message: "Rate Limit Active",
           suggestion: `Please wait ${waitMinutes} minute(s) before testing payments. This prevents NMI activity limit errors.`,
-          waitTime: rateStatus.waitTime
+          waitTime: rateStatus.waitTime,
         });
         setIsTestingPayment(false);
         return;
@@ -180,7 +173,6 @@ export default function BillingLogic() {
 
       // Update rate limit status after request
       setTimeout(() => checkRateLimitStatus(), 1000);
-
     } catch (error: any) {
       setTestPaymentResult({
         success: false,
@@ -240,8 +232,6 @@ export default function BillingLogic() {
     }
   };
 
-
-
   const generateCSV = (transactions: any[]) => {
     const headers = [
       "Transaction ID",
@@ -291,7 +281,8 @@ export default function BillingLogic() {
               Billing Logic
             </h1>
             <p className="text-muted-foreground">
-              Manage billing rules, subscription plans, and automated billing logic
+              Manage billing rules, subscription plans, and automated billing
+              logic
             </p>
           </div>
           <Button variant="outline" className="gap-2">
@@ -319,8 +310,6 @@ export default function BillingLogic() {
               AI Assistant
             </TabsTrigger>
           </TabsList>
-
-
 
           {/* Transaction Logs Tab */}
           <TabsContent value="transaction-logs" className="space-y-4">
