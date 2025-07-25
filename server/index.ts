@@ -298,5 +298,22 @@ export function createServer() {
   app.get("/api/war-chest-import/progress/:batchId", getImportProgress);
   app.get("/api/war-chest-import/status", getImportStatus);
 
+  // Status Classification Engine - AI-powered client categorization
+  app.post("/api/status-classification/classify", classifyClientStatus);
+  app.post("/api/status-classification/batch", batchClassifyClients);
+  app.get("/api/status-classification/stats", getClassificationStats);
+  app.get("/api/status-classification/validate-rules", validateClassificationRules);
+
+  // NMI Legacy Integration - Customer vault token mapping
+  app.post("/api/nmi-legacy/start-migration", startLegacyVaultMigration);
+  app.get("/api/nmi-legacy/progress/:batchId", getLegacyMigrationProgress);
+  app.post("/api/nmi-legacy/validate-tokens", validateLegacyTokens);
+  app.get("/api/nmi-legacy/stats", getMigrationStats);
+
+  // Transaction Log Migration - Historical transaction processing
+  app.post("/api/transaction-migration/start", startTransactionLogMigration);
+  app.get("/api/transaction-migration/progress/:batchId", getTransactionMigrationProgress);
+  app.get("/api/transaction-migration/stats", getTransactionMigrationStats);
+
   return app;
 }
