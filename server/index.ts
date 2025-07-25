@@ -55,6 +55,7 @@ import twilioSidDiscoveryRouter from "./routes/twilio-sid-discovery";
 import environmentScannerRouter from "./routes/environment-scanner";
 import nmiIntegrationRouter from "./routes/nmi-integration";
 import xanoSubscriptionTablesRouter from "./routes/xano-subscription-tables";
+import subscriptionManagementRouter from "./routes/subscription-management";
 
 // Import real integrations - NO MOCKS
 import { initializeXano } from "../shared/xano-client";
@@ -240,6 +241,9 @@ export function createServer() {
 
   // Xano subscription tables routes
   app.use("/api/subscription-tables", xanoSubscriptionTablesRouter);
+
+  // Subscription management routes
+  app.use("/api/subscriptions", subscriptionManagementRouter);
 
   return app;
 }

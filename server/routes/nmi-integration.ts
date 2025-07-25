@@ -1,5 +1,6 @@
 import express from 'express';
 import { xanoAPI } from './api-integrations';
+import nmiTestPaymentRouter from './nmi-test-payment';
 
 const router = express.Router();
 
@@ -667,5 +668,8 @@ router.post('/sync-subscriptions', async (req, res) => {
     });
   }
 });
+
+// Mount test payment routes
+router.use('/', nmiTestPaymentRouter);
 
 export default router;
