@@ -51,6 +51,9 @@ import vaultExportProcessingRouter from "./routes/vault-export-processing";
 import updatedCardsHandlerRouter from "./routes/updated-cards-handler";
 import customerMasterImportRouter from "./routes/customer-master-import";
 import customerMasterXanoTablesRouter from "./routes/customer-master-xano-tables";
+import consentTosImportRouter from "./routes/consent-tos-import";
+import consentTosXanoTablesRouter from "./routes/consent-tos-xano-tables";
+import descriptorHistoryImportRouter from "./routes/descriptor-history-import";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -116,6 +119,9 @@ app.use("/api/vault-export-processing", vaultExportProcessingRouter);
 app.use("/api/updated-cards-handler", updatedCardsHandlerRouter);
 app.use("/api/customer-master-import", customerMasterImportRouter);
 app.use("/api/customer-master-xano-tables", customerMasterXanoTablesRouter);
+app.use("/api/consent-tos-import", consentTosImportRouter);
+app.use("/api/consent-tos-xano-tables", consentTosXanoTablesRouter);
+app.use("/api/descriptor-history-import", descriptorHistoryImportRouter);
 
 // Global error handler
 app.use((err: any, req: any, res: any, next: any) => {
