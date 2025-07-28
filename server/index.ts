@@ -64,6 +64,8 @@ export async function createServer() {
       console.log(`Loaded route: ${routePath}`);
       if (routePath.includes('conversations-api')) {
         app.use('/api', route);
+      } else if (routePath.includes('sms-api')) {
+        console.log(`⚠️ Skipping duplicate SMS route: ${routePath} to avoid 405 conflicts`);
       } else {
         app.use('/api/real', route);
       }

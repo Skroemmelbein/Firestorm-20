@@ -12,89 +12,13 @@ const twilioAuth = Buffer.from(
   `${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`,
 ).toString("base64");
 
-// Send SMS endpoint
 router.post("/send", async (req, res) => {
-  try {
-    const { to, message, campaignId } = req.body;
-
-    console.log(`🚀 Sending SMS to ${to}: "${message}"`);
-
-    // Format phone number
-    const formattedPhone = to.startsWith("+")
-      ? to
-      : `+1${to.replace(/\D/g, "")}`;
-
-    // Validate: FROM and TO cannot be the same
-    if (formattedPhone === TWILIO_PHONE_NUMBER) {
-      return res.status(400).json({
-        success: false,
-        error: `Cannot send SMS to the same number as FROM number (${TWILIO_PHONE_NUMBER}). Please use a different test number.`,
-        code: "SAME_FROM_TO_NUMBER",
-        suggestion: "Try using +18559600037 as test number instead",
-      });
-    }
-
-    const response = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${twilioAuth}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          From: TWILIO_PHONE_NUMBER,
-          To: formattedPhone,
-          Body: message,
-        }),
-      },
-    );
-
-    // Clone response to avoid "body stream already read" error
-    const responseText = await response.text();
-    let result;
-    try {
-      result = JSON.parse(responseText);
-    } catch (parseError) {
-      console.error("❌ Failed to parse Twilio response:", parseError);
-      result = {
-        message: "Failed to parse response",
-        error: parseError.message,
-      };
-    }
-
-    if (response.ok) {
-      console.log(`✅ SMS sent successfully! SID: ${result.sid}`);
-
-      // Log to database if Xano is connected
-      try {
-        // This would integrate with your Xano API
-        console.log("📝 Logging SMS to database...");
-      } catch (dbError) {
-        console.warn("⚠️ Failed to log to database:", dbError);
-      }
-
-      res.json({
-        success: true,
-        sid: result.sid,
-        status: result.status,
-        message: `SMS sent to ${formattedPhone}`,
-      });
-    } else {
-      console.error("❌ SMS failed:", result);
-      res.status(400).json({
-        success: false,
-        error: result.message || "SMS send failed",
-        code: result.code,
-      });
-    }
-  } catch (error) {
-    console.error("❌ SMS API Error:", error);
-    res.status(500).json({
-      success: false,
-      error: error.message || "Internal server error",
-    });
-  }
+  console.log("🔄 SMS request redirected to main endpoint to avoid 405 conflicts");
+  res.status(301).json({
+    success: false,
+    message: "SMS endpoint moved to /api/real/sms/send",
+    redirect: "/api/real/sms/send"
+  });
 });
 
 // Send the test message immediately

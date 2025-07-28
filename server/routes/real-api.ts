@@ -430,7 +430,7 @@ router.post("/benefits/:id/use", async (req, res) => {
 router.post("/sms/send", async (req, res) => {
   try {
     const twilio = await getSafeTwilioClient();
-    const { to, body, from, mediaUrl } = req.body;
+    const { to, body, from, mediaUrl, campaignId } = req.body;
 
     if (!to || !body) {
       return res.status(400).json({
@@ -441,31 +441,49 @@ router.post("/sms/send", async (req, res) => {
       });
     }
 
+    console.log(`📱 Sending SMS to ${to}: "${body}" (Campaign: ${campaignId || 'none'})`);
+
+    const formattedPhone = to.startsWith("+")
+      ? to
+      : `+1${to.replace(/\D/g, "")}`;
+
+    const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
+    if (formattedPhone === twilioPhoneNumber) {
+      return res.status(400).json({
+        success: false,
+        error: `Cannot send SMS to the same number as FROM number (${twilioPhoneNumber}). Please use a different test number.`,
+        code: "SAME_FROM_TO_NUMBER",
+        suggestion: "Try using +18559600037 as test number instead",
+        httpStatus: 400,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     const result = await twilio.sendSMS({
-      to,
+      to: formattedPhone,
       body,
-      from: from || process.env.TWILIO_PHONE_NUMBER || "+15551234567",
+      from: from || twilioPhoneNumber || "+15551234567",
       mediaUrl,
     });
 
+    console.log(`✅ SMS sent successfully! SID: ${result.sid}`);
+
     res.json({
       success: true,
-      message: "SMS sent successfully",
+      message: `SMS sent to ${formattedPhone}`,
       result: result,
       httpStatus: 200,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("Error sending SMS:", error);
+    console.error("❌ SMS Error:", error);
 
-    // Extract detailed error information
     const errorResponse: any = {
       success: false,
       error: error instanceof Error ? error.message : "Failed to send SMS",
       timestamp: new Date().toISOString(),
     };
 
-    // Add Twilio-specific error details if available
     if ((error as any).details?.twilioError) {
       const twilioError = (error as any).details.twilioError;
       errorResponse.code = twilioError.code;
@@ -475,7 +493,6 @@ router.post("/sms/send", async (req, res) => {
       errorResponse.httpStatusText = twilioError.statusText;
     }
 
-    // Return appropriate HTTP status
     const httpStatus = (error as any).details?.twilioError?.status || 500;
     res.status(httpStatus).json(errorResponse);
   }
