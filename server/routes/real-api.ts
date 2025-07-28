@@ -421,14 +421,29 @@ router.post("/sms/send", async (req, res) => {
     const twilio = await getSafeTwilioClient();
     const { to, body, from, mediaUrl } = req.body;
 
+    if (!to || !body) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing required fields: to, body",
+        httpStatus: 400,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     const result = await twilio.sendSMS({
       to,
       body,
-      from,
+      from: from || process.env.TWILIO_PHONE_NUMBER || "+15551234567",
       mediaUrl,
     });
 
-    res.json(result);
+    res.json({
+      success: true,
+      message: "SMS sent successfully",
+      result: result,
+      httpStatus: 200,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
     console.error("Error sending SMS:", error);
 
