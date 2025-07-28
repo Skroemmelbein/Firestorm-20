@@ -10,6 +10,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
@@ -29,6 +31,9 @@ import {
   Mail,
   Phone,
   Globe,
+  Brain,
+  Rocket,
+  Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
@@ -40,6 +45,23 @@ interface NMIConfig {
   password: string;
   recurringVaultId: string;
 }
+
+const getNavigationVisibility = () => {
+  try {
+    const saved = localStorage.getItem("ecelonx-navigation-settings");
+    return saved ? JSON.parse(saved) : {};
+  } catch {
+    return {};
+  }
+};
+
+const saveNavigationVisibility = (settings: any) => {
+  try {
+    localStorage.setItem("ecelonx-navigation-settings", JSON.stringify(settings));
+  } catch (error) {
+    console.error("Failed to save navigation settings:", error);
+  }
+};
 
 export default function Settings() {
   const [nmiConfig, setNmiConfig] = useState<NMIConfig>({
@@ -55,6 +77,18 @@ export default function Settings() {
   >("disconnected");
   const [lastError, setLastError] = useState<string>("");
   const [rateLimitStatus, setRateLimitStatus] = useState<any>(null);
+  const [navigationSettings, setNavigationSettings] = useState(() => getNavigationVisibility());
+
+  const handleNavigationToggle = (moduleId: string, enabled: boolean) => {
+    const newSettings = {
+      ...navigationSettings,
+      [moduleId]: enabled,
+    };
+    setNavigationSettings(newSettings);
+    saveNavigationVisibility(newSettings);
+    
+    window.dispatchEvent(new CustomEvent('navigation-settings-changed'));
+  };
 
   const checkRateLimitStatus = async () => {
     try {
@@ -154,7 +188,7 @@ export default function Settings() {
         </div>
 
         <Tabs defaultValue="nmi-integration" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="nmi-integration" className="gap-2">
               <CreditCard className="w-4 h-4" />
               NMI Integration
@@ -170,6 +204,10 @@ export default function Settings() {
             <TabsTrigger value="notifications" className="gap-2">
               <Mail className="w-4 h-4" />
               Notifications
+            </TabsTrigger>
+            <TabsTrigger value="navigation" className="gap-2">
+              <Users className="w-4 h-4" />
+              Navigation
             </TabsTrigger>
             <TabsTrigger value="advanced" className="gap-2">
               <Database className="w-4 h-4" />
@@ -463,6 +501,76 @@ export default function Settings() {
                 Setup Notifications
               </Button>
             </div>
+          </TabsContent>
+
+          {/* Navigation Tab */}
+          <TabsContent value="navigation" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  Navigation Preferences
+                </CardTitle>
+                <CardDescription>
+                  Control which modules appear in your navigation menu
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Brain className="w-5 h-5 text-purple-600" />
+                      <div>
+                        <Label htmlFor="dream-portal-toggle" className="text-sm font-medium">
+                          Dream Portal
+                        </Label>
+                        <p className="text-xs text-muted-foreground">
+                          Member management and portal access
+                        </p>
+                      </div>
+                    </div>
+                    <Switch
+                      id="dream-portal-toggle"
+                      checked={navigationSettings["dream-portal"] || false}
+                      onCheckedChange={(checked) => handleNavigationToggle("dream-portal", checked)}
+                    />
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Rocket className="w-5 h-5 text-blue-600" />
+                      <div>
+                        <Label htmlFor="velocify-hub-toggle" className="text-sm font-medium">
+                          Velocify Hub
+                        </Label>
+                        <p className="text-xs text-muted-foreground">
+                          Client operations and workflow management
+                        </p>
+                      </div>
+                    </div>
+                    <Switch
+                      id="velocify-hub-toggle"
+                      checked={navigationSettings["velocify-hub"] || false}
+                      onCheckedChange={(checked) => handleNavigationToggle("velocify-hub", checked)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex items-start gap-2">
+                    <Info className="w-4 h-4 text-blue-600 mt-0.5" />
+                    <div className="text-sm text-blue-800">
+                      <p className="font-medium">Navigation Settings</p>
+                      <p className="text-xs mt-1">
+                        Changes take effect immediately. Disabled modules can be re-enabled at any time from this settings page.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Advanced Tab */}
