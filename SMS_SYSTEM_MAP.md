@@ -41,7 +41,7 @@ router.post("/sms/send", async (req, res) => {
 ### **Your Working Credentials:**
 
 ```
-Account SID: ACf19a39d865d43659b94a3a2074
+Account SID: ACf1f39d9f653df3669fa99343e88b2074
 Phone Number: +1 (855) 860-0037
 Auth Token: [Stored in environment]
 ```

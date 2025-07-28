@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 const router = express.Router();
 
 // Twilio credentials from provided info
-const TWILIO_ACCOUNT_SID = "ACf19a39d865d43659b94a3a2074";
+const TWILIO_ACCOUNT_SID = "ACf1f39d9f653df3669fa99343e88b2074";
 const TWILIO_AUTH_TOKEN = "1f9a48e4dcd9c518889e148fe931e226";
 const TWILIO_PHONE_NUMBER = "+18559600037";
 

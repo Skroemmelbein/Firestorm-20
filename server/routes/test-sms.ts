@@ -9,11 +9,11 @@ router.post("/send-test", async (req, res) => {
     const { to, message } = req.body;
 
     const twilioResponse = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/ACf19a39d865d43659b94a3a2074/Messages.json`,
+      `https://api.twilio.com/2010-04-01/Accounts/ACf1f39d9f653df3669fa99343e88b2074/Messages.json`,
       {
         method: "POST",
         headers: {
-          Authorization: `Basic ${Buffer.from("ACf19a39d865d43659b94a3a2074:1f9a48e4dcd9c518889e148fe931e226").toString("base64")}`,
+          Authorization: `Basic ${Buffer.from("ACf1f39d9f653df3669fa99343e88b2074:1f9a48e4dcd9c518889e148fe931e226").toString("base64")}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
@@ -52,11 +52,11 @@ async function sendTestMessage() {
     console.log("🚀 Sending test SMS to 8558600037...");
 
     const response = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/ACf19a39d865d43659b94a3a2074/Messages.json`,
+      `https://api.twilio.com/2010-04-01/Accounts/ACf1f39d9f653df3669fa99343e88b2074/Messages.json`,
       {
         method: "POST",
         headers: {
-          Authorization: `Basic ${Buffer.from("ACf19a39d865d43659b94a3a2074:1f9a48e4dcd9c518889e148fe931e226").toString("base64")}`,
+          Authorization: `Basic ${Buffer.from("ACf1f39d9f653df3669fa99343e88b2074:1f9a48e4dcd9c518889e148fe931e226").toString("base64")}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({

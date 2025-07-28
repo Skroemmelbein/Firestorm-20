@@ -159,7 +159,7 @@ export default function SMSInterface() {
             <div className="space-y-1">
               <div className="text-sm font-medium">Account SID</div>
               <div className="font-mono text-xs text-muted-foreground">
-                ACf19a39d865d43659b94a3a2074
+                ACf1f39d9f653df3669fa99343e88b2074
               </div>
             </div>
             <div className="space-y-1">

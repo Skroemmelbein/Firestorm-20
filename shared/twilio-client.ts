@@ -695,8 +695,30 @@ export function initializeTwilio(config: TwilioConfig): TwilioClient {
 
 export function getTwilioClient(): TwilioClient {
   if (!twilioClient) {
+    console.log("🔍 Debugging Twilio client initialization...");
+    console.log("TWILIO_ACCOUNT_SID:", process.env.TWILIO_ACCOUNT_SID ? "SET" : "NOT SET");
+    console.log("TWILIO_AUTH_TOKEN:", process.env.TWILIO_AUTH_TOKEN ? "SET" : "NOT SET");
+    console.log("TWILIO_PHONE_NUMBER:", process.env.TWILIO_PHONE_NUMBER ? "SET" : "NOT SET");
+    
+    // Try to auto-initialize if we have the credentials
+    if (
+      process.env.TWILIO_ACCOUNT_SID &&
+      process.env.TWILIO_AUTH_TOKEN &&
+      process.env.TWILIO_PHONE_NUMBER
+    ) {
+      console.log("🚀 Auto-initializing Twilio client with credentials...");
+      twilioClient = new TwilioClient({
+        accountSid: process.env.TWILIO_ACCOUNT_SID,
+        authToken: process.env.TWILIO_AUTH_TOKEN,
+        phoneNumber: process.env.TWILIO_PHONE_NUMBER,
+      });
+      console.log("✅ Twilio client auto-initialized successfully");
+      return twilioClient;
+    }
+
+    console.log("❌ Missing Twilio credentials for auto-initialization");
     throw new Error(
-      "Twilio client not initialized. Call initializeTwilio() first.",
+      "Twilio client not initialized. Please configure Twilio credentials first.",
     );
   }
   return twilioClient;

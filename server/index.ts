@@ -1,4 +1,8 @@
 import express from 'express';
+import { config } from 'dotenv';
+import path from 'path';
+
+config({ path: path.join(process.cwd(), '.env') });
 
 export function createServer() {
   const app = express();

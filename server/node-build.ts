@@ -1,9 +1,12 @@
 import path from "path";
+import { config } from "dotenv";
 import { createServer } from "./index";
 import * as express from "express";
 
+config({ path: path.join(process.cwd(), ".env") });
+
 const app = createServer();
-const port = process.env.PORT || 3000;
+const port = process.env.API_PORT || 5000;
 
 // In production, serve the built SPA files
 const __dirname = import.meta.dirname;

@@ -1,6 +1,17 @@
 import express from "express";
+import fetch from "node-fetch";
 
 const router = express.Router();
+
+// NMI Configuration
+const NMI_CONFIG = {
+  gatewayUrl: process.env.NMI_API_URL || "https://secure.networkmerchants.com/api/transact.php",
+  recurringUrl: process.env.NMI_RECURRING_URL || "https://secure.networkmerchants.com/api/recurring.php",
+  username: process.env.NMI_USERNAME,
+  password: process.env.NMI_PASSWORD,
+  webhookSecret: process.env.NMI_WEBHOOK_SECRET || "default_webhook_secret",
+  descriptorBase: process.env.DESCRIPTOR_BASE || "ECHELONX",
+};
 
 // Test connections (real, no mocks)
 // Safe client getters
@@ -15,24 +26,51 @@ const getXanoClientSafe = () => {
   }
 };
 
-const getSafeTwilioClient = () => {
+const getSafeTwilioClient = async () => {
+  console.log("🔍 DEBUG: getSafeTwilioClient called");
+  console.log("🔍 DEBUG: Environment variables:", {
+    TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID ? "SET" : "NOT SET",
+    TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN ? "SET" : "NOT SET", 
+    TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER ? "SET" : "NOT SET"
+  });
+  
   try {
-    const { initializeTwilio, getTwilioClient } = require("../../shared/twilio-client");
+    console.log("🔍 DEBUG: Importing twilio-client module...");
+    const { initializeTwilio, getTwilioClient } = await import("../../shared/twilio-client");
+    console.log("🔍 DEBUG: Successfully imported twilio-client module");
     
     try {
-      return getTwilioClient();
+      console.log("🔍 DEBUG: Attempting to get existing Twilio client...");
+      const client = getTwilioClient();
+      console.log("🔍 DEBUG: Successfully got existing Twilio client");
+      console.log("🔍 DEBUG: Client type:", typeof client);
+      console.log("🔍 DEBUG: Client constructor:", client.constructor.name);
+      console.log("🔍 DEBUG: Client prototype methods:", Object.getOwnPropertyNames(Object.getPrototypeOf(client)));
+      console.log("🔍 DEBUG: sendSMS method exists:", typeof client.sendSMS);
+      console.log("🔍 DEBUG: sendSMS method:", client.sendSMS);
+      return client;
     } catch (initError) {
+      console.log("🔍 DEBUG: Failed to get existing client, error:", initError.message);
+      
       if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
-        initializeTwilio({
+        console.log("🔍 DEBUG: Environment variables present, initializing Twilio...");
+        const client = initializeTwilio({
           accountSid: process.env.TWILIO_ACCOUNT_SID,
           authToken: process.env.TWILIO_AUTH_TOKEN,
           phoneNumber: process.env.TWILIO_PHONE_NUMBER,
         });
-        return getTwilioClient();
+        console.log("🔍 DEBUG: Twilio initialization completed, got client:", typeof client);
+        console.log("🔍 DEBUG: New client constructor:", client.constructor.name);
+        console.log("🔍 DEBUG: New client prototype methods:", Object.getOwnPropertyNames(Object.getPrototypeOf(client)));
+        console.log("🔍 DEBUG: New client sendSMS method exists:", typeof client.sendSMS);
+        return client;
+      } else {
+        console.log("🔍 DEBUG: Missing environment variables, cannot initialize");
+        throw initError;
       }
-      throw initError;
     }
   } catch (error) {
+    console.log("🔍 DEBUG: Fatal error in getSafeTwilioClient:", error.message);
     throw new Error(
       "Twilio client not initialized. Please configure Twilio credentials first.",
     );
@@ -70,7 +108,7 @@ router.post("/test/xano", async (req, res) => {
 
 router.post("/test/twilio", async (req, res) => {
   try {
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     const isConnected = await twilio.testConnection();
 
     if (isConnected) {
@@ -380,7 +418,7 @@ router.post("/benefits/:id/use", async (req, res) => {
 // SMS API
 router.post("/sms/send", async (req, res) => {
   try {
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     const { to, body, from, mediaUrl } = req.body;
 
     const result = await twilio.sendSMS({
@@ -419,7 +457,7 @@ router.post("/sms/send", async (req, res) => {
 
 router.post("/sms/bulk", async (req, res) => {
   try {
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     const { messages } = req.body;
 
     const result = await twilio.sendBulkSMS(messages);
@@ -458,7 +496,7 @@ router.post("/email/send", async (req, res) => {
 // Voice API
 router.post("/voice/call", async (req, res) => {
   try {
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     const { to, from, url, twiml } = req.body;
 
     const result = await twilio.makeCall({
@@ -510,7 +548,7 @@ router.get("/analytics/dashboard", async (req, res) => {
 // Twilio Webhooks
 router.post("/webhooks/twilio/incoming", async (req, res) => {
   try {
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     await twilio.handleIncomingSMS(req.body);
     res.status(200).send("OK");
   } catch (error) {
@@ -521,7 +559,7 @@ router.post("/webhooks/twilio/incoming", async (req, res) => {
 
 router.post("/webhooks/twilio/status", async (req, res) => {
   try {
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     await twilio.handleStatusWebhook(req.body);
     res.status(200).send("OK");
   } catch (error) {
@@ -544,10 +582,10 @@ router.post("/events", async (req, res) => {
     if (eventData.MessageSid || userAgent.includes('TwilioProxy')) {
       // Twilio event (SMS/MMS/RCS status or incoming message)
       if (eventData.MessageStatus) {
-        const twilio = getSafeTwilioClient();
+        const twilio = await getSafeTwilioClient();
         await twilio.handleStatusWebhook(eventData);
       } else if (eventData.Body) {
-        const twilio = getSafeTwilioClient();
+        const twilio = await getSafeTwilioClient();
         await twilio.handleIncomingSMS(eventData);
       }
     } else if (eventData.event_type || userAgent.includes('SendGrid')) {
@@ -601,7 +639,7 @@ router.post("/test/whatsapp", async (req, res) => {
       });
     }
 
-    const twilioClient = getSafeTwilioClient();
+    const twilioClient = await getSafeTwilioClient();
     if (!twilioClient) {
       return res.json({
         success: false,
@@ -642,7 +680,7 @@ router.post("/test/studio-flow", async (req, res) => {
       });
     }
 
-    const twilioClient = getSafeTwilioClient();
+    const twilioClient = await getSafeTwilioClient();
     if (!twilioClient) {
       return res.json({
         success: false,
@@ -683,7 +721,7 @@ router.post("/test/voice-call", async (req, res) => {
       });
     }
 
-    const twilioClient = getSafeTwilioClient();
+    const twilioClient = await getSafeTwilioClient();
     if (!twilioClient) {
       return res.json({
         success: false,
@@ -715,7 +753,23 @@ router.post("/test/voice-call", async (req, res) => {
 router.post("/test/sms-mms-rcs", async (req, res) => {
   try {
     const { to, message, mediaUrl } = req.body;
-    const twilio = getSafeTwilioClient();
+    
+    console.log("🔍 DEBUG: About to call getSafeTwilioClient()");
+    const twilio = await getSafeTwilioClient();
+    console.log("🔍 DEBUG: getSafeTwilioClient() returned successfully");
+    
+    console.log("🔍 DEBUG: Twilio client type:", typeof twilio);
+    console.log("🔍 DEBUG: Twilio client constructor:", twilio ? twilio.constructor.name : "NO CONSTRUCTOR");
+    console.log("🔍 DEBUG: Twilio client is null/undefined:", twilio === null || twilio === undefined);
+    
+    if (twilio && typeof twilio === 'object') {
+      console.log("🔍 DEBUG: Available methods:", Object.getOwnPropertyNames(Object.getPrototypeOf(twilio)));
+      console.log("🔍 DEBUG: sendSMS method exists:", typeof twilio.sendSMS);
+      console.log("🔍 DEBUG: sendSMS method:", twilio.sendSMS);
+      console.log("🔍 DEBUG: All properties:", Object.getOwnPropertyNames(twilio));
+    } else {
+      console.log("🔍 DEBUG: Twilio client is not an object:", twilio);
+    }
     
     const result = await twilio.sendSMS({
       to: to || "+15558675310",
@@ -729,6 +783,10 @@ router.post("/test/sms-mms-rcs", async (req, res) => {
       result: result
     });
   } catch (error) {
+    console.log("🔍 DEBUG: Error caught in SMS endpoint:", error);
+    console.log("🔍 DEBUG: Error type:", typeof error);
+    console.log("🔍 DEBUG: Error message:", error instanceof Error ? error.message : "Not an Error object");
+    
     res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Unknown error"
@@ -946,7 +1004,7 @@ router.get("/assets/health", async (req, res) => {
 router.post("/test/sms-mms-rcs-with-assets", async (req, res) => {
   try {
     const { to, message, generateAsset, assetQuery } = req.body;
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     
     let mediaUrl: string[] = [];
     
@@ -1059,21 +1117,60 @@ router.post("/test/nmi/create-customer", async (req, res) => {
       cvv: "123"
     };
 
-    const response = await fetch("http://localhost:3000/api/nmi/enhanced/create-customer", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        customer: testCustomer,
-        paymentMethod: testPaymentMethod
-      })
+    const params = new URLSearchParams({
+      username: NMI_CONFIG.username!,
+      password: NMI_CONFIG.password!,
+      type: "add_customer",
+      customer_vault: "add_customer",
+      first_name: testCustomer.firstName,
+      last_name: testCustomer.lastName,
+      email: testCustomer.email,
+      phone: testCustomer.phone || "",
+      address1: testCustomer.address?.street1 || "",
+      city: testCustomer.address?.city || "",
+      state: testCustomer.address?.state || "",
+      zip: testCustomer.address?.zipCode || "",
+      country: testCustomer.address?.country || "US",
+      ccnumber: testPaymentMethod.cardNumber,
+      ccexp: `${testPaymentMethod.expiryMonth}${testPaymentMethod.expiryYear}`,
+      cvv: testPaymentMethod.cvv,
     });
 
-    const result = await response.json();
-    
+    const response = await fetch(NMI_CONFIG.gatewayUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString(),
+    });
+
+    const responseText = await response.text();
+    const result = new URLSearchParams(responseText);
+
+    const success = result.get("response") === "1";
+    const customerId = result.get("customer_vault_id");
+
+    if (success && customerId) {
+      // Log to Xano
+      try {
+        await getXanoClientSafe().createRecord("nmi_customers", {
+          nmi_customer_id: customerId,
+          first_name: testCustomer.firstName,
+          last_name: testCustomer.lastName,
+          email: testCustomer.email,
+          phone: testCustomer.phone,
+          created_at: new Date().toISOString(),
+          status: "active",
+        });
+      } catch (xanoError) {
+        console.log("Xano logging failed:", xanoError);
+      }
+    }
+
     res.json({
-      success: true,
-      message: "NMI customer creation test completed",
-      result: result
+      success: success,
+      message: success ? "NMI customer created successfully" : "NMI customer creation failed",
+      customerId: customerId,
+      responseText: responseText,
+      result: Object.fromEntries(result.entries())
     });
   } catch (error) {
     res.status(500).json({
@@ -1085,31 +1182,89 @@ router.post("/test/nmi/create-customer", async (req, res) => {
 
 router.post("/test/nmi/one-time-payment", async (req, res) => {
   try {
-    const { customerId, amount, description } = req.body;
-    
-    if (!customerId) {
-      return res.status(400).json({
-        success: false,
-        error: "customerId is required for payment test"
-      });
-    }
+    const { 
+      amount = 1.00, 
+      cardNumber = "5444720138596149",
+      expiryMonth = "07", 
+      expiryYear = "32",
+      cvv = "772",
+      cardholderName = "AL REDMOND",
+      billingZip = "82081",
+      email = "acmltd105@gmail.com"
+    } = req.body;
 
-    const response = await fetch("http://localhost:3000/api/nmi/enhanced/one-time-payment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        customerId: customerId,
-        amount: amount || "1.00",
-        description: description || "Test payment"
-      })
+    const customerData = {
+      firstName: cardholderName.split(' ')[0] || "AL",
+      lastName: cardholderName.split(' ')[1] || "REDMOND", 
+      email: email,
+      phone: "+18144409068",
+      address: {
+        street1: "123 Test St",
+        city: "Test City", 
+        state: "WY",
+        zipCode: billingZip,
+        country: "US"
+      }
+    };
+
+    const paymentParams = new URLSearchParams({
+      username: NMI_CONFIG.username!,
+      password: NMI_CONFIG.password!,
+      type: "sale",
+      ccnumber: cardNumber,
+      ccexp: `${expiryMonth}${expiryYear}`,
+      cvv: cvv,
+      amount: amount.toString(),
+      orderid: `TEST-${Date.now()}`,
+      orderdescription: `Test $${amount} payment from ECHELONX`,
+      first_name: customerData.firstName,
+      last_name: customerData.lastName,
+      email: customerData.email,
+      phone: customerData.phone || "",
+      address1: customerData.address?.street1 || "",
+      city: customerData.address?.city || "",
+      state: customerData.address?.state || "",
+      zip: customerData.address?.zipCode || "",
+      country: customerData.address?.country || "US",
     });
 
-    const result = await response.json();
-    
+    const paymentResponse = await fetch(NMI_CONFIG.gatewayUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: paymentParams.toString(),
+    });
+
+    const paymentResponseText = await paymentResponse.text();
+    const paymentResult = new URLSearchParams(paymentResponseText);
+
+    const paymentSuccess = paymentResult.get("response") === "1";
+    const transactionId = paymentResult.get("transactionid");
+
+    // Log to Xano
+    if (paymentSuccess && transactionId) {
+      try {
+        await getXanoClientSafe().createRecord("nmi_transactions", {
+          transaction_id: transactionId,
+          amount: amount,
+          type: "sale",
+          status: "approved",
+          created_at: new Date().toISOString(),
+          card_last_four: cardNumber.slice(-4),
+          cardholder_name: cardholderName,
+          email: customerData.email
+        });
+      } catch (xanoError) {
+        console.log("Xano logging failed:", xanoError);
+      }
+    }
+
     res.json({
-      success: true,
-      message: "NMI one-time payment test completed",
-      result: result
+      success: paymentSuccess,
+      message: paymentSuccess ? `$${amount} payment processed successfully` : "Payment failed",
+      transactionId: transactionId,
+      amount: amount,
+      responseText: paymentResponseText,
+      result: Object.fromEntries(paymentResult.entries())
     });
   } catch (error) {
     res.status(500).json({
@@ -1130,7 +1285,7 @@ router.post("/test/nmi/create-subscription", async (req, res) => {
       });
     }
 
-    const response = await fetch("http://localhost:3000/api/nmi/enhanced/create-subscription", {
+    const response = await fetch("http://localhost:3000/api/real/enhanced/create-subscription", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1195,7 +1350,7 @@ router.post("/test/nmi/webhook", async (req, res) => {
 router.post("/test/twilio/whatsapp", async (req, res) => {
   try {
     const { to, message, mediaUrl } = req.body;
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     
     const result = await twilio.sendWhatsApp({
       to: to || "+15558675310",
@@ -1219,7 +1374,7 @@ router.post("/test/twilio/whatsapp", async (req, res) => {
 router.post("/test/twilio/studio-flow", async (req, res) => {
   try {
     const { flowSid, to, parameters } = req.body;
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     
     if (!flowSid) {
       return res.status(400).json({
@@ -1250,7 +1405,7 @@ router.post("/test/twilio/studio-flow", async (req, res) => {
 router.post("/test/twilio/rcs", async (req, res) => {
   try {
     const { to, message, contentSid, richContent, mediaUrl } = req.body;
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     
     const result = await twilio.sendRCS({
       to: to || "+15558675310",
@@ -1276,7 +1431,7 @@ router.post("/test/twilio/rcs", async (req, res) => {
 router.post("/test/twilio/advanced-call", async (req, res) => {
   try {
     const { to, twiml, record, transcribe, machineDetection, timeout } = req.body;
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     
     const result = await twilio.makeAdvancedCall({
       to: to || "+15558675310",
@@ -1303,7 +1458,7 @@ router.post("/test/twilio/advanced-call", async (req, res) => {
 router.post("/test/twilio/multi-channel-bulk", async (req, res) => {
   try {
     const { messages } = req.body;
-    const twilio = getSafeTwilioClient();
+    const twilio = await getSafeTwilioClient();
     
     const testMessages = messages || [
       {
@@ -1602,6 +1757,44 @@ router.post("/test/phase5/slack-alert", async (req, res) => {
         timestamp: new Date().toISOString(),
         demo_mode: true
       },
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/email-template", async (req, res) => {
+  try {
+    const { to, templateId, dynamicData } = req.body;
+    
+    if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_API_KEY.startsWith('SG.')) {
+      return res.status(500).json({
+        success: false,
+        error: "SendGrid client not initialized. Please set a valid SENDGRID_API_KEY environment variable (starts with 'SG.')."
+      });
+    }
+
+    const { getSendGridClient } = await import("../../shared/sendgrid-client");
+    const sendGrid = getSendGridClient();
+
+    const result = await sendGrid.sendEmail({
+      to: to || "acmltd105@gmail.com",
+      subject: "ECHELONX Template Test",
+      html: `
+        <h2>Template Email Test</h2>
+        <p>Hello ${(dynamicData && dynamicData.name) || "Shannon"},</p>
+        <p>${(dynamicData && dynamicData.message) || "Template test from ECHELONX - triple check complete!"}</p>
+        <p>This email was sent using the template endpoint.</p>
+      `
+    });
+
+    res.json({
+      success: true,
+      message: "Template email sent successfully",
+      result: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
       error: error instanceof Error ? error.message : "Unknown error"
     });
   }

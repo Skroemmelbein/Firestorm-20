@@ -12,7 +12,7 @@ const XANO_CONFIG = {
 };
 
 const TWILIO_CONFIG = {
-  accountSid: process.env.TWILIO_ACCOUNT_SID || "ACf19a39d865d43659b94a3a2074",
+  accountSid: process.env.TWILIO_ACCOUNT_SID || "ACf1f39d9f653df3669fa99343e88b2074",
   authToken:
     process.env.TWILIO_AUTH_TOKEN || "1f9a48e4dcd9c518889e148fe931e226",
   phoneNumber: process.env.TWILIO_PHONE_NUMBER || "+18559600037",
