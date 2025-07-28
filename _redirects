@@ -1,0 +1,5 @@
+# Cloudflare Pages redirects for SPA routing
+/*    /index.html   200
+
+# API routes redirect to Cloudflare Workers
+/api/*  https://echelonx-api-production.your-subdomain.workers.dev/:splat  200
