@@ -6,15 +6,11 @@
       "use": "@vercel/static"
     },
     {
-      "src": "server/index.ts",
+      "src": "api/**/*.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server/index.ts"
-    },
     {
       "src": "/(.*)",
       "dest": "/dist/$1"
@@ -30,7 +26,7 @@
     "NEXT_PUBLIC_CONVEX_URL": "@convex_url"
   },
   "functions": {
-    "server/index.ts": {
+    "api/**/*.ts": {
       "maxDuration": 30
     }
   }
