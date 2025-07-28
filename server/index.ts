@@ -62,7 +62,11 @@ export async function createServer() {
     const route = (routeModule as any).default;
     if (route) {
       console.log(`Loaded route: ${routePath}`);
-      app.use('/api/real', route);
+      if (routePath.includes('conversations-api')) {
+        app.use('/api', route);
+      } else {
+        app.use('/api/real', route);
+      }
     }
   }
 
