@@ -114,8 +114,8 @@ export function getSendGridClient(): SendGridClient {
     ) {
       sendGridClient = new SendGridClient({
         apiKey: process.env.SENDGRID_API_KEY,
-        fromEmail: "shannonkroemmelbein@gmail.com",
-        fromName: "Shannon Kroemmelbein - ECELONX",
+        fromEmail: "noreply@recurflow.com",
+        fromName: "ECHELONX",
       });
       console.log("✅ SendGrid client auto-initialized");
       return sendGridClient;
