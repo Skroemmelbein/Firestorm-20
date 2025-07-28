@@ -129,10 +129,14 @@ export class TwilioClient {
       })
     };
 
-    if (message.mediaUrl && message.mediaUrl.length > 0) {
-      message.mediaUrl.forEach((url, index) => {
-        data[`MediaUrl${index}`] = url;
-      });
+    if (message.mediaUrl) {
+      if (Array.isArray(message.mediaUrl)) {
+        message.mediaUrl.forEach((url, index) => {
+          data[`MediaUrl${index}`] = url;
+        });
+      } else {
+        data['MediaUrl'] = message.mediaUrl;
+      }
     }
 
     try {
@@ -374,10 +378,14 @@ export class TwilioClient {
       Body: message.body,
     };
 
-    if (message.mediaUrl && message.mediaUrl.length > 0) {
-      message.mediaUrl.forEach((url, index) => {
-        data[`MediaUrl${index}`] = url;
-      });
+    if (message.mediaUrl) {
+      if (Array.isArray(message.mediaUrl)) {
+        message.mediaUrl.forEach((url, index) => {
+          data[`MediaUrl${index}`] = url;
+        });
+      } else {
+        data['MediaUrl'] = message.mediaUrl;
+      }
     }
 
     try {
@@ -483,10 +491,14 @@ export class TwilioClient {
       data["ContentVariables"] = JSON.stringify(message.richContent);
     }
 
-    if (message.mediaUrl && message.mediaUrl.length > 0) {
-      message.mediaUrl.forEach((url, index) => {
-        data[`MediaUrl${index}`] = url;
-      });
+    if (message.mediaUrl) {
+      if (Array.isArray(message.mediaUrl)) {
+        message.mediaUrl.forEach((url, index) => {
+          data[`MediaUrl${index}`] = url;
+        });
+      } else {
+        data['MediaUrl'] = message.mediaUrl;
+      }
     }
 
     try {
