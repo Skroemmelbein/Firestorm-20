@@ -1,21 +1,26 @@
 {
   "version": 2,
   "functions": {
-    "api/nmi/test-connection.ts": {
-      "maxDuration": 30
-    },
-    "api/real/sms/send.ts": {
+    "api/**/*.ts": {
       "maxDuration": 30
     }
   },
   "routes": [
     {
+      "src": "/api/health",
+      "dest": "/api/health"
+    },
+    {
       "src": "/api/nmi/test-connection",
-      "dest": "/api/nmi/test-connection.ts"
+      "dest": "/api/nmi/test-connection"
     },
     {
       "src": "/api/real/sms/send", 
-      "dest": "/api/real/sms/send.ts"
+      "dest": "/api/real/sms/send"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
       "src": "/assets/(.*)",
