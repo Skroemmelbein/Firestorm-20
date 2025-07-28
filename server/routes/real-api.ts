@@ -5,7 +5,7 @@ const router = express.Router();
 
 // NMI Configuration
 const NMI_CONFIG = {
-  gatewayUrl: process.env.NMI_API_URL || "https://secure.networkmerchants.com/api/transact.php",
+  gatewayUrl: process.env.NMI_GATEWAY_URL || "https://secure.networkmerchants.com/api/transact.php",
   recurringUrl: process.env.NMI_RECURRING_URL || "https://secure.networkmerchants.com/api/recurring.php",
   username: process.env.NMI_USERNAME,
   password: process.env.NMI_PASSWORD,
@@ -1290,6 +1290,224 @@ router.post("/test/nmi/one-time-payment", async (req, res) => {
       result: Object.fromEntries(paymentResult.entries())
     });
   } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+});
+
+router.post("/test/nmi/recurring-subscription", async (req, res) => {
+  try {
+    const { 
+      amount = 1.00, 
+      cardNumber = "5444720138596149",
+      expiryMonth = "07", 
+      expiryYear = "32",
+      cvv = "772",
+      cardholderName = "AL REDMOND",
+      billingZip = "82081",
+      email = "acmltd105@gmail.com"
+    } = req.body;
+
+    const customerData = {
+      firstName: cardholderName.split(' ')[0] || "AL",
+      lastName: cardholderName.split(' ')[1] || "REDMOND", 
+      email: email,
+      phone: "+18144409068",
+      address: {
+        street1: "123 Test St",
+        city: "Test City", 
+        state: "WY",
+        zipCode: billingZip,
+        country: "US"
+      }
+    };
+
+    console.log("🚀 Creating NMI recurring subscription test:", {
+      customer: customerData.email,
+      amount: amount
+    });
+
+    const customerParams = new URLSearchParams({
+      username: NMI_CONFIG.username!,
+      password: NMI_CONFIG.password!,
+      customer_vault: "add_customer",
+      first_name: customerData.firstName,
+      last_name: customerData.lastName,
+      email: customerData.email,
+      phone: customerData.phone,
+      address1: customerData.address?.street1 || "",
+      city: customerData.address?.city || "",
+      state: customerData.address?.state || "",
+      zip: customerData.address?.zipCode || "",
+      ccnumber: cardNumber,
+      ccexp: `${expiryMonth}${expiryYear}`,
+      cvv: cvv,
+    });
+
+    const customerResponse = await fetch(NMI_CONFIG.gatewayUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: customerParams.toString(),
+    });
+
+    const customerResult = await customerResponse.text();
+    const customerResultParams = new URLSearchParams(customerResult);
+
+    if (customerResultParams.get("response") !== "1") {
+      throw new Error(
+        `Customer creation failed: ${customerResultParams.get("responsetext")}`
+      );
+    }
+
+    const nmiCustomerId = customerResultParams.get("customer_vault_id");
+    console.log("✅ Customer created in NMI vault:", nmiCustomerId);
+
+    // Step 2: Create recurring subscription
+    const startDate = new Date().toISOString().split("T")[0].replace(/-/g, "");
+    
+    const subscriptionParams = new URLSearchParams();
+    subscriptionParams.append("username", NMI_CONFIG.username!);
+    subscriptionParams.append("password", NMI_CONFIG.password!);
+    subscriptionParams.append("recurring", "add_subscription");
+    subscriptionParams.append("customer_vault_id", nmiCustomerId!);
+    subscriptionParams.append("plan_amount", amount.toString());
+    subscriptionParams.append("plan_payments", "0"); // 0 = infinite
+    subscriptionParams.append("plan_id", "TEST_RECURRING_PLAN");
+    subscriptionParams.append("start_date", startDate);
+    subscriptionParams.append("day_frequency", "30");
+
+    console.log("🔧 Subscription params:", subscriptionParams.toString());
+    
+    const subscriptionResponse = await fetch(NMI_CONFIG.recurringUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: subscriptionParams.toString(),
+    });
+
+    const subscriptionResult = await subscriptionResponse.text();
+    console.log("🔧 Raw subscription response:", subscriptionResult);
+
+    if (subscriptionResult.trim() === "File not found.") {
+      console.log("⚠️ NMI recurring API not available - account may not have recurring billing features");
+      
+      const simulatedSubscriptionId = `SIM_${Date.now()}`;
+      
+      try {
+        const xanoMember = await getXanoClientSafe().createRecord("members", {
+          uuid: `test_member_${Date.now()}`,
+          email: customerData.email,
+          phone: customerData.phone,
+          first_name: customerData.firstName,
+          last_name: customerData.lastName,
+          status: "active",
+          membership_type: "test",
+          nmi_customer_id: nmiCustomerId,
+          nmi_vault_id: nmiCustomerId,
+          subscription_start_date: new Date().toISOString(),
+          billing_cycle: "monthly",
+          created_at: new Date().toISOString(),
+        });
+
+        const xanoSubscription = await getXanoClientSafe().createRecord("subscriptions", {
+          member_id: xanoMember.id,
+          nmi_subscription_id: simulatedSubscriptionId,
+          plan_name: "Test Recurring Plan (Simulated)",
+          plan_id: `TEST_PLAN_${Date.now()}`,
+          status: "pending_recurring_setup",
+          amount: amount,
+          currency: "USD",
+          billing_cycle: "monthly",
+          next_billing_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          started_at: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+        });
+
+        console.log("✅ Simulated subscription saved to Xano billing tables");
+      } catch (xanoError) {
+        console.log("Xano logging failed:", xanoError);
+      }
+
+      return res.json({
+        success: true,
+        message: `Customer created in NMI vault, but recurring billing API not available`,
+        warning: "NMI account may not have recurring billing features enabled",
+        nmiCustomerId: nmiCustomerId,
+        nmiSubscriptionId: simulatedSubscriptionId,
+        amount: amount,
+        billingCycle: "monthly",
+        status: "customer_created_subscription_simulated",
+        result: {
+          customerResult: Object.fromEntries(customerResultParams.entries()),
+          subscriptionResult: { error: "File not found - recurring API not available" }
+        }
+      });
+    }
+    
+    const subscriptionResultParams = new URLSearchParams(subscriptionResult);
+    console.log("🔧 Parsed subscription response:", Object.fromEntries(subscriptionResultParams.entries()));
+
+    if (subscriptionResultParams.get("response") !== "1") {
+      const errorText = subscriptionResultParams.get("responsetext") || "Unknown error";
+      const responseCode = subscriptionResultParams.get("response_code") || "No code";
+      throw new Error(
+        `Subscription creation failed: ${errorText} (Code: ${responseCode})`
+      );
+    }
+
+    const nmiSubscriptionId = subscriptionResultParams.get("subscription_id");
+    console.log("✅ Subscription created in NMI:", nmiSubscriptionId);
+
+    try {
+      const xanoMember = await getXanoClientSafe().createRecord("members", {
+        uuid: `test_member_${Date.now()}`,
+        email: customerData.email,
+        phone: customerData.phone,
+        first_name: customerData.firstName,
+        last_name: customerData.lastName,
+        status: "active",
+        membership_type: "test",
+        nmi_customer_id: nmiCustomerId,
+        nmi_vault_id: nmiCustomerId,
+        subscription_start_date: new Date().toISOString(),
+        billing_cycle: "monthly",
+        created_at: new Date().toISOString(),
+      });
+
+      const xanoSubscription = await getXanoClientSafe().createRecord("subscriptions", {
+        member_id: xanoMember.id,
+        nmi_subscription_id: nmiSubscriptionId,
+        plan_name: "Test Recurring Plan",
+        plan_id: `TEST_PLAN_${Date.now()}`,
+        status: "active",
+        amount: amount,
+        currency: "USD",
+        billing_cycle: "monthly",
+        next_billing_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        started_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+      });
+
+      console.log("✅ Subscription saved to Xano billing tables");
+    } catch (xanoError) {
+      console.log("Xano logging failed:", xanoError);
+    }
+
+    res.json({
+      success: true,
+      message: `$${amount} recurring subscription created successfully`,
+      nmiCustomerId: nmiCustomerId,
+      nmiSubscriptionId: nmiSubscriptionId,
+      amount: amount,
+      billingCycle: "monthly",
+      result: {
+        customerResult: Object.fromEntries(customerResultParams.entries()),
+        subscriptionResult: Object.fromEntries(subscriptionResultParams.entries())
+      }
+    });
+  } catch (error) {
+    console.error("❌ Recurring subscription creation failed:", error);
     res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Unknown error"

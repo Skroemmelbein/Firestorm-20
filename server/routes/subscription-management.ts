@@ -6,9 +6,9 @@ const router = express.Router();
 // NMI Configuration
 const NMI_CONFIG = {
   gatewayUrl:
-    process.env.NMI_GATEWAY_URL || "https://secure.nmi.com/api/transact.php",
+    process.env.NMI_GATEWAY_URL || "https://secure.networkmerchants.com/api/transact.php",
   recurringUrl:
-    process.env.NMI_RECURRING_URL || "https://secure.nmi.com/api/recurring.php",
+    process.env.NMI_RECURRING_URL || "https://secure.networkmerchants.com/api/recurring.php",
   username: process.env.NMI_USERNAME,
   password: process.env.NMI_PASSWORD,
   apiKey: process.env.NMI_API_KEY,
