@@ -1,14 +1,10 @@
 {
   "functions": {
     "api/**/*.ts": {
-      "runtime": "@vercel/node@3.0.7"
+      "runtime": "@vercel/node@5.3.7"
     }
   },
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
     {
       "source": "/assets/(.*)",
       "destination": "/dist/assets/$1"
