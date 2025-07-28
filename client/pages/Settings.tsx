@@ -420,7 +420,7 @@ export default function Settings() {
                         <div>
                           <div className="font-medium">Twilio API</div>
                           <div className="text-sm text-muted-foreground">
-                            SMS & voice services
+                            SMS &amp; voice services
                           </div>
                         </div>
                       </div>

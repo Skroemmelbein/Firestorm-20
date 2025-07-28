@@ -7,6 +7,7 @@ interface RequestOptions {
 interface HttpResponse {
   ok: boolean;
   status: number;
+  statusText: string;
   json: () => Promise<any>;
   text: () => Promise<string>;
 }
@@ -39,6 +40,7 @@ function xmlHttpRequest(url: string, options: RequestOptions): Promise<HttpRespo
       const response: HttpResponse = {
         ok: xhr.status >= 200 && xhr.status < 300,
         status: xhr.status,
+        statusText: xhr.statusText,
         json: async () => JSON.parse(xhr.responseText),
         text: async () => xhr.responseText
       };
