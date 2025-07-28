@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { httpRequest } from "@/utils/http-client";
 import {
   Shield,
   Flame,
@@ -169,7 +170,7 @@ export default function Overview() {
   const runQuickSMSTest = async () => {
     setIsTesting((prev) => ({ ...prev, sms: true }));
     try {
-      const response = await fetch(`${window.location.origin}/api/real/sms/send`, {
+      const response = await httpRequest(`${window.location.origin}/api/real/sms/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -217,7 +218,7 @@ export default function Overview() {
   const runQuickEmailTest = async () => {
     setIsTesting((prev) => ({ ...prev, email: true }));
     try {
-      const response = await fetch(`${window.location.origin}/api/sendgrid/test`, {
+      const response = await httpRequest(`${window.location.origin}/api/sendgrid/test`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

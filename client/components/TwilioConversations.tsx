@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { httpRequest } from "@/utils/http-client";
 import {
   MessageSquare,
   Send,
@@ -82,7 +83,7 @@ export default function TwilioConversations() {
   const loadConversations = async () => {
     setIsLoading((prev) => ({ ...prev, conversations: true }));
     try {
-      const response = await fetch(`${window.location.origin}/api/conversations`);
+      const response = await httpRequest(`${window.location.origin}/api/conversations`);
       if (response.ok) {
         const data = await response.json();
         setConversations(data.conversations || []);
@@ -106,7 +107,7 @@ export default function TwilioConversations() {
   const loadMessages = async (conversationSid: string) => {
     setIsLoading((prev) => ({ ...prev, messages: true }));
     try {
-      const response = await fetch(
+      const response = await httpRequest(
         `${window.location.origin}/api/conversations/${conversationSid}/messages`,
       );
       if (response.ok) {
@@ -132,7 +133,7 @@ export default function TwilioConversations() {
   const createConversation = async () => {
     setIsLoading((prev) => ({ ...prev, creating: true }));
     try {
-      const response = await fetch(`${window.location.origin}/api/conversations`, {
+      const response = await httpRequest(`${window.location.origin}/api/conversations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -166,7 +167,7 @@ export default function TwilioConversations() {
 
     setIsLoading((prev) => ({ ...prev, sending: true }));
     try {
-      const response = await fetch(
+      const response = await httpRequest(
         `${window.location.origin}/api/conversations/${selectedConversation.sid}/messages`,
         {
           method: "POST",

@@ -27,6 +27,7 @@ import {
   Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { httpRequest } from "@/utils/http-client";
 
 interface Subscription {
   id: number;
@@ -232,7 +233,7 @@ export default function SubscriptionStatus({
 
     setUpdatingCard(true);
     try {
-      const response = await fetch(`${window.location.origin}/api/billing/update-card`, {
+      const response = await httpRequest(`${window.location.origin}/api/billing/update-card`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -285,7 +286,7 @@ export default function SubscriptionStatus({
 
     setCanceling(true);
     try {
-      const response = await fetch(`${window.location.origin}/api/billing/cancel-subscription`, {
+      const response = await httpRequest(`${window.location.origin}/api/billing/cancel-subscription`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ subscription_id: subscription.id }),

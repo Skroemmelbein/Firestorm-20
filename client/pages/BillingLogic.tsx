@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
+import { httpRequest } from "@/utils/http-client";
 
 interface BillingPlan {
   id: string;
@@ -136,7 +137,7 @@ export default function BillingLogic() {
         return;
       }
 
-      const response = await fetch(`${window.location.origin}/api/nmi/test-payment`, {
+      const response = await httpRequest(`${window.location.origin}/api/nmi/test-payment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -212,7 +213,7 @@ export default function BillingLogic() {
   const fetchTransactionLogs = async () => {
     setLoadingLogs(true);
     try {
-      const response = await fetch(`${window.location.origin}/api/nmi-logs/get-transaction-logs`, {
+      const response = await httpRequest(`${window.location.origin}/api/nmi-logs/get-transaction-logs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(logQuery),

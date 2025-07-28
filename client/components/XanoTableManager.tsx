@@ -19,6 +19,7 @@ import {
   Eye,
   RefreshCw,
 } from "lucide-react";
+import { httpRequest } from "@/utils/http-client";
 
 interface TableResult {
   table: string;
@@ -52,7 +53,7 @@ export default function XanoTableManager() {
   const testConnection = async () => {
     setIsLoading((prev) => ({ ...prev, connecting: true }));
     try {
-      const response = await fetch(`${window.location.origin}/api/xano/test-connection`, {
+      const response = await httpRequest(`${window.location.origin}/api/xano/test-connection`, {
         method: "POST",
       });
 
@@ -84,7 +85,7 @@ export default function XanoTableManager() {
     setSetupResult(null);
 
     try {
-      const response = await fetch(`${window.location.origin}/api/xano/create-all-tables`, {
+      const response = await httpRequest(`${window.location.origin}/api/xano/create-all-tables`, {
         method: "POST",
       });
 
@@ -115,7 +116,7 @@ export default function XanoTableManager() {
   const loadSchemas = async () => {
     setIsLoading((prev) => ({ ...prev, schemas: true }));
     try {
-      const response = await fetch(`${window.location.origin}/api/xano/table-schemas`);
+      const response = await httpRequest(`${window.location.origin}/api/xano/table-schemas`);
       const result = await response.json();
       setSchemas(result);
     } catch (error) {

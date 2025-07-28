@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
+import { httpRequest } from "@/utils/http-client";
 import {
   Key,
   Database,
@@ -285,7 +286,7 @@ export default function CredentialVault() {
   const scanEnvironmentVars = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${window.location.origin}/api/environment/scan`, {
+      const response = await httpRequest(`${window.location.origin}/api/environment/scan`, {
         method: "POST",
       });
 

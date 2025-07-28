@@ -28,6 +28,7 @@ import {
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { httpRequest } from "@/utils/http-client";
 
 interface Plan {
   id: string;
@@ -207,7 +208,7 @@ export default function CheckoutForm({
           : "Unknown",
       });
 
-      const response = await fetch(`${window.location.origin}/api/billing/charge-initial`, {
+      const response = await httpRequest(`${window.location.origin}/api/billing/charge-initial`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

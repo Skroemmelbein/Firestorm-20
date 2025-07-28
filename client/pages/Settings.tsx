@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
+import { httpRequest } from "@/utils/http-client";
 
 interface NMIConfig {
   gatewayUrl: string;
@@ -57,7 +58,7 @@ export default function Settings() {
 
   const checkRateLimitStatus = async () => {
     try {
-      const response = await fetch(`${window.location.origin}/api/nmi/rate-limit-status`);
+      const response = await httpRequest(`${window.location.origin}/api/nmi/rate-limit-status`);
       const result = await response.json();
       setRateLimitStatus(result);
       return result;
@@ -83,7 +84,7 @@ export default function Settings() {
         return;
       }
 
-      const response = await fetch(`${window.location.origin}/api/nmi/test-connection`, {
+      const response = await httpRequest(`${window.location.origin}/api/nmi/test-connection`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

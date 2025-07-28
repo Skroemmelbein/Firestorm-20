@@ -9,6 +9,7 @@ import {
   MessageSquare,
   Phone,
 } from "lucide-react";
+import { httpRequest } from "@/utils/http-client";
 
 export default function AutoSendSMS() {
   const [status, setStatus] = useState<"sending" | "success" | "error">(
@@ -24,7 +25,7 @@ export default function AutoSendSMS() {
     try {
       console.log("🚀 Auto-sending test SMS to 855-960-0037...");
 
-      const response = await fetch(`${window.location.origin}/api/real/sms/send`, {
+      const response = await httpRequest(`${window.location.origin}/api/real/sms/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

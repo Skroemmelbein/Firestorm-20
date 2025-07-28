@@ -30,6 +30,7 @@ import {
 import SendGridTest from "@/components/SendGridTest";
 import StudioFlowBuilder from "@/components/StudioFlowBuilder";
 import TwilioConversations from "@/components/TwilioConversations";
+import { httpRequest } from "@/utils/http-client";
 
 interface TestResult {
   success: boolean;
@@ -74,7 +75,7 @@ export default function TestModule() {
         message: smsTest.message,
       });
 
-      const response = await fetch(`${window.location.origin}/api/real/sms/send`, {
+      const response = await httpRequest(`${window.location.origin}/api/real/sms/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -175,7 +176,7 @@ export default function TestModule() {
     setIsTesting((prev) => ({ ...prev, voice: true }));
 
     try {
-      const response = await fetch(`${window.location.origin}/api/voice/call`, {
+      const response = await httpRequest(`${window.location.origin}/api/voice/call`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -219,7 +220,7 @@ export default function TestModule() {
       const headers = JSON.parse(apiTest.headers || "{}");
       const body = apiTest.method !== "GET" ? apiTest.body : undefined;
 
-      const response = await fetch(apiTest.endpoint, {
+      const response = await httpRequest(apiTest.endpoint, {
         method: apiTest.method,
         headers: {
           "Content-Type": "application/json",
