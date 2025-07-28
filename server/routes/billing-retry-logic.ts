@@ -1,5 +1,5 @@
 import express from "express";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -192,9 +192,9 @@ router.post("/schedule-retry", async (req, res) => {
       req.body;
 
     // Get subscription details
-    const subscription = await getXanoClient().getRecord(
+    const subscription = await getConvexClient().getRecord(
       "subscriptions",
-      parseInt(subscription_id),
+      subscription_id.toString(),
     );
     if (!subscription) {
       return res
@@ -222,7 +222,7 @@ router.post("/schedule-retry", async (req, res) => {
         newStatus = "canceled"; // Requires manual intervention
       }
 
-      await getXanoClient().updateRecord("subscriptions", subscription_id, {
+      await getConvexClient().updateRecord("subscriptions", subscription_id, {
         status: newStatus,
         retries: subscription.retries + 1,
         last_attempt_at: new Date().toISOString(),
@@ -247,7 +247,7 @@ router.post("/schedule-retry", async (req, res) => {
     );
 
     // Update subscription with retry info
-    await getXanoClient().updateRecord("subscriptions", subscription_id, {
+    await getConvexClient().updateRecord("subscriptions", subscription_id, {
       retries: newRetryCount,
       next_bill_at: retryTime.toISOString(),
       last_attempt_at: new Date().toISOString(),
@@ -263,7 +263,7 @@ router.post("/schedule-retry", async (req, res) => {
       created_at: new Date().toISOString(),
     };
 
-    const retrySchedule = await getXanoClient().createRecord(
+    const retrySchedule = await getConvexClient().createRecord(
       "retry_schedule",
       retryScheduleData,
     );
@@ -307,7 +307,7 @@ router.post("/process-retries", async (req, res) => {
 
     // Get pending retries that are due
     const now = new Date().toISOString();
-    const dueRetries = await getXanoClient().queryRecords("retry_schedule", {
+    const dueRetries = await getConvexClient().queryRecords("retry_schedule", {
       status: "pending",
       scheduled_at: { "<=": now },
     });
@@ -319,7 +319,7 @@ router.post("/process-retries", async (req, res) => {
     for (const retry of dueRetries) {
       try {
         // Mark retry as being executed
-        await getXanoClient().updateRecord("retry_schedule", retry.id, {
+        await getConvexClient().updateRecord("retry_schedule", retry.id, {
           status: "executed",
           executed_at: new Date().toISOString(),
         });
@@ -360,7 +360,7 @@ router.post("/process-retries", async (req, res) => {
         console.error(`❌ Error processing retry ${retry.id}:`, error);
 
         // Mark retry as failed
-        await getXanoClient().updateRecord("retry_schedule", retry.id, {
+        await getConvexClient().updateRecord("retry_schedule", retry.id, {
           status: "skipped",
           executed_at: new Date().toISOString(),
         });
@@ -414,7 +414,7 @@ router.get("/retry-analytics", async (req, res) => {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - parseInt(days as string));
 
-    const retries = await getXanoClient().queryRecords("retry_schedule", {
+    const retries = await getConvexClient().queryRecords("retry_schedule", {
       created_at: { ">=": startDate.toISOString() },
     });
 
@@ -504,9 +504,9 @@ router.post("/manual-retry/:subscription_id", async (req, res) => {
     const { subscription_id } = req.params;
     const { force_descriptor } = req.body;
 
-    const subscription = await getXanoClient().getRecord(
+    const subscription = await getConvexClient().getRecord(
       "subscriptions",
-      parseInt(subscription_id),
+      subscription_id.toString(),
     );
     if (!subscription) {
       return res
@@ -556,7 +556,7 @@ async function logDeclineInsight(
     const today = new Date().toISOString().split("T")[0];
 
     // Check if entry exists for today
-    const existing = await getXanoClient().queryRecords("decline_insights", {
+    const existing = await getConvexClient().queryRecords("decline_insights", {
       date: today,
       response_code: responseCode,
       card_brand: cardBrand,
@@ -565,12 +565,12 @@ async function logDeclineInsight(
 
     if (existing.length > 0) {
       // Update existing entry
-      await getXanoClient().updateRecord("decline_insights", existing[0].id, {
+      await getConvexClient().updateRecord("decline_insights", existing[0].id, {
         decline_count: existing[0].decline_count + 1,
       });
     } else {
       // Create new entry
-      await getXanoClient().createRecord("decline_insights", {
+      await getConvexClient().createRecord("decline_insights", {
         date: today,
         response_code: responseCode,
         response_text: responseText,

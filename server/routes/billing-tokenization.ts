@@ -1,5 +1,5 @@
 import express from "express";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -199,9 +199,9 @@ router.post("/enable-network-tokens", async (req, res) => {
     }
 
     // Get subscription details
-    const subscription = await getXanoClient().getRecord(
+    const subscription = await getConvexClient().getRecord(
       "subscriptions",
-      subscription_id,
+      subscription_id.toString(),
     );
     if (!subscription) {
       return res.status(404).json({
@@ -229,7 +229,7 @@ router.post("/enable-network-tokens", async (req, res) => {
       await tokenizationService.enableNetworkTokenization(customer_vault_id);
 
     // Update subscription record
-    await getXanoClient().updateRecord("subscriptions", subscription_id, {
+    await getConvexClient().updateRecord("subscriptions", subscription_id.toString(), {
       network_token_enabled: true,
       auto_card_updater_last_update: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -268,11 +268,11 @@ router.post("/run-card-updater", async (req, res) => {
     if (subscription_ids && subscription_ids.length > 0) {
       // Update specific subscriptions
       subscriptions = await Promise.all(
-        subscription_ids.map((id) => getXanoClient().getRecord("subscriptions", id)),
+        subscription_ids.map((id) => getConvexClient().getRecord("subscriptions", id.toString())),
       );
     } else {
       // Find subscriptions that need card updates
-      const allSubscriptions = await getXanoClient().queryRecords("subscriptions", {
+      const allSubscriptions = await getConvexClient().queryRecords("subscriptions", {
         status: ["active", "past_due"],
       });
 
@@ -317,7 +317,7 @@ router.post("/run-card-updater", async (req, res) => {
 
         if (updateResult.success && updateResult.updated_card) {
           // Update subscription with new card details
-          await getXanoClient().updateRecord("subscriptions", subscription.id, {
+          await getConvexClient().updateRecord("subscriptions", subscription.id, {
             card_last_four:
               updateResult.updated_card.last_four ||
               subscription.card_last_four,
@@ -335,7 +335,7 @@ router.post("/run-card-updater", async (req, res) => {
 
           // If subscription was past_due due to expired card, reactivate it
           if (subscription.status === "past_due") {
-            await getXanoClient().updateRecord("subscriptions", subscription.id, {
+            await getConvexClient().updateRecord("subscriptions", subscription.id, {
               status: "active",
               retries: 0,
             });
@@ -409,7 +409,7 @@ router.post("/run-card-updater", async (req, res) => {
  */
 router.get("/tokenization-status", async (req, res) => {
   try {
-    const subscriptions = await getXanoClient().queryRecords("subscriptions", {
+    const subscriptions = await getConvexClient().queryRecords("subscriptions", {
       status: ["active", "past_due"],
     });
 
@@ -466,7 +466,7 @@ router.post("/batch-enable-network-tokens", async (req, res) => {
     console.log("🔒 Batch enabling network tokenization...");
 
     // Get active subscriptions
-    const subscriptions = await getXanoClient().queryRecords("subscriptions", {
+    const subscriptions = await getConvexClient().queryRecords("subscriptions", {
       status: "active",
       network_token_enabled: false,
     });
@@ -491,7 +491,7 @@ router.post("/batch-enable-network-tokens", async (req, res) => {
           subscription.nmi_customer_vault_id,
         );
 
-        await getXanoClient().updateRecord("subscriptions", subscription.id, {
+        await getConvexClient().updateRecord("subscriptions", subscription.id, {
           network_token_enabled: true,
           updated_at: new Date().toISOString(),
         });
@@ -541,7 +541,7 @@ router.get("/expiration-report", async (req, res) => {
   try {
     const { months_ahead = 3 } = req.query;
 
-    const subscriptions = await getXanoClient().queryRecords("subscriptions", {
+    const subscriptions = await getConvexClient().queryRecords("subscriptions", {
       status: ["active", "past_due"],
     });
 

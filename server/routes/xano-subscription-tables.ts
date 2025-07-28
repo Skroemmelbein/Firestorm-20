@@ -1,5 +1,5 @@
 import express from "express";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -278,7 +278,7 @@ router.post("/create-tables", async (req, res) => {
         console.log(`Creating table: ${table.name}`);
 
         // Create table in Xano
-        const result = await getXanoClient().createTable(table.name, table.columns);
+        const result = await getConvexClient().createTable(table.name, table.columns);
 
         results.push({
           table: table.name,
@@ -351,7 +351,7 @@ router.get("/schemas", async (req, res) => {
 router.post("/test-data", async (req, res) => {
   try {
     // Create sample member
-    const member = await getXanoClient().createRecord("members", {
+    const member = await getConvexClient().createRecord("members", {
       uuid: `member_${Date.now()}`,
       email: "test@example.com",
       phone: "+1234567890",
@@ -363,7 +363,7 @@ router.post("/test-data", async (req, res) => {
     });
 
     // Create sample billing plan
-    const plan = await getXanoClient().createRecord("billing_plans", {
+    const plan = await getConvexClient().createRecord("billing_plans", {
       plan_id: "premium_monthly",
       name: "Premium Monthly",
       description: "Premium subscription with advanced features",
@@ -375,7 +375,7 @@ router.post("/test-data", async (req, res) => {
     });
 
     // Create sample subscription
-    const subscription = await getXanoClient().createRecord("subscriptions", {
+    const subscription = await getConvexClient().createRecord("subscriptions", {
       member_id: member.id,
       plan_id: "premium_monthly",
       plan_name: "Premium Monthly",
@@ -419,14 +419,14 @@ router.get("/stats", async (req, res) => {
     };
 
     try {
-      const members = await getXanoClient().queryRecords("members", {});
+      const members = await getConvexClient().queryRecords("members", {});
       stats.totalMembers = members.length;
     } catch (e) {
       console.log("Members table not found or empty");
     }
 
     try {
-      const subscriptions = await getXanoClient().queryRecords("subscriptions", {
+      const subscriptions = await getConvexClient().queryRecords("subscriptions", {
         status: "active",
       });
       stats.activeSubscriptions = subscriptions.length;
@@ -438,7 +438,7 @@ router.get("/stats", async (req, res) => {
     }
 
     try {
-      const transactions = await getXanoClient().queryRecords("transactions", {
+      const transactions = await getConvexClient().queryRecords("transactions", {
         status: "completed",
       });
       stats.totalRevenue = transactions.reduce(

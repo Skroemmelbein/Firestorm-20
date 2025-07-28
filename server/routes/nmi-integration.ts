@@ -1,5 +1,5 @@
 import express from "express";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 import nmiTestPaymentRouter from "./nmi-test-payment";
 
 const router = express.Router();
@@ -415,15 +415,15 @@ router.post("/create-subscription", async (req, res) => {
       subscription,
     );
 
-    // 4. Save to Xano
-    const xanoCustomer = await getXanoClient().createRecord("members", {
+    // 4. Save to Convex
+    const xanoCustomer = await getConvexClient().createRecord("members", {
       ...customer,
       nmi_customer_id: customerId,
       subscription_status: "active",
       created_at: new Date().toISOString(),
     });
 
-    const xanoSubscription = await getXanoClient().createRecord("subscriptions", {
+    const xanoSubscription = await getConvexClient().createRecord("subscriptions", {
       member_id: xanoCustomer.id,
       nmi_subscription_id: nmiSubscription.subscriptionId,
       plan_id: subscription.planId,
@@ -459,8 +459,8 @@ router.patch("/subscription/:id", async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
 
-    // Get subscription from Xano
-    const xanoSubscription = await getXanoClient().getRecord("subscriptions", parseInt(id));
+    // Get subscription from Convex
+    const xanoSubscription = await getConvexClient().getRecord("subscriptions", id);
 
     // Update in NMI
     await nmiAPI.updateSubscription(
@@ -468,10 +468,10 @@ router.patch("/subscription/:id", async (req, res) => {
       updates,
     );
 
-    // Update in Xano
-    const updatedSubscription = await getXanoClient().updateRecord(
+    // Update in Convex
+    const updatedSubscription = await getConvexClient().updateRecord(
       "subscriptions",
-      parseInt(id),
+      id,
       {
         ...updates,
         updated_at: new Date().toISOString(),
@@ -497,16 +497,16 @@ router.post("/subscription/:id/pause", async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Get subscription from Xano
-    const xanoSubscription = await getXanoClient().getRecord("subscriptions", parseInt(id));
+    // Get subscription from Convex
+    const xanoSubscription = await getConvexClient().getRecord("subscriptions", id);
 
     // Pause in NMI
     await nmiAPI.pauseSubscription(xanoSubscription.nmi_subscription_id);
 
-    // Update in Xano
-    const updatedSubscription = await getXanoClient().updateRecord(
+    // Update in Convex
+    const updatedSubscription = await getConvexClient().updateRecord(
       "subscriptions",
-      parseInt(id),
+      id,
       {
         status: "paused",
         paused_at: new Date().toISOString(),
@@ -532,16 +532,16 @@ router.post("/subscription/:id/resume", async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Get subscription from Xano
-    const xanoSubscription = await getXanoClient().getRecord("subscriptions", parseInt(id));
+    // Get subscription from Convex
+    const xanoSubscription = await getConvexClient().getRecord("subscriptions", id);
 
     // Resume in NMI
     await nmiAPI.resumeSubscription(xanoSubscription.nmi_subscription_id);
 
-    // Update in Xano
-    const updatedSubscription = await getXanoClient().updateRecord(
+    // Update in Convex
+    const updatedSubscription = await getConvexClient().updateRecord(
       "subscriptions",
-      parseInt(id),
+      id,
       {
         status: "active",
         resumed_at: new Date().toISOString(),
@@ -567,16 +567,16 @@ router.post("/subscription/:id/cancel", async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Get subscription from Xano
-    const xanoSubscription = await getXanoClient().getRecord("subscriptions", parseInt(id));
+    // Get subscription from Convex
+    const xanoSubscription = await getConvexClient().getRecord("subscriptions", id);
 
     // Cancel in NMI
     await nmiAPI.cancelSubscription(xanoSubscription.nmi_subscription_id);
 
-    // Update in Xano
-    const updatedSubscription = await getXanoClient().updateRecord(
+    // Update in Convex
+    const updatedSubscription = await getConvexClient().updateRecord(
       "subscriptions",
-      parseInt(id),
+      id,
       {
         status: "cancelled",
         cancelled_at: new Date().toISOString(),
@@ -611,8 +611,8 @@ router.post("/webhook/payment-notification", async (req, res) => {
       type,
     } = req.body;
 
-    // Find subscription in Xano
-    const subscriptions = await getXanoClient().queryRecords("subscriptions", {
+    // Find subscription in Convex
+    const subscriptions = await getConvexClient().queryRecords("subscriptions", {
       nmi_subscription_id: subscription_id,
     });
 
@@ -626,7 +626,7 @@ router.post("/webhook/payment-notification", async (req, res) => {
     const subscription = subscriptions[0];
 
     // Create transaction record
-    await getXanoClient().createRecord("transactions", {
+    await getConvexClient().createRecord("transactions", {
       member_id: subscription.member_id,
       subscription_id: subscription.id,
       nmi_transaction_id: transactionid,
@@ -640,7 +640,7 @@ router.post("/webhook/payment-notification", async (req, res) => {
 
     // Update subscription status if payment failed
     if (response !== "1") {
-      await getXanoClient().updateRecord("subscriptions", subscription.id, {
+      await getConvexClient().updateRecord("subscriptions", subscription.id, {
         status: "past_due",
         last_failed_payment: new Date().toISOString(),
       });
@@ -653,7 +653,7 @@ router.post("/webhook/payment-notification", async (req, res) => {
         nextBilling.setFullYear(nextBilling.getFullYear() + 1);
       }
 
-      await getXanoClient().updateRecord("subscriptions", subscription.id, {
+      await getConvexClient().updateRecord("subscriptions", subscription.id, {
         status: "active",
         next_billing_date: nextBilling.toISOString(),
         last_successful_payment: new Date().toISOString(),
@@ -675,7 +675,7 @@ router.post("/webhook/payment-notification", async (req, res) => {
 router.post("/sync-subscriptions", async (req, res) => {
   try {
     // Get all active subscriptions from Xano
-    const subscriptions = await getXanoClient().queryRecords("subscriptions", {
+    const subscriptions = await getConvexClient().queryRecords("subscriptions", {
       status: ["active", "past_due", "paused"],
     });
 
@@ -690,7 +690,7 @@ router.post("/sync-subscriptions", async (req, res) => {
 
         // Update Xano if status changed
         if (nmiStatus.status !== subscription.status) {
-          await getXanoClient().updateRecord("subscriptions", subscription.id, {
+          await getConvexClient().updateRecord("subscriptions", subscription.id, {
             status: nmiStatus.status,
             amount: nmiStatus.amount,
             next_billing_date: nmiStatus.nextBilling,

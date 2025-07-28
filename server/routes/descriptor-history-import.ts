@@ -1,6 +1,6 @@
 import express from "express";
 import { z } from "zod";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -384,7 +384,7 @@ router.post("/import-record", async (req, res) => {
       DescriptorAnalyzer.generateRepresentmentStrength(validatedRecord);
 
     // Check for duplicate records
-    const existingRecords = await getXanoClient().queryRecords("descriptor_history", {
+    const existingRecords = await getConvexClient().queryRecords("descriptor_history", {
       transactionId: validatedRecord.transactionId,
     });
 
@@ -405,13 +405,13 @@ router.post("/import-record", async (req, res) => {
     (validatedRecord as any).importedAt = new Date().toISOString();
 
     // Save to Xano
-    const savedRecord = await getXanoClient().createRecord(
+    const savedRecord = await getConvexClient().createRecord(
       "descriptor_history",
       validatedRecord,
     );
 
     // Create dispute readiness assessment
-    await getXanoClient().createRecord("dispute_readiness_assessments", {
+    await getConvexClient().createRecord("dispute_readiness_assessments", {
       transactionId: validatedRecord.transactionId,
       customerId: validatedRecord.customerId,
       descriptorQuality: descriptorAnalysis.recognizability,
@@ -474,7 +474,7 @@ router.post("/batch-import", async (req, res) => {
     };
 
     // Create batch record
-    const batchRecord = await getXanoClient().createRecord(
+    const batchRecord = await getConvexClient().createRecord(
       "descriptor_import_batches",
       {
         batchId: validatedBatch.batchId,
@@ -516,7 +516,7 @@ router.post("/batch-import", async (req, res) => {
           results.successful++;
         } else {
           // Check for duplicates
-          const existingRecords = await getXanoClient().queryRecords(
+          const existingRecords = await getConvexClient().queryRecords(
             "descriptor_history",
             {
               transactionId: record.transactionId,
@@ -565,7 +565,7 @@ router.post("/batch-import", async (req, res) => {
           ) {
             // Merge with existing record
             const mergedData = { ...existingRecords[0], ...record };
-            savedRecord = await getXanoClient().updateRecord(
+            savedRecord = await getConvexClient().updateRecord(
               "descriptor_history",
               existingRecords[0].id,
               mergedData,
@@ -579,7 +579,7 @@ router.post("/batch-import", async (req, res) => {
             });
           } else {
             // Create new record
-            savedRecord = await getXanoClient().createRecord(
+            savedRecord = await getConvexClient().createRecord(
               "descriptor_history",
               record,
             );
@@ -601,7 +601,7 @@ router.post("/batch-import", async (req, res) => {
             `📊 Progress: ${i + 1}/${validatedBatch.records.length} records processed`,
           );
 
-          await getXanoClient().updateRecord(
+          await getConvexClient().updateRecord(
             "descriptor_import_batches",
             batchRecord.id,
             {
@@ -634,7 +634,7 @@ router.post("/batch-import", async (req, res) => {
         : 0;
 
     // Update batch completion
-    await getXanoClient().updateRecord("descriptor_import_batches", batchRecord.id, {
+    await getConvexClient().updateRecord("descriptor_import_batches", batchRecord.id, {
       status: "completed",
       completedAt: new Date().toISOString(),
       processedRecords: validatedBatch.records.length,
@@ -672,7 +672,7 @@ router.get("/representment-evidence/:transactionId", async (req, res) => {
   try {
     const { transactionId } = req.params;
 
-    const records = await getXanoClient().queryRecords("descriptor_history", {
+    const records = await getConvexClient().queryRecords("descriptor_history", {
       transactionId: transactionId,
     });
 
@@ -686,12 +686,12 @@ router.get("/representment-evidence/:transactionId", async (req, res) => {
     const record = records[0];
 
     // Get related customer data
-    const customerRecords = await getXanoClient().queryRecords("customer_master", {
+    const customerRecords = await getConvexClient().queryRecords("customer_master", {
       customerId: record.customerId,
     });
 
     // Get consent events
-    const consentEvents = await getXanoClient().queryRecords("consent_tos_events", {
+    const consentEvents = await getConvexClient().queryRecords("consent_tos_events", {
       customerId: record.customerId,
     });
 
@@ -770,7 +770,7 @@ router.get("/dispute-readiness/:customerId", async (req, res) => {
     const { customerId } = req.params;
 
     // Get all descriptor history for customer
-    const records = await getXanoClient().queryRecords("descriptor_history", {
+    const records = await getConvexClient().queryRecords("descriptor_history", {
       customerId: customerId,
     });
 

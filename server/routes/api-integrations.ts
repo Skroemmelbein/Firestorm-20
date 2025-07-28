@@ -1,6 +1,6 @@
 import express from "express";
 import fetch from "node-fetch";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -138,8 +138,8 @@ class TwilioAPI {
 
     const result = await response.json();
 
-    // Log to Xano
-    await getXanoClient().createRecord("conversations", {
+    // Log to Convex
+    await getConvexClient().createRecord("conversations", {
       customer_phone: to,
       campaign_id: campaignId,
       channel: "sms",
@@ -171,8 +171,8 @@ class TwilioAPI {
 
     const result = await response.json();
 
-    // Log to Xano
-    await getXanoClient().createRecord("conversations", {
+    // Log to Convex
+    await getConvexClient().createRecord("conversations", {
       customer_phone: to,
       campaign_id: campaignId,
       channel: "voice",
@@ -438,8 +438,8 @@ router.post("/webhooks/twilio/sms", async (req, res) => {
   try {
     const { From, Body, MessageSid } = req.body;
 
-    // Log incoming message to Xano
-    await getXanoClient().createRecord("conversations", {
+    // Log incoming message to Convex
+    await getConvexClient().createRecord("conversations", {
       customer_phone: From,
       channel: "sms",
       direction: "inbound",
@@ -461,8 +461,8 @@ router.post("/webhooks/twilio/status", async (req, res) => {
   try {
     const { MessageSid, MessageStatus } = req.body;
 
-    // Update message status in Xano
-    await getXanoClient().createRecord("conversations", {
+    // Update message status in Convex
+    await getConvexClient().createRecord("conversations", {
       twilio_sid: MessageSid,
       status: MessageStatus,
     });

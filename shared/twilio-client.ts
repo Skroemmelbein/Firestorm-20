@@ -1,5 +1,5 @@
 // Real Twilio Client - SMS, Voice, and Webhooks
-import { getXanoClient } from "./xano-client";
+import { getConvexClient } from "./convex-client";
 
 interface TwilioConfig {
   accountSid: string;
@@ -138,8 +138,8 @@ export class TwilioClient {
     try {
       const result = await this.makeRequest("/Messages.json", "POST", data);
 
-      // Log to Xano
-      await this.logCommunicationToXano({
+      // Log to Convex
+      await this.logCommunicationToConvex({
         channel: "sms",
         direction: "outbound",
         to_number: message.to,
@@ -171,8 +171,8 @@ export class TwilioClient {
         timestamp: new Date().toISOString(),
       };
 
-      // Log failed attempt to Xano
-      await this.logCommunicationToXano({
+      // Log failed attempt to Convex
+      await this.logCommunicationToConvex({
         channel: "sms",
         direction: "outbound",
         to_number: message.to,
@@ -210,8 +210,8 @@ export class TwilioClient {
     try {
       const result = await this.makeRequest("/Calls.json", "POST", data);
 
-      // Log to Xano
-      await this.logCommunicationToXano({
+      // Log to Convex
+      await this.logCommunicationToConvex({
         channel: "voice",
         direction: "outbound",
         to_number: call.to,
@@ -291,11 +291,11 @@ export class TwilioClient {
       console.error("Error processing incoming SMS with AI:", error);
 
       // Fallback: basic logging without AI
-      const xano = getXanoClient();
-      const members = await xano.getMembers({ search: webhook.From });
+      const convex = getConvexClient();
+      const members = await convex.getMembers({ search: webhook.From });
       let member = members.data.find((m) => m.phone === webhook.From);
 
-      await this.logCommunicationToXano({
+      await this.logCommunicationToConvex({
         member_id: member?.id,
         channel: "sms",
         direction: "inbound",
@@ -314,11 +314,11 @@ export class TwilioClient {
   // Handle Message Status Webhook
   async handleStatusWebhook(webhook: TwilioWebhook): Promise<void> {
     try {
-      const xano = getXanoClient();
+      const convex = getConvexClient();
 
-      // Update message status in Xano
-      const communications = await xano.getCommunications({
-        limit: 1,
+      // Update message status in Convex
+      const communications = await convex.getCommunications({
+        per_page: 1,
       });
 
       // Find the communication record by Twilio SID
@@ -335,13 +335,12 @@ export class TwilioClient {
           received: "delivered",
         };
 
-        await xano.updateCommunicationStatus(
-          comm.id,
-          statusMap[webhook.MessageStatus] || webhook.MessageStatus,
-          webhook.MessageStatus === "delivered"
+        await convex.updateCommunicationStatus(comm.id, {
+          status: statusMap[webhook.MessageStatus] || webhook.MessageStatus,
+          delivered_at: webhook.MessageStatus === "delivered"
             ? new Date().toISOString()
             : undefined,
-        );
+        });
       }
 
       console.log("Message status updated:", {
@@ -354,16 +353,16 @@ export class TwilioClient {
     }
   }
 
-  // Helper to log communication to Xano
-  private async logCommunicationToXano(commData: any): Promise<void> {
+  // Helper to log communication to Convex
+  private async logCommunicationToConvex(commData: any): Promise<void> {
     try {
-      const xano = getXanoClient();
-      await xano.createCommunication({
+      const convex = getConvexClient();
+      await convex.createCommunication({
         ...commData,
         created_at: new Date().toISOString(),
       });
     } catch (error) {
-      console.error("Failed to log communication to Xano:", error);
+      console.error("Failed to log communication to Convex:", error);
       // Don't throw - logging failure shouldn't stop the main operation
     }
   }
@@ -384,8 +383,8 @@ export class TwilioClient {
     try {
       const result = await this.makeRequest("/Messages.json", "POST", data);
 
-      // Log to Xano
-      await this.logCommunicationToXano({
+      // Log to Convex
+      await this.logCommunicationToConvex({
         channel: "whatsapp",
         direction: "outbound",
         to_number: message.to,
@@ -431,8 +430,8 @@ export class TwilioClient {
     try {
       const result = await this.makeRequest(`/Studio/Flows/${flowSid}/Executions.json`, "POST", data);
 
-      // Log to Xano
-      await this.logCommunicationToXano({
+      // Log to Convex
+      await this.logCommunicationToConvex({
         channel: "studio_flow",
         direction: "outbound",
         to_number: to,
@@ -493,8 +492,8 @@ export class TwilioClient {
     try {
       const result = await this.makeRequest("/Messages.json", "POST", data);
 
-      // Log to Xano
-      await this.logCommunicationToXano({
+      // Log to Convex
+      await this.logCommunicationToConvex({
         channel: "rcs",
         direction: "outbound",
         to_number: message.to,
@@ -565,8 +564,8 @@ export class TwilioClient {
     try {
       const result = await this.makeRequest("/Calls.json", "POST", data);
 
-      // Log to Xano
-      await this.logCommunicationToXano({
+      // Log to Convex
+      await this.logCommunicationToConvex({
         channel: "voice_advanced",
         direction: "outbound",
         to_number: call.to,

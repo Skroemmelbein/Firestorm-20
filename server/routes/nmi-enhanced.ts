@@ -1,5 +1,5 @@
 import express from "express";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 import fetch from "node-fetch";
 
 const router = express.Router();
@@ -446,8 +446,8 @@ router.post("/enhanced/create-customer", async (req, res) => {
 
     const result = await enhancedNMIAPI.createCustomerWithVault(customer, paymentMethod);
 
-    // Log to Xano
-    await getXanoClient().createRecord("nmi_customers", {
+    // Log to Convex
+    await getConvexClient().createRecord("nmi_customers", {
       nmi_customer_id: result.customerId,
       email: customer.email,
       first_name: customer.firstName,
@@ -488,8 +488,8 @@ router.post("/enhanced/one-time-payment", async (req, res) => {
       description || "One-time payment"
     );
 
-    // Log to Xano
-    await getXanoClient().createRecord("nmi_transactions", {
+    // Log to Convex
+    await getConvexClient().createRecord("nmi_transactions", {
       nmi_transaction_id: result.transactionId,
       nmi_customer_id: customerId,
       amount: parseFloat(amount),
@@ -532,8 +532,8 @@ router.post("/enhanced/create-subscription", async (req, res) => {
       startDate ? new Date(startDate) : undefined
     );
 
-    // Log to Xano
-    await getXanoClient().createRecord("nmi_subscriptions", {
+    // Log to Convex
+    await getConvexClient().createRecord("nmi_subscriptions", {
       nmi_subscription_id: result.subscriptionId,
       nmi_customer_id: customerId,
       plan_id: planId,
@@ -574,8 +574,8 @@ router.post("/enhanced/refund", async (req, res) => {
       amount ? parseFloat(amount) : undefined
     );
 
-    // Log to Xano
-    await getXanoClient().createRecord("nmi_transactions", {
+    // Log to Convex
+    await getConvexClient().createRecord("nmi_transactions", {
       nmi_transaction_id: result.transactionId,
       original_transaction_id: transactionId,
       amount: amount ? parseFloat(amount) : result.amount,
@@ -612,7 +612,7 @@ router.post("/enhanced/pause-subscription", async (req, res) => {
 
     const result = await enhancedNMIAPI.pauseSubscription(subscriptionId);
 
-    await getXanoClient().updateRecord("nmi_subscriptions", parseInt(subscriptionId), {
+    await getConvexClient().updateRecord("nmi_subscriptions", subscriptionId, {
       status: "paused",
       paused_at: new Date().toISOString(),
     });
@@ -644,7 +644,7 @@ router.post("/enhanced/resume-subscription", async (req, res) => {
 
     const result = await enhancedNMIAPI.resumeSubscription(subscriptionId);
 
-    await getXanoClient().updateRecord("nmi_subscriptions", parseInt(subscriptionId), {
+    await getConvexClient().updateRecord("nmi_subscriptions", subscriptionId, {
       status: "active",
       resumed_at: new Date().toISOString(),
     });
@@ -676,7 +676,7 @@ router.post("/enhanced/cancel-subscription", async (req, res) => {
 
     const result = await enhancedNMIAPI.cancelSubscription(subscriptionId);
 
-    await getXanoClient().updateRecord("nmi_subscriptions", parseInt(subscriptionId), {
+    await getConvexClient().updateRecord("nmi_subscriptions", subscriptionId, {
       status: "canceled",
       canceled_at: new Date().toISOString(),
     });
@@ -729,7 +729,7 @@ router.post("/enhanced/update-payment-method", async (req, res) => {
     const result = await enhancedNMIAPI.updatePaymentMethod(customerId, paymentMethod);
 
     // Log to Xano
-    await getXanoClient().createRecord("nmi_payment_methods", {
+    await getConvexClient().createRecord("nmi_payment_methods", {
       nmi_customer_id: customerId,
       payment_method_type: paymentMethod.type,
       last_four: paymentMethod.cardNumber?.slice(-4) || paymentMethod.accountNumber?.slice(-4),
@@ -768,7 +768,7 @@ router.post("/enhanced/retry-payment", async (req, res) => {
     );
 
     // Log to Xano
-    await getXanoClient().createRecord("nmi_retry_attempts", {
+    await getConvexClient().createRecord("nmi_retry_attempts", {
       nmi_subscription_id: subscriptionId,
       retry_attempt: retryAttempt || 1,
       status: result.success ? "success" : "failed",
@@ -804,7 +804,7 @@ router.post("/enhanced/webhook", async (req, res) => {
 
     const { event_type, subscription_id, transaction_id, customer_vault_id, amount, status } = req.body;
 
-    await getXanoClient().createRecord("nmi_webhook_events", {
+    await getConvexClient().createRecord("nmi_webhook_events", {
       event_type: event_type,
       nmi_subscription_id: subscription_id,
       nmi_transaction_id: transaction_id,
@@ -817,7 +817,7 @@ router.post("/enhanced/webhook", async (req, res) => {
 
     switch (event_type) {
       case 'subscription_payment_success':
-        await getXanoClient().createRecord("nmi_transactions", {
+        await getConvexClient().createRecord("nmi_transactions", {
           nmi_transaction_id: transaction_id,
           nmi_subscription_id: subscription_id,
           nmi_customer_id: customer_vault_id,
@@ -829,7 +829,7 @@ router.post("/enhanced/webhook", async (req, res) => {
         break;
 
       case 'subscription_payment_failed':
-        await getXanoClient().createRecord("nmi_transactions", {
+        await getConvexClient().createRecord("nmi_transactions", {
           nmi_transaction_id: transaction_id,
           nmi_subscription_id: subscription_id,
           nmi_customer_id: customer_vault_id,
@@ -841,7 +841,7 @@ router.post("/enhanced/webhook", async (req, res) => {
         break;
 
       case 'subscription_canceled':
-        await getXanoClient().updateRecord("nmi_subscriptions", parseInt(subscription_id), {
+        await getConvexClient().updateRecord("nmi_subscriptions", subscription_id, {
           status: "canceled",
           canceled_at: new Date().toISOString(),
         });

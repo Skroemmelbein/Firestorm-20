@@ -1,5 +1,5 @@
 import express from "express";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -210,7 +210,7 @@ router.post("/create-billing-tables", async (req, res) => {
       try {
         console.log(`Creating table: ${table.name}`);
 
-        const result = await getXanoClient().createTable(table.name, table.columns);
+        const result = await getConvexClient().createTable(table.name, table.columns);
 
         results.push({
           table: table.name,
@@ -311,7 +311,7 @@ router.post("/seed-plans", async (req, res) => {
 
     for (const plan of plans) {
       try {
-        const result = await getXanoClient().createRecord("plans", plan);
+        const result = await getConvexClient().createRecord("plans", plan);
         results.push({
           plan: plan.id,
           status: "created",
@@ -351,7 +351,7 @@ router.post("/create-test-user", async (req, res) => {
       updated_at: new Date().toISOString(),
     };
 
-    const user = await getXanoClient().createRecord("users", testUser);
+    const user = await getConvexClient().createRecord("users", testUser);
 
     res.json({
       success: true,
@@ -385,7 +385,7 @@ router.get("/health-check", async (req, res) => {
     // Check each table exists and get counts
     for (const table of BILLING_STACK_TABLES) {
       try {
-        const records = await getXanoClient().queryRecords(table.name, {});
+        const records = await getConvexClient().queryRecords(table.name, {});
         health.tables[table.name] = {
           exists: true,
           count: records.length,
@@ -411,7 +411,7 @@ router.get("/health-check", async (req, res) => {
 
     // Calculate approval rate
     try {
-      const transactions = await getXanoClient().queryRecords("transactions", {});
+      const transactions = await getConvexClient().queryRecords("transactions", {});
       const approved = transactions.filter(
         (t: any) => t.status === "approved",
       ).length;

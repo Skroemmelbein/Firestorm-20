@@ -1,5 +1,5 @@
 import express from "express";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 import { v4 as uuidv4 } from "uuid";
 
 const router = express.Router();
@@ -52,7 +52,7 @@ router.post("/charge-initial", async (req, res) => {
     });
 
     // 1. Get plan details
-    const plan = await getXanoClient().getRecord("plans", parseInt(plan_id));
+    const plan = await getConvexClient().getRecord("plans", plan_id);
     if (!plan) {
       return res.status(400).json({
         success: false,
@@ -63,7 +63,7 @@ router.post("/charge-initial", async (req, res) => {
     // 2. Create or get user
     let dbUser;
     try {
-      const existingUsers = await getXanoClient().queryRecords("users", {
+      const existingUsers = await getConvexClient().queryRecords("users", {
         email: user.email,
       });
       dbUser = existingUsers.length > 0 ? existingUsers[0] : null;
@@ -72,7 +72,7 @@ router.post("/charge-initial", async (req, res) => {
     }
 
     if (!dbUser) {
-      dbUser = await getXanoClient().createRecord("users", {
+      dbUser = await getConvexClient().createRecord("users", {
         email: user.email,
         name: user.name,
         created_at: new Date().toISOString(),
@@ -175,7 +175,7 @@ router.post("/charge-initial", async (req, res) => {
       updated_at: new Date().toISOString(),
     };
 
-    const transaction = await getXanoClient().createRecord(
+    const transaction = await getConvexClient().createRecord(
       "transactions",
       transactionData,
     );
@@ -209,13 +209,13 @@ router.post("/charge-initial", async (req, res) => {
         updated_at: new Date().toISOString(),
       };
 
-      const subscription = await getXanoClient().createRecord(
+      const subscription = await getConvexClient().createRecord(
         "subscriptions",
         subscriptionData,
       );
 
       // Update transaction with subscription ID
-      await getXanoClient().updateRecord("transactions", transaction.id, {
+      await getConvexClient().updateRecord("transactions", transaction.id, {
         subscription_id: subscription.id,
       });
 
@@ -273,13 +273,13 @@ router.post("/charge-recurring", async (req, res) => {
 
     console.log(
       "🔄 Processing MIT recurring charge for subscription:",
-      subscription_id,
+      subscription_id.toString(),
     );
 
     // 1. Get subscription details
-    const subscription = await getXanoClient().getRecord(
+    const subscription = await getConvexClient().getRecord(
       "subscriptions",
-      subscription_id,
+      subscription_id.toString(),
     );
     if (!subscription) {
       return res.status(404).json({
@@ -393,7 +393,7 @@ router.post("/charge-recurring", async (req, res) => {
       updated_at: new Date().toISOString(),
     };
 
-    const transaction = await getXanoClient().createRecord(
+    const transaction = await getConvexClient().createRecord(
       "transactions",
       transactionData,
     );
@@ -407,7 +407,7 @@ router.post("/charge-recurring", async (req, res) => {
         nextBillDate.setFullYear(nextBillDate.getFullYear() + 1);
       }
 
-      await getXanoClient().updateRecord("subscriptions", subscription.id, {
+      await getConvexClient().updateRecord("subscriptions", subscription.id, {
         next_bill_at: nextBillDate.toISOString(),
         retries: 0, // Reset retry count
         last_attempt_at: new Date().toISOString(),
@@ -438,7 +438,7 @@ router.post("/charge-recurring", async (req, res) => {
 
       if (newRetryCount >= NMI_CONFIG.maxRetries) {
         // Max retries reached - mark subscription as past_due or canceled
-        await getXanoClient().updateRecord("subscriptions", subscription.id, {
+        await getConvexClient().updateRecord("subscriptions", subscription.id, {
           status: "past_due",
           retries: newRetryCount,
           last_attempt_at: new Date().toISOString(),
@@ -456,7 +456,7 @@ router.post("/charge-recurring", async (req, res) => {
             NMI_CONFIG.retryBackoffHours[newRetryCount - 1],
         );
 
-        await getXanoClient().updateRecord("subscriptions", subscription.id, {
+        await getConvexClient().updateRecord("subscriptions", subscription.id, {
           retries: newRetryCount,
           next_bill_at: nextRetryDate.toISOString(),
           last_attempt_at: new Date().toISOString(),
@@ -464,7 +464,7 @@ router.post("/charge-recurring", async (req, res) => {
         });
 
         // Create retry schedule entry
-        await getXanoClient().createRecord("retry_schedule", {
+        await getConvexClient().createRecord("retry_schedule", {
           subscription_id: subscription.id,
           retry_attempt: newRetryCount,
           scheduled_at: nextRetryDate.toISOString(),
@@ -516,7 +516,7 @@ router.post("/run-recurring-billing", async (req, res) => {
 
     // Get all active subscriptions due for billing
     const now = new Date().toISOString();
-    const dueSubscriptions = await getXanoClient().queryRecords("subscriptions", {
+    const dueSubscriptions = await getConvexClient().queryRecords("subscriptions", {
       status: "active",
       next_bill_at: { "<=": now },
     });
@@ -601,9 +601,9 @@ router.post("/update-card", async (req, res) => {
   try {
     const { subscription_id, card } = req.body;
 
-    const subscription = await getXanoClient().getRecord(
+    const subscription = await getConvexClient().getRecord(
       "subscriptions",
-      subscription_id,
+      subscription_id.toString(),
     );
     if (!subscription) {
       return res.status(404).json({
@@ -640,7 +640,7 @@ router.post("/update-card", async (req, res) => {
 
     if (resultParams.get("response") === "1") {
       // Update subscription with new card details
-      await getXanoClient().updateRecord("subscriptions", subscription.id, {
+      await getConvexClient().updateRecord("subscriptions", subscription.id, {
         card_last_four: card.ccnumber.slice(-4),
         card_brand: getCardBrand(card.ccnumber),
         card_exp_month: parseInt(card.ccexp.slice(0, 2)),

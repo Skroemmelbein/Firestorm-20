@@ -1,20 +1,16 @@
 import express from "express";
 import fetch from "node-fetch";
-import { initializeXano } from "../../shared/xano-client";
+import { initializeConvex } from "../../shared/convex-client";
 
 const router = express.Router();
 
-// Initialize Xano client if credentials are available
-if (process.env.XANO_BASE_URL && process.env.XANO_API_KEY) {
+// Initialize Convex client if credentials are available
+if (process.env.NEXT_PUBLIC_CONVEX_URL) {
   try {
-    initializeXano({
-      instanceUrl: process.env.XANO_BASE_URL,
-      apiKey: process.env.XANO_API_KEY,
-      databaseId: "CdIRVEJq" // From .env XANO_TWILIO_CAMPAIGN
-    });
-    console.log("✅ Xano client initialized successfully");
+    initializeConvex();
+    console.log("✅ Convex client initialized successfully");
   } catch (error) {
-    console.error("❌ Failed to initialize Xano client:", error);
+    console.error("❌ Failed to initialize Convex client:", error);
   }
 }
 
@@ -30,13 +26,13 @@ const NMI_CONFIG = {
 
 // Test connections (real, no mocks)
 // Safe client getters
-const getXanoClientSafe = () => {
+const getConvexClientSafe = () => {
   try {
-    const { getXanoClient } = require("../../shared/xano-client");
-    return getXanoClient();
+    const { getConvexClient } = require("../../shared/convex-client");
+    return getConvexClient();
   } catch (error) {
     throw new Error(
-      "Xano client not initialized. Please configure Xano credentials first.",
+      "Convex client not initialized. Please configure Convex credentials first.",
     );
   }
 };
@@ -92,31 +88,31 @@ const getSafeTwilioClient = async () => {
   }
 };
 
-router.post("/test/xano", async (req, res) => {
+router.post("/test/convex", async (req, res) => {
   try {
-    const xano = getXanoClientSafe();
-    const isConnected = await xano.testConnection();
+    const convex = getConvexClientSafe();
+    const isConnected = await convex.testConnection();
 
     if (isConnected) {
       res.json({
         connected: true,
-        message: "Successfully connected to Xano",
+        message: "Successfully connected to Convex",
         timestamp: new Date().toISOString(),
       });
     } else {
       res.status(400).json({
         connected: false,
-        error: "Failed to connect to Xano. Check your credentials.",
+        error: "Failed to connect to Convex. Check your credentials.",
       });
     }
   } catch (error) {
-    console.error("Xano connection test failed:", error);
+    console.error("Convex connection test failed:", error);
     res.status(500).json({
       connected: false,
       error:
         error instanceof Error
           ? error.message
-          : "Xano not configured. Please set up Xano credentials.",
+          : "Convex not configured. Please set up Convex credentials.",
     });
   }
 });
@@ -152,7 +148,7 @@ router.get("/members", async (req, res) => {
   try {
     // Check if Xano is connected, otherwise return mock data
     try {
-      const xano = getXanoClientSafe();
+      const xano = getConvexClientSafe();
       const { page, per_page, search, status, membership_type } = req.query;
 
       const members = await xano.getMembers({
@@ -245,7 +241,7 @@ router.get("/members", async (req, res) => {
 
 router.get("/members/:id", async (req, res) => {
   try {
-    const xano = getXanoClientSafe();
+    const xano = getConvexClientSafe();
     const member = await xano.getMember(parseInt(req.params.id));
     res.json(member);
   } catch (error) {
@@ -256,7 +252,7 @@ router.get("/members/:id", async (req, res) => {
 
 router.post("/members", async (req, res) => {
   try {
-    const xano = getXanoClientSafe();
+    const xano = getConvexClientSafe();
     const member = await xano.createMember(req.body);
     res.json(member);
   } catch (error) {
@@ -267,7 +263,7 @@ router.post("/members", async (req, res) => {
 
 router.patch("/members/:id", async (req, res) => {
   try {
-    const xano = getXanoClientSafe();
+    const xano = getConvexClientSafe();
     const member = await xano.updateMember(parseInt(req.params.id), req.body);
     res.json(member);
   } catch (error) {
@@ -281,7 +277,7 @@ router.get("/benefits", async (req, res) => {
   try {
     // Check if Xano is connected, otherwise return mock data
     try {
-      const xano = getXanoClientSafe();
+      const xano = getConvexClientSafe();
       const { membership_level, is_active } = req.query;
 
       const benefits = await xano.getBenefits({
@@ -397,7 +393,7 @@ router.get("/benefits", async (req, res) => {
 
 router.get("/members/:id/benefits", async (req, res) => {
   try {
-    const xano = getXanoClientSafe();
+    const xano = getConvexClientSafe();
     const benefits = await xano.getMemberBenefits(parseInt(req.params.id));
     res.json(benefits);
   } catch (error) {
@@ -408,7 +404,7 @@ router.get("/members/:id/benefits", async (req, res) => {
 
 router.post("/benefits", async (req, res) => {
   try {
-    const xano = getXanoClientSafe();
+    const xano = getConvexClientSafe();
     const benefit = await xano.createBenefit(req.body);
     res.json(benefit);
   } catch (error) {
@@ -419,7 +415,7 @@ router.post("/benefits", async (req, res) => {
 
 router.post("/benefits/:id/use", async (req, res) => {
   try {
-    const xano = getXanoClientSafe();
+    const xano = getConvexClientSafe();
     const { member_id, usage_details } = req.body;
 
     await xano.useBenefit(member_id, parseInt(req.params.id), usage_details);
@@ -557,7 +553,7 @@ router.post("/voice/call", async (req, res) => {
 // Communications API
 router.get("/communications", async (req, res) => {
   try {
-    const xano = getXanoClientSafe();
+    const xano = getConvexClientSafe();
     const { member_id, channel, direction, limit } = req.query;
 
     const communications = await xano.getCommunications({
@@ -577,7 +573,7 @@ router.get("/communications", async (req, res) => {
 // Analytics API
 router.get("/analytics/dashboard", async (req, res) => {
   try {
-    const xano = getXanoClientSafe();
+    const xano = getConvexClientSafe();
     const stats = await xano.getDashboardStats();
     res.json(stats);
   } catch (error) {
@@ -638,7 +634,7 @@ router.post("/events", async (req, res) => {
       });
       
       try {
-        const xano = getXanoClientSafe();
+        const xano = getConvexClientSafe();
         await xano.createCommunication({
           channel: "email",
           direction: "inbound",
@@ -1189,7 +1185,7 @@ router.post("/test/nmi/create-customer", async (req, res) => {
     if (success && customerId) {
       // Log to Xano
       try {
-        await getXanoClientSafe().createRecord("nmi_customers", {
+        await getConvexClientSafe().createRecord("nmi_customers", {
           nmi_customer_id: customerId,
           first_name: testCustomer.firstName,
           last_name: testCustomer.lastName,
@@ -1281,7 +1277,7 @@ router.post("/test/nmi/one-time-payment", async (req, res) => {
     // Log to Xano
     if (paymentSuccess && transactionId) {
       try {
-        await getXanoClientSafe().createRecord("nmi_transactions", {
+        await getConvexClientSafe().createRecord("nmi_transactions", {
           transaction_id: transactionId,
           amount: amount,
           type: "sale",
@@ -1410,7 +1406,7 @@ router.post("/test/nmi/recurring-subscription", async (req, res) => {
       const simulatedSubscriptionId = `SIM_${Date.now()}`;
       
       try {
-        const xanoMember = await getXanoClientSafe().createRecord("members", {
+        const xanoMember = await getConvexClientSafe().createRecord("members", {
           uuid: `test_member_${Date.now()}`,
           email: customerData.email,
           phone: customerData.phone,
@@ -1425,7 +1421,7 @@ router.post("/test/nmi/recurring-subscription", async (req, res) => {
           created_at: new Date().toISOString(),
         });
 
-        const xanoSubscription = await getXanoClientSafe().createRecord("subscriptions", {
+        const xanoSubscription = await getConvexClientSafe().createRecord("subscriptions", {
           member_id: xanoMember.id,
           nmi_subscription_id: simulatedSubscriptionId,
           plan_name: "Test Recurring Plan (Simulated)",
@@ -1475,7 +1471,7 @@ router.post("/test/nmi/recurring-subscription", async (req, res) => {
     console.log("✅ Subscription created in NMI:", nmiSubscriptionId);
 
     try {
-      const xanoMember = await getXanoClientSafe().createRecord("members", {
+      const xanoMember = await getConvexClientSafe().createRecord("members", {
         uuid: `test_member_${Date.now()}`,
         email: customerData.email,
         phone: customerData.phone,
@@ -1490,7 +1486,7 @@ router.post("/test/nmi/recurring-subscription", async (req, res) => {
         created_at: new Date().toISOString(),
       });
 
-      const xanoSubscription = await getXanoClientSafe().createRecord("subscriptions", {
+      const xanoSubscription = await getConvexClientSafe().createRecord("subscriptions", {
         member_id: xanoMember.id,
         nmi_subscription_id: nmiSubscriptionId,
         plan_name: "Test Recurring Plan",

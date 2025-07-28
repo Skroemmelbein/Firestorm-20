@@ -1,5 +1,5 @@
 import express from "express";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -283,7 +283,7 @@ class BillingAnalyticsEngine {
       0,
     );
 
-    const subscriptions = await getXanoClient().queryRecords("subscriptions", {
+    const subscriptions = await getConvexClient().queryRecords("subscriptions", {
       status: "active",
     });
 
@@ -338,7 +338,7 @@ class BillingAnalyticsEngine {
         query.retry_attempt = filter.retry_attempt;
       }
 
-      return await getXanoClient().queryRecords("transactions", query);
+      return await getConvexClient().queryRecords("transactions", query);
     } catch (error) {
       console.error("Error fetching filtered transactions:", error);
       return [];
@@ -435,7 +435,7 @@ router.get("/decline-insights", async (req, res) => {
       ]);
 
     // Get decline trends over time
-    const declineInsights = await getXanoClient().queryRecords("decline_insights", {
+    const declineInsights = await getConvexClient().queryRecords("decline_insights", {
       date: {
         ">=":
           filter.start_date ||
@@ -476,7 +476,7 @@ router.get("/retry-analytics", async (req, res) => {
 
     const retrySuccessRates =
       await analyticsEngine.getRetrySuccessRates(filter);
-    const retrySchedules = await getXanoClient().queryRecords("retry_schedule", {
+    const retrySchedules = await getConvexClient().queryRecords("retry_schedule", {
       created_at: {
         ">=":
           filter.start_date ||
@@ -519,7 +519,7 @@ router.get("/real-time", async (req, res) => {
       Date.now() - 24 * 60 * 60 * 1000,
     ).toISOString();
 
-    const recentTransactions = await getXanoClient().queryRecords("transactions", {
+    const recentTransactions = await getConvexClient().queryRecords("transactions", {
       created_at: { ">=": last24Hours },
     });
 

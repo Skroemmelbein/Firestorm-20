@@ -1,7 +1,7 @@
 import express from "express";
 import { z } from "zod";
 import crypto from "crypto";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -430,7 +430,7 @@ router.post("/import-event", async (req, res) => {
     }
 
     // Check for duplicate events
-    const existingEvents = await getXanoClient().queryRecords("consent_tos_events", {
+    const existingEvents = await getConvexClient().queryRecords("consent_tos_events", {
       eventId: validatedEvent.eventId,
     });
 
@@ -449,8 +449,8 @@ router.post("/import-event", async (req, res) => {
     (validatedEvent as any).validationScore = validation.score;
     (validatedEvent as any).validationIssues = validation.issues;
 
-    // Save to Xano
-    const savedEvent = await getXanoClient().createRecord(
+    // Save to Convex
+    const savedEvent = await getConvexClient().createRecord(
       "consent_tos_events",
       validatedEvent,
     );
@@ -459,7 +459,7 @@ router.post("/import-event", async (req, res) => {
     await updateCustomerConsentSummary(validatedEvent.customerId);
 
     // Log compliance audit
-    await getXanoClient().createRecord("compliance_audit_log", {
+    await getConvexClient().createRecord("compliance_audit_log", {
       eventType: "consent_import",
       customerId: validatedEvent.customerId,
       eventId: validatedEvent.eventId,
@@ -515,7 +515,7 @@ router.post("/batch-import", async (req, res) => {
     };
 
     // Create batch record
-    const batchRecord = await getXanoClient().createRecord("consent_import_batches", {
+    const batchRecord = await getConvexClient().createRecord("consent_import_batches", {
       batchId: validatedBatch.batchId,
       source: validatedBatch.source,
       totalRecords: validatedBatch.events.length,
@@ -554,7 +554,7 @@ router.post("/batch-import", async (req, res) => {
           results.successful++;
         } else {
           // Check for duplicates
-          const existingEvents = await getXanoClient().queryRecords(
+          const existingEvents = await getConvexClient().queryRecords(
             "consent_tos_events",
             {
               eventId: event.eventId,
@@ -594,7 +594,7 @@ router.post("/batch-import", async (req, res) => {
           (event as any).validationScore = validation.score;
           (event as any).validationIssues = validation.issues;
 
-          const savedEvent = await getXanoClient().createRecord(
+          const savedEvent = await getConvexClient().createRecord(
             "consent_tos_events",
             event,
           );
@@ -616,7 +616,7 @@ router.post("/batch-import", async (req, res) => {
             `📊 Progress: ${i + 1}/${validatedBatch.events.length} events processed`,
           );
 
-          await getXanoClient().updateRecord("consent_import_batches", batchRecord.id, {
+          await getConvexClient().updateRecord("consent_import_batches", batchRecord.id, {
             processedRecords: i + 1,
             successfulRecords: results.successful,
             failedRecords: results.failed,
@@ -645,7 +645,7 @@ router.post("/batch-import", async (req, res) => {
         : 0;
 
     // Update batch completion
-    await getXanoClient().updateRecord("consent_import_batches", batchRecord.id, {
+    await getConvexClient().updateRecord("consent_import_batches", batchRecord.id, {
       status: "completed",
       completedAt: new Date().toISOString(),
       processedRecords: validatedBatch.events.length,
@@ -684,7 +684,7 @@ router.get("/customer/:customerId/analysis", async (req, res) => {
     const { customerId } = req.params;
 
     // Get all consent events for customer
-    const events = await getXanoClient().queryRecords("consent_tos_events", {
+    const events = await getConvexClient().queryRecords("consent_tos_events", {
       customerId: customerId,
     });
 
@@ -702,7 +702,7 @@ router.get("/customer/:customerId/analysis", async (req, res) => {
     );
 
     // Get recent compliance audit logs
-    const auditLogs = await getXanoClient().queryRecords("compliance_audit_log", {
+    const auditLogs = await getConvexClient().queryRecords("compliance_audit_log", {
       customerId: customerId,
     });
 
@@ -728,7 +728,7 @@ router.get("/compliance-report/:customerId", async (req, res) => {
     const { customerId } = req.params;
     const { eventTypes } = req.query;
 
-    let events = await getXanoClient().queryRecords("consent_tos_events", {
+    let events = await getConvexClient().queryRecords("consent_tos_events", {
       customerId: customerId,
     });
 
@@ -852,7 +852,7 @@ router.get("/compliance-report/:customerId", async (req, res) => {
 async function updateCustomerConsentSummary(customerId: string) {
   try {
     // Get all events for this customer
-    const events = await getXanoClient().queryRecords("consent_tos_events", {
+    const events = await getConvexClient().queryRecords("consent_tos_events", {
       customerId: customerId,
     });
 
@@ -863,7 +863,7 @@ async function updateCustomerConsentSummary(customerId: string) {
     );
 
     // Update or create consent summary record
-    const existingSummary = await getXanoClient().queryRecords(
+    const existingSummary = await getConvexClient().queryRecords(
       "customer_consent_summary",
       {
         customerId: customerId,
@@ -881,13 +881,13 @@ async function updateCustomerConsentSummary(customerId: string) {
     };
 
     if (existingSummary.length > 0) {
-      await getXanoClient().updateRecord(
+      await getConvexClient().updateRecord(
         "customer_consent_summary",
         existingSummary[0].id,
         summaryData,
       );
     } else {
-      await getXanoClient().createRecord("customer_consent_summary", summaryData);
+      await getConvexClient().createRecord("customer_consent_summary", summaryData);
     }
   } catch (error: any) {
     console.error(

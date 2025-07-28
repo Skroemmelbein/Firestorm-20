@@ -1,5 +1,5 @@
 import express from "express";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -489,7 +489,7 @@ router.post("/create-consent-tos-tables", async (req, res) => {
       try {
         console.log(`Creating table: ${table.name}`);
 
-        const result = await getXanoClient().createTable(table.name, table.columns);
+        const result = await getConvexClient().createTable(table.name, table.columns);
 
         results.push({
           table: table.name,
@@ -646,7 +646,7 @@ router.post("/seed-consent-data", async (req, res) => {
         // Add import metadata
         (event as any).importedAt = new Date().toISOString();
 
-        const result = await getXanoClient().createRecord("consent_tos_events", event);
+        const result = await getConvexClient().createRecord("consent_tos_events", event);
 
         results.push({
           eventId: event.eventId,
@@ -699,7 +699,7 @@ router.get("/health-check", async (req, res) => {
     // Check each table exists and get counts
     for (const table of CONSENT_TOS_TABLES) {
       try {
-        const records = await getXanoClient().queryRecords(table.name, {});
+        const records = await getConvexClient().queryRecords(table.name, {});
         health.tables[table.name] = {
           exists: true,
           count: records.length,

@@ -1,5 +1,5 @@
 import express from "express";
-import { getXanoClient } from "../../shared/xano-client";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -62,7 +62,7 @@ router.post("/phase3/send-multilingual", async (req, res) => {
         }
 
         // Log to Xano
-        await getXanoClient().createRecord("multilingual_messages", {
+        await getConvexClient().createRecord("multilingual_messages", {
           to_number: to,
           original_message: message,
           translated_message: finalMessage,
@@ -153,7 +153,7 @@ router.post("/phase4/send-template", async (req, res) => {
         }
 
         // Log to Xano
-        await getXanoClient().createRecord("template_messages", {
+        await getConvexClient().createRecord("template_messages", {
           template_sid: templateSid,
           to_recipient: to,
           channel: channel,
@@ -245,7 +245,7 @@ router.post("/phase5/send-with-failover", async (req, res) => {
           });
         }
 
-        await getXanoClient().createRecord("failover_messages", {
+        await getConvexClient().createRecord("failover_messages", {
           to_number: to,
           message: message,
           provider_used: provider,
@@ -284,7 +284,7 @@ router.post("/phase5/send-with-failover", async (req, res) => {
         lastError = error;
         console.warn(`Provider ${provider} failed:`, error instanceof Error ? error.message : error);
         
-        await getXanoClient().createRecord("failover_attempts", {
+        await getConvexClient().createRecord("failover_attempts", {
           to_number: to,
           message: message,
           provider_attempted: provider,
@@ -319,7 +319,7 @@ router.post("/phase5/check-bounce-rate", async (req, res) => {
     const { threshold } = req.body;
     const bounceThreshold = threshold || 3; // 3% default
     
-    const recentMessages = await getXanoClient().queryRecords("communications", {
+    const recentMessages = await getConvexClient().queryRecords("communications", {
       created_at: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() } // Last 24 hours
     });
 
@@ -327,7 +327,7 @@ router.post("/phase5/check-bounce-rate", async (req, res) => {
     const failedMessages = recentMessages.filter(msg => msg.status === "failed" || msg.status === "bounced").length;
     const bounceRate = totalMessages > 0 ? (failedMessages / totalMessages) * 100 : 0;
 
-    await getXanoClient().createRecord("bounce_rate_checks", {
+    await getConvexClient().createRecord("bounce_rate_checks", {
       total_messages: totalMessages,
       failed_messages: failedMessages,
       bounce_rate: bounceRate,

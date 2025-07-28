@@ -2,7 +2,7 @@
 // Integrates OpenAI with Xano member data and Twilio SMS for intelligent customer support
 
 import { getOpenAIService } from "./openai-service";
-import { getXanoClient, Member } from "./xano-client";
+import { getConvexClient, Member } from "./convex-client";
 import { getTwilioClient } from "./twilio-client";
 
 interface CustomerServiceConfig {
@@ -54,7 +54,7 @@ export class AICustomerService {
 
       // Log to Xano communications table
       await this.logCommunication(
-        member?.id,
+        parseInt(member?.id || "0"),
         phoneNumber,
         message,
         analysis,
@@ -79,7 +79,7 @@ export class AICustomerService {
 
           // Log the outbound response
           await this.logCommunication(
-            member?.id,
+            parseInt(member?.id || "0"),
             phoneNumber,
             autoResponse,
             null,
@@ -255,8 +255,8 @@ Respond only with the SMS message text (no quotes or explanations).`;
   // Find member by phone number
   private async findMemberByPhone(phoneNumber: string): Promise<Member | null> {
     try {
-      const xano = getXanoClient();
-      const members = await xano.getMembers({ search: phoneNumber });
+      const convex = getConvexClient();
+      const members = await convex.getMembers({ search: phoneNumber });
       return members.data.find((m) => m.phone === phoneNumber) || null;
     } catch (error) {
       console.error("Error finding member:", error);
@@ -274,8 +274,8 @@ Respond only with the SMS message text (no quotes or explanations).`;
     direction: "inbound" | "outbound" = "inbound",
   ): Promise<void> {
     try {
-      const xano = getXanoClient();
-      await xano.createCommunication({
+      const convex = getConvexClient();
+      await convex.createCommunication({
         member_id: memberId,
         channel: "sms",
         direction,
@@ -304,10 +304,10 @@ Respond only with the SMS message text (no quotes or explanations).`;
     analysis: AIAnalysis,
   ): Promise<void> {
     try {
-      const xano = getXanoClient();
+      const convex = getConvexClient();
 
-      // Create support ticket in Xano
-      await xano.makeRequest("/support_tickets", "POST", {
+      // Create support ticket in Convex
+      await convex.makeRequest("/support_tickets", "POST", {
         member_id: member?.id,
         subject: `SMS Escalation: ${analysis.intent}`,
         description: `Customer message: "${message}"\n\nAI Analysis:\n- Sentiment: ${analysis.sentiment}\n- Intent: ${analysis.intent}\n- Urgency: ${analysis.urgency}\n- Confidence: ${analysis.confidence}`,
