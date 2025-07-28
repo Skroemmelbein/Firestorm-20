@@ -57,7 +57,7 @@ export default function Settings() {
 
   const checkRateLimitStatus = async () => {
     try {
-      const response = await fetch("/api/nmi/rate-limit-status");
+      const response = await fetch(`${window.location.origin}/api/nmi/rate-limit-status`);
       const result = await response.json();
       setRateLimitStatus(result);
       return result;
@@ -83,7 +83,7 @@ export default function Settings() {
         return;
       }
 
-      const response = await fetch("/api/nmi/test-connection", {
+      const response = await fetch(`${window.location.origin}/api/nmi/test-connection`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

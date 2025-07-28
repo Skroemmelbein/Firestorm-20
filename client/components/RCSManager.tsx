@@ -106,7 +106,7 @@ export default function RCSManager() {
   const configureAgent = async () => {
     setIsLoading((prev) => ({ ...prev, configuring: true }));
     try {
-      const response = await fetch("/api/rcs/configure-agent", {
+      const response = await fetch(`${window.location.origin}/api/rcs/configure-agent`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -137,7 +137,7 @@ export default function RCSManager() {
   const sendTestMessage = async () => {
     setIsLoading((prev) => ({ ...prev, testing: true }));
     try {
-      const response = await fetch("/api/rcs/send-message", {
+      const response = await fetch(`${window.location.origin}/api/rcs/send-message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -180,7 +180,7 @@ export default function RCSManager() {
   const verifyAgent = async () => {
     setIsLoading((prev) => ({ ...prev, verifying: true }));
     try {
-      const response = await fetch("/api/rcs/verify-agent", {
+      const response = await fetch(`${window.location.origin}/api/rcs/verify-agent`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

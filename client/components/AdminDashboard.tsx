@@ -202,7 +202,7 @@ export default function AdminDashboard() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/billing/charge-recurring", {
+      const response = await fetch(`${window.location.origin}/api/billing/charge-recurring`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ subscription_id: subscriptionId }),
@@ -228,7 +228,7 @@ export default function AdminDashboard() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/billing/run-recurring-billing", {
+      const response = await fetch(`${window.location.origin}/api/billing/run-recurring-billing`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });

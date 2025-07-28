@@ -136,7 +136,7 @@ export default function BillingLogic() {
         return;
       }
 
-      const response = await fetch("/api/nmi/test-payment", {
+      const response = await fetch(`${window.location.origin}/api/nmi/test-payment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -212,7 +212,7 @@ export default function BillingLogic() {
   const fetchTransactionLogs = async () => {
     setLoadingLogs(true);
     try {
-      const response = await fetch("/api/nmi-logs/get-transaction-logs", {
+      const response = await fetch(`${window.location.origin}/api/nmi-logs/get-transaction-logs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(logQuery),

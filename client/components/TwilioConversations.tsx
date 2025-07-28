@@ -82,7 +82,7 @@ export default function TwilioConversations() {
   const loadConversations = async () => {
     setIsLoading((prev) => ({ ...prev, conversations: true }));
     try {
-      const response = await fetch("/api/conversations");
+      const response = await fetch(`${window.location.origin}/api/conversations`);
       if (response.ok) {
         const data = await response.json();
         setConversations(data.conversations || []);
@@ -107,7 +107,7 @@ export default function TwilioConversations() {
     setIsLoading((prev) => ({ ...prev, messages: true }));
     try {
       const response = await fetch(
-        `/api/conversations/${conversationSid}/messages`,
+        `${window.location.origin}/api/conversations/${conversationSid}/messages`,
       );
       if (response.ok) {
         const data = await response.json();
@@ -132,7 +132,7 @@ export default function TwilioConversations() {
   const createConversation = async () => {
     setIsLoading((prev) => ({ ...prev, creating: true }));
     try {
-      const response = await fetch("/api/conversations", {
+      const response = await fetch(`${window.location.origin}/api/conversations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -167,7 +167,7 @@ export default function TwilioConversations() {
     setIsLoading((prev) => ({ ...prev, sending: true }));
     try {
       const response = await fetch(
-        `/api/conversations/${selectedConversation.sid}/messages`,
+        `${window.location.origin}/api/conversations/${selectedConversation.sid}/messages`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

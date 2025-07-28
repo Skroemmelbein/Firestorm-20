@@ -116,7 +116,7 @@ export default function NMIRecurringBilling() {
     console.log("Processing recurring billing for plan:", planId);
 
     // 1. Fetch subscribers from Xano
-    const xanoResponse = await fetch(`/api/xano/subscribers/${planId}`, {
+    const xanoResponse = await fetch(`${window.location.origin}/api/xano/subscribers/${planId}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -130,7 +130,7 @@ export default function NMIRecurringBilling() {
     // 2. Process each subscriber through NMI
     for (const subscriber of subscribers) {
       try {
-        const nmiResponse = await fetch("/api/nmi/charge-vault", {
+        const nmiResponse = await fetch(`${window.location.origin}/api/nmi/charge-vault`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -143,7 +143,7 @@ export default function NMIRecurringBilling() {
         const nmiResult = await nmiResponse.json();
 
         // 3. Update Xano with billing result
-        await fetch("/api/xano/update-billing", {
+        await fetch(`${window.location.origin}/api/xano/update-billing`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -156,7 +156,7 @@ export default function NMIRecurringBilling() {
 
         // 4. Send Twilio notification if successful
         if (nmiResult.status === "approved") {
-          await fetch("/api/twilio/send-sms", {
+          await fetch(`${window.location.origin}/api/twilio/send-sms`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -166,7 +166,7 @@ export default function NMIRecurringBilling() {
           });
         } else {
           // Send failure notification
-          await fetch("/api/twilio/send-sms", {
+          await fetch(`${window.location.origin}/api/twilio/send-sms`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

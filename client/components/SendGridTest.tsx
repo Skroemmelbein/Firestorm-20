@@ -25,7 +25,7 @@ export default function SendGridTest() {
 
   const checkStatus = async () => {
     try {
-      const response = await fetch("/api/sendgrid-status");
+      const response = await fetch(`${window.location.origin}/api/sendgrid-status`);
       const data = await response.json();
       setStatus(data);
     } catch (error) {
@@ -44,7 +44,7 @@ export default function SendGridTest() {
     setTestResult(null);
 
     try {
-      const response = await fetch("/api/test-sendgrid", { method: "POST" });
+      const response = await fetch(`${window.location.origin}/api/test-sendgrid`, { method: "POST" });
       const data = await response.json();
       setTestResult(data);
 

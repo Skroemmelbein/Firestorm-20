@@ -207,7 +207,7 @@ export default function CheckoutForm({
           : "Unknown",
       });
 
-      const response = await fetch("/api/billing/charge-initial", {
+      const response = await fetch(`${window.location.origin}/api/billing/charge-initial`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

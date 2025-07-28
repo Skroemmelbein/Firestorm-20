@@ -186,7 +186,7 @@ export default function TwilioSIDVault() {
     setIsLoading(true);
     try {
       // This would call your Twilio API to discover SIDs
-      const response = await fetch("/api/twilio/discover-sids", {
+      const response = await fetch(`${window.location.origin}/api/twilio/discover-sids`, {
         method: "POST",
       });
 

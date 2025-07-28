@@ -285,7 +285,7 @@ export default function CredentialVault() {
   const scanEnvironmentVars = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/environment/scan", {
+      const response = await fetch(`${window.location.origin}/api/environment/scan`, {
         method: "POST",
       });
 

@@ -74,7 +74,7 @@ export default function TestModule() {
         message: smsTest.message,
       });
 
-      const response = await fetch("/api/real/sms/send", {
+      const response = await fetch(`${window.location.origin}/api/real/sms/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -175,7 +175,7 @@ export default function TestModule() {
     setIsTesting((prev) => ({ ...prev, voice: true }));
 
     try {
-      const response = await fetch("/api/voice/call", {
+      const response = await fetch(`${window.location.origin}/api/voice/call`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

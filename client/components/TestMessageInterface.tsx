@@ -54,7 +54,7 @@ export default function TestMessageInterface() {
   const runDiagnostics = async () => {
     setDiagnosing(true);
     try {
-      const response = await fetch("/api/real/test/twilio", {
+      const response = await fetch(`${window.location.origin}/api/real/test/twilio`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
@@ -83,7 +83,7 @@ export default function TestMessageInterface() {
   const sendTestSMS = async () => {
     setSending((prev) => ({ ...prev, sms: true }));
     try {
-      const response = await fetch("/api/real/sms/send", {
+      const response = await fetch(`${window.location.origin}/api/real/sms/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -142,7 +142,7 @@ export default function TestMessageInterface() {
   const sendTestEmail = async () => {
     setSending((prev) => ({ ...prev, email: true }));
     try {
-      const response = await fetch("/api/real/email/send", {
+      const response = await fetch(`${window.location.origin}/api/real/email/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
