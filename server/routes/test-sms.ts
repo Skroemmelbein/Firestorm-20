@@ -61,8 +61,8 @@ async function sendTestMessage() {
         },
         body: new URLSearchParams({
           From: "+18559600037",
-          To: "+18559600037",
-          Body: "whhhhaaaa up",
+          To: "+18144409068",
+          Body: "Test SMS from ECHELONX platform",
         }),
       },
     );

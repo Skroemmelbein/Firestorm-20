@@ -1,7 +1,22 @@
 import express from "express";
 import fetch from "node-fetch";
+import { initializeXano } from "../../shared/xano-client";
 
 const router = express.Router();
+
+// Initialize Xano client if credentials are available
+if (process.env.XANO_BASE_URL && process.env.XANO_API_KEY) {
+  try {
+    initializeXano({
+      instanceUrl: process.env.XANO_BASE_URL,
+      apiKey: process.env.XANO_API_KEY,
+      databaseId: "CdIRVEJq" // From .env XANO_TWILIO_CAMPAIGN
+    });
+    console.log("✅ Xano client initialized successfully");
+  } catch (error) {
+    console.error("❌ Failed to initialize Xano client:", error);
+  }
+}
 
 // NMI Configuration
 const NMI_CONFIG = {

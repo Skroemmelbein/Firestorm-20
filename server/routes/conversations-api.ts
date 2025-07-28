@@ -1,4 +1,7 @@
 import { RequestHandler } from "express";
+import express from "express";
+
+const router = express.Router();
 
 interface CreateConversationRequest {
   friendlyName: string;
@@ -380,3 +383,11 @@ export const handleConversationWebhook: RequestHandler = async (req, res) => {
     });
   }
 };
+
+router.get("/conversations", getConversations);
+router.post("/conversations/create", createConversation);
+router.get("/conversations/:conversationSid/messages", getConversationMessages);
+router.post("/conversations/:conversationSid/messages", sendConversationMessage);
+router.post("/webhooks/conversation", handleConversationWebhook);
+
+export default router;
