@@ -648,12 +648,11 @@ router.post("/test/whatsapp", async (req, res) => {
       });
     }
 
-    const result = await twilioClient.sendWhatsApp(
-      to,
-      process.env.TWILIO_PHONE_NUMBER || "+15551234567",
-      message,
-      mediaUrl
-    );
+    const result = await twilioClient.sendWhatsApp({
+      to: to,
+      body: message,
+      mediaUrl: mediaUrl ? [mediaUrl] : undefined
+    });
 
     res.json({
       success: true,
@@ -689,10 +688,9 @@ router.post("/test/studio-flow", async (req, res) => {
       });
     }
 
-    const result = await twilioClient.createStudioExecution(
+    const result = await twilioClient.executeStudioFlow(
       flowSid,
       to,
-      process.env.TWILIO_PHONE_NUMBER || "+15551234567",
       parameters
     );
 
@@ -730,11 +728,10 @@ router.post("/test/voice-call", async (req, res) => {
       });
     }
 
-    const result = await twilioClient.makeCall(
-      to,
-      process.env.TWILIO_PHONE_NUMBER || "+15551234567",
-      url
-    );
+    const result = await twilioClient.makeCall({
+      to: to,
+      url: url
+    });
 
     res.json({
       success: true,
