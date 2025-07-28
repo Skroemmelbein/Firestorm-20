@@ -5,12 +5,12 @@ import * as express from "express";
 
 config({ path: path.join(process.cwd(), ".env") });
 
-const app = createServer();
+const app = await createServer();
 const port = process.env.API_PORT || 5000;
 
 // In production, serve the built SPA files
-const __dirname = import.meta.dirname;
-const distPath = path.join(__dirname, "../spa");
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const distPath = path.join(__dirname, "../dist");
 
 // Serve static files
 app.use(express.static(distPath));
