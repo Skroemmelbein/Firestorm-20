@@ -31,12 +31,14 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy built application
+# Copy built application and source files
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/server ./server
-COPY --from=builder /app/shared ./shared
 COPY --from=builder /app/package*.json ./
 COPY --from=deps /app/node_modules ./node_modules
+
+# Copy source files needed for runtime
+COPY --from=builder /app/server ./server
+COPY --from=builder /app/shared ./shared
 
 # Copy environment template
 COPY --from=builder /app/.env.example ./.env.example
@@ -48,5 +50,5 @@ EXPOSE 5001
 ENV PORT=5001
 ENV API_PORT=5001
 
-# Start the application
-CMD ["node", "server/node-build.ts"]
+# Start the application using tsx to handle TypeScript
+CMD ["npx", "tsx", "server/node-build.ts"]
