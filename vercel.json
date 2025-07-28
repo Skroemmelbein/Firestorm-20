@@ -1,27 +1,21 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/**/*.ts",
-      "use": "@vercel/node"
+  "functions": {
+    "api/nmi/test-connection.ts": {
+      "maxDuration": 30
     },
-    {
-      "src": "dist/index.html",
-      "use": "@vercel/static"
+    "api/real/sms/send.ts": {
+      "maxDuration": 30
     }
-  ],
+  },
   "routes": [
     {
       "src": "/api/nmi/test-connection",
-      "dest": "/api/nmi/test-connection"
+      "dest": "/api/nmi/test-connection.ts"
     },
     {
-      "src": "/api/real/sms/send",
-      "dest": "/api/real/sms/send"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/real/sms/send", 
+      "dest": "/api/real/sms/send.ts"
     },
     {
       "src": "/assets/(.*)",
@@ -35,15 +29,10 @@
   "env": {
     "NODE_ENV": "production",
     "TWILIO_ACCOUNT_SID": "@twilio_account_sid",
-    "TWILIO_AUTH_TOKEN": "@twilio_auth_token",
+    "TWILIO_AUTH_TOKEN": "@twilio_auth_token", 
     "TWILIO_PHONE_NUMBER": "@twilio_phone_number",
     "NMI_USERNAME": "@nmi_username",
     "NMI_PASSWORD": "@nmi_password",
     "NEXT_PUBLIC_CONVEX_URL": "@convex_url"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
   }
 }
