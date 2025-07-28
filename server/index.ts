@@ -78,6 +78,11 @@ export async function createServer() {
   return app;
 }
 
+export default async function handler(req: any, res: any) {
+  const app = await createServer();
+  return app(req, res);
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   (async () => {
     const app = await createServer();
