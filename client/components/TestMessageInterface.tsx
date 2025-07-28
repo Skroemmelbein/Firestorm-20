@@ -143,7 +143,7 @@ export default function TestMessageInterface() {
   const sendTestEmail = async () => {
     setSending((prev) => ({ ...prev, email: true }));
     try {
-      const response = await fetch(`${window.location.origin}/api/real/email/send`, {
+      const response = await httpRequest(`${window.location.origin}/api/real/email/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -13,11 +13,19 @@ interface HttpResponse {
 }
 
 export async function httpRequest(url: string, options: RequestOptions = {}): Promise<HttpResponse> {
+  if (window.location.href.includes('@')) {
+    console.log('Credential-embedded environment detected, using XMLHttpRequest');
+    return xmlHttpRequest(url, options);
+  }
+  
   try {
     const response = await fetch(url, options);
     return response;
   } catch (error) {
-    if (error instanceof TypeError && error.message.includes('credentials')) {
+    if (error instanceof TypeError && (
+      error.message.includes('credentials') || 
+      error.message.includes('Request cannot be constructed from a URL that includes credentials')
+    )) {
       console.log('Fetch failed due to credentials, falling back to XMLHttpRequest');
       return xmlHttpRequest(url, options);
     }

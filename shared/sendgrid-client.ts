@@ -109,7 +109,6 @@ export function getSendGridClient(): SendGridClient {
     // Try to auto-initialize if we have the API key
     if (
       process.env.SENDGRID_API_KEY &&
-      process.env.SENDGRID_API_KEY !== "SG.placeholder_key_replace_with_real_sendgrid_api_key" &&
       process.env.SENDGRID_API_KEY.startsWith("SG.")
     ) {
       sendGridClient = new SendGridClient({

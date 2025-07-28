@@ -10,16 +10,6 @@ export const testSendGrid: RequestHandler = async (req, res) => {
       });
     }
 
-    if (
-      process.env.SENDGRID_API_KEY ===
-      "SG.placeholder_key_replace_with_real_sendgrid_api_key"
-    ) {
-      return res.status(500).json({
-        error: "SendGrid API key is placeholder",
-        message:
-          "Please replace the placeholder SendGrid API key with a real one",
-      });
-    }
 
     const sendGridClient = getSendGridClient();
 
@@ -89,16 +79,6 @@ export const getSendGridStatus: RequestHandler = async (req, res) => {
       });
     }
 
-    if (
-      process.env.SENDGRID_API_KEY ===
-      "SG.placeholder_key_replace_with_real_sendgrid_api_key"
-    ) {
-      return res.json({
-        configured: false,
-        status: "placeholder_key",
-        message: "SendGrid API key is still a placeholder",
-      });
-    }
 
     const sendGridClient = getSendGridClient();
     const isConnected = await sendGridClient.testConnection();
