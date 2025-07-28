@@ -29,8 +29,23 @@ jobs:
         env:
           NODE_ENV: production
           
+      - name: Check Cloudflare Credentials
+        id: check-credentials
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] || [ -z "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "credentials-available=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Cloudflare deployment skipped - missing credentials"
+            echo "To enable Cloudflare Pages deployment, add these secrets to your repository:"
+            echo "- CLOUDFLARE_API_TOKEN"
+            echo "- CLOUDFLARE_ACCOUNT_ID"
+            echo "See CLOUDFLARE_DEPLOYMENT.md for setup instructions"
+          else
+            echo "credentials-available=true" >> $GITHUB_OUTPUT
+            echo "✓ Cloudflare credentials found - proceeding with deployment"
+          fi
+          
       - name: Deploy to Cloudflare Pages
-        if: ${{ secrets.CLOUDFLARE_API_TOKEN && secrets.CLOUDFLARE_ACCOUNT_ID }}
+        if: steps.check-credentials.outputs.credentials-available == 'true'
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -40,7 +55,7 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Deploy API to Cloudflare Workers (Optional)
-        if: ${{ secrets.CLOUDFLARE_API_TOKEN && secrets.CLOUDFLARE_ACCOUNT_ID }}
+        if: steps.check-credentials.outputs.credentials-available == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -48,12 +63,3 @@ jobs:
           command: deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          
-      - name: Cloudflare Deployment Skipped
-        if: ${{ !secrets.CLOUDFLARE_API_TOKEN || !secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          echo "⚠️ Cloudflare deployment skipped - missing credentials"
-          echo "To enable Cloudflare Pages deployment, add these secrets to your repository:"
-          echo "- CLOUDFLARE_API_TOKEN"
-          echo "- CLOUDFLARE_ACCOUNT_ID"
-          echo "See CLOUDFLARE_DEPLOYMENT.md for setup instructions"
