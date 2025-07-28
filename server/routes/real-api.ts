@@ -486,25 +486,36 @@ router.post("/sms/bulk", async (req, res) => {
 // Email API
 router.post("/email/send", async (req, res) => {
   try {
-    const { to, subject, html, text } = req.body;
+    const { to, subject, html, text, body } = req.body;
 
-    // For now, simulate email sending until SendGrid is fully configured
-    console.log("📧 Sending email:", { to, subject });
+    if (!to || !subject) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing required fields: to, subject",
+        timestamp: new Date().toISOString(),
+      });
+    }
 
-    // Simulate SendGrid API call
-    const emailResult = {
-      success: true,
-      messageId: `email_${Date.now()}`,
+    console.log("📧 Sending email via SendGrid:", { to, subject });
+
+    const sendGridModule = await import("../../shared/sendgrid-client");
+    const sendGrid = sendGridModule.getSendGridClient();
+    
+    const result = await sendGrid.sendEmail({
       to,
       subject,
-      from: "noreply@recurflow.com",
-      timestamp: new Date().toISOString(),
-    };
+      html: html || body,
+      text: text || body,
+    });
 
-    res.json(emailResult);
+    res.json(result);
   } catch (error) {
     console.error("Error sending email:", error);
-    res.status(500).json({ error: "Failed to send email" });
+    res.status(500).json({ 
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to send email",
+      timestamp: new Date().toISOString(),
+    });
   }
 });
 

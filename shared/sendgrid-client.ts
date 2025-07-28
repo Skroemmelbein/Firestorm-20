@@ -36,7 +36,7 @@ export class SendGridClient {
           },
         ],
         from: {
-          email: this.config.fromEmail,
+          email: "support@nexusdynamic.io",
           name: this.config.fromName,
         },
         subject: message.subject,
@@ -113,7 +113,7 @@ export function getSendGridClient(): SendGridClient {
     ) {
       sendGridClient = new SendGridClient({
         apiKey: process.env.SENDGRID_API_KEY,
-        fromEmail: "noreply@recurflow.com",
+        fromEmail: "support@nexusdynamic.io",
         fromName: "ECHELONX",
       });
       console.log("✅ SendGrid client auto-initialized");
