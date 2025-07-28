@@ -19,8 +19,8 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Build the application (client only for now, server will be copied directly)
+RUN npm run build:client
 
 # Production image, copy all the files and run the app
 FROM base AS runner
@@ -33,6 +33,8 @@ RUN adduser --system --uid 1001 nextjs
 
 # Copy built application
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server ./server
+COPY --from=builder /app/shared ./shared
 COPY --from=builder /app/package*.json ./
 COPY --from=deps /app/node_modules ./node_modules
 
@@ -47,4 +49,4 @@ ENV PORT=5001
 ENV API_PORT=5001
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["node", "server/node-build.ts"]
