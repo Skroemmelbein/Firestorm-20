@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { 
   Clock, 
   Play, 
@@ -47,35 +50,14 @@ interface JobStats {
   trigger_event: number;
 }
 
-const Button = ({ onClick, disabled, className, children }: any) => (
-  <button onClick={onClick} disabled={disabled} className={className}>
-    {children}
-  </button>
-);
-
-const Card = ({ className, children }: any) => (
-  <div className={className}>{children}</div>
-);
-
-const CardHeader = ({ children }: any) => <div>{children}</div>;
-const CardTitle = ({ className, children }: any) => (
-  <h3 className={className}>{children}</h3>
-);
-const CardContent = ({ className, children }: any) => (
-  <div className={className}>{children}</div>
-);
-
-const Badge = ({ style, className, children }: any) => (
-  <span style={style} className={className}>
-    {children}
-  </span>
-);
 
 export default function CampaignScheduler() {
   const [scheduledJobs, setScheduledJobs] = useState<ScheduledJob[]>([]);
   const [executions, setExecutions] = useState<CampaignExecution[]>([]);
   const [jobStats, setJobStats] = useState<JobStats | null>(null);
   const [isRunningScheduler, setIsRunningScheduler] = useState(false);
+  const [isActivatingCampaigns, setIsActivatingCampaigns] = useState(false);
+  const [revenueGenerated, setRevenueGenerated] = useState(0);
   const [lastRunResult, setLastRunResult] = useState<any>(null);
 
   useEffect(() => {
@@ -117,6 +99,10 @@ export default function CampaignScheduler() {
       setLastRunResult(result);
       console.log("Scheduler result:", result);
       
+      if (result.summary?.revenueGenerated) {
+        setRevenueGenerated(prev => prev + result.summary.revenueGenerated);
+      }
+      
       setTimeout(loadData, 1000);
       
     } catch (error) {
@@ -124,6 +110,32 @@ export default function CampaignScheduler() {
       setLastRunResult({ success: false, message: "Failed to run scheduler" });
     } finally {
       setIsRunningScheduler(false);
+    }
+  };
+
+  const activatePendingCampaigns = async () => {
+    setIsActivatingCampaigns(true);
+    try {
+      const response = await fetch("/api/campaign-scheduler/activate-pending-campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+      
+      const result = await response.json();
+      console.log("Campaign activation result:", result);
+      setLastRunResult(result);
+      
+      if (result.totalEstimatedRevenue) {
+        setRevenueGenerated(prev => prev + result.totalEstimatedRevenue);
+      }
+      
+      setTimeout(loadData, 1000);
+      
+    } catch (error) {
+      console.error("Failed to activate campaigns:", error);
+      setLastRunResult({ success: false, message: "Failed to activate campaigns" });
+    } finally {
+      setIsActivatingCampaigns(false);
     }
   };
 
@@ -153,27 +165,81 @@ export default function CampaignScheduler() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Campaign Scheduler</h2>
-          <p className="text-[#737373] mt-1">Automated Twilio marketing campaign execution</p>
+          <h2 className="text-2xl font-bold text-white">🚀 Revenue Campaign Scheduler</h2>
+          <p className="text-[#FF6A00] font-semibold">Revenue Generated: ${revenueGenerated.toFixed(2)}</p>
+          <p className="text-[#737373] text-sm">Automated Twilio marketing campaign execution</p>
         </div>
-        <Button
-          onClick={runScheduler}
-          disabled={isRunningScheduler}
-          className="f10-btn accent-bg text-black"
-        >
-          {isRunningScheduler ? (
-            <>
-              <Play className="w-4 h-4 mr-2 animate-spin" />
-              Running...
-            </>
-          ) : (
-            <>
-              <Zap className="w-4 h-4 mr-2" />
-              Run Scheduler
-            </>
-          )}
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            onClick={activatePendingCampaigns}
+            disabled={isActivatingCampaigns}
+            className="f10-btn bg-[#10B981] text-white hover:bg-[#059669]"
+          >
+            {isActivatingCampaigns ? (
+              <>
+                <Play className="w-4 h-4 mr-2 animate-spin" />
+                Activating...
+              </>
+            ) : (
+              <>
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Activate Pending
+              </>
+            )}
+          </Button>
+          <Button
+            onClick={runScheduler}
+            disabled={isRunningScheduler}
+            className="f10-btn accent-bg text-black"
+          >
+            {isRunningScheduler ? (
+              <>
+                <Play className="w-4 h-4 mr-2 animate-spin" />
+                Running...
+              </>
+            ) : (
+              <>
+                <Zap className="w-4 h-4 mr-2" />
+                Run Scheduler
+              </>
+            )}
+          </Button>
+        </div>
       </div>
+
+      {/* Revenue Priorities Alert */}
+      <Card className="f10-card border-[#FF6A00] bg-gradient-to-r from-[#FF6A00]/10 to-[#10B981]/10">
+        <CardHeader>
+          <CardTitle className="text-[#FF6A00] flex items-center gap-2">
+            <BarChart3 className="w-5 h-5" />
+            🔥 TOP 10 REVENUE-CRITICAL PRIORITIES (Next 4 Hours)
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div className="space-y-2">
+              <h4 className="text-[#10B981] font-semibold">IMMEDIATE REVENUE (0-2hrs)</h4>
+              <ul className="text-[#737373] space-y-1">
+                <li>🔥 Activate Pending Campaigns</li>
+                <li>💰 Live Payment Processing</li>
+                <li>📱 Bulk SMS Execution</li>
+                <li>🎯 Lead Targeting</li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <h4 className="text-[#F59E0B] font-semibold">REVENUE SCALING (2-4hrs)</h4>
+              <ul className="text-[#737373] space-y-1">
+                <li>🔄 Automated Recurring Billing</li>
+                <li>📊 Real-Time Analytics</li>
+                <li>🤖 AI Personalization</li>
+                <li>📞 Phone Number Rotation</li>
+                <li>⚡ Rate Limit Optimization</li>
+                <li>🎨 Template Library</li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {lastRunResult && (
         <Card className="f10-card">
@@ -196,6 +262,9 @@ export default function CampaignScheduler() {
                   Successful: {lastRunResult.summary.successful} | 
                   Failed: {lastRunResult.summary.failed} | 
                   Retrying: {lastRunResult.summary.retrying}
+                  {lastRunResult.summary.revenueGenerated && (
+                    <span className="text-[#10B981]"> | Revenue: ${lastRunResult.summary.revenueGenerated.toFixed(2)}</span>
+                  )}
                 </div>
               )}
             </div>
