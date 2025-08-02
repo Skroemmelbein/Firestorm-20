@@ -138,10 +138,49 @@ export const launchCampaign = mutation({
     id: v.id("campaigns"),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.patch(args.id, {
+    const campaign = await ctx.db.get(args.id);
+    if (!campaign) {
+      throw new Error("Campaign not found");
+    }
+    
+    await ctx.db.patch(args.id, {
       status: "active",
       updated_at: Date.now(),
     });
+    
+    if (campaign.schedule_type === "scheduled" && campaign.scheduled_at) {
+      await ctx.db.insert("scheduled_jobs", {
+        campaign_id: args.id,
+        job_type: "send_message",
+        scheduled_at: campaign.scheduled_at,
+        status: "pending",
+        retry_count: 0,
+        max_retries: 3,
+        payload: {
+          target_count: 0,
+          targets: campaign.target_audience || []
+        },
+        created_at: Date.now(),
+        updated_at: Date.now(),
+      });
+    } else if (campaign.schedule_type === "immediate") {
+      await ctx.db.insert("scheduled_jobs", {
+        campaign_id: args.id,
+        job_type: "send_message",
+        scheduled_at: Date.now(),
+        status: "pending",
+        retry_count: 0,
+        max_retries: 3,
+        payload: {
+          target_count: 0,
+          targets: campaign.target_audience || []
+        },
+        created_at: Date.now(),
+        updated_at: Date.now(),
+      });
+    }
+    
+    return { success: true };
   },
 });
 

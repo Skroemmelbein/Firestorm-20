@@ -55,7 +55,8 @@ export async function createServer() {
     './routes/xano-setup.ts': await import('./routes/xano-setup.js'),
     './routes/xano-subscription-tables.ts': await import('./routes/xano-subscription-tables.js'),
     './routes/xano-table-setup.ts': await import('./routes/xano-table-setup.js'),
-    './routes/auto-notify.ts': await import('./routes/auto-notify.js')
+    './routes/auto-notify.ts': await import('./routes/auto-notify.js'),
+    './routes/campaign-scheduler.ts': await import('./routes/campaign-scheduler.js')
   };
 
   for (const [routePath, routeModule] of Object.entries(routes)) {
@@ -69,6 +70,9 @@ export async function createServer() {
       } else if (routePath.includes('api-integrations')) {
         console.log(`⚠️ Mounting api-integrations under /api to avoid SMS conflicts`);
         app.use('/api', route);
+      } else if (routePath.includes('campaign-scheduler')) {
+        console.log(`📅 Mounting campaign-scheduler under /api/campaign-scheduler`);
+        app.use('/api/campaign-scheduler', route);
       } else {
         app.use('/api/real', route);
       }

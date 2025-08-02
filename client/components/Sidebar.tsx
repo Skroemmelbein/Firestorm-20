@@ -100,6 +100,14 @@ const navigationItems: NavItem[] = [
     color: "#00E676",
     description: "System testing center",
   },
+  {
+    id: "campaign-scheduler",
+    label: "Campaign Scheduler",
+    path: "/campaign-scheduler",
+    icon: Activity,
+    color: "#F59E0B",
+    description: "Automated campaign execution",
+  },
 ];
 
 const getNavigationVisibility = () => {

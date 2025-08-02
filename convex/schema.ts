@@ -186,4 +186,32 @@ export default defineSchema({
     created_at: v.number(),
     updated_at: v.number(),
   }).index("by_conversation_sid", ["conversation_sid"]).index("by_client", ["client_id"]).index("by_member", ["member_id"]).index("by_status", ["status"]),
+
+  scheduled_jobs: defineTable({
+    campaign_id: v.id("campaigns"),
+    job_type: v.union(v.literal("send_message"), v.literal("delay"), v.literal("trigger_event")),
+    scheduled_at: v.number(),
+    status: v.union(v.literal("pending"), v.literal("running"), v.literal("completed"), v.literal("failed")),
+    retry_count: v.optional(v.number()),
+    max_retries: v.optional(v.number()),
+    payload: v.optional(v.any()),
+    error_message: v.optional(v.string()),
+    executed_at: v.optional(v.number()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_campaign", ["campaign_id"]).index("by_scheduled_at", ["scheduled_at"]).index("by_status", ["status"]),
+
+  campaign_executions: defineTable({
+    campaign_id: v.id("campaigns"),
+    execution_type: v.union(v.literal("immediate"), v.literal("scheduled"), v.literal("recurring")),
+    target_count: v.optional(v.number()),
+    sent_count: v.optional(v.number()),
+    failed_count: v.optional(v.number()),
+    status: v.union(v.literal("queued"), v.literal("running"), v.literal("completed"), v.literal("failed"), v.literal("paused")),
+    started_at: v.optional(v.number()),
+    completed_at: v.optional(v.number()),
+    error_message: v.optional(v.string()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_campaign", ["campaign_id"]).index("by_status", ["status"]),
 });

@@ -4,10 +4,76 @@
 const convex = {
   query: async (fn: any, args: any) => {
     console.log(`Mock Convex query: ${fn}`, args);
+    
+    if (fn === "scheduled_jobs.getDueJobs") {
+      return [
+        {
+          _id: `job_${Date.now()}`,
+          campaign_id: `campaign_${Date.now()}`,
+          job_type: "send_message",
+          scheduled_at: Date.now() - 60000,
+          status: "pending",
+          retry_count: 0,
+          max_retries: 3,
+          payload: {
+            targets: ["+18144409068"],
+            target_count: 1
+          },
+          created_at: Date.now() - 3600000,
+          updated_at: Date.now() - 3600000
+        }
+      ];
+    }
+    
+    if (fn === "scheduled_jobs.getJobStats") {
+      return {
+        total: 5,
+        pending: 2,
+        running: 1,
+        completed: 2,
+        failed: 0
+      };
+    }
+    
+    if (fn === "campaign_executions.getRecentExecutions") {
+      return [
+        {
+          _id: `exec_${Date.now()}`,
+          campaign_id: `campaign_${Date.now()}`,
+          execution_type: "scheduled",
+          target_count: 1,
+          sent_count: 1,
+          failed_count: 0,
+          status: "completed",
+          started_at: Date.now() - 300000,
+          completed_at: Date.now() - 240000,
+          created_at: Date.now() - 360000,
+          updated_at: Date.now() - 240000
+        }
+      ];
+    }
+    
     return { data: [], total: 0, page: 1 };
   },
   mutation: async (fn: any, args: any) => {
     console.log(`Mock Convex mutation: ${fn}`, args);
+    
+    if (fn === "scheduled_jobs.updateJobStatus") {
+      return { success: true, id: args.id, status: args.status };
+    }
+    
+    if (fn === "scheduled_jobs.createScheduledJob") {
+      return `job_${Date.now()}`;
+    }
+    
+    if (fn === "campaign_executions.createExecution") {
+      return `exec_${Date.now()}`;
+    }
+    
+    if (fn === "campaign_executions.updateExecutionProgress") {
+      return { success: true, id: args.id, ...args };
+    }
+    
     return { id: `mock_${Date.now()}`, ...args };
   }
 };
@@ -387,6 +453,14 @@ export class ConvexClient {
   async makeRequest(endpoint: string, method: string, data: any) {
     console.log(`🌐 Convex Request: ${method} ${endpoint}`, data);
     return { success: true, data: { id: `mock_${Date.now()}` } };
+  }
+
+  async query(fn: string, args: any = {}) {
+    return await this.client.query(fn, args);
+  }
+
+  async mutation(fn: string, args: any = {}) {
+    return await this.client.mutation(fn, args);
   }
 }
 

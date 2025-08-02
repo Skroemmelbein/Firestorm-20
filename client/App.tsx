@@ -27,6 +27,7 @@ import Overview from "./pages/Overview";
 import TestModule from "./pages/TestModule";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import CampaignScheduler from "./pages/CampaignScheduler";
 
 const queryClient = new QueryClient();
 
@@ -146,6 +147,7 @@ export default function App() {
                   <Route path="/integrations" element={<Integrations />} />
                   <Route path="/twilio-vault" element={<TwilioVault />} />
                   <Route path="/test" element={<TestModule />} />
+                  <Route path="/campaign-scheduler" element={<CampaignScheduler />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/settings/nmi" element={<BillingLogic />} />
                   <Route path="/billing/gateway" element={<BillingLogic />} />
