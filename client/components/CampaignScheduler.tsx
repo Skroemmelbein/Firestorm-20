@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import RevenuePriorities from "./RevenuePriorities";
 import { 
   Clock, 
   Play, 
@@ -207,39 +208,8 @@ export default function CampaignScheduler() {
         </div>
       </div>
 
-      {/* Revenue Priorities Alert */}
-      <Card className="f10-card border-[#FF6A00] bg-gradient-to-r from-[#FF6A00]/10 to-[#10B981]/10">
-        <CardHeader>
-          <CardTitle className="text-[#FF6A00] flex items-center gap-2">
-            <BarChart3 className="w-5 h-5" />
-            🔥 TOP 10 REVENUE-CRITICAL PRIORITIES (Next 4 Hours)
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div className="space-y-2">
-              <h4 className="text-[#10B981] font-semibold">IMMEDIATE REVENUE (0-2hrs)</h4>
-              <ul className="text-[#737373] space-y-1">
-                <li>🔥 Activate Pending Campaigns</li>
-                <li>💰 Live Payment Processing</li>
-                <li>📱 Bulk SMS Execution</li>
-                <li>🎯 Lead Targeting</li>
-              </ul>
-            </div>
-            <div className="space-y-2">
-              <h4 className="text-[#F59E0B] font-semibold">REVENUE SCALING (2-4hrs)</h4>
-              <ul className="text-[#737373] space-y-1">
-                <li>🔄 Automated Recurring Billing</li>
-                <li>📊 Real-Time Analytics</li>
-                <li>🤖 AI Personalization</li>
-                <li>📞 Phone Number Rotation</li>
-                <li>⚡ Rate Limit Optimization</li>
-                <li>🎨 Template Library</li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Revenue Priorities Component */}
+      <RevenuePriorities />
 
       {lastRunResult && (
         <Card className="f10-card">

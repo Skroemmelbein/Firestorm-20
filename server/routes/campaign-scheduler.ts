@@ -147,22 +147,49 @@ async function executeSendMessageJob(job: any) {
     try {
       const phoneNumber = target.phone || target;
       
-      let personalizedMessage = campaign.message_template || "Revenue message from ECHELONX";
-      personalizedMessage = personalizedMessage
-        .replace(/\{\{first_name\}\}/g, "Valued Customer")
-        .replace(/\{\{budget\}\}/g, campaign.budget || "$500")
-        .replace(/\{\{plan\}\}/g, "Premium Plan")
-        .replace(/\{\{premium\}\}/g, "$299.99")
-        .replace(/\{\{effdate\}\}/g, new Date().toLocaleDateString())
-        .replace(/\{\{leadType\}\}/g, "High-Value Lead")
-        .replace(/\{\{lastAgentSpoke\}\}/g, "Yesterday")
-        .replace(/\{\{plancode\}\}/g, "PREM001")
-        .replace(/\{\{memberid\}\}/g, "MBR" + Math.floor(Math.random() * 10000));
+      let personalizedMessage = campaign.message_template || "Hi {{first_name}}, this is a revenue message from ECHELONX";
       
-      await twilio.sendSMS({
+      const targetData = target.first_name ? target : {
+        first_name: "Valued Customer",
+        premium: campaign.estimated_revenue ? (campaign.estimated_revenue / 100).toFixed(2) : "299.99",
+        plancode: campaign.messaging_service || "PREM001",
+        lastAgentSpoke: "Yesterday",
+        createdDate: new Date().toLocaleDateString(),
+        budget: "500",
+        last4cc: "****",
+        memberid: "MBR" + Math.floor(Math.random() * 10000),
+        plan: "Premium Plan",
+        effdate: new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString(),
+        leadType: "High-Value Lead"
+      };
+      
+      personalizedMessage = personalizedMessage
+        .replace(/\{\{first_name\}\}/g, targetData.first_name || "")
+        .replace(/\{\{premium\}\}/g, targetData.premium || "")
+        .replace(/\{\{plancode\}\}/g, targetData.plancode || "")
+        .replace(/\{\{lastAgentSpoke\}\}/g, targetData.lastAgentSpoke || "")
+        .replace(/\{\{createdDate\}\}/g, targetData.createdDate || "")
+        .replace(/\{\{budget\}\}/g, targetData.budget || "")
+        .replace(/\{\{last4cc\}\}/g, targetData.last4cc || "")
+        .replace(/\{\{memberid\}\}/g, targetData.memberid || "")
+        .replace(/\{\{plan\}\}/g, targetData.plan || "")
+        .replace(/\{\{effdate\}\}/g, targetData.effdate || "")
+        .replace(/\{\{leadType\}\}/g, targetData.leadType || "");
+      
+      const smsOptions: any = {
         to: phoneNumber,
         body: personalizedMessage
-      });
+      };
+      
+      if (campaign.messaging_service_id) {
+        smsOptions.messagingServiceSid = campaign.messaging_service_id;
+        console.log(`📱 Using messaging service: ${campaign.messaging_service_id} (${campaign.messaging_service})`);
+      } else if (campaign.sender_phone) {
+        smsOptions.from = campaign.sender_phone;
+        console.log(`📞 Using sender phone: ${campaign.sender_phone}`);
+      }
+      
+      await twilio.sendSMS(smsOptions);
       
       sentCount++;
       console.log(`💰 REVENUE MESSAGE SENT: ${phoneNumber} - ${personalizedMessage.substring(0, 50)}...`);
@@ -172,7 +199,9 @@ async function executeSendMessageJob(job: any) {
       failedCount++;
     }
     
-    await new Promise(resolve => setTimeout(resolve, 100));
+    const textsPerMinute = campaign.texts_per_timing || 60;
+    const delayMs = Math.max(100, (60 * 1000) / textsPerMinute); // Ensure minimum 100ms delay
+    await new Promise(resolve => setTimeout(resolve, delayMs));
   }
   
   await convex.mutation("campaign_executions.updateExecutionProgress", {
@@ -184,14 +213,15 @@ async function executeSendMessageJob(job: any) {
   
   if (sentCount > 0) {
     await convex.updateCampaign(job.campaign_id, { status: "completed" });
-    console.log(`✅ REVENUE CAMPAIGN COMPLETED: ${campaign.name} - ${sentCount} messages sent, $${sentCount * 0.50} potential revenue generated`);
+    const actualRevenue = (campaign.estimated_revenue || 0) * (sentCount / Math.max(targets.length, 1));
+    console.log(`✅ REVENUE CAMPAIGN COMPLETED: ${campaign.name} - ${sentCount} messages sent, $${actualRevenue.toFixed(2)} revenue generated`);
   }
   
   return { 
     sentCount, 
     failedCount, 
     targets: targets.length,
-    revenueGenerated: sentCount * 0.50, // Estimate $0.50 revenue per message
+    revenueGenerated: (campaign.estimated_revenue || 0) * (sentCount / Math.max(targets.length, 1)), // Proportional revenue based on campaign estimate
     campaignName: campaign.name
   };
 }

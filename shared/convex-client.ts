@@ -53,6 +53,89 @@ const convex = {
       ];
     }
     
+    if (fn === "campaigns.getCampaigns") {
+      const mockPendingCampaigns = [
+        {
+          _id: "campaign_001",
+          name: "Health Insurance Follow-up",
+          status: "pending",
+          message_template: "Hi {{first_name}}, your health plan quote of ${{premium}}/month is ready. Last agent spoke: {{lastAgentSpoke}}. Reply YES to secure coverage. Plan: {{plancode}}",
+          target_audience: [
+            { phone: "+18144409068", first_name: "Shannon", premium: "127.50", plancode: "HLT001", lastAgentSpoke: "2025-07-30", budget: "150", memberid: "MEM001" },
+            { phone: "+15551234567", first_name: "John", premium: "89.99", plancode: "HLT002", lastAgentSpoke: "2025-07-29", budget: "100", memberid: "MEM002" }
+          ],
+          schedule_type: "immediate",
+          estimated_revenue: 15600.00,
+          messaging_service: "HealthCampaign",
+          messaging_service_id: "MG4a1f021d91dcfbc59a03b94e4dc7000b",
+          sender_phone: "+18778122608",
+          texts_per_timing: 60,
+          interval_minutes: 1,
+          created_at: Date.now() - 3600000
+        },
+        {
+          _id: "campaign_002", 
+          name: "Dental Plan Activation",
+          status: "pending",
+          message_template: "{{first_name}}, activate your dental plan! Effective: {{effdate}}, Premium: ${{premium}}, Member: {{memberid}}, Budget: ${{budget}}",
+          target_audience: [
+            { phone: "+18144409068", first_name: "Shannon", effdate: "2025-08-01", premium: "45.00", memberid: "DEN12345", budget: "50", plancode: "DNT001" },
+            { phone: "+15559876543", first_name: "Sarah", effdate: "2025-08-01", premium: "52.00", memberid: "DEN12346", budget: "60", plancode: "DNT002" }
+          ],
+          schedule_type: "scheduled",
+          scheduled_at: Date.now() + 1800000,
+          estimated_revenue: 8900.00,
+          messaging_service: "DentalCampaign", 
+          messaging_service_id: "MG70662a12cdfea9f957e85792c03c14e9",
+          sender_phone: "+18778497410",
+          texts_per_timing: 30,
+          interval_minutes: 2,
+          created_at: Date.now() - 7200000
+        },
+        {
+          _id: "campaign_003",
+          name: "Billing Reminder - Payment Due", 
+          status: "pending",
+          message_template: "Payment due: {{plan}} ${{premium}}. Last 4: {{last4cc}}. Created: {{createdDate}}. Member: {{memberid}}. Pay now!",
+          target_audience: [
+            { phone: "+18144409068", plan: "Premium Health", premium: "156.78", last4cc: "4532", createdDate: "2025-07-15", memberid: "MEM001" },
+            { phone: "+15551112222", plan: "Basic Dental", premium: "67.89", last4cc: "9876", createdDate: "2025-07-20", memberid: "MEM003" }
+          ],
+          schedule_type: "recurring",
+          estimated_revenue: 23400.00,
+          messaging_service: "BillingCampaign",
+          messaging_service_id: "MG6cb6abb766011f9325983bd9ade1ef4",
+          sender_phone: "+18777897574", 
+          texts_per_timing: 120,
+          interval_minutes: 1,
+          created_at: Date.now() - 1800000
+        },
+        {
+          _id: "campaign_004",
+          name: "Lead Conversion - Auto Data",
+          status: "pending", 
+          message_template: "Hi {{first_name}}! Your {{leadType}} inquiry shows budget ${{budget}}. Plan {{plancode}} fits perfectly. Effective {{effdate}}. Ready?",
+          target_audience: [
+            { phone: "+18144409068", first_name: "Shannon", leadType: "Health", budget: "200", plancode: "AUTO001", effdate: "2025-08-01" },
+            { phone: "+15558889999", first_name: "Mike", leadType: "Dental", budget: "75", plancode: "AUTO002", effdate: "2025-08-01" }
+          ],
+          schedule_type: "immediate",
+          estimated_revenue: 12800.00,
+          messaging_service: "AutoDataCampaign",
+          auto_data: true,
+          texts_per_timing: 45,
+          interval_minutes: 1,
+          created_at: Date.now() - 900000
+        }
+      ];
+      
+      if (args.status === "pending") {
+        return { data: mockPendingCampaigns, total: mockPendingCampaigns.length, page: 1 };
+      }
+      
+      return { data: mockPendingCampaigns, total: mockPendingCampaigns.length, page: 1 };
+    }
+    
     return { data: [], total: 0, page: 1 };
   },
   mutation: async (fn: any, args: any) => {
