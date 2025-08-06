@@ -170,3 +170,142 @@ export const updateSubscriptionBilling = mutation({
     });
   },
 });
+
+export const getUpcomingBillings = query({
+  args: {
+    days_ahead: v.optional(v.number()),
+    client_id: v.optional(v.id("clients")),
+  },
+  handler: async (ctx, args) => {
+    const daysAhead = args.days_ahead || 7;
+    const cutoff = Date.now() + (daysAhead * 24 * 60 * 60 * 1000);
+    
+    let subscriptions = await ctx.db
+      .query("subscriptions")
+      .withIndex("by_next_billing_date")
+      .collect();
+    
+    subscriptions = subscriptions.filter(sub => 
+      sub.next_billing_date && 
+      sub.next_billing_date <= cutoff && 
+      sub.next_billing_date > Date.now() &&
+      sub.status === "active"
+    );
+    
+    if (args.client_id) {
+      subscriptions = subscriptions.filter(sub => sub.client_id === args.client_id);
+    }
+    
+    return subscriptions.sort((a, b) => (a.next_billing_date || 0) - (b.next_billing_date || 0));
+  },
+});
+
+export const pauseSubscription = mutation({
+  args: {
+    id: v.id("subscriptions"),
+    pause_until: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const subscription = await ctx.db.get(args.id);
+    if (!subscription) throw new Error("Subscription not found");
+    
+    if (subscription.status !== "active") {
+      throw new Error("Only active subscriptions can be paused");
+    }
+    
+    return await ctx.db.patch(args.id, {
+      status: "paused",
+      updated_at: Date.now(),
+    });
+  },
+});
+
+export const resumeSubscription = mutation({
+  args: { id: v.id("subscriptions") },
+  handler: async (ctx, args) => {
+    const subscription = await ctx.db.get(args.id);
+    if (!subscription) throw new Error("Subscription not found");
+    
+    if (subscription.status !== "paused") {
+      throw new Error("Only paused subscriptions can be resumed");
+    }
+    
+    return await ctx.db.patch(args.id, {
+      status: "active",
+      updated_at: Date.now(),
+    });
+  },
+});
+
+export const calculateMRR = query({
+  args: {
+    client_id: v.optional(v.id("clients")),
+  },
+  handler: async (ctx, args) => {
+    let subscriptions = await ctx.db
+      .query("subscriptions")
+      .withIndex("by_status", (q) => q.eq("status", "active"))
+      .collect();
+    
+    if (args.client_id) {
+      subscriptions = subscriptions.filter(sub => sub.client_id === args.client_id);
+    }
+    
+    let mrr = 0;
+    let arr = 0;
+    
+    for (const sub of subscriptions) {
+      if (sub.plan_type === "monthly") {
+        mrr += sub.amount;
+        arr += sub.amount * 12;
+      } else if (sub.plan_type === "yearly") {
+        const monthlyAmount = sub.amount / 12;
+        mrr += monthlyAmount;
+        arr += sub.amount;
+      }
+    }
+    
+    return {
+      mrr: Math.round(mrr * 100) / 100,
+      arr: Math.round(arr * 100) / 100,
+      total_active_subscriptions: subscriptions.length,
+      avg_subscription_value: subscriptions.length > 0 ? mrr / subscriptions.length : 0,
+    };
+  },
+});
+
+export const getChurnAnalysis = query({
+  args: {
+    client_id: v.optional(v.id("clients")),
+    months_back: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const monthsBack = args.months_back || 12;
+    const cutoff = Date.now() - (monthsBack * 30 * 24 * 60 * 60 * 1000);
+    
+    let subscriptions = await ctx.db.query("subscriptions").collect();
+    
+    if (args.client_id) {
+      subscriptions = subscriptions.filter(sub => sub.client_id === args.client_id);
+    }
+    
+    const recentSubscriptions = subscriptions.filter(sub => sub.created_at > cutoff);
+    const cancelledSubscriptions = recentSubscriptions.filter(sub => sub.status === "cancelled");
+    
+    const churnRate = recentSubscriptions.length > 0 
+      ? (cancelledSubscriptions.length / recentSubscriptions.length) * 100 
+      : 0;
+    
+    return {
+      total_subscriptions: recentSubscriptions.length,
+      cancelled_subscriptions: cancelledSubscriptions.length,
+      churn_rate: Math.round(churnRate * 100) / 100,
+      avg_subscription_lifetime: cancelledSubscriptions.length > 0
+        ? cancelledSubscriptions.reduce((sum, sub) => {
+            const lifetime = (sub.cancellation_date || Date.now()) - sub.created_at;
+            return sum + lifetime;
+          }, 0) / cancelledSubscriptions.length / (24 * 60 * 60 * 1000)
+        : 0,
+    };
+  },
+});

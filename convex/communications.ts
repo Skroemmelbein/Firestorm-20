@@ -217,3 +217,225 @@ export const logEmail = mutation({
     });
   },
 });
+
+export const getCommunicationsByChannel = query({
+  args: {
+    channel: v.union(v.literal("sms"), v.literal("mms"), v.literal("email"), v.literal("voice"), v.literal("chat"), v.literal("conversation"), v.literal("push"), v.literal("webhook")),
+    client_id: v.optional(v.id("clients")),
+    limit: v.optional(v.number()),
+    status: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    let communications = await ctx.db
+      .query("communications")
+      .withIndex("by_channel", (q) => q.eq("channel", args.channel))
+      .collect();
+    
+    if (args.client_id) {
+      communications = communications.filter(comm => comm.client_id === args.client_id);
+    }
+    
+    if (args.status) {
+      communications = communications.filter(comm => comm.status === args.status);
+    }
+    
+    communications.sort((a, b) => b.created_at - a.created_at);
+    
+    return communications.slice(0, args.limit || 50);
+  },
+});
+
+export const getCommunicationsByMember = query({
+  args: {
+    member_id: v.id("members"),
+    limit: v.optional(v.number()),
+    channel: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    let communications = await ctx.db
+      .query("communications")
+      .withIndex("by_member", (q) => q.eq("member_id", args.member_id))
+      .collect();
+    
+    if (args.channel) {
+      communications = communications.filter(comm => comm.channel === args.channel);
+    }
+    
+    communications.sort((a, b) => b.created_at - a.created_at);
+    
+    return communications.slice(0, args.limit || 50);
+  },
+});
+
+export const bulkCreateCommunications = mutation({
+  args: {
+    communications: v.array(v.object({
+      channel: v.union(v.literal("sms"), v.literal("mms"), v.literal("email"), v.literal("voice"), v.literal("chat"), v.literal("conversation"), v.literal("push"), v.literal("webhook")),
+      direction: v.union(v.literal("inbound"), v.literal("outbound")),
+      to_number: v.optional(v.string()),
+      from_number: v.optional(v.string()),
+      to_email: v.optional(v.string()),
+      from_email: v.optional(v.string()),
+      content: v.string(),
+      subject: v.optional(v.string()),
+      member_id: v.optional(v.id("members")),
+      client_id: v.optional(v.id("clients")),
+      campaign_id: v.optional(v.id("campaigns")),
+    })),
+  },
+  handler: async (ctx, args) => {
+    const results: Array<{ success: boolean; id?: string; error?: string }> = [];
+    const now = Date.now();
+    
+    for (const comm of args.communications) {
+      try {
+        const id = await ctx.db.insert("communications", {
+          ...comm,
+          status: "queued",
+          provider: "other",
+          created_at: now,
+          updated_at: now,
+        });
+        results.push({ success: true, id });
+      } catch (error: any) {
+        results.push({ success: false, error: error.message });
+      }
+    }
+    
+    return results;
+  },
+});
+
+export const getDeliveryRates = query({
+  args: {
+    client_id: v.optional(v.id("clients")),
+    channel: v.optional(v.string()),
+    date_from: v.optional(v.number()),
+    date_to: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    let communications = await ctx.db.query("communications").collect();
+    
+    if (args.client_id) {
+      communications = communications.filter(comm => comm.client_id === args.client_id);
+    }
+    
+    if (args.channel) {
+      communications = communications.filter(comm => comm.channel === args.channel);
+    }
+    
+    if (args.date_from || args.date_to) {
+      communications = communications.filter(comm => {
+        if (args.date_from && comm.created_at < args.date_from) return false;
+        if (args.date_to && comm.created_at > args.date_to) return false;
+        return true;
+      });
+    }
+    
+    const sent = communications.filter(c => c.status === "sent" || c.status === "delivered");
+    const delivered = communications.filter(c => c.status === "delivered");
+    const failed = communications.filter(c => c.status === "failed");
+    const bounced = communications.filter(c => c.status === "bounced");
+    
+    return {
+      total_sent: sent.length,
+      total_delivered: delivered.length,
+      total_failed: failed.length,
+      total_bounced: bounced.length,
+      delivery_rate: sent.length > 0 ? (delivered.length / sent.length) * 100 : 0,
+      failure_rate: sent.length > 0 ? (failed.length / sent.length) * 100 : 0,
+      bounce_rate: sent.length > 0 ? (bounced.length / sent.length) * 100 : 0,
+    };
+  },
+});
+
+export const getCommunicationCosts = query({
+  args: {
+    client_id: v.optional(v.id("clients")),
+    date_from: v.optional(v.number()),
+    date_to: v.optional(v.number()),
+    group_by: v.optional(v.union(v.literal("channel"), v.literal("provider"), v.literal("campaign"))),
+  },
+  handler: async (ctx, args) => {
+    let communications = await ctx.db.query("communications").collect();
+    
+    if (args.client_id) {
+      communications = communications.filter(comm => comm.client_id === args.client_id);
+    }
+    
+    if (args.date_from || args.date_to) {
+      communications = communications.filter(comm => {
+        if (args.date_from && comm.created_at < args.date_from) return false;
+        if (args.date_to && comm.created_at > args.date_to) return false;
+        return true;
+      });
+    }
+    
+    const totalCost = communications.reduce((sum, c) => sum + (c.cost || 0), 0);
+    const avgCost = communications.length > 0 ? totalCost / communications.length : 0;
+    
+    let breakdown = {};
+    
+    if (args.group_by === "channel") {
+      breakdown = communications.reduce((acc, c) => {
+        const key = c.channel;
+        acc[key] = (acc[key] || 0) + (c.cost || 0);
+        return acc;
+      }, {} as Record<string, number>);
+    } else if (args.group_by === "provider") {
+      breakdown = communications.reduce((acc, c) => {
+        const key = c.provider;
+        acc[key] = (acc[key] || 0) + (c.cost || 0);
+        return acc;
+      }, {} as Record<string, number>);
+    }
+    
+    return {
+      total_cost: totalCost,
+      avg_cost: avgCost,
+      total_messages: communications.length,
+      breakdown,
+    };
+  },
+});
+
+export const retryFailedCommunications = mutation({
+  args: {
+    client_id: v.optional(v.id("clients")),
+    max_retry_count: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    let communications = await ctx.db
+      .query("communications")
+      .withIndex("by_status", (q) => q.eq("status", "failed"))
+      .collect();
+    
+    if (args.client_id) {
+      communications = communications.filter(comm => comm.client_id === args.client_id);
+    }
+    
+    const maxRetries = args.max_retry_count || 3;
+    const eligibleForRetry = communications.filter(c => (c.retry_count || 0) < maxRetries);
+    
+    const results: Array<{ id: string; success: boolean; error?: string }> = [];
+    
+    for (const comm of eligibleForRetry) {
+      try {
+        await ctx.db.patch(comm._id, {
+          status: "queued",
+          retry_count: (comm.retry_count || 0) + 1,
+          updated_at: Date.now(),
+        });
+        results.push({ id: comm._id, success: true });
+      } catch (error: any) {
+        results.push({ id: comm._id, success: false, error: error.message });
+      }
+    }
+    
+    return {
+      total_failed: communications.length,
+      eligible_for_retry: eligibleForRetry.length,
+      retry_results: results,
+    };
+  },
+});

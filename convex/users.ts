@@ -67,17 +67,38 @@ export const createUser = mutation({
     password_hash: v.optional(v.string()),
     first_name: v.optional(v.string()),
     last_name: v.optional(v.string()),
-    role: v.union(v.literal("admin"), v.literal("manager"), v.literal("user")),
-    status: v.optional(v.union(v.literal("active"), v.literal("inactive"), v.literal("suspended"))),
+    role: v.union(v.literal("admin"), v.literal("manager"), v.literal("user"), v.literal("super_admin")),
+    status: v.optional(v.union(v.literal("active"), v.literal("inactive"), v.literal("suspended"), v.literal("pending"))),
     phone: v.optional(v.string()),
     avatar_url: v.optional(v.string()),
+    timezone: v.optional(v.string()),
+    language: v.optional(v.string()),
+    preferences: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
     const now = Date.now();
     
+    const existingUser = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
+    
+    if (existingUser) {
+      throw new Error("User with this email already exists");
+    }
+    
+    const full_name = args.first_name && args.last_name 
+      ? `${args.first_name} ${args.last_name}` 
+      : args.first_name || args.last_name || "";
+    
     return await ctx.db.insert("users", {
       ...args,
-      status: args.status || "active",
+      full_name,
+      status: args.status || "pending",
+      login_count: 0,
+      failed_login_attempts: 0,
+      email_verified: false,
+      two_factor_enabled: false,
       created_at: now,
       updated_at: now,
     });
@@ -91,14 +112,26 @@ export const updateUser = mutation({
     password_hash: v.optional(v.string()),
     first_name: v.optional(v.string()),
     last_name: v.optional(v.string()),
-    role: v.optional(v.union(v.literal("admin"), v.literal("manager"), v.literal("user"))),
-    status: v.optional(v.union(v.literal("active"), v.literal("inactive"), v.literal("suspended"))),
+    role: v.optional(v.union(v.literal("admin"), v.literal("manager"), v.literal("user"), v.literal("super_admin"))),
+    status: v.optional(v.union(v.literal("active"), v.literal("inactive"), v.literal("suspended"), v.literal("pending"))),
     phone: v.optional(v.string()),
     avatar_url: v.optional(v.string()),
+    timezone: v.optional(v.string()),
+    language: v.optional(v.string()),
+    preferences: v.optional(v.any()),
     last_login: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const { id, ...updateData } = args;
+    
+    if (updateData.first_name || updateData.last_name) {
+      const user = await ctx.db.get(id);
+      if (user) {
+        const firstName = updateData.first_name || user.first_name || "";
+        const lastName = updateData.last_name || user.last_name || "";
+        (updateData as any).full_name = `${firstName} ${lastName}`.trim();
+      }
+    }
     
     return await ctx.db.patch(id, {
       ...updateData,
@@ -116,14 +149,15 @@ export const deleteUser = mutation({
 
 export const getUsersByRole = query({
   args: { 
-    role: v.union(v.literal("admin"), v.literal("manager"), v.literal("user")),
-    status: v.optional(v.string()),
+    role: v.union(v.literal("admin"), v.literal("manager"), v.literal("user"), v.literal("super_admin")),
+    status: v.optional(v.union(v.literal("active"), v.literal("inactive"), v.literal("suspended"), v.literal("pending"))),
   },
   handler: async (ctx, args) => {
-    let users = await ctx.db
-      .query("users")
-      .withIndex("by_status", (q) => q.eq("status", args.status || "active"))
-      .collect();
+    let users = await ctx.db.query("users").collect();
+    
+    if (args.status) {
+      users = users.filter(user => user.status === args.status);
+    }
     
     users = users.filter(user => user.role === args.role);
     return users.sort((a, b) => b.created_at - a.created_at);
@@ -163,12 +197,12 @@ export const bulkUpdateUsers = mutation({
   args: {
     user_ids: v.array(v.id("users")),
     updates: v.object({
-      status: v.optional(v.union(v.literal("active"), v.literal("inactive"), v.literal("suspended"))),
-      role: v.optional(v.union(v.literal("admin"), v.literal("manager"), v.literal("user"))),
+      status: v.optional(v.union(v.literal("active"), v.literal("inactive"), v.literal("suspended"), v.literal("pending"))),
+      role: v.optional(v.union(v.literal("admin"), v.literal("manager"), v.literal("user"), v.literal("super_admin"))),
     }),
   },
   handler: async (ctx, args) => {
-    const results = [];
+    const results: Array<{ id: string; success: boolean; error?: string }> = [];
     
     for (const userId of args.user_ids) {
       try {
@@ -177,7 +211,7 @@ export const bulkUpdateUsers = mutation({
           updated_at: Date.now(),
         });
         results.push({ id: userId, success: true });
-      } catch (error) {
+      } catch (error: any) {
         results.push({ id: userId, success: false, error: error.message });
       }
     }

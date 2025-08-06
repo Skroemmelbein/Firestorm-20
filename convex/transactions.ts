@@ -205,3 +205,187 @@ export const processNMITransaction = mutation({
     }
   },
 });
+
+export const getTransactionsByStatus = query({
+  args: {
+    status: v.union(v.literal("pending"), v.literal("completed"), v.literal("failed"), v.literal("cancelled"), v.literal("disputed"), v.literal("refunded")),
+    client_id: v.optional(v.id("clients")),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    let transactions = await ctx.db
+      .query("transactions")
+      .withIndex("by_status", (q) => q.eq("status", args.status))
+      .collect();
+    
+    if (args.client_id) {
+      transactions = transactions.filter(t => t.client_id === args.client_id);
+    }
+    
+    transactions.sort((a, b) => b.created_at - a.created_at);
+    
+    return transactions.slice(0, args.limit || 50);
+  },
+});
+
+export const refundTransaction = mutation({
+  args: {
+    original_transaction_id: v.id("transactions"),
+    refund_amount: v.optional(v.number()),
+    reason: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const originalTransaction = await ctx.db.get(args.original_transaction_id);
+    if (!originalTransaction) throw new Error("Original transaction not found");
+    
+    if (originalTransaction.status !== "completed") {
+      throw new Error("Can only refund completed transactions");
+    }
+    
+    const refundAmount = args.refund_amount || originalTransaction.amount;
+    if (refundAmount > originalTransaction.amount) {
+      throw new Error("Refund amount cannot exceed original transaction amount");
+    }
+    
+    const now = Date.now();
+    const refundTransactionId = `ref_${now}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    return await ctx.db.insert("transactions", {
+      transaction_id: refundTransactionId,
+      subscription_id: originalTransaction.subscription_id,
+      member_id: originalTransaction.member_id,
+      amount: -refundAmount,
+      currency: originalTransaction.currency,
+      type: "refund",
+      status: "completed",
+      payment_method: originalTransaction.payment_method,
+      description: args.reason || "Refund",
+      metadata: { original_transaction_id: args.original_transaction_id },
+      processed_at: now,
+      created_at: now,
+      updated_at: now,
+    });
+  },
+});
+
+export const getFailedTransactions = query({
+  args: {
+    client_id: v.optional(v.id("clients")),
+    days_back: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const daysBack = args.days_back || 7;
+    const cutoff = Date.now() - (daysBack * 24 * 60 * 60 * 1000);
+    
+    let transactions = await ctx.db
+      .query("transactions")
+      .withIndex("by_status", (q) => q.eq("status", "failed"))
+      .collect();
+    
+    transactions = transactions.filter(t => t.created_at > cutoff);
+    
+    if (args.client_id) {
+      transactions = transactions.filter(t => t.client_id === args.client_id);
+    }
+    
+    return {
+      failed_transactions: transactions.sort((a, b) => b.created_at - a.created_at),
+      total_failed: transactions.length,
+      total_failed_amount: transactions.reduce((sum, t) => sum + t.amount, 0),
+    };
+  },
+});
+
+export const getRevenueAnalytics = query({
+  args: {
+    client_id: v.optional(v.id("clients")),
+    period: v.optional(v.union(v.literal("day"), v.literal("week"), v.literal("month"), v.literal("year"))),
+    periods_back: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const period = args.period || "month";
+    const periodsBack = args.periods_back || 12;
+    
+    let transactions = await ctx.db
+      .query("transactions")
+      .withIndex("by_status", (q) => q.eq("status", "completed"))
+      .collect();
+    
+    if (args.client_id) {
+      transactions = transactions.filter(t => t.client_id === args.client_id);
+    }
+    
+    const now = Date.now();
+    let periodMs: number;
+    
+    switch (period) {
+      case "day": periodMs = 24 * 60 * 60 * 1000; break;
+      case "week": periodMs = 7 * 24 * 60 * 60 * 1000; break;
+      case "month": periodMs = 30 * 24 * 60 * 60 * 1000; break;
+      case "year": periodMs = 365 * 24 * 60 * 60 * 1000; break;
+      default: periodMs = 30 * 24 * 60 * 60 * 1000;
+    }
+    
+    const cutoff = now - (periodsBack * periodMs);
+    const recentTransactions = transactions.filter(t => t.created_at > cutoff);
+    
+    const periodData: Array<{
+      period_start: number;
+      period_end: number;
+      revenue: number;
+      transaction_count: number;
+      avg_transaction_value: number;
+    }> = [];
+    
+    for (let i = 0; i < periodsBack; i++) {
+      const periodStart = now - ((i + 1) * periodMs);
+      const periodEnd = now - (i * periodMs);
+      
+      const periodTransactions = recentTransactions.filter(t => 
+        t.created_at >= periodStart && t.created_at < periodEnd
+      );
+      
+      const revenue = periodTransactions.reduce((sum, t) => sum + t.amount, 0);
+      
+      periodData.unshift({
+        period_start: periodStart,
+        period_end: periodEnd,
+        revenue,
+        transaction_count: periodTransactions.length,
+        avg_transaction_value: periodTransactions.length > 0 ? revenue / periodTransactions.length : 0,
+      });
+    }
+    
+    return {
+      period_data: periodData,
+      total_revenue: recentTransactions.reduce((sum, t) => sum + t.amount, 0),
+      total_transactions: recentTransactions.length,
+    };
+  },
+});
+
+export const bulkUpdateTransactions = mutation({
+  args: {
+    transaction_ids: v.array(v.id("transactions")),
+    updates: v.object({
+      status: v.optional(v.union(v.literal("pending"), v.literal("completed"), v.literal("failed"), v.literal("cancelled"), v.literal("disputed"), v.literal("refunded"))),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const results: Array<{ id: string; success: boolean; error?: string }> = [];
+    
+    for (const transactionId of args.transaction_ids) {
+      try {
+        await ctx.db.patch(transactionId, {
+          ...args.updates,
+          updated_at: Date.now(),
+        });
+        results.push({ id: transactionId, success: true });
+      } catch (error: any) {
+        results.push({ id: transactionId, success: false, error: error.message });
+      }
+    }
+    
+    return results;
+  },
+});

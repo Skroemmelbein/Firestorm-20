@@ -160,3 +160,125 @@ export const getUserSettings = query({
     return settingsObj;
   },
 });
+
+export const getSettingsByCategory = query({
+  args: {
+    category: v.string(),
+    client_id: v.optional(v.id("clients")),
+  },
+  handler: async (ctx, args) => {
+    let settings = await ctx.db
+      .query("settings")
+      .withIndex("by_category", (q) => q.eq("category", args.category))
+      .collect();
+    
+    if (args.client_id) {
+      settings = settings.filter(s => s.client_id === args.client_id);
+    }
+    
+    return settings.sort((a, b) => a.key.localeCompare(b.key));
+  },
+});
+
+export const bulkUpdateSettings = mutation({
+  args: {
+    settings: v.array(v.object({
+      key: v.string(),
+      value: v.any(),
+      category: v.optional(v.string()),
+      client_id: v.optional(v.id("clients")),
+    })),
+  },
+  handler: async (ctx, args) => {
+    const results: Array<{ key: string; success: boolean; id?: string; error?: string }> = [];
+    const now = Date.now();
+    
+    for (const setting of args.settings) {
+      try {
+        const existingSetting = await ctx.db
+          .query("settings")
+          .withIndex("by_key", (q) => q.eq("key", setting.key))
+          .first();
+        
+        if (existingSetting) {
+          await ctx.db.patch(existingSetting._id, {
+            value: setting.value,
+            updated_at: now,
+          });
+          results.push({ key: setting.key, success: true, id: existingSetting._id });
+        } else {
+          const id = await ctx.db.insert("settings", {
+            ...setting,
+            type: "system",
+            created_at: now,
+            updated_at: now,
+          });
+          results.push({ key: setting.key, success: true, id });
+        }
+      } catch (error: any) {
+        results.push({ key: setting.key, success: false, error: error.message });
+      }
+    }
+    
+    return results;
+  },
+});
+
+export const resetSettingsToDefault = mutation({
+  args: {
+    category: v.optional(v.string()),
+    client_id: v.optional(v.id("clients")),
+  },
+  handler: async (ctx, args) => {
+    let settings = await ctx.db.query("settings").collect();
+    
+    if (args.category) {
+      settings = settings.filter(s => s.category === args.category);
+    }
+    
+    if (args.client_id) {
+      settings = settings.filter(s => s.client_id === args.client_id);
+    }
+    
+    const results: Array<{ id: string; success: boolean; error?: string }> = [];
+    
+    for (const setting of settings) {
+      try {
+        await ctx.db.patch(setting._id, {
+          value: setting.default_value || null,
+          updated_at: Date.now(),
+        });
+        results.push({ id: setting._id, success: true });
+      } catch (error: any) {
+        results.push({ id: setting._id, success: false, error: error.message });
+      }
+    }
+    
+    return results;
+  },
+});
+
+export const exportSettings = query({
+  args: {
+    client_id: v.optional(v.id("clients")),
+    category: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    let settings = await ctx.db.query("settings").collect();
+    
+    if (args.client_id) {
+      settings = settings.filter(s => s.client_id === args.client_id);
+    }
+    
+    if (args.category) {
+      settings = settings.filter(s => s.category === args.category);
+    }
+    
+    return settings.map(s => ({
+      key: s.key,
+      value: s.value,
+      category: s.category,
+      description: s.description,
+    }));
+  },
+});
