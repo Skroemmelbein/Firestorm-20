@@ -27,6 +27,8 @@ export const updateExecutionProgress = mutation({
     failed_count: v.optional(v.number()),
     status: v.optional(v.union(v.literal("running"), v.literal("completed"), v.literal("failed"), v.literal("paused"))),
     error_message: v.optional(v.string()),
+    completed_at: v.optional(v.number()),
+    started_at: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const { id, ...updateData } = args;
