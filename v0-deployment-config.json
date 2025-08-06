@@ -1,0 +1,41 @@
+{
+  "name": "echelonx-platform",
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "server/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/index.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "TWILIO_ACCOUNT_SID": "ACf1f39d9f653df3669fa99343e88b2074",
+    "TWILIO_AUTH_TOKEN": "1f9a48e4dcd9c518889e148fe931e226",
+    "TWILIO_PHONE_NUMBER": "+18559600037",
+    "SENDGRID_API_KEY": "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",
+    "NMI_USERNAME": "wwwdpcyeahcom",
+    "NMI_PASSWORD": "!SNR96rQ9qsHdd4",
+    "OPENAI_API_KEY": "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",
+    "CONVEX_DEPLOY_KEY": "dev:artful-dragon-307|eyJ2MiI6ImQ0OTVjYjQ1ODhkMTQ3ZTk4OGUzY2EyOGZjMWQxYWM5In0=",
+    "NEXT_PUBLIC_CONVEX_URL": "https://artful-dragon-307.convex.cloud"
+  },
+  "functions": {
+    "server/index.ts": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
