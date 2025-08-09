@@ -13,6 +13,17 @@ router.get("/sendgrid/templates", async (req, res) => {
   }
 });
 
+router.get("/sendgrid/templates/:templateId", async (req, res) => {
+  try {
+    const { getSendGridClient } = await import("../../shared/sendgrid-client");
+    const sg = getSendGridClient();
+    const template = await sg.getTemplateById(req.params.templateId);
+    res.json({ success: true, template });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 router.post("/sendgrid/send-template", async (req, res) => {
   try {
     const { to, templateId, dynamicData, subject } = req.body || {};

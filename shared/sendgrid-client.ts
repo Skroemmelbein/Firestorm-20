@@ -36,6 +36,17 @@ export class SendGridClient {
     return json.templates || [];
   }
 
+  async getTemplateById(templateId: string): Promise<any> {
+    const res = await fetch(`https://api.sendgrid.com/v3/templates/${templateId}`, {
+      headers: { Authorization: `Bearer ${this.config.apiKey}` },
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      throw new Error(`SendGrid getTemplateById error ${res.status}: ${t}`);
+    }
+    return await res.json();
+  }
+
   async sendTemplateEmail(params: { to: string; templateId: string; dynamicData?: any; subject?: string }): Promise<any> {
     const body = {
       personalizations: [
