@@ -41,6 +41,8 @@ export async function createServer() {
     './routes/sms-api.ts': await import('./routes/sms-api.js'),
     './routes/status-classification.ts': await import('./routes/status-classification.js'),
         './routes/studio-flows.ts': await import('./routes/studio-flows.js'),
+    './routes/sendgrid-api.ts': await import('./routes/sendgrid-api.js'),
+    './routes/email-webhooks.ts': await import('./routes/email-webhooks.js'),
     './routes/segment-audience.ts': await import('./routes/segment-audience.js'),
     './routes/voice-bot.ts': await import('./routes/voice-bot.js'),
      './routes/subscription-management.ts': await import('./routes/subscription-management.js'),

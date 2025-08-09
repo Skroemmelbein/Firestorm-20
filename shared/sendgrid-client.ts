@@ -24,6 +24,55 @@ export class SendGridClient {
     };
   }
 
+  async listTemplates(): Promise<any[]> {
+    const res = await fetch("https://api.sendgrid.com/v3/templates?generations=dynamic", {
+      headers: { Authorization: `Bearer ${this.config.apiKey}` },
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      throw new Error(`SendGrid listTemplates error ${res.status}: ${t}`);
+    }
+    const json = await res.json();
+    return json.templates || [];
+  }
+
+  async sendTemplateEmail(params: { to: string; templateId: string; dynamicData?: any; subject?: string }): Promise<any> {
+    const body = {
+      personalizations: [
+        {
+          to: [{ email: params.to }],
+          dynamic_template_data: params.dynamicData || {},
+        },
+      ],
+      from: {
+        email: this.config.fromEmail,
+        name: this.config.fromName,
+      },
+      subject: params.subject || "",
+      template_id: params.templateId,
+    } as any;
+
+    const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.config.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) {
+      const t = await response.text();
+      throw new Error(`SendGrid sendTemplateEmail error ${response.status}: ${t}`);
+    }
+    return {
+      success: true,
+      messageId: response.headers.get("X-Message-Id"),
+      to: params.to,
+      templateId: params.templateId,
+      timestamp: new Date().toISOString(),
+    };
+  }
+
   async sendEmail(message: EmailMessage): Promise<any> {
     try {
       const emailData = {
