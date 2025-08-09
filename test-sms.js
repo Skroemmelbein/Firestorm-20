@@ -1,15 +1,15 @@
-// Quick SMS test to 8558600037
+// Quick SMS test to 1-814-440-9068
 const testSMS = async () => {
   try {
-    const response = await fetch("http://localhost:8080/api/real/sms/send", {
+    const response = await fetch("http://localhost:5000/api/real/sms/send", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        to: "+18558600037",
+        to: "+18144409068",
         body:
-          "🚀 Test SMS from RecurFlow! Your marketing automation system is working perfectly. Sent at " +
+          "🚀 Test SMS from ECHELONX! System check at " +
           new Date().toLocaleTimeString(),
       }),
     });
