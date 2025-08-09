@@ -40,9 +40,11 @@ export async function createServer() {
     './routes/real-api.ts': await import('./routes/real-api.js'),
     './routes/sms-api.ts': await import('./routes/sms-api.js'),
     './routes/status-classification.ts': await import('./routes/status-classification.js'),
-    './routes/studio-flows.ts': await import('./routes/studio-flows.js'),
-    './routes/subscription-management.ts': await import('./routes/subscription-management.js'),
-    './routes/test-sendgrid.ts': await import('./routes/test-sendgrid.js'),
+        './routes/studio-flows.ts': await import('./routes/studio-flows.js'),
+    './routes/segment-audience.ts': await import('./routes/segment-audience.js'),
+    './routes/voice-bot.ts': await import('./routes/voice-bot.js'),
+     './routes/subscription-management.ts': await import('./routes/subscription-management.js'),
+     './routes/test-sendgrid.ts': await import('./routes/test-sendgrid.js'),
     './routes/test-sms.ts': await import('./routes/test-sms.js'),
     './routes/test-twilio.ts': await import('./routes/test-twilio.js'),
     './routes/test-xano.ts': await import('./routes/test-xano.js'),
@@ -73,7 +75,7 @@ export async function createServer() {
       } else if (routePath.includes('campaign-scheduler')) {
         console.log(`📅 Mounting campaign-scheduler under /api/campaign-scheduler`);
         app.use('/api/campaign-scheduler', route);
-      } else {
+            } else {
         app.use('/api/real', route);
       }
     }
