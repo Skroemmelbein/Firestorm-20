@@ -77,7 +77,10 @@ export async function createServer() {
       } else if (routePath.includes('campaign-scheduler')) {
         console.log(`📅 Mounting campaign-scheduler under /api/campaign-scheduler`);
         app.use('/api/campaign-scheduler', route);
-            } else {
+      } else if (routePath.includes('test-sendgrid')) {
+        console.log(`✉️ Mounting test-sendgrid under /api`);
+        app.use('/api', route);
+      } else {
         app.use('/api/real', route);
       }
     }
