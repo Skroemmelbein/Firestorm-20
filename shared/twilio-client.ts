@@ -120,6 +120,34 @@ export class TwilioClient {
 
   // Send SMS
   async sendSMS(message: SMSMessage): Promise<any> {
+    // Test mode: simulate Twilio send without hitting API
+    if (process.env.TWILIO_TEST_MODE === "true") {
+      const fakeSid = `SMTEST_${Date.now()}`;
+      // Log to Convex as if sent
+      await this.logCommunicationToConvex({
+        channel: "sms",
+        direction: "outbound",
+        to_number: message.to,
+        from_number: message.from || this.config.phoneNumber,
+        content: message.body,
+        status: "sent",
+        provider: "twilio",
+        provider_id: fakeSid,
+        provider_status: "queued",
+        sent_at: new Date().toISOString(),
+        test_mode: true,
+      });
+
+      return {
+        success: true,
+        sid: fakeSid,
+        status: "queued",
+        to: message.to,
+        from: message.from || this.config.phoneNumber,
+        body: message.body,
+        testMode: true,
+      };
+    }
     const data = {
       To: message.to,
       From: message.from || this.config.phoneNumber,
