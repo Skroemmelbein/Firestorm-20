@@ -39,4 +39,19 @@ router.post("/sendgrid/send-template", async (req, res) => {
   }
 });
 
+router.post("/sendgrid/send-html", async (req, res) => {
+  try {
+    const { to, subject, html } = req.body || {};
+    if (!to || !subject || !html) {
+      return res.status(400).json({ success: false, error: "Missing to, subject, or html" });
+    }
+    const { getSendGridClient } = await import("../../shared/sendgrid-client");
+    const sg = getSendGridClient();
+    const result = await sg.sendEmail({ to, subject, html });
+    res.json({ success: true, result });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 export default router;
