@@ -24,7 +24,8 @@
     "setup": "node scripts/setup-env.js",
     "deploy": "npm run build && wrangler deploy",
     "deploy:vercel": "npm run build && vercel --prod",
-    "deploy:v0": "npm run build && vercel --prod"
+    "deploy:v0": "npm run build && vercel --prod",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "@convex-dev/auth": "^0.0.87",

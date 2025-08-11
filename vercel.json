@@ -25,12 +25,6 @@
     }
   ],
   "env": {
-    "NODE_ENV": "production",
-    "TWILIO_ACCOUNT_SID": "@twilio_account_sid",
-    "TWILIO_AUTH_TOKEN": "@twilio_auth_token", 
-    "TWILIO_PHONE_NUMBER": "@twilio_phone_number",
-    "NMI_USERNAME": "@nmi_username",
-    "NMI_PASSWORD": "@nmi_password",
-    "NEXT_PUBLIC_CONVEX_URL": "@convex_url"
+    "NODE_ENV": "production"
   }
 }
