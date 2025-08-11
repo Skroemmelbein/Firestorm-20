@@ -1,5 +1,5 @@
 import express from "express";
-import { xanoAPI } from "./api-integrations";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -110,7 +110,7 @@ router.post("/setup-billing-system", async (req, res) => {
     // Create tables
     for (const table of essentialTables) {
       try {
-        await xanoAPI.createTable(table.name, table.columns);
+        await getConvexClient().createTable(table.name, table.columns);
         results.tables_created.push(table.name);
         console.log(`✅ Created table: ${table.name}`);
       } catch (error: any) {
@@ -152,7 +152,7 @@ router.post("/setup-billing-system", async (req, res) => {
 
     for (const plan of plans) {
       try {
-        await xanoAPI.createRecord("plans", plan);
+        await getConvexClient().createRecord("plans", plan);
         results.plans_seeded.push(plan.name);
         console.log(`✅ Created plan: ${plan.name}`);
       } catch (error: any) {
@@ -166,7 +166,7 @@ router.post("/setup-billing-system", async (req, res) => {
 
     // 3. Create test user
     try {
-      const testUser = await xanoAPI.createRecord("users", {
+      const testUser = await getConvexClient().createRecord("users", {
         email: "test@ecelonx.com",
         name: "Test Customer",
         created_at: new Date().toISOString(),
@@ -221,10 +221,10 @@ router.get("/billing-readiness", async (req, res) => {
 
     // Check tables
     try {
-      await xanoAPI.queryRecords("users", {});
-      await xanoAPI.queryRecords("plans", {});
-      await xanoAPI.queryRecords("subscriptions", {});
-      await xanoAPI.queryRecords("transactions", {});
+      await getConvexClient().queryRecords("users", {});
+      await getConvexClient().queryRecords("plans", {});
+      await getConvexClient().queryRecords("subscriptions", {});
+      await getConvexClient().queryRecords("transactions", {});
       readiness.tables_exist = true;
     } catch (error) {
       readiness.missing_items.push("Database tables need to be created");
@@ -232,7 +232,7 @@ router.get("/billing-readiness", async (req, res) => {
 
     // Check plans
     try {
-      const plans = await xanoAPI.queryRecords("plans", {});
+      const plans = await getConvexClient().queryRecords("plans", {});
       readiness.plans_exist = plans.length > 0;
       if (!readiness.plans_exist) {
         readiness.missing_items.push("No billing plans found");

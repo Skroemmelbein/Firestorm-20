@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +51,15 @@ interface SubNavigationItem {
   path: string;
   icon: any;
 }
+
+const getNavigationVisibility = () => {
+  try {
+    const saved = localStorage.getItem("ecelonx-navigation-settings");
+    return saved ? JSON.parse(saved) : {};
+  } catch {
+    return {};
+  }
+};
 
 const navigationItems = [
   {
@@ -338,7 +348,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
             {/* Horizontal Navigation */}
             <div className="hidden lg:flex items-center gap-1">
-              {navigationItems.map((item) => {
+              {navigationItems.filter(item => {
+                if (item.id === "dream-portal" || item.id === "velocify-hub") {
+                  const visibilitySettings = getNavigationVisibility();
+                  return visibilitySettings[item.id] === true;
+                }
+                return true;
+              }).map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname.startsWith(item.path);
 
@@ -400,7 +416,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex flex-col h-full pt-20">
             <div className="flex-1 flex flex-col overflow-y-auto">
               <div className="px-4 py-6 space-y-2">
-                {navigationItems.map((item) => {
+                {navigationItems.filter(item => {
+                  if (item.id === "dream-portal" || item.id === "velocify-hub") {
+                    const visibilitySettings = getNavigationVisibility();
+                    return visibilitySettings[item.id] === true;
+                  }
+                  return true;
+                }).map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname.startsWith(item.path);
 

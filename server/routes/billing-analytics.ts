@@ -1,5 +1,5 @@
 import express from "express";
-import { xanoAPI } from "./api-integrations";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -283,7 +283,7 @@ class BillingAnalyticsEngine {
       0,
     );
 
-    const subscriptions = await xanoAPI.queryRecords("subscriptions", {
+    const subscriptions = await getConvexClient().queryRecords("subscriptions", {
       status: "active",
     });
 
@@ -338,7 +338,7 @@ class BillingAnalyticsEngine {
         query.retry_attempt = filter.retry_attempt;
       }
 
-      return await xanoAPI.queryRecords("transactions", query);
+      return await getConvexClient().queryRecords("transactions", query);
     } catch (error) {
       console.error("Error fetching filtered transactions:", error);
       return [];
@@ -435,7 +435,7 @@ router.get("/decline-insights", async (req, res) => {
       ]);
 
     // Get decline trends over time
-    const declineInsights = await xanoAPI.queryRecords("decline_insights", {
+    const declineInsights = await getConvexClient().queryRecords("decline_insights", {
       date: {
         ">=":
           filter.start_date ||
@@ -476,7 +476,7 @@ router.get("/retry-analytics", async (req, res) => {
 
     const retrySuccessRates =
       await analyticsEngine.getRetrySuccessRates(filter);
-    const retrySchedules = await xanoAPI.queryRecords("retry_schedule", {
+    const retrySchedules = await getConvexClient().queryRecords("retry_schedule", {
       created_at: {
         ">=":
           filter.start_date ||
@@ -519,7 +519,7 @@ router.get("/real-time", async (req, res) => {
       Date.now() - 24 * 60 * 60 * 1000,
     ).toISOString();
 
-    const recentTransactions = await xanoAPI.queryRecords("transactions", {
+    const recentTransactions = await getConvexClient().queryRecords("transactions", {
       created_at: { ">=": last24Hours },
     });
 

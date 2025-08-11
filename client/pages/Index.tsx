@@ -22,7 +22,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { getOpenAIService } from "@shared/openai-service";
-import type { DevelopmentTask } from "@shared/openai-service";
+// import type { DevelopmentTask } from "@shared/openai-service";
 import { fileManager } from "@shared/code-executor";
 import XanoAutoSetup from "@/components/XanoAutoSetup";
 
@@ -68,7 +68,7 @@ export default function Index() {
   >([]);
   const [executingCode, setExecutingCode] = useState<string | null>(null);
 
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesis | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -222,7 +222,7 @@ export default function Index() {
           task,
           actionType,
           code,
-          canExecute: !!code,
+          // canExecute: !!code,
         };
       } else {
         // Regular conversation
@@ -277,7 +277,7 @@ export default function Index() {
         task: aiResponse.task,
         code: aiResponse.code,
         actionType: aiResponse.actionType,
-        canExecute: aiResponse.canExecute,
+        // canExecute: aiResponse.canExecute,
         executed: false,
       };
 

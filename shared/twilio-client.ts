@@ -1,5 +1,5 @@
 // Real Twilio Client - SMS, Voice, and Webhooks
-import { getXanoClient } from "./xano-client";
+import { getConvexClient } from "./convex-client";
 
 interface TwilioConfig {
   accountSid: string;
@@ -120,23 +120,58 @@ export class TwilioClient {
 
   // Send SMS
   async sendSMS(message: SMSMessage): Promise<any> {
+    // Test mode: simulate Twilio send without hitting API
+    if (process.env.TWILIO_TEST_MODE === "true") {
+      const fakeSid = `SMTEST_${Date.now()}`;
+      // Log to Convex as if sent
+      await this.logCommunicationToConvex({
+        channel: "sms",
+        direction: "outbound",
+        to_number: message.to,
+        from_number: message.from || this.config.phoneNumber,
+        content: message.body,
+        status: "sent",
+        provider: "twilio",
+        provider_id: fakeSid,
+        provider_status: "queued",
+        sent_at: new Date().toISOString(),
+        test_mode: true,
+      });
+
+      return {
+        success: true,
+        sid: fakeSid,
+        status: "queued",
+        to: message.to,
+        from: message.from || this.config.phoneNumber,
+        body: message.body,
+        testMode: true,
+      };
+    }
     const data = {
       To: message.to,
       From: message.from || this.config.phoneNumber,
       Body: message.body,
+      ...(process.env.TWILIO_MESSAGING_SERVICE_SID && {
+        MessagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID
+      })
     };
 
-    if (message.mediaUrl && message.mediaUrl.length > 0) {
-      message.mediaUrl.forEach((url, index) => {
-        data[`MediaUrl${index}`] = url;
-      });
+    if (message.mediaUrl) {
+      if (Array.isArray(message.mediaUrl)) {
+        message.mediaUrl.forEach((url, index) => {
+          data[`MediaUrl${index}`] = url;
+        });
+      } else {
+        data['MediaUrl'] = message.mediaUrl;
+      }
     }
 
     try {
       const result = await this.makeRequest("/Messages.json", "POST", data);
 
-      // Log to Xano
-      await this.logCommunicationToXano({
+      // Log to Convex
+      await this.logCommunicationToConvex({
         channel: "sms",
         direction: "outbound",
         to_number: message.to,
@@ -168,8 +203,8 @@ export class TwilioClient {
         timestamp: new Date().toISOString(),
       };
 
-      // Log failed attempt to Xano
-      await this.logCommunicationToXano({
+      // Log failed attempt to Convex
+      await this.logCommunicationToConvex({
         channel: "sms",
         direction: "outbound",
         to_number: message.to,
@@ -207,8 +242,8 @@ export class TwilioClient {
     try {
       const result = await this.makeRequest("/Calls.json", "POST", data);
 
-      // Log to Xano
-      await this.logCommunicationToXano({
+      // Log to Convex
+      await this.logCommunicationToConvex({
         channel: "voice",
         direction: "outbound",
         to_number: call.to,
@@ -288,11 +323,11 @@ export class TwilioClient {
       console.error("Error processing incoming SMS with AI:", error);
 
       // Fallback: basic logging without AI
-      const xano = getXanoClient();
-      const members = await xano.getMembers({ search: webhook.From });
+      const convex = getConvexClient();
+      const members = await convex.getMembers({ search: webhook.From });
       let member = members.data.find((m) => m.phone === webhook.From);
 
-      await this.logCommunicationToXano({
+      await this.logCommunicationToConvex({
         member_id: member?.id,
         channel: "sms",
         direction: "inbound",
@@ -311,11 +346,11 @@ export class TwilioClient {
   // Handle Message Status Webhook
   async handleStatusWebhook(webhook: TwilioWebhook): Promise<void> {
     try {
-      const xano = getXanoClient();
+      const convex = getConvexClient();
 
-      // Update message status in Xano
-      const communications = await xano.getCommunications({
-        limit: 1,
+      // Update message status in Convex
+      const communications = await convex.getCommunications({
+        per_page: 1,
       });
 
       // Find the communication record by Twilio SID
@@ -332,13 +367,12 @@ export class TwilioClient {
           received: "delivered",
         };
 
-        await xano.updateCommunicationStatus(
-          comm.id,
-          statusMap[webhook.MessageStatus] || webhook.MessageStatus,
-          webhook.MessageStatus === "delivered"
+        await convex.updateCommunicationStatus(comm.id, {
+          status: statusMap[webhook.MessageStatus] || webhook.MessageStatus,
+          delivered_at: webhook.MessageStatus === "delivered"
             ? new Date().toISOString()
             : undefined,
-        );
+        });
       }
 
       console.log("Message status updated:", {
@@ -351,18 +385,261 @@ export class TwilioClient {
     }
   }
 
-  // Helper to log communication to Xano
-  private async logCommunicationToXano(commData: any): Promise<void> {
+  // Helper to log communication to Convex
+  private async logCommunicationToConvex(commData: any): Promise<void> {
     try {
-      const xano = getXanoClient();
-      await xano.createCommunication({
+      const convex = getConvexClient();
+      await convex.createCommunication({
         ...commData,
         created_at: new Date().toISOString(),
       });
     } catch (error) {
-      console.error("Failed to log communication to Xano:", error);
+      console.error("Failed to log communication to Convex:", error);
       // Don't throw - logging failure shouldn't stop the main operation
     }
+  }
+
+  async sendWhatsApp(message: SMSMessage): Promise<any> {
+    const data = {
+      To: `whatsapp:${message.to}`,
+      From: `whatsapp:${this.config.phoneNumber}`,
+      Body: message.body,
+    };
+
+    if (message.mediaUrl) {
+      if (Array.isArray(message.mediaUrl)) {
+        message.mediaUrl.forEach((url, index) => {
+          data[`MediaUrl${index}`] = url;
+        });
+      } else {
+        data['MediaUrl'] = message.mediaUrl;
+      }
+    }
+
+    try {
+      const result = await this.makeRequest("/Messages.json", "POST", data);
+
+      // Log to Convex
+      await this.logCommunicationToConvex({
+        channel: "whatsapp",
+        direction: "outbound",
+        to_number: message.to,
+        from_number: this.config.phoneNumber,
+        content: message.body,
+        status: "sent",
+        provider: "twilio",
+        provider_id: result.sid,
+        provider_status: result.status,
+        cost: parseFloat(result.price) || 0,
+        sent_at: new Date().toISOString(),
+      });
+
+      return {
+        success: true,
+        sid: result.sid,
+        status: result.status,
+        to: message.to,
+        from: this.config.phoneNumber,
+        body: message.body,
+        price: result.price,
+        dateCreated: result.date_created,
+        channel: "whatsapp",
+      };
+    } catch (error) {
+      console.error("WhatsApp message failed:", error);
+      throw error;
+    }
+  }
+
+  async executeStudioFlow(flowSid: string, to: string, parameters?: Record<string, any>): Promise<any> {
+    const data = {
+      To: to,
+      From: this.config.phoneNumber,
+    };
+
+    if (parameters) {
+      Object.entries(parameters).forEach(([key, value]) => {
+        data[`Parameters.${key}`] = String(value);
+      });
+    }
+
+    try {
+      const result = await this.makeRequest(`/Studio/Flows/${flowSid}/Executions.json`, "POST", data);
+
+      // Log to Convex
+      await this.logCommunicationToConvex({
+        channel: "studio_flow",
+        direction: "outbound",
+        to_number: to,
+        from_number: this.config.phoneNumber,
+        content: `Studio Flow executed: ${flowSid}`,
+        status: "sent",
+        provider: "twilio",
+        provider_id: result.sid,
+        provider_status: result.status,
+        sent_at: new Date().toISOString(),
+      });
+
+      return {
+        success: true,
+        executionSid: result.sid,
+        flowSid: flowSid,
+        to: to,
+        status: result.status,
+        dateCreated: result.date_created,
+      };
+    } catch (error) {
+      console.error("Studio Flow execution failed:", error);
+      throw error;
+    }
+  }
+
+  async getStudioFlowExecution(flowSid: string, executionSid: string): Promise<any> {
+    return this.makeRequest(`/Studio/Flows/${flowSid}/Executions/${executionSid}.json`);
+  }
+
+  async sendRCS(message: SMSMessage & { 
+    contentSid?: string; 
+    richContent?: any 
+  }): Promise<any> {
+    const data = {
+      To: message.to,
+      From: message.from || this.config.phoneNumber,
+      Body: message.body,
+      ...(process.env.TWILIO_MESSAGING_SERVICE_SID && {
+        MessagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID
+      })
+    };
+
+    if (message.contentSid) {
+      data["ContentSid"] = message.contentSid;
+    }
+
+    if (message.richContent) {
+      data["ContentVariables"] = JSON.stringify(message.richContent);
+    }
+
+    if (message.mediaUrl) {
+      if (Array.isArray(message.mediaUrl)) {
+        message.mediaUrl.forEach((url, index) => {
+          data[`MediaUrl${index}`] = url;
+        });
+      } else {
+        data['MediaUrl'] = message.mediaUrl;
+      }
+    }
+
+    try {
+      const result = await this.makeRequest("/Messages.json", "POST", data);
+
+      // Log to Convex
+      await this.logCommunicationToConvex({
+        channel: "rcs",
+        direction: "outbound",
+        to_number: message.to,
+        from_number: message.from || this.config.phoneNumber,
+        content: message.body,
+        status: "sent",
+        provider: "twilio",
+        provider_id: result.sid,
+        provider_status: result.status,
+        cost: parseFloat(result.price) || 0,
+        sent_at: new Date().toISOString(),
+      });
+
+      return {
+        success: true,
+        sid: result.sid,
+        status: result.status,
+        to: message.to,
+        from: message.from || this.config.phoneNumber,
+        body: message.body,
+        price: result.price,
+        dateCreated: result.date_created,
+        channel: "rcs",
+      };
+    } catch (error) {
+      console.error("RCS message failed:", error);
+      throw error;
+    }
+  }
+
+  // Enhanced Voice Call with TwiML Bins
+  async makeAdvancedCall(call: VoiceCall & {
+    record?: boolean;
+    transcribe?: boolean;
+    machineDetection?: boolean;
+    timeout?: number;
+  }): Promise<any> {
+    const data = {
+      To: call.to,
+      From: call.from || this.config.phoneNumber,
+    };
+
+    if (call.url) {
+      data["Url"] = call.url;
+    } else if (call.twiml) {
+      data["Twiml"] = call.twiml;
+    } else {
+      // Default TwiML for basic call
+      data["Twiml"] = "<Response><Say>Hello, this is a call from ECHELONX.</Say></Response>";
+    }
+
+    if (call.record) {
+      data["Record"] = "true";
+    }
+
+    if (call.transcribe) {
+      data["Transcribe"] = "true";
+    }
+
+    if (call.machineDetection) {
+      data["MachineDetection"] = "Enable";
+    }
+
+    if (call.timeout) {
+      data["Timeout"] = call.timeout.toString();
+    }
+
+    try {
+      const result = await this.makeRequest("/Calls.json", "POST", data);
+
+      // Log to Convex
+      await this.logCommunicationToConvex({
+        channel: "voice_advanced",
+        direction: "outbound",
+        to_number: call.to,
+        from_number: call.from || this.config.phoneNumber,
+        content: call.twiml || "Advanced voice call initiated",
+        status: "sent",
+        provider: "twilio",
+        provider_id: result.sid,
+        provider_status: result.status,
+        cost: parseFloat(result.price) || 0,
+        sent_at: new Date().toISOString(),
+      });
+
+      return {
+        success: true,
+        sid: result.sid,
+        status: result.status,
+        to: call.to,
+        from: call.from || this.config.phoneNumber,
+        dateCreated: result.date_created,
+        features: {
+          record: call.record,
+          transcribe: call.transcribe,
+          machineDetection: call.machineDetection,
+        },
+      };
+    } catch (error) {
+      console.error("Advanced voice call failed:", error);
+      throw error;
+    }
+  }
+
+  async getCallRecording(callSid: string): Promise<any> {
+    return this.makeRequest(`/Calls/${callSid}/Recordings.json`);
   }
 
   // Bulk SMS for campaigns
@@ -395,6 +672,56 @@ export class TwilioClient {
 
     return { successful, failed, results };
   }
+
+  async sendBulkMultiChannel(messages: Array<{
+    to: string;
+    body: string;
+    channels: Array<'sms' | 'whatsapp' | 'rcs'>;
+    mediaUrl?: string[];
+    contentSid?: string;
+  }>): Promise<{
+    successful: number;
+    failed: number;
+    results: any[];
+  }> {
+    const results = [];
+    let successful = 0;
+    let failed = 0;
+
+    for (const message of messages) {
+      for (const channel of message.channels) {
+        try {
+          let result;
+          switch (channel) {
+            case 'sms':
+              result = await this.sendSMS(message);
+              break;
+            case 'whatsapp':
+              result = await this.sendWhatsApp(message);
+              break;
+            case 'rcs':
+              result = await this.sendRCS({ ...message, contentSid: message.contentSid });
+              break;
+          }
+          results.push({ success: true, channel, ...result });
+          successful++;
+        } catch (error) {
+          results.push({
+            success: false,
+            channel,
+            to: message.to,
+            error: error instanceof Error ? error.message : "Unknown error",
+          });
+          failed++;
+        }
+
+        // Add delay to respect rate limits
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      }
+    }
+
+    return { successful, failed, results };
+  }
 }
 
 // Export singleton instance
@@ -407,8 +734,30 @@ export function initializeTwilio(config: TwilioConfig): TwilioClient {
 
 export function getTwilioClient(): TwilioClient {
   if (!twilioClient) {
+    console.log("🔍 Debugging Twilio client initialization...");
+    console.log("TWILIO_ACCOUNT_SID:", process.env.TWILIO_ACCOUNT_SID ? "SET" : "NOT SET");
+    console.log("TWILIO_AUTH_TOKEN:", process.env.TWILIO_AUTH_TOKEN ? "SET" : "NOT SET");
+    console.log("TWILIO_PHONE_NUMBER:", process.env.TWILIO_PHONE_NUMBER ? "SET" : "NOT SET");
+    
+    // Try to auto-initialize if we have the credentials
+    if (
+      process.env.TWILIO_ACCOUNT_SID &&
+      process.env.TWILIO_AUTH_TOKEN &&
+      process.env.TWILIO_PHONE_NUMBER
+    ) {
+      console.log("🚀 Auto-initializing Twilio client with credentials...");
+      twilioClient = new TwilioClient({
+        accountSid: process.env.TWILIO_ACCOUNT_SID,
+        authToken: process.env.TWILIO_AUTH_TOKEN,
+        phoneNumber: process.env.TWILIO_PHONE_NUMBER,
+      });
+      console.log("✅ Twilio client auto-initialized successfully");
+      return twilioClient;
+    }
+
+    console.log("❌ Missing Twilio credentials for auto-initialization");
     throw new Error(
-      "Twilio client not initialized. Call initializeTwilio() first.",
+      "Twilio client not initialized. Please configure Twilio credentials first.",
     );
   }
   return twilioClient;

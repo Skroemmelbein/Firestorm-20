@@ -20,6 +20,7 @@ import {
   EyeOff,
   Loader2,
 } from "lucide-react";
+import { httpRequest } from "@/utils/http-client";
 
 interface XanoConfig {
   instanceUrl: string;
@@ -46,7 +47,7 @@ export default function XanoCredentialsHelper() {
     setConnectionStatus(null);
 
     try {
-      const response = await fetch("/api/real/test/xano", {
+      const response = await httpRequest(`${window.location.origin}/api/real/test/xano`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(config),
@@ -71,7 +72,7 @@ export default function XanoCredentialsHelper() {
 
   const saveConfig = async () => {
     try {
-      const response = await fetch("/api/integrations/config", {
+      const response = await httpRequest(`${window.location.origin}/api/integrations/config`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ xano: config }),

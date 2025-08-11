@@ -40,6 +40,7 @@ import {
   Target,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { httpRequest } from "@/utils/http-client";
 
 interface BillingKPI {
   approvalRate: number;
@@ -202,7 +203,7 @@ export default function AdminDashboard() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/billing/charge-recurring", {
+      const response = await httpRequest(`${window.location.origin}/api/billing/charge-recurring`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ subscription_id: subscriptionId }),
@@ -228,7 +229,7 @@ export default function AdminDashboard() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/billing/run-recurring-billing", {
+      const response = await httpRequest(`${window.location.origin}/api/billing/run-recurring-billing`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });

@@ -22,6 +22,7 @@ import {
   Clock,
   AlertTriangle,
 } from "lucide-react";
+import { httpRequest } from "@/utils/http-client";
 
 interface SMSResult {
   success: boolean;
@@ -48,7 +49,7 @@ export default function SMSInterface() {
   const testConnection = async () => {
     setSending(true);
     try {
-      const response = await fetch("/api/real/test/twilio", {
+      const response = await httpRequest(`${window.location.origin}/api/real/test/twilio`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
@@ -76,7 +77,7 @@ export default function SMSInterface() {
 
     setSending(true);
     try {
-      const response = await fetch("/api/real/sms/send", {
+      const response = await httpRequest(`${window.location.origin}/api/real/sms/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -159,7 +160,7 @@ export default function SMSInterface() {
             <div className="space-y-1">
               <div className="text-sm font-medium">Account SID</div>
               <div className="font-mono text-xs text-muted-foreground">
-                ACf19a39d865d43659b94a3a2074
+                ACf1f39d9f653df3669fa99343e88b2074
               </div>
             </div>
             <div className="space-y-1">

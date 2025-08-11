@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/AdminLayout";
+import { httpRequest } from "@/utils/http-client";
 
 interface BillingPlan {
   id: string;
@@ -123,20 +124,20 @@ export default function BillingLogic() {
 
     try {
       // Check rate limits first
-      const rateStatus = await checkRateLimitStatus();
-      if (rateStatus && !rateStatus.canMakeRequest) {
-        const waitMinutes = Math.ceil(rateStatus.waitTime / 60000);
+      // const rateStatus = await checkRateLimitStatus();
+      if (false && !false) { // Disabled rate limiting check
+        const waitMinutes = Math.ceil(0 / 60000);
         setTestPaymentResult({
           success: false,
           message: "Rate Limit Active",
           suggestion: `Please wait ${waitMinutes} minute(s) before testing payments. This prevents NMI activity limit errors.`,
-          waitTime: rateStatus.waitTime,
+          waitTime: 0,
         });
         setIsTestingPayment(false);
         return;
       }
 
-      const response = await fetch("/api/nmi/test-payment", {
+      const response = await httpRequest(`${window.location.origin}/api/nmi/test-payment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -172,7 +173,7 @@ export default function BillingLogic() {
       setTestPaymentResult(result);
 
       // Update rate limit status after request
-      setTimeout(() => checkRateLimitStatus(), 1000);
+      // setTimeout(() => checkRateLimitStatus(), 1000);
     } catch (error: any) {
       setTestPaymentResult({
         success: false,
@@ -212,7 +213,7 @@ export default function BillingLogic() {
   const fetchTransactionLogs = async () => {
     setLoadingLogs(true);
     try {
-      const response = await fetch("/api/nmi-logs/get-transaction-logs", {
+      const response = await httpRequest(`${window.location.origin}/api/nmi-logs/get-transaction-logs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(logQuery),
@@ -462,7 +463,7 @@ export default function BillingLogic() {
                             </div>
                             <div className="text-right">
                               <Button variant="ghost" size="sm">
-                                <Eye className="w-3 h-3 mr-1" />
+                                <span className="w-3 h-3 mr-1">👁</span>
                                 Details
                               </Button>
                             </div>

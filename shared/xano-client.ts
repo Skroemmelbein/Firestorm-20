@@ -324,6 +324,41 @@ export class XanoClient {
       return false;
     }
   }
+
+  async createRecord(tableName: string, data: any): Promise<any> {
+    return this.request(`/${tableName}`, "POST", data);
+  }
+
+  async updateRecord(tableName: string, id: number, data: any): Promise<any> {
+    return this.request(`/${tableName}/${id}`, "PATCH", data);
+  }
+
+  async getRecord(tableName: string, id: number): Promise<any> {
+    return this.request(`/${tableName}/${id}`);
+  }
+
+  async queryRecords(tableName: string, filters?: any): Promise<any[]> {
+    const queryParams = new URLSearchParams();
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (typeof value === 'object' && value !== null) {
+          queryParams.append(key, JSON.stringify(value));
+        } else {
+          queryParams.append(key, String(value));
+        }
+      });
+    }
+    const endpoint = `/${tableName}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+    return this.request(endpoint);
+  }
+
+  async createTable(tableName: string, columns: any): Promise<any> {
+    return this.request(`/tables/${tableName}`, "POST", { columns });
+  }
+
+  async makeRequest(endpoint: string, method: "GET" | "POST" | "PATCH" | "DELETE" = "GET", data?: any): Promise<any> {
+    return this.request(endpoint, method, data);
+  }
 }
 
 // Export singleton instance

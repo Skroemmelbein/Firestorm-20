@@ -24,6 +24,66 @@ export class SendGridClient {
     };
   }
 
+  async listTemplates(): Promise<any[]> {
+    const res = await fetch("https://api.sendgrid.com/v3/templates?generations=dynamic", {
+      headers: { Authorization: `Bearer ${this.config.apiKey}` },
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      throw new Error(`SendGrid listTemplates error ${res.status}: ${t}`);
+    }
+    const json = await res.json();
+    return json.templates || [];
+  }
+
+  async getTemplateById(templateId: string): Promise<any> {
+    const res = await fetch(`https://api.sendgrid.com/v3/templates/${templateId}`, {
+      headers: { Authorization: `Bearer ${this.config.apiKey}` },
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      throw new Error(`SendGrid getTemplateById error ${res.status}: ${t}`);
+    }
+    return await res.json();
+  }
+
+  async sendTemplateEmail(params: { to: string; templateId: string; dynamicData?: any; subject?: string }): Promise<any> {
+    const body = {
+      personalizations: [
+        {
+          to: [{ email: params.to }],
+          dynamic_template_data: params.dynamicData || {},
+        },
+      ],
+      from: {
+        email: this.config.fromEmail,
+        name: this.config.fromName,
+      },
+      subject: params.subject || "",
+      template_id: params.templateId,
+    } as any;
+
+    const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.config.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) {
+      const t = await response.text();
+      throw new Error(`SendGrid sendTemplateEmail error ${response.status}: ${t}`);
+    }
+    return {
+      success: true,
+      messageId: response.headers.get("X-Message-Id"),
+      to: params.to,
+      templateId: params.templateId,
+      timestamp: new Date().toISOString(),
+    };
+  }
+
   async sendEmail(message: EmailMessage): Promise<any> {
     try {
       const emailData = {
@@ -36,7 +96,7 @@ export class SendGridClient {
           },
         ],
         from: {
-          email: this.config.fromEmail,
+          email: "support@nexusdynamic.io",
           name: this.config.fromName,
         },
         subject: message.subject,
@@ -109,20 +169,19 @@ export function getSendGridClient(): SendGridClient {
     // Try to auto-initialize if we have the API key
     if (
       process.env.SENDGRID_API_KEY &&
-      process.env.SENDGRID_API_KEY !==
-        "SG.placeholder_key_replace_with_real_sendgrid_api_key"
+      process.env.SENDGRID_API_KEY.startsWith("SG.")
     ) {
       sendGridClient = new SendGridClient({
         apiKey: process.env.SENDGRID_API_KEY,
-        fromEmail: "shannonkroemmelbein@gmail.com",
-        fromName: "Shannon Kroemmelbein - ECELONX",
+        fromEmail: "support@nexusdynamic.io",
+        fromName: "ECHELONX",
       });
       console.log("✅ SendGrid client auto-initialized");
       return sendGridClient;
     }
 
     throw new Error(
-      "SendGrid client not initialized. Call initializeSendGrid() first or set SENDGRID_API_KEY environment variable.",
+      "SendGrid client not initialized. Please set a valid SENDGRID_API_KEY environment variable (starts with 'SG.').",
     );
   }
   return sendGridClient;

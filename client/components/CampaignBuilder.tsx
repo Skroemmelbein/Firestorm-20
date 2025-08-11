@@ -110,10 +110,11 @@ const NODE_TYPES = {
     color: "#F59E0B",
     bgColor: "#F59E0B10",
     options: [
-      "Wait Duration",
+      "Wait Duration (5min, 1hr, 1day)",
       "Wait Until Date",
       "Wait for Event",
       "Business Hours Only",
+      "Rate Limit Control"
     ],
   },
   split: {

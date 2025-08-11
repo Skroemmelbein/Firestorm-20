@@ -1,4 +1,7 @@
 import { RequestHandler } from "express";
+import express from "express";
+
+const router = express.Router();
 
 interface TwilioStudioFlowRequest {
   friendlyName: string;
@@ -272,3 +275,11 @@ export const testTwilioConnection: RequestHandler = async (req, res) => {
     });
   }
 };
+
+// Router bindings
+router.get("/studio/flows", getStudioFlows);
+router.post("/studio/flows", createStudioFlow);
+router.post("/studio/flows/:flowSid", updateStudioFlow);
+router.get("/studio/test-connection", testTwilioConnection);
+
+export default router;
