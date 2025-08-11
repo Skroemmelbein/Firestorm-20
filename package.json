@@ -23,7 +23,7 @@
     "format.fix": "prettier --write .",
     "typecheck": "tsc",
     "setup": "node scripts/setup-env.js",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "npm run build && vercel --prod",
     "deploy:vercel": "npm run build && vercel --prod",
     "deploy:v0": "npm run build && vercel --prod"
   },
