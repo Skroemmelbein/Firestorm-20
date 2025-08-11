@@ -10,23 +10,20 @@
       "dist/server/**/*.js"
     ]
   },
-  "scripts": {
-    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
-    "dev:client": "vite --port 3000",
-    "dev:server": "tsx watch server/index.ts",
-    "build": "npm run build:client && npm run build:server",
-    "build:client": "vite build",
-    "build:server": "vite build --config vite.config.server.ts",
-    "start": "node dist/server/node-build.mjs",
-    "test": "vitest --run",
-    "format.fix": "prettier --write .",
-    "typecheck": "tsc",
-    "setup": "node scripts/setup-env.js",
-    "deploy": "npm run build && wrangler deploy",
-    "deploy:vercel": "npm run build && vercel --prod",
-    "deploy:v0": "npm run build && vercel --prod",
-    "vercel-build": "npm run build"
-  },
+"scripts": {
+  "dev": "vite --port 3000",
+  "build": "vite build",
+  "start": "node dist/server/node-build.mjs",
+  "test": "vitest --run",
+  "format.fix": "prettier --write .",
+  "typecheck": "tsc",
+  "setup": "node scripts/setup-env.js",
+  "deploy": "npm run build && wrangler deploy",
+  "deploy:vercel": "npm run build && vercel --prod",
+  "deploy:v0": "npm run build && vercel --prod",
+  "vercel-build": "npm run build"
+},
+}
   "dependencies": {
     "@convex-dev/auth": "^0.0.87",
     "@types/node-fetch": "^2.6.12",
