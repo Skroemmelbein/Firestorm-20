@@ -225,6 +225,40 @@ Be helpful, concise, and practical. When generating code, make it production-rea
 
     return await this.chat(messages);
   }
+
+  async analyzeText(text: string): Promise<{ sentiment?: string; intent?: string; confidence?: number } | null> {
+    const systemPrompt = `Analyze the following text and return a JSON object with sentiment (positive/negative/neutral), intent, and confidence score (0-1).`;
+    
+    const messages: ChatMessage[] = [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: text },
+    ];
+
+    try {
+      const response = await this.chat(messages);
+      return JSON.parse(response);
+    } catch (error) {
+      console.error("Error analyzing text:", error);
+      return null;
+    }
+  }
+
+  async generateSupportReply(params: { channel: string; from: string; content: string }): Promise<{ reply?: string } | null> {
+    const systemPrompt = `You are a helpful customer support assistant. Generate a brief, professional response to the customer's message via ${params.channel}.`;
+    
+    const messages: ChatMessage[] = [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: `Customer from ${params.from} says: ${params.content}` },
+    ];
+
+    try {
+      const response = await this.chat(messages);
+      return { reply: response };
+    } catch (error) {
+      console.error("Error generating support reply:", error);
+      return null;
+    }
+  }
 }
 
 // Default instance with environment API key
