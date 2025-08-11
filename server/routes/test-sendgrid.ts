@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+import express from "express";
 import { getSendGridClient } from "../../shared/sendgrid-client";
 
 export const testSendGrid: RequestHandler = async (req, res) => {
@@ -102,3 +103,10 @@ export const getSendGridStatus: RequestHandler = async (req, res) => {
     });
   }
 };
+
+// Add router to expose endpoints
+const router = express.Router();
+router.get("/sendgrid-status", getSendGridStatus);
+router.post("/test-sendgrid", testSendGrid);
+
+export default router;
