@@ -9,11 +9,11 @@ router.post("/send-test", async (req, res) => {
     const { to, message } = req.body;
 
     const twilioResponse = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/ACf19a39d865d43659b94a3a2074/Messages.json`,
+      `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
       {
         method: "POST",
         headers: {
-          Authorization: `Basic ${Buffer.from("ACf19a39d865d43659b94a3a2074:1f9a48e4dcd9c518889e148fe931e226").toString("base64")}`,
+          Authorization: `Basic ${Buffer.from(`${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`).toString("base64")}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
@@ -30,12 +30,12 @@ router.post("/send-test", async (req, res) => {
       res.json({
         success: true,
         message: `SMS sent successfully to ${to}`,
-        sid: result.sid,
+        sid: (result as any).sid,
       });
     } else {
       res.status(400).json({
         success: false,
-        error: result.message || "Failed to send SMS",
+        error: (result as any).message || "Failed to send SMS",
       });
     }
   } catch (error) {
@@ -52,17 +52,17 @@ async function sendTestMessage() {
     console.log("🚀 Sending test SMS to 8558600037...");
 
     const response = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/ACf19a39d865d43659b94a3a2074/Messages.json`,
+      `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
       {
         method: "POST",
         headers: {
-          Authorization: `Basic ${Buffer.from("ACf19a39d865d43659b94a3a2074:1f9a48e4dcd9c518889e148fe931e226").toString("base64")}`,
+          Authorization: `Basic ${Buffer.from(`${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`).toString("base64")}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
           From: "+18559600037",
-          To: "+18559600037",
-          Body: "whhhhaaaa up",
+          To: "+18144409068",
+          Body: "Test SMS from ECHELONX platform",
         }),
       },
     );
@@ -70,7 +70,7 @@ async function sendTestMessage() {
     const result = await response.json();
 
     if (response.ok) {
-      console.log("✅ Test SMS sent successfully!", result.sid);
+      console.log("✅ Test SMS sent successfully!", (result as any).sid);
     } else {
       console.error("❌ Failed to send test SMS:", result);
     }

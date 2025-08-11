@@ -19,7 +19,7 @@ interface OpenAIResponse {
   }>;
 }
 
-interface DevelopmentTask {
+export interface DevelopmentTask {
   action: "create" | "modify" | "delete" | "explain" | "debug";
   target: "component" | "page" | "api" | "database" | "style" | "function";
   details: string;

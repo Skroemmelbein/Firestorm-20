@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
@@ -99,10 +100,28 @@ const navigationItems: NavItem[] = [
     color: "#00E676",
     description: "System testing center",
   },
+  {
+    id: "campaign-scheduler",
+    label: "Campaign Scheduler",
+    path: "/campaign-scheduler",
+    icon: Activity,
+    color: "#F59E0B",
+    description: "Automated campaign execution",
+  },
 ];
+
+const getNavigationVisibility = () => {
+  try {
+    const saved = localStorage.getItem("ecelonx-navigation-settings");
+    return saved ? JSON.parse(saved) : {};
+  } catch {
+    return {};
+  }
+};
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [visibilitySettings, setVisibilitySettings] = useState(() => getNavigationVisibility());
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -113,6 +132,24 @@ export default function Sidebar() {
   const handleNavigation = (path: string) => {
     navigate(path);
   };
+
+  const visibleNavigationItems = navigationItems.filter(item => {
+    if (item.id === "dream-portal" || item.id === "velocify") {
+      return visibilitySettings[item.id] === true;
+    }
+    return true;
+  });
+
+  React.useEffect(() => {
+    const handleNavigationSettingsChange = () => {
+      setVisibilitySettings(getNavigationVisibility());
+    };
+
+    window.addEventListener('navigation-settings-changed', handleNavigationSettingsChange);
+    return () => {
+      window.removeEventListener('navigation-settings-changed', handleNavigationSettingsChange);
+    };
+  }, []);
 
   return (
     <>
@@ -157,7 +194,7 @@ export default function Sidebar() {
 
         {/* Navigation */}
         <div className="p-4 space-y-2 flex-1 overflow-y-auto pb-24">
-          {navigationItems.map((item) => {
+          {visibleNavigationItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
 

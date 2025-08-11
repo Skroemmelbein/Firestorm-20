@@ -23,6 +23,7 @@ import {
   ArrowRight,
   Copy,
 } from "lucide-react";
+import { httpRequest } from "@/utils/http-client";
 
 interface SetupStep {
   id: string;
@@ -112,7 +113,7 @@ export default function XanoAutoSetup() {
       let workingUrl = "";
       for (const url of potentialUrls) {
         try {
-          const response = await fetch(`${url}/api/health`, { method: "GET" });
+          const response = await httpRequest(`${url}/api/health`, { method: "GET" });
           if (response.ok || response.status < 500) {
             workingUrl = url;
             break;

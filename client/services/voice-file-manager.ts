@@ -1,3 +1,5 @@
+import { httpRequest } from '@/utils/http-client';
+
 interface ExecutionResult {
   success: boolean;
   message: string;
@@ -12,7 +14,7 @@ export class VoiceFileManager {
 
       // Since we can't directly call Write from the frontend,
       // we'll send this to our backend API
-      const response = await fetch("/api/create-file", {
+      const response = await httpRequest(`${window.location.origin}/api/create-file`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +53,7 @@ export class VoiceFileManager {
     try {
       const fileName = `client/pages/${name}.tsx`;
 
-      const response = await fetch("/api/create-file", {
+      const response = await httpRequest(`${window.location.origin}/api/create-file`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,7 +92,7 @@ export class VoiceFileManager {
     try {
       const fileName = `server/routes/${name}.ts`;
 
-      const response = await fetch("/api/create-file", {
+      const response = await httpRequest(`${window.location.origin}/api/create-file`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

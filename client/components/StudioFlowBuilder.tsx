@@ -44,6 +44,7 @@ import {
   Globe,
   Lock,
 } from "lucide-react";
+import { httpRequest } from "@/utils/http-client";
 
 interface StudioWidget {
   id: string;
@@ -310,7 +311,7 @@ export default function StudioFlowBuilder() {
       };
 
       // API call to create/update flow
-      const response = await fetch("/api/studio-flows", {
+      const response = await httpRequest(`${window.location.origin}/api/studio-flows`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

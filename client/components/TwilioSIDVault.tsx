@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { httpRequest } from "@/utils/http-client";
 import {
   Database,
   Key,
@@ -186,7 +187,7 @@ export default function TwilioSIDVault() {
     setIsLoading(true);
     try {
       // This would call your Twilio API to discover SIDs
-      const response = await fetch("/api/twilio/discover-sids", {
+      const response = await httpRequest(`${window.location.origin}/api/twilio/discover-sids`, {
         method: "POST",
       });
 

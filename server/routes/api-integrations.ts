@@ -1,20 +1,15 @@
 import express from "express";
 import fetch from "node-fetch";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
-// Configuration from environment or secure storage
-const XANO_CONFIG = {
-  instanceUrl: process.env.XANO_INSTANCE_URL || "https://your-instance.xano.io",
-  apiKey: process.env.XANO_API_KEY,
-  databaseId: process.env.XANO_DATABASE_ID,
-};
+// Convex is the system of record now
 
 const TWILIO_CONFIG = {
-  accountSid: process.env.TWILIO_ACCOUNT_SID || "ACf19a39d865d43659b94a3a2074",
-  authToken:
-    process.env.TWILIO_AUTH_TOKEN || "1f9a48e4dcd9c518889e148fe931e226",
-  phoneNumber: process.env.TWILIO_PHONE_NUMBER || "+18559600037",
+  accountSid: process.env.TWILIO_ACCOUNT_SID,
+  authToken: process.env.TWILIO_AUTH_TOKEN,
+  phoneNumber: process.env.TWILIO_PHONE_NUMBER,
 };
 
 const NMI_CONFIG = {
@@ -27,79 +22,31 @@ const NMI_CONFIG = {
     "https://secure.nmi.com/api/recurring.php",
 };
 
-// XANO API Functions
-class XanoAPI {
-  private async makeRequest(
-    endpoint: string,
-    method: "GET" | "POST" | "PATCH" | "DELETE" = "GET",
-    data?: any,
-  ) {
-    const url = `${XANO_CONFIG.instanceUrl}/api:${XANO_CONFIG.databaseId}${endpoint}`;
-
-    const options: any = {
-      method,
-      headers: {
-        Authorization: `Bearer ${XANO_CONFIG.apiKey}`,
-        "Content-Type": "application/json",
-      },
-    };
-
-    if (data && method !== "GET") {
-      options.body = JSON.stringify(data);
-    }
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new Error(
-        `Xano API error: ${response.status} ${response.statusText}`,
-      );
-    }
-
-    return response.json();
-  }
-
+// Convex-backed helpers (replacing Xano)
+class ConvexAPI {
   async getCustomers(filters?: any) {
-    return this.makeRequest("/customers", "GET");
+    return getConvexClient().getMembers(filters || {});
   }
-
   async createCustomer(customerData: any) {
-    return this.makeRequest("/customers", "POST", customerData);
+    return getConvexClient().createMember(customerData);
   }
-
-  async updateCustomer(id: number, data: any) {
-    return this.makeRequest(`/customers/${id}`, "PATCH", data);
+  async updateCustomer(id: string, data: any) {
+    return getConvexClient().updateMember(id, data);
   }
-
-  async getCampaigns() {
-    return this.makeRequest("/campaigns", "GET");
+  async getCampaigns(params?: any) {
+    return getConvexClient().getCampaigns(params || {});
   }
-
   async createCampaign(campaignData: any) {
-    return this.makeRequest("/campaigns", "POST", campaignData);
+    return getConvexClient().createCampaign(campaignData);
   }
-
-  async getLeadJourney(customerId: number) {
-    return this.makeRequest(`/lead-journeys?customer_id=${customerId}`, "GET");
+  async getLeadJourney(memberId: string) {
+    return getConvexClient().getLeadJourney(memberId);
   }
-
-  async updateLeadJourney(customerId: number, journeyData: any) {
-    return this.makeRequest("/lead-journeys", "POST", {
-      customer_id: customerId,
-      ...journeyData,
-    });
+  async updateLeadJourney(memberId: string, journeyData: any) {
+    return getConvexClient().updateLeadJourney(memberId, journeyData);
   }
-
-  async getRecurringSubscriptions() {
-    return this.makeRequest("/recurring-subscriptions", "GET");
-  }
-
-  async createRecurringSubscription(subscriptionData: any) {
-    return this.makeRequest(
-      "/recurring-subscriptions",
-      "POST",
-      subscriptionData,
-    );
+  async createRecurringSubscriptionRecord(payload: any) {
+    return getConvexClient().createRecord("subscriptions", payload);
   }
 }
 
@@ -125,7 +72,7 @@ class TwilioAPI {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          From: TWILIO_CONFIG.phoneNumber,
+          From: TWILIO_CONFIG.phoneNumber!,
           To: to,
           Body: message,
         }),
@@ -138,15 +85,18 @@ class TwilioAPI {
 
     const result = await response.json();
 
-    // Log to Xano
-    await xanoAPI.makeRequest("/conversations", "POST", {
-      customer_phone: to,
-      campaign_id: campaignId,
+    // Log to Convex
+    await getConvexClient().createCommunication({
       channel: "sms",
       direction: "outbound",
+      to_number: to,
+      from_number: TWILIO_CONFIG.phoneNumber,
       content: message,
-      twilio_sid: result.sid,
-      twilio_status: result.status,
+      provider: "twilio",
+      provider_id: (result as any).sid,
+      provider_status: (result as any).status,
+      campaign_id: campaignId,
+      sent_at: new Date().toISOString(),
     });
 
     return result;
@@ -162,7 +112,7 @@ class TwilioAPI {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          From: TWILIO_CONFIG.phoneNumber,
+          From: TWILIO_CONFIG.phoneNumber!,
           To: to,
           Url: `${process.env.BASE_URL}/api/twilio/voice-response?script=${encodeURIComponent(script)}`,
         }),
@@ -171,15 +121,18 @@ class TwilioAPI {
 
     const result = await response.json();
 
-    // Log to Xano
-    await xanoAPI.makeRequest("/conversations", "POST", {
-      customer_phone: to,
-      campaign_id: campaignId,
+    // Log to Convex
+    await getConvexClient().createCommunication({
       channel: "voice",
       direction: "outbound",
+      to_number: to,
+      from_number: TWILIO_CONFIG.phoneNumber,
       content: script,
-      twilio_sid: result.sid,
-      twilio_status: result.status,
+      provider: "twilio",
+      provider_id: (result as any).sid,
+      provider_status: (result as any).status,
+      campaign_id: campaignId,
+      sent_at: new Date().toISOString(),
     });
 
     return result;
@@ -193,8 +146,6 @@ class NMIAPI {
       username: NMI_CONFIG.username!,
       password: NMI_CONFIG.password!,
       recurring: "add_subscription",
-
-      // Customer billing info for recurring vault
       first_name: customerData.firstName,
       last_name: customerData.lastName,
       email: customerData.email,
@@ -203,40 +154,32 @@ class NMIAPI {
       city: customerData.city,
       state: customerData.state,
       zip: customerData.zip,
-
-      // Subscription details
       plan_amount: subscriptionData.amount,
-      plan_payments: subscriptionData.totalPayments || "0", // 0 = until cancelled
+      plan_payments: subscriptionData.totalPayments || "0",
       plan_frequency: subscriptionData.frequency || "monthly",
       day_frequency: subscriptionData.dayFrequency || "1",
       start_date:
         subscriptionData.startDate || new Date().toISOString().split("T")[0],
-
-      // Payment method
       ccnumber: subscriptionData.creditCard.number,
       ccexp: subscriptionData.creditCard.expiry,
       cvv: subscriptionData.creditCard.cvv,
     });
 
-    const response = await fetch(NMI_CONFIG.recurringVaultUrl, {
+    const response = await fetch(NMI_CONFIG.recurringVaultUrl!, {
       method: "POST",
       body: params,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
 
-    const result = await response.text();
-
-    // Parse NMI response
-    const resultParams = new URLSearchParams(result);
+    const text = await response.text();
+    const resultParams = new URLSearchParams(text);
     const subscriptionId = resultParams.get("subscription_id");
     const responseCode = resultParams.get("response");
 
     if (responseCode === "1") {
-      // Success - store in Xano recurring vault
-      await xanoAPI.createRecurringSubscription({
-        customer_id: customerData.id,
+      // Success - store in Convex
+      await convexAPI.createRecurringSubscriptionRecord({
+        member_id: customerData.id,
         nmi_subscription_id: subscriptionId,
         amount: subscriptionData.amount,
         frequency: subscriptionData.frequency,
@@ -266,12 +209,10 @@ class NMIAPI {
       ...updates,
     });
 
-    const response = await fetch(NMI_CONFIG.recurringVaultUrl, {
+    const response = await fetch(NMI_CONFIG.recurringVaultUrl!, {
       method: "POST",
       body: params,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
 
     const result = await response.text();
@@ -302,7 +243,7 @@ class NMIAPI {
   }
 }
 
-const xanoAPI = new XanoAPI();
+const convexAPI = new ConvexAPI();
 const twilioAPI = new TwilioAPI();
 const nmiAPI = new NMIAPI();
 
@@ -311,18 +252,18 @@ const nmiAPI = new NMIAPI();
 // Customers
 router.get("/customers", async (req, res) => {
   try {
-    const customers = await xanoAPI.getCustomers(req.query);
+    const customers = await convexAPI.getCustomers(req.query);
     res.json(customers);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
 
 router.post("/customers", async (req, res) => {
   try {
-    const customer = await xanoAPI.createCustomer(req.body);
+    const customer = await convexAPI.createCustomer(req.body);
     res.json(customer);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -330,18 +271,18 @@ router.post("/customers", async (req, res) => {
 // Campaigns
 router.get("/campaigns", async (req, res) => {
   try {
-    const campaigns = await xanoAPI.getCampaigns();
+    const campaigns = await convexAPI.getCampaigns();
     res.json(campaigns);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
 
 router.post("/campaigns", async (req, res) => {
   try {
-    const campaign = await xanoAPI.createCampaign(req.body);
+    const campaign = await convexAPI.createCampaign(req.body);
     res.json(campaign);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -356,14 +297,14 @@ router.post("/campaigns/:id/send-sms", async (req, res) => {
       recipients.map(async (phone: string) => {
         try {
           return await twilioAPI.sendSMS(phone, message, id);
-        } catch (error) {
+        } catch (error: any) {
           return { error: error.message, phone };
         }
       }),
     );
 
     res.json({ success: true, results });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -378,7 +319,7 @@ router.post("/subscriptions/recurring", async (req, res) => {
       subscriptionData,
     );
     res.json(result);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -388,7 +329,7 @@ router.post("/subscriptions/:id/pause", async (req, res) => {
   try {
     const result = await nmiAPI.pauseSubscription(req.params.id);
     res.json(result);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -397,7 +338,7 @@ router.post("/subscriptions/:id/resume", async (req, res) => {
   try {
     const result = await nmiAPI.resumeSubscription(req.params.id);
     res.json(result);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -406,7 +347,7 @@ router.delete("/subscriptions/:id", async (req, res) => {
   try {
     const result = await nmiAPI.cancelSubscription(req.params.id);
     res.json(result);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -414,21 +355,21 @@ router.delete("/subscriptions/:id", async (req, res) => {
 // Lead Journey
 router.get("/customers/:id/journey", async (req, res) => {
   try {
-    const journey = await xanoAPI.getLeadJourney(parseInt(req.params.id));
+    const journey = await convexAPI.getLeadJourney(req.params.id);
     res.json(journey);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
 
 router.post("/customers/:id/journey", async (req, res) => {
   try {
-    const journey = await xanoAPI.updateLeadJourney(
-      parseInt(req.params.id),
+    const journey = await convexAPI.updateLeadJourney(
+      req.params.id,
       req.body,
     );
     res.json(journey);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -438,21 +379,20 @@ router.post("/webhooks/twilio/sms", async (req, res) => {
   try {
     const { From, Body, MessageSid } = req.body;
 
-    // Log incoming message to Xano
-    await xanoAPI.makeRequest("/conversations", "POST", {
-      customer_phone: From,
+    // Log incoming message to Convex
+    await getConvexClient().createCommunication({
       channel: "sms",
       direction: "inbound",
+      from_number: From,
       content: Body,
-      twilio_sid: MessageSid,
-      twilio_status: "received",
+      provider: "twilio",
+      provider_id: MessageSid,
+      provider_status: "received",
+      created_at: new Date().toISOString(),
     });
 
-    // Process AI response if needed
-    // This would trigger the AI response system
-
     res.status(200).send("OK");
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
@@ -461,17 +401,15 @@ router.post("/webhooks/twilio/status", async (req, res) => {
   try {
     const { MessageSid, MessageStatus } = req.body;
 
-    // Update message status in Xano
-    await xanoAPI.makeRequest("/conversations/update-status", "POST", {
-      twilio_sid: MessageSid,
+    // Update message status in Convex
+    await getConvexClient().updateCommunicationStatus(MessageSid, {
       status: MessageStatus,
     });
 
     res.status(200).send("OK");
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
 
-export { xanoAPI, twilioAPI, nmiAPI };
 export default router;

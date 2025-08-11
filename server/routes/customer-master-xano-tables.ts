@@ -1,5 +1,5 @@
 import express from "express";
-import { xanoAPI } from "./api-integrations";
+import { getConvexClient } from "../../shared/convex-client";
 
 const router = express.Router();
 
@@ -437,7 +437,7 @@ router.post("/create-customer-master-tables", async (req, res) => {
       try {
         console.log(`Creating table: ${table.name}`);
 
-        const result = await xanoAPI.createTable(table.name, table.columns);
+        const result = await getConvexClient().createTable(table.name, table.columns);
 
         results.push({
           table: table.name,
@@ -582,11 +582,11 @@ router.post("/seed-customer-data", async (req, res) => {
     for (const customer of sampleCustomers) {
       try {
         // Add import metadata
-        customer.importedAt = new Date().toISOString();
-        customer.lastUpdatedAt = new Date().toISOString();
-        customer.version = 1;
+        (customer as any).importedAt = new Date().toISOString();
+        (customer as any).lastUpdatedAt = new Date().toISOString();
+        (customer as any).version = 1;
 
-        const result = await xanoAPI.createRecord("customer_master", customer);
+        const result = await getConvexClient().createRecord("customer_master", customer);
 
         results.push({
           customerId: customer.customerId,
@@ -637,7 +637,7 @@ router.get("/health-check", async (req, res) => {
     // Check each table exists and get counts
     for (const table of CUSTOMER_MASTER_TABLES) {
       try {
-        const records = await xanoAPI.queryRecords(table.name, {});
+        const records = await getConvexClient().queryRecords(table.name, {});
         health.tables[table.name] = {
           exists: true,
           count: records.length,

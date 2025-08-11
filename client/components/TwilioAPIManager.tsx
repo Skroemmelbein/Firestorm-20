@@ -312,7 +312,7 @@ export default function TwilioAPIManager() {
                         {categoryAPIs.slice(0, 3).map((api) => (
                           <div key={api.id} className="flex items-center justify-between text-xs">
                             <span className="font-medium text-blue-800">{api.name}</span>
-                            <Badge className={getStatusColor(api.status)} size="sm">
+                            <Badge className={getStatusColor(api.status)}>
                               {api.status}
                             </Badge>
                           </div>

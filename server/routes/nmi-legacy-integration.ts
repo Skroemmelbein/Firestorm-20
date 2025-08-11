@@ -123,8 +123,8 @@ class NMILegacyMigrationEngine implements VaultMigrationEngine {
       new_vault_id: newVaultId,
       customer_id: vault.customer_id || vault.email,
       mapping_status: mappingStatus,
-      validation_errors,
-      risk_assessment,
+      validation_errors: validationErrors,
+      risk_assessment: riskAssessment,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
@@ -162,7 +162,7 @@ class NMILegacyMigrationEngine implements VaultMigrationEngine {
   assessRisk(vault: any): {
     score: number;
     factors: string[];
-    recommendation: string;
+    recommendation: "APPROVE" | "REVIEW" | "REJECT";
   } {
     let score = 0;
     const factors: string[] = [];
@@ -208,7 +208,7 @@ class NMILegacyMigrationEngine implements VaultMigrationEngine {
     }
 
     // Determine recommendation
-    let recommendation = "APPROVE";
+    let recommendation: "APPROVE" | "REVIEW" | "REJECT" = "APPROVE";
     if (score >= 70) {
       recommendation = "REJECT";
     } else if (score >= 40) {
