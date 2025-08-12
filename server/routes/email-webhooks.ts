@@ -47,7 +47,7 @@ router.post("/email/sendgrid/webhook", async (req, res) => {
         content: `SendGrid event: ${status}`,
         status,
         provider: "sendgrid",
-        provider_id: evt.sg_event_id || evt.smtp-id || undefined,
+        provider_id: evt.sg_event_id || evt['smtp-id'] || undefined,
         delivered_at: evt.timestamp ? new Date(evt.timestamp * 1000).toISOString() : new Date().toISOString(),
         created_at: new Date().toISOString(),
       });

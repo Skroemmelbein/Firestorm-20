@@ -6,11 +6,9 @@ config({ path: path.join(process.cwd(), '.env') });
 
 export async function createServer() {
   const app = express();
-
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Automatically load all route files in server/routes/
   const routes = {
     './routes/api-integrations.ts': await import('./routes/api-integrations.js'),
     './routes/billing-analytics.ts': await import('./routes/billing-analytics.js'),
@@ -40,13 +38,13 @@ export async function createServer() {
     './routes/real-api.ts': await import('./routes/real-api.js'),
     './routes/sms-api.ts': await import('./routes/sms-api.js'),
     './routes/status-classification.ts': await import('./routes/status-classification.js'),
-        './routes/studio-flows.ts': await import('./routes/studio-flows.js'),
+    './routes/studio-flows.ts': await import('./routes/studio-flows.js'),
     './routes/sendgrid-api.ts': await import('./routes/sendgrid-api.js'),
     './routes/email-webhooks.ts': await import('./routes/email-webhooks.js'),
     './routes/segment-audience.ts': await import('./routes/segment-audience.js'),
     './routes/voice-bot.ts': await import('./routes/voice-bot.js'),
-     './routes/subscription-management.ts': await import('./routes/subscription-management.js'),
-     './routes/test-sendgrid.ts': await import('./routes/test-sendgrid.js'),
+    './routes/subscription-management.ts': await import('./routes/subscription-management.js'),
+    './routes/test-sendgrid.ts': await import('./routes/test-sendgrid.js'),
     './routes/test-sms.ts': await import('./routes/test-sms.js'),
     './routes/test-twilio.ts': await import('./routes/test-twilio.js'),
     './routes/test-xano.ts': await import('./routes/test-xano.js'),

@@ -44,27 +44,56 @@ export class TwilioClient {
   }
 
   private getAuthHeader(): string {
-    const credentials = `${this.config.accountSid}:${this.config.authToken}`;
-    return `Basic ${Buffer.from(credentials).toString("base64")}`;
+    if (!this.config.accountSid || !this.config.authToken) {
+      throw new Error('Twilio credentials not configured');
+    }
+    
+    console.log('🔍 DEBUG: Auth credentials format check:', {
+      accountSidFormat: this.config.accountSid?.substring(0, 10) + '...',
+      authTokenLength: this.config.authToken?.length,
+      authTokenPrefix: this.config.authToken?.substring(0, 4) + '...'
+    });
+    
+    const credentials = `${this.config.accountSid.trim()}:${this.config.authToken.trim()}`;
+    const encoded = Buffer.from(credentials).toString('base64');
+    
+    console.log('🔍 DEBUG: Base64 encoded length:', encoded.length);
+    
+    return `Basic ${encoded}`;
   }
 
-  private async makeRequest(
+  private  async makeRequest(
     endpoint: string,
     method: "GET" | "POST" = "GET",
     data?: Record<string, string>,
   ) {
     const url = `${this.baseUrl}${endpoint}`;
 
+    console.log('🔍 DEBUG: Making Twilio API request:', {
+      url,
+      method,
+      hasCredentials: !!(this.config.accountSid && this.config.authToken),
+      accountSidPrefix: this.config.accountSid?.substring(0, 10)
+    });
+
     const options: any = {
       method,
       headers: {
-        Authorization: this.getAuthHeader(),
+        'Authorization': this.getAuthHeader(),
+        'Accept': 'application/json',
       },
     };
+    
+    console.log('🔍 DEBUG: Request headers:', {
+      method,
+      hasAuthorization: !!options.headers.Authorization,
+      authHeaderPrefix: options.headers.Authorization.substring(0, 10) + '...',
+    });
 
     if (data && method === "POST") {
       options.headers["Content-Type"] = "application/x-www-form-urlencoded";
       options.body = new URLSearchParams(data);
+      console.log('🔍 DEBUG: POST data keys:', Object.keys(data));
     }
 
     try {
@@ -107,6 +136,11 @@ export class TwilioClient {
         throw error;
       }
 
+      console.log('✅ Twilio API request successful:', {
+        status: response.status,
+        hasResult: !!result
+      });
+
       return result;
     } catch (error) {
       console.error("Twilio API Request Failed:", {
@@ -120,6 +154,24 @@ export class TwilioClient {
 
   // Send SMS
   async sendSMS(message: SMSMessage): Promise<any> {
+    console.log(`📱 Sending SMS to ${message.to}: "${message.body}"`);
+    
+    if (!this.config.phoneNumber) {
+      throw new Error('Twilio phone number not configured');
+    }
+
+    if (!this.config.accountSid || !this.config.authToken) {
+      throw new Error('Twilio credentials not properly configured');
+    }
+
+    console.log('🔍 DEBUG: SMS credentials check:', {
+      hasAccountSid: !!this.config.accountSid,
+      hasAuthToken: !!this.config.authToken,
+      hasPhoneNumber: !!this.config.phoneNumber,
+      accountSidPrefix: this.config.accountSid?.substring(0, 10),
+      phoneNumber: this.config.phoneNumber
+    });
+
     // Test mode: simulate Twilio send without hitting API
     if (process.env.TWILIO_TEST_MODE === "true") {
       const fakeSid = `SMTEST_${Date.now()}`;
@@ -170,6 +222,12 @@ export class TwilioClient {
     try {
       const result = await this.makeRequest("/Messages.json", "POST", data);
 
+      console.log('✅ SMS sent successfully:', {
+        sid: result.sid,
+        status: result.status,
+        to: message.to
+      });
+
       // Log to Convex
       await this.logCommunicationToConvex({
         channel: "sms",
@@ -196,6 +254,8 @@ export class TwilioClient {
         dateCreated: result.date_created,
       };
     } catch (error) {
+      console.error('❌ SMS Error:', error);
+      
       // Enhanced error information
       const errorDetails = {
         message: error instanceof Error ? error.message : "Unknown error",
@@ -284,10 +344,65 @@ export class TwilioClient {
   // Test Connection
   async testConnection(): Promise<boolean> {
     try {
-      await this.getAccountInfo();
+      console.log("🔍 DEBUG: Testing Twilio connection with:", {
+        accountSid: this.config.accountSid?.substring(0, 10) + "...",
+        authTokenLength: this.config.authToken?.length,
+        phoneNumber: this.config.phoneNumber
+      });
+      
+      const credentials = `${this.config.accountSid.trim()}:${this.config.authToken.trim()}`;
+      const encoded = Buffer.from(credentials).toString('base64');
+      
+      const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${this.config.accountSid}.json`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Basic ${encoded}`,
+          'Accept': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`❌ Twilio API direct test failed: ${response.status}`, errorText);
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          if (errorData.code === 20003 || errorData.message === 'Authenticate') {
+            console.error('🔐 Authentication error detected in testConnection, throwing error...');
+            const authError = new Error(`Twilio authentication failed: ${errorData.message}`) as any;
+            authError.code = 20003;
+            authError.twilioError = errorData;
+            authError.needsCredentialRefresh = true;
+            throw authError;
+          }
+        } catch (parseError) {
+          if (response.status === 401) {
+            console.error('🔐 HTTP 401 detected, treating as authentication error...');
+            const authError = new Error('Twilio authentication failed - HTTP 401 Unauthorized') as any;
+            authError.code = 20003;
+            authError.needsCredentialRefresh = true;
+            throw authError;
+          }
+        }
+        
+        return false;
+      }
+      
+      const result = await response.json();
+      console.log("✅ Twilio connection test successful:", {
+        friendlyName: result.friendly_name,
+        status: result.status
+      });
+      
       return true;
     } catch (error) {
-      console.error("Twilio connection test failed:", error);
+      console.error("❌ Twilio connection test failed:", error);
+      
+      if ((error as any).code === 20003 || (error as any).needsCredentialRefresh || error.message?.includes('authentication')) {
+        console.error('🔐 Re-throwing authentication error from testConnection...');
+        throw error;
+      }
+      
       return false;
     }
   }

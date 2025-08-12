@@ -433,6 +433,14 @@ export class ConvexClient {
     return await this.client.query("campaigns.getCampaignStats", { client_id });
   }
 
+  async getLeadJourney(memberId: string) {
+    return await this.client.query("members.getLeadJourney", { memberId });
+  }
+
+  async updateLeadJourney(memberId: string, journeyData: any) {
+    return await this.client.mutation("members.updateLeadJourney", { memberId, journeyData });
+  }
+
   async queryRecords(table: string, params: any = {}) {
     switch (table) {
       case "users":

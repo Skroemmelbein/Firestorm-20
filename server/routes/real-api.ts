@@ -45,45 +45,81 @@ const getSafeTwilioClient = async () => {
     TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER ? "SET" : "NOT SET"
   });
   
+  // Check if Twilio credentials are set
+  if (
+    !process.env.TWILIO_ACCOUNT_SID ||
+    !process.env.TWILIO_AUTH_TOKEN ||
+    !process.env.TWILIO_PHONE_NUMBER
+  ) {
+    console.error("❌ Missing Twilio credentials in environment variables");
+    throw new Error(
+      "Twilio credentials not configured. Please set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, and TWILIO_PHONE_NUMBER in your .env file.",
+    );
+  }
+
+  console.log("🔍 DEBUG: Twilio credentials check:", {
+    accountSidFormat: process.env.TWILIO_ACCOUNT_SID?.substring(0, 10) + "...",
+    authTokenLength: process.env.TWILIO_AUTH_TOKEN?.length,
+    authTokenPrefix: process.env.TWILIO_AUTH_TOKEN?.substring(0, 4) + "...",
+    phoneNumber: process.env.TWILIO_PHONE_NUMBER
+  });
+  
   try {
     console.log("🔍 DEBUG: Importing twilio-client module...");
-    const { initializeTwilio, getTwilioClient } = await import("../../shared/twilio-client");
+    const { initializeTwilio } = await import("../../shared/twilio-client");
     console.log("🔍 DEBUG: Successfully imported twilio-client module");
     
+    console.log("🔍 DEBUG: Force re-initializing Twilio client with fresh credentials...");
+    const client = initializeTwilio({
+      accountSid: process.env.TWILIO_ACCOUNT_SID.trim(),
+      authToken: process.env.TWILIO_AUTH_TOKEN.trim(),
+      phoneNumber: process.env.TWILIO_PHONE_NUMBER.trim(),
+    });
+    
+    console.log("🔍 DEBUG: Twilio initialization completed, testing connection...");
+    
     try {
-      console.log("🔍 DEBUG: Attempting to get existing Twilio client...");
-      const client = getTwilioClient();
-      console.log("🔍 DEBUG: Successfully got existing Twilio client");
-      console.log("🔍 DEBUG: Client type:", typeof client);
-      console.log("🔍 DEBUG: Client constructor:", client.constructor.name);
-      console.log("🔍 DEBUG: Client prototype methods:", Object.getOwnPropertyNames(Object.getPrototypeOf(client)));
-      console.log("🔍 DEBUG: sendSMS method exists:", typeof client.sendSMS);
-      console.log("🔍 DEBUG: sendSMS method:", client.sendSMS);
-      return client;
-    } catch (initError) {
-      console.log("🔍 DEBUG: Failed to get existing client, error:", initError.message);
-      
-      if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
-        console.log("🔍 DEBUG: Environment variables present, initializing Twilio...");
-        const client = initializeTwilio({
-          accountSid: process.env.TWILIO_ACCOUNT_SID,
-          authToken: process.env.TWILIO_AUTH_TOKEN,
-          phoneNumber: process.env.TWILIO_PHONE_NUMBER,
-        });
-        console.log("🔍 DEBUG: Twilio initialization completed, got client:", typeof client);
-        console.log("🔍 DEBUG: New client constructor:", client.constructor.name);
-        console.log("🔍 DEBUG: New client prototype methods:", Object.getOwnPropertyNames(Object.getPrototypeOf(client)));
-        console.log("🔍 DEBUG: New client sendSMS method exists:", typeof client.sendSMS);
+      // Test connection to verify credentials work
+      const connectionTest = await client.testConnection();
+      if (connectionTest) {
+        console.log("✅ Twilio client initialized and connection verified");
         return client;
       } else {
-        console.log("🔍 DEBUG: Missing environment variables, cannot initialize");
-        throw initError;
+        console.error("❌ Twilio connection test failed but didn't throw an error");
+        throw new Error("Twilio connection test failed - credentials may be invalid or expired");
       }
+    } catch (testError) {
+      console.error("❌ Twilio connection test failed:", testError.message);
+      
+      // Check if this is an authentication error
+      if (testError.message.includes('20003') || testError.message.includes('Authenticate')) {
+        console.error("🔐 Authentication Error: Twilio credentials are invalid or expired");
+        const authError = new Error("Twilio authentication failed - credentials may be invalid or expired. Please refresh your Twilio Auth Token in the console.") as any;
+        authError.code = 20003;
+        authError.needsCredentialRefresh = true;
+        throw authError;
+      }
+      
+      throw new Error(`Twilio connection test failed: ${testError.message}`);
     }
   } catch (error) {
-    console.log("🔍 DEBUG: Fatal error in getSafeTwilioClient:", error.message);
+    console.error("❌ Failed to initialize Twilio client:", error);
+    
+    // Check if this is an authentication error and preserve the error details
+    if ((error as any).code === 20003 || (error as any).needsCredentialRefresh) {
+      throw error;
+    }
+    
+    // Preserve authentication errors for proper handling
+    if (error.message?.includes('20003') || error.message?.includes('Authenticate') || error.message?.includes('authentication')) {
+      const authError = new Error("Twilio authentication failed - credentials may be invalid or expired. Please refresh your Twilio Auth Token in the console.") as any;
+      authError.code = 20003;
+      authError.needsCredentialRefresh = true;
+      throw authError;
+    }
+    
     throw new Error(
-      "Twilio client not initialized. Please configure Twilio credentials first.",
+      "Failed to initialize Twilio client. Please check your credentials and try again.",
     );
   }
 };
@@ -426,13 +462,16 @@ router.post("/benefits/:id/use", async (req, res) => {
   }
 });
 
-// SMS API
+// SMS API with enhanced authentication error handling
 router.post("/sms/send", async (req, res) => {
   try {
-    const twilio = await getSafeTwilioClient();
+    console.log("📱 SMS send request received");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+    
     const { to, body, from, mediaUrl, campaignId } = req.body;
 
     if (!to || !body) {
+      console.log("❌ Missing required fields");
       return res.status(400).json({
         success: false,
         error: "Missing required fields: to, body",
@@ -459,6 +498,37 @@ router.post("/sms/send", async (req, res) => {
       });
     }
 
+    let twilio;
+    try {
+      console.log("🔐 Getting Twilio client...");
+      twilio = await getSafeTwilioClient();
+      console.log("✅ Twilio client obtained successfully");
+    } catch (clientError) {
+      console.error("❌ Failed to get Twilio client:", clientError.message);
+      
+      // Check if this is an authentication error
+      if ((clientError as any).code === 20003 || (clientError as any).needsCredentialRefresh) {
+        console.error("🔐 Authentication Error: Twilio credentials are invalid or expired");
+        return res.status(401).json({
+          success: false,
+          error: "Twilio authentication failed - credentials may be invalid or expired",
+          code: 20003,
+          needsCredentialRefresh: true,
+          httpStatus: 401,
+          timestamp: new Date().toISOString(),
+          instructions: "Please refresh your Twilio Auth Token in the Twilio Console: https://console.twilio.com → Account → API Keys & Tokens"
+        });
+      }
+      
+      return res.status(500).json({
+        success: false,
+        error: clientError.message,
+        httpStatus: 500,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    console.log("📤 Sending SMS via Twilio client...");
     const result = await twilio.sendSMS({
       to: formattedPhone,
       body,
@@ -483,6 +553,14 @@ router.post("/sms/send", async (req, res) => {
       error: error instanceof Error ? error.message : "Failed to send SMS",
       timestamp: new Date().toISOString(),
     };
+
+    if ((error as any).code === 20003 || error.message?.includes('20003') || error.message?.includes('Authenticate')) {
+      console.error("🔐 Authentication Error: Twilio credentials are invalid or expired");
+      errorResponse.code = 20003;
+      errorResponse.needsCredentialRefresh = true;
+      errorResponse.instructions = "Please refresh your Twilio Auth Token in the Twilio Console: https://console.twilio.com → Account → API Keys & Tokens";
+      return res.status(401).json(errorResponse);
+    }
 
     if ((error as any).details?.twilioError) {
       const twilioError = (error as any).details.twilioError;
