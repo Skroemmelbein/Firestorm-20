@@ -1,10 +1,10 @@
-# 🚀 Real Xano & Twilio Integration Setup
+# 🚀 Supabase + Twilio Integration Setup (Vercel)
 
-**NO MORE MOCKS** - This guide sets up real connections to your Xano database and Twilio account.
+This guide sets up real connections to your Supabase Postgres database and Twilio account, deployed on Vercel.
 
 ## 📋 Prerequisites
 
-1. **Xano Account**: Active workspace with database
+1. **Supabase Project**: Postgres + Service Role key
 2. **Twilio Account**: With phone number and credits
 3. **Environment Variables**: Real credentials (no test/mock data)
 
@@ -13,10 +13,12 @@
 Create `.env` file in project root:
 
 ```bash
-# Xano Database Configuration
-XANO_INSTANCE_URL=https://your-workspace-id.xano.io
-XANO_API_KEY=your_actual_api_key_here
-XANO_DATABASE_ID=your_database_id
+# Supabase (Server)
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# Optional: Supabase (Client/UI)
+SUPABASE_ANON_KEY=your_anon_key
 
 # Twilio Configuration
 TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -28,9 +30,9 @@ NODE_ENV=development
 PORT=8080
 ```
 
-## 🗃️ Step 2: Create Xano Tables
+## 🗃️ Step 2: Create Supabase Tables
 
-In your Xano workspace, create these tables with the exact fields:
+In your Supabase project (SQL Editor), create these tables with the exact fields:
 
 ### **members** table:
 
@@ -126,9 +128,9 @@ ai_intent (text, nullable)
 ai_confidence (decimal(3,2), nullable)
 ```
 
-## 🔌 Step 3: Xano API Endpoints
+## 🔌 Step 3: Server Endpoints (Express)
 
-Create these API endpoints in Xano:
+Expose these server endpoints (already in code under `server/routes`) and ensure they log to Supabase using the server-side Supabase client:
 
 ### **GET** `/members`
 
@@ -205,15 +207,11 @@ In your Twilio Console:
 2. **Check console for**:
 
    ```
-   ✅ Xano client initialized with real credentials
-   ✅ Twilio client initialized with real credentials
+   ✅ Supabase client initialized (server)
+   ✅ Twilio client initialized
    ```
 
-3. **Test Xano connection**:
-
-   ```bash
-   curl -X POST http://localhost:8080/api/real/test/xano
-   ```
+3. **Test Supabase connection**: insert a row via `/api/real/sms/send` then verify in `communications` table.
 
 4. **Test Twilio connection**:
 
@@ -285,7 +283,7 @@ Add some test data to your Xano tables:
 
 1. **Navigate to**: `http://localhost:8080/members`
 2. **You should see**:
-   - Real member count from Xano
+   - Real member count from Supabase
    - Active benefits from your database
    - Member directory with actual data
    - Benefits cards with your configured benefits
@@ -310,11 +308,17 @@ Add some test data to your Xano tables:
 - Update Twilio webhook URLs to ngrok URL
 - Check webhook logs in Twilio console
 
-## 🚀 Production Deployment
+## 🚀 Production Deployment (Vercel)
 
-1. **Set environment variables** in production
+1. **Set environment variables** in Vercel Project Settings (Environment Variables)
 2. **Update Twilio webhooks** to production URLs
 3. **Configure CORS** for your domain
 4. **Enable HTTPS** for webhook security
 
-**SUCCESS!** Your system now has real Xano database integration and Twilio SMS capabilities with no mocks.
+Deploy with:
+
+```bash
+npm run build && vercel --prod
+```
+
+**SUCCESS!** Your system now has Supabase + Twilio integrated and deploys on Vercel.
