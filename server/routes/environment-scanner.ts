@@ -28,7 +28,7 @@ export const scanEnvironmentCredentials: RequestHandler = async (req, res) => {
       { pattern: /.*TWILIO.*/i, type: "integration", service: "Twilio" },
       { pattern: /.*SENDGRID.*/i, type: "integration", service: "SendGrid" },
       { pattern: /.*OPENAI.*/i, type: "integration", service: "OpenAI" },
-      { pattern: /.*XANO.*/i, type: "integration", service: "Xano" },
+      { pattern: /.*SUPABASE.*/i, type: "integration", service: "Supabase" },
       { pattern: /.*STRIPE.*/i, type: "integration", service: "Stripe" },
       { pattern: /.*AWS.*/i, type: "integration", service: "AWS" },
       { pattern: /.*GOOGLE.*/i, type: "integration", service: "Google" },
@@ -67,7 +67,8 @@ export const scanEnvironmentCredentials: RequestHandler = async (req, res) => {
             detectedService = "SendGrid";
           else if (key.toLowerCase().includes("openai"))
             detectedService = "OpenAI";
-          else if (key.toLowerCase().includes("xano")) detectedService = "Xano";
+          else if (key.toLowerCase().includes("supabase"))
+            detectedService = "Supabase";
           else if (key.toLowerCase().includes("stripe"))
             detectedService = "Stripe";
           else if (key.toLowerCase().includes("aws")) detectedService = "AWS";
@@ -77,8 +78,7 @@ export const scanEnvironmentCredentials: RequestHandler = async (req, res) => {
             detectedService = "GitHub";
           else if (key.toLowerCase().includes("vercel"))
             detectedService = "Vercel";
-          else if (key.toLowerCase().includes("netlify"))
-            detectedService = "Netlify";
+          // Prefer Vercel; ignore Netlify
 
           // Determine environment based on key or value patterns
           let environment = "production";
