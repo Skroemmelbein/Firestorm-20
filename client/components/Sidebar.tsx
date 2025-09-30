@@ -41,7 +41,7 @@ const navigationItems: NavItem[] = [
     label: "Overview",
     path: "/",
     icon: Home,
-    color: "#ffffff",
+    color: "#dc2626",
     description: "Main dashboard",
   },
   {
@@ -49,63 +49,63 @@ const navigationItems: NavItem[] = [
     label: "Admin Center",
     path: "/admin",
     icon: Shield,
-    color: "#FFD700",
+    color: "#dc2626",
     description: "Upload CSV, manage data",
   },
   {
-    id: "firestorm",
-    label: "FIRESTORM",
+    id: "campaigns",
+    label: "Campaigns",
     path: "/marketing-automation",
     icon: Flame,
-    color: "#FF6A00",
-    description: "Marketing automation",
+    color: "#dc2626",
+    description: "Campaigns & automation",
   },
   {
-    id: "dream-portal",
-    label: "Dream Portal",
+    id: "members",
+    label: "Members",
     path: "/member-portal",
     icon: Brain,
-    color: "#8A2BE2",
+    color: "#dc2626",
     description: "Member management",
   },
   {
-    id: "velocify",
-    label: "Velocify Hub",
+    id: "clients",
+    label: "Clients",
     path: "/client-portal",
     icon: Rocket,
-    color: "#00BFFF",
+    color: "#dc2626",
     description: "Client operations",
   },
   {
-    id: "nexus",
-    label: "Nexus Sync",
+    id: "integrations",
+    label: "Integrations",
     path: "/integrations",
     icon: Network,
-    color: "#00CED1",
+    color: "#dc2626",
     description: "API integrations",
   },
   {
-    id: "payment-processing",
-    label: "Payment Processing",
+    id: "billing",
+    label: "Billing",
     path: "/billing",
     icon: CreditCard,
-    color: "#4F46E5",
-    description: "Complete payment & billing system",
+    color: "#dc2626",
+    description: "Payments & gateway",
   },
   {
     id: "test",
     label: "Test Module",
     path: "/test",
     icon: Target,
-    color: "#00E676",
+    color: "#dc2626",
     description: "System testing center",
   },
   {
     id: "campaign-scheduler",
     label: "Campaign Scheduler",
-    path: "/campaign-scheduler",
+    path: "/marketing-automation/scheduler",
     icon: Activity,
-    color: "#F59E0B",
+    color: "#dc2626",
     description: "Automated campaign execution",
   },
 ];
@@ -156,33 +156,21 @@ export default function Sidebar() {
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed left-0 top-0 h-full backdrop-blur-md border-r border-white/40 shadow-2xl z-50 transition-all duration-300 flex flex-col",
+          "fixed left-0 top-0 h-full bg-white border-r border-gray-200 shadow-lg z-50 transition-all duration-300 flex flex-col",
           isCollapsed ? "w-16" : "w-72",
         )}
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(196, 181, 253, 0.85) 0%, rgba(252, 165, 165, 0.75) 50%, rgba(167, 243, 208, 0.85) 100%)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.6)",
-        }}
       >
         {/* Header */}
-        <div
-          className="flex items-center justify-between p-4 border-b border-white/20"
-          style={{ backdropFilter: "blur(10px)" }}
-        >
+        <div className="flex items-center justify-between p-4 border-b border-gray-200">
           {!isCollapsed && (
             <div className="flex items-center gap-2">
-              <Command className="w-6 h-6 text-[#00BFFF]" />
-              <span className="text-gray-900 font-bold text-lg drop-shadow-lg">
-                ECELONX
-              </span>
+              <Command className="w-6 h-6 text-red-600" />
+              <span className="text-gray-900 font-bold text-lg">ECHELONX</span>
             </div>
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-lg hover:bg-white/30 text-gray-900 transition-colors backdrop-blur-sm border border-white/20"
+            className="p-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors border border-gray-200"
           >
             {isCollapsed ? (
               <Menu className="w-4 h-4" />
@@ -203,38 +191,26 @@ export default function Sidebar() {
                 key={item.id}
                 onClick={() => handleNavigation(item.path)}
                 className={cn(
-                  "w-full flex items-center gap-3 p-3 rounded-lg transition-all backdrop-blur-sm",
-                  "hover:bg-white/20 group",
-                  active && "bg-white/30 border border-white/30 shadow-lg",
+                  "w-full flex items-center gap-3 p-3 rounded-lg transition-all",
+                  "hover:bg-gray-50",
+                  active && "bg-gray-100 border border-gray-200 shadow-sm",
                 )}
               >
                 <Icon
                   className={cn(
                     "w-5 h-5 flex-shrink-0",
-                    active ? "text-gray-900" : "text-gray-700",
+                    active ? "text-red-600" : "text-gray-600",
                   )}
-                  style={{ color: active ? item.color : undefined }}
                 />
 
                 {!isCollapsed && (
                   <div className="flex-1 text-left">
-                    <div
-                      className={cn(
-                        "font-medium text-sm",
-                        active ? "text-gray-900 font-bold" : "text-gray-800",
-                      )}
-                    >
-                      {item.label}
-                    </div>
-                    <div className="text-xs text-gray-700">
-                      {item.description}
-                    </div>
+                    <div className={cn("font-medium text-sm", active ? "text-gray-900" : "text-gray-800")}>{item.label}</div>
+                    <div className="text-xs text-gray-600">{item.description}</div>
                   </div>
                 )}
 
-                {!isCollapsed && active && (
-                  <ChevronRight className="w-4 h-4 text-gray-800" />
-                )}
+                {!isCollapsed && active && <ChevronRight className="w-4 h-4 text-gray-600" />}
               </button>
             );
           })}
@@ -243,22 +219,14 @@ export default function Sidebar() {
         {/* Quick Actions */}
         {!isCollapsed && (
           <div className="p-4 mt-auto">
-            <div className="bg-white/40 border border-white/50 rounded-lg p-3 backdrop-blur-sm shadow-lg">
-              <div className="text-xs text-gray-900 uppercase font-semibold mb-2">
-                Quick Actions
-              </div>
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+              <div className="text-xs text-gray-700 uppercase font-semibold mb-2">Quick Actions</div>
               <div className="space-y-2">
-                <button
-                  onClick={() => navigate("/admin")}
-                  className="w-full flex items-center gap-2 p-2 rounded text-sm text-gray-800 hover:text-gray-900 hover:bg-white/30 transition-colors backdrop-blur-sm border border-transparent hover:border-white/30"
-                >
+                <button onClick={() => navigate("/admin")} className="w-full flex items-center gap-2 p-2 rounded text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 border border-transparent hover:border-gray-200">
                   <Upload className="w-4 h-4" />
                   Upload CSV
                 </button>
-                <button
-                  onClick={() => navigate("/integrations")}
-                  className="w-full flex items-center gap-2 p-2 rounded text-sm text-gray-800 hover:text-gray-900 hover:bg-white/30 transition-colors backdrop-blur-sm border border-transparent hover:border-white/30"
-                >
+                <button onClick={() => navigate("/integrations")} className="w-full flex items-center gap-2 p-2 rounded text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 border border-transparent hover:border-gray-200">
                   <Settings className="w-4 h-4" />
                   Settings
                 </button>
@@ -269,12 +237,7 @@ export default function Sidebar() {
       </div>
 
       {/* Main content spacer */}
-      <div
-        className={cn(
-          "transition-all duration-300",
-          isCollapsed ? "ml-16" : "ml-72",
-        )}
-      />
+      <div className={cn("transition-all duration-300", isCollapsed ? "ml-16" : "ml-72")} />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,7 +8,6 @@ import { Lock, Command } from "lucide-react";
 import Index from "./pages/Index";
 import SiriAssistant from "./components/SiriAssistant";
 import Sidebar from "./components/Sidebar";
-import AdminDashboard from "./pages/AdminDashboard";
 import ClientBillingKit from "./pages/ClientBillingKit";
 import BusinessOverview from "./pages/BusinessOverview";
 import BillingLogic from "./pages/BillingLogic";
@@ -20,16 +19,21 @@ import MemberPortal from "./pages/MemberPortal";
 import Fulfillment from "./pages/Fulfillment";
 import IntelligentAI from "./pages/IntelligentAI";
 import ChargebackTracker from "./pages/ChargebackTracker";
-import DevOpsCenter from "./pages/DevOpsCenter";
 import ClientPortal from "./pages/ClientPortal";
 import LeadJourney from "./pages/LeadJourney";
 import Overview from "./pages/Overview";
-import TestModule from "./pages/TestModule";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import CampaignScheduler from "./pages/CampaignScheduler";
+import BillingLayout from "./components/BillingLayout";
+import MarketingLayout from "./components/MarketingLayout";
+import CommandPalette from "./components/CommandPalette";
 
 const queryClient = new QueryClient();
+
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const DevOpsCenter = lazy(() => import("./pages/DevOpsCenter"));
+const TestModule = lazy(() => import("./pages/TestModule"));
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -115,51 +119,52 @@ export default function App() {
         <AuthGate>
           <SiriAssistant />
           <BrowserRouter>
-            <div className="flex min-h-screen bg-gradient-to-br from-white to-red-50">
+            <div className="flex min-h-screen bg-gradient-to-br from-white to-blue-50">
               <Sidebar />
               <main className="flex-1 overflow-auto">
-                <Routes>
-                  <Route path="/" element={<Overview />} />
-                  <Route path="/admin" element={<AdminDashboard />} />
-                  <Route path="/merchant" element={<BillingLogic />} />
-                  <Route path="/billing-kit" element={<ClientBillingKit />} />
-                  <Route
-                    path="/business-overview"
-                    element={<BusinessOverview />}
-                  />
-                  <Route path="/billing" element={<BillingLogic />} />
-                  <Route path="/comm-center" element={<CommCenter />} />
-                  <Route
-                    path="/marketing-automation"
-                    element={<MarketingAutomation />}
-                  />
-                  <Route path="/members" element={<MemberPortal />} />
-                  <Route path="/member-portal" element={<MemberPortal />} />
-                  <Route path="/client-portal" element={<ClientPortal />} />
-                  <Route path="/lead-journey" element={<LeadJourney />} />
-                  <Route path="/fulfillment" element={<Fulfillment />} />
-                  <Route path="/ai" element={<IntelligentAI />} />
-                  <Route
-                    path="/chargeback-tracker"
-                    element={<ChargebackTracker />}
-                  />
-                  <Route path="/devops" element={<DevOpsCenter />} />
-                  <Route path="/integrations" element={<Integrations />} />
-                  <Route path="/twilio-vault" element={<TwilioVault />} />
-                  <Route path="/test" element={<TestModule />} />
-                  <Route path="/campaign-scheduler" element={<CampaignScheduler />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/settings/nmi" element={<BillingLogic />} />
-                  <Route path="/billing/gateway" element={<BillingLogic />} />
-                  <Route path="/billing/logs" element={<BillingLogic />} />
-                  <Route path="/admin/sync-status" element={<AdminDashboard />} />
-                  <Route path="/admin/sync" element={<AdminDashboard />} />
-                  <Route path="/admin/tables" element={<AdminDashboard />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                <Suspense fallback={<div className="p-4 text-sm text-gray-600">Loading…</div>}>
+                  <Routes>
+                    <Route path="/" element={<Overview />} />
+                    <Route path="/admin" element={<AdminDashboard />} />
+                    <Route path="/merchant" element={<BillingLogic />} />
+                    <Route path="/billing-kit" element={<ClientBillingKit />} />
+                    <Route path="/business-overview" element={<BusinessOverview />} />
+
+                    <Route path="/billing" element={<BillingLayout />}>
+                      <Route index element={<BillingLogic />} />
+                      <Route path="gateway" element={<BillingLogic />} />
+                      <Route path="logs" element={<BillingLogic />} />
+                      <Route path="chargebacks" element={<ChargebackTracker />} />
+                    </Route>
+
+                    <Route path="/comm-center" element={<CommCenter />} />
+
+                    <Route path="/marketing-automation" element={<MarketingLayout />}>
+                      <Route index element={<MarketingAutomation />} />
+                      <Route path="scheduler" element={<CampaignScheduler />} />
+                    </Route>
+
+                    <Route path="/members" element={<MemberPortal />} />
+                    <Route path="/member-portal" element={<MemberPortal />} />
+                    <Route path="/client-portal" element={<ClientPortal />} />
+                    <Route path="/lead-journey" element={<LeadJourney />} />
+                    <Route path="/fulfillment" element={<Fulfillment />} />
+                    <Route path="/ai" element={<IntelligentAI />} />
+                    <Route path="/chargeback-tracker" element={<ChargebackTracker />} />
+                    <Route path="/devops" element={<DevOpsCenter />} />
+                    <Route path="/integrations" element={<Integrations />} />
+                    <Route path="/twilio-vault" element={<TwilioVault />} />
+                    <Route path="/test" element={<TestModule />} />
+                    <Route path="/campaign-scheduler" element={<CampaignScheduler />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/settings/nmi" element={<BillingLogic />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
               </main>
             </div>
+            <CommandPalette />
           </BrowserRouter>
         </AuthGate>
       </TooltipProvider>

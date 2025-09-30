@@ -398,4 +398,464 @@ export default defineSchema({
     created_at: v.number(),
     updated_at: v.number(),
   }).index("by_campaign", ["campaign_id"]).index("by_status", ["status"]),
+
+  // Security / RBAC
+  roles: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_name", ["name"]),
+
+  permissions: defineTable({
+    key: v.string(),
+    description: v.optional(v.string()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_key", ["key"]),
+
+  role_assignments: defineTable({
+    user_id: v.id("users"),
+    role_id: v.id("roles"),
+    scope_type: v.optional(v.string()), // e.g., "client"
+    scope_id: v.optional(v.string()),
+    created_at: v.number(),
+  }).index("by_user", ["user_id"]).index("by_role", ["role_id"]),
+
+  api_keys: defineTable({
+    client_id: v.optional(v.id("clients")),
+    user_id: v.optional(v.id("users")),
+    name: v.string(),
+    key_hash: v.string(),
+    scopes: v.optional(v.array(v.string())),
+    last_used_at: v.optional(v.number()),
+    expires_at: v.optional(v.number()),
+    created_at: v.number(),
+    revoked_at: v.optional(v.number()),
+  }).index("by_client", ["client_id"]).index("by_user", ["user_id"]).index("by_name", ["name"]),
+
+  oauth_connections: defineTable({
+    user_id: v.id("users"),
+    provider: v.string(),
+    provider_user_id: v.string(),
+    access_token_preview: v.optional(v.string()),
+    refresh_token_preview: v.optional(v.string()),
+    expires_at: v.optional(v.number()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_user", ["user_id"]).index("by_provider", ["provider", "provider_user_id"]),
+
+  audit_logs: defineTable({
+    actor_user_id: v.optional(v.id("users")),
+    actor_client_id: v.optional(v.id("clients")),
+    action: v.string(),
+    entity_type: v.string(),
+    entity_id: v.string(),
+    changes: v.optional(v.any()),
+    request_id: v.optional(v.string()),
+    ip: v.optional(v.string()),
+    user_agent: v.optional(v.string()),
+    metadata: v.optional(v.any()),
+    created_at: v.number(),
+  }).index("by_entity", ["entity_type", "entity_id"]).index("by_actor", ["actor_user_id"]).index("by_action", ["action"]).index("by_created_at", ["created_at"]),
+
+  idempotency_keys: defineTable({
+    request_key: v.string(),
+    status: v.union(v.literal("processing"), v.literal("succeeded"), v.literal("failed")),
+    response: v.optional(v.any()),
+    error: v.optional(v.string()),
+    expires_at: v.number(),
+    created_at: v.number(),
+  }).index("by_request_key", ["request_key"]).index("by_expires_at", ["expires_at"]),
+
+  // Compliance / Governance
+  consent_records: defineTable({
+    member_id: v.optional(v.id("members")),
+    user_id: v.optional(v.id("users")),
+    client_id: v.optional(v.id("clients")),
+    channel: v.optional(v.union(v.literal("sms"), v.literal("email"), v.literal("voice"), v.literal("push"))),
+    purpose: v.string(),
+    scope: v.optional(v.string()),
+    status: v.union(v.literal("granted"), v.literal("revoked"), v.literal("pending")),
+    version: v.optional(v.string()),
+    evidence: v.optional(v.any()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_member", ["member_id"]).index("by_client", ["client_id"]).index("by_purpose", ["purpose"]).index("by_status", ["status"]),
+
+  data_access_logs: defineTable({
+    actor_user_id: v.optional(v.id("users")),
+    entity_type: v.string(),
+    entity_id: v.string(),
+    reason: v.optional(v.string()),
+    created_at: v.number(),
+  }).index("by_entity", ["entity_type", "entity_id"]).index("by_actor", ["actor_user_id"]).index("by_created_at", ["created_at"]),
+
+  data_retention_policies: defineTable({
+    table: v.string(),
+    field: v.optional(v.string()),
+    policy: v.string(), // e.g., "delete-after"
+    ttl_days: v.optional(v.number()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_table", ["table"]),
+
+  erasure_requests: defineTable({
+    subject_type: v.union(v.literal("member"), v.literal("user")),
+    subject_id: v.string(),
+    scope: v.optional(v.any()),
+    status: v.union(v.literal("requested"), v.literal("in_progress"), v.literal("completed"), v.literal("rejected")),
+    requested_at: v.number(),
+    completed_at: v.optional(v.number()),
+    notes: v.optional(v.string()),
+  }).index("by_subject", ["subject_type", "subject_id"]).index("by_status", ["status"]),
+
+  // Billing / Finance
+  invoices: defineTable({
+    client_id: v.optional(v.id("clients")),
+    member_id: v.optional(v.id("members")),
+    subscription_id: v.optional(v.id("subscriptions")),
+    invoice_number: v.string(),
+    currency: v.string(),
+    subtotal: v.number(),
+    tax_total: v.optional(v.number()),
+    total: v.number(),
+    balance_due: v.number(),
+    status: v.union(v.literal("draft"), v.literal("open"), v.literal("paid"), v.literal("void"), v.literal("uncollectible")),
+    due_at: v.optional(v.number()),
+    issued_at: v.optional(v.number()),
+    paid_at: v.optional(v.number()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_client", ["client_id"]).index("by_subscription", ["subscription_id"]).index("by_invoice_number", ["invoice_number"]).index("by_status", ["status"]),
+
+  invoice_lines: defineTable({
+    invoice_id: v.id("invoices"),
+    description: v.optional(v.string()),
+    quantity: v.number(),
+    unit_price: v.number(),
+    amount: v.number(),
+    subscription_id: v.optional(v.id("subscriptions")),
+    proration: v.optional(v.boolean()),
+    created_at: v.number(),
+  }).index("by_invoice", ["invoice_id"]),
+
+  refunds: defineTable({
+    transaction_id: v.optional(v.id("transactions")),
+    invoice_id: v.optional(v.id("invoices")),
+    amount: v.number(),
+    reason: v.optional(v.string()),
+    status: v.union(v.literal("pending"), v.literal("succeeded"), v.literal("failed")),
+    created_at: v.number(),
+    processed_at: v.optional(v.number()),
+  }).index("by_transaction", ["transaction_id"]).index("by_invoice", ["invoice_id"]).index("by_status", ["status"]),
+
+  disputes: defineTable({
+    transaction_id: v.optional(v.id("transactions")),
+    amount: v.number(),
+    currency: v.string(),
+    reason: v.optional(v.string()),
+    status: v.union(v.literal("needs_response"), v.literal("under_review"), v.literal("won"), v.literal("lost")),
+    evidence: v.optional(v.any()),
+    created_at: v.number(),
+    resolved_at: v.optional(v.number()),
+  }).index("by_transaction", ["transaction_id"]).index("by_status", ["status"]),
+
+  ledger_entries: defineTable({
+    client_id: v.optional(v.id("clients")),
+    account: v.string(), // e.g., AR, Revenue, Tax
+    debit: v.optional(v.number()),
+    credit: v.optional(v.number()),
+    currency: v.string(),
+    description: v.optional(v.string()),
+    reference_type: v.optional(v.string()),
+    reference_id: v.optional(v.string()),
+    created_at: v.number(),
+  }).index("by_client", ["client_id"]).index("by_account", ["account"]).index("by_reference", ["reference_type", "reference_id"]),
+
+  pricing_plans: defineTable({
+    name: v.string(),
+    currency: v.string(),
+    interval: v.union(v.literal("monthly"), v.literal("yearly"), v.literal("one-time")),
+    unit_amount: v.number(),
+    features: v.optional(v.any()),
+    metadata: v.optional(v.any()),
+    active: v.boolean(),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_name", ["name"]).index("by_active", ["active"]),
+
+  usage_records: defineTable({
+    client_id: v.optional(v.id("clients")),
+    member_id: v.optional(v.id("members")),
+    subscription_id: v.optional(v.id("subscriptions")),
+    metric: v.string(),
+    quantity: v.number(),
+    recorded_at: v.number(),
+    metadata: v.optional(v.any()),
+  }).index("by_subscription", ["subscription_id"]).index("by_metric", ["metric"]).index("by_recorded_at", ["recorded_at"]),
+
+  credits: defineTable({
+    client_id: v.optional(v.id("clients")),
+    member_id: v.optional(v.id("members")),
+    amount: v.number(),
+    currency: v.string(),
+    reason: v.optional(v.string()),
+    expires_at: v.optional(v.number()),
+    created_at: v.number(),
+  }).index("by_client", ["client_id"]).index("by_member", ["member_id"]).index("by_expires_at", ["expires_at"]),
+
+  promotions: defineTable({
+    code: v.string(),
+    description: v.optional(v.string()),
+    percentage_off: v.optional(v.number()),
+    amount_off: v.optional(v.number()),
+    currency: v.optional(v.string()),
+    max_redemptions: v.optional(v.number()),
+    times_redeemed: v.optional(v.number()),
+    starts_at: v.optional(v.number()),
+    ends_at: v.optional(v.number()),
+    active: v.boolean(),
+    created_at: v.number(),
+  }).index("by_code", ["code"]).index("by_active", ["active"]).index("by_ends_at", ["ends_at"]),
+
+  payouts: defineTable({
+    client_id: v.optional(v.id("clients")),
+    amount: v.number(),
+    currency: v.string(),
+    status: v.union(v.literal("pending"), v.literal("paid"), v.literal("failed")),
+    scheduled_at: v.optional(v.number()),
+    paid_at: v.optional(v.number()),
+    created_at: v.number(),
+  }).index("by_client", ["client_id"]).index("by_status", ["status"]),
+
+  balances: defineTable({
+    client_id: v.id("clients"),
+    current: v.number(),
+    pending: v.optional(v.number()),
+    currency: v.string(),
+    updated_at: v.number(),
+  }).index("by_client", ["client_id"]),
+
+  payment_methods: defineTable({
+    owner_type: v.union(v.literal("member"), v.literal("client")),
+    owner_id: v.string(),
+    provider: v.optional(v.string()),
+    last4: v.optional(v.string()),
+    brand: v.optional(v.string()),
+    exp_month: v.optional(v.number()),
+    exp_year: v.optional(v.number()),
+    token_ref: v.optional(v.string()),
+    default: v.optional(v.boolean()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_owner", ["owner_type", "owner_id"]).index("by_default", ["default"]),
+
+  billing_profiles: defineTable({
+    client_id: v.optional(v.id("clients")),
+    member_id: v.optional(v.id("members")),
+    address: v.optional(v.any()),
+    tax_id: v.optional(v.string()),
+    email: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_client", ["client_id"]).index("by_member", ["member_id"]),
+
+  // Marketing / Automation
+  message_templates: defineTable({
+    name: v.string(),
+    channel: v.union(v.literal("sms"), v.literal("email"), v.literal("voice"), v.literal("push")),
+    version: v.string(),
+    subject: v.optional(v.string()),
+    content: v.string(),
+    variables: v.optional(v.array(v.string())),
+    metadata: v.optional(v.any()),
+    created_by: v.optional(v.id("users")),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_name", ["name"]).index("by_channel", ["channel"]).index("by_version", ["version"]),
+
+  audiences: defineTable({
+    name: v.string(),
+    definition: v.any(), // rule definition
+    description: v.optional(v.string()),
+    client_id: v.optional(v.id("clients")),
+    created_by: v.optional(v.id("users")),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_client", ["client_id"]).index("by_name", ["name"]),
+
+  audience_memberships: defineTable({
+    audience_id: v.id("audiences"),
+    member_id: v.id("members"),
+    added_at: v.number(),
+    expires_at: v.optional(v.number()),
+    metadata: v.optional(v.any()),
+  }).index("by_audience", ["audience_id"]).index("by_member", ["member_id"]).index("by_expires_at", ["expires_at"]),
+
+  journey_definitions: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    definition: v.any(),
+    status: v.union(v.literal("draft"), v.literal("active"), v.literal("archived")),
+    client_id: v.optional(v.id("clients")),
+    created_by: v.optional(v.id("users")),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_client", ["client_id"]).index("by_status", ["status"]).index("by_name", ["name"]),
+
+  journey_runs: defineTable({
+    journey_id: v.id("journey_definitions"),
+    member_id: v.id("members"),
+    state: v.string(),
+    last_step: v.optional(v.string()),
+    last_transition_at: v.optional(v.number()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_journey", ["journey_id"]).index("by_member", ["member_id"]).index("by_updated_at", ["updated_at"]),
+
+  experiments: defineTable({
+    name: v.string(),
+    hypothesis: v.optional(v.string()),
+    variants: v.array(v.string()),
+    status: v.union(v.literal("draft"), v.literal("running"), v.literal("completed")),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_status", ["status"]).index("by_name", ["name"]),
+
+  attribution_events: defineTable({
+    member_id: v.optional(v.id("members")),
+    campaign_id: v.optional(v.id("campaigns")),
+    source: v.string(),
+    medium: v.optional(v.string()),
+    channel: v.optional(v.string()),
+    event: v.string(),
+    value: v.optional(v.number()),
+    occurred_at: v.number(),
+    metadata: v.optional(v.any()),
+  }).index("by_member", ["member_id"]).index("by_campaign", ["campaign_id"]).index("by_source", ["source"]).index("by_occurred_at", ["occurred_at"]),
+
+  event_stream: defineTable({
+    type: v.string(),
+    data: v.any(),
+    member_id: v.optional(v.id("members")),
+    user_id: v.optional(v.id("users")),
+    client_id: v.optional(v.id("clients")),
+    request_id: v.optional(v.string()),
+    recorded_at: v.number(),
+  }).index("by_type", ["type"]).index("by_member", ["member_id"]).index("by_recorded_at", ["recorded_at"]),
+
+  // Ops / Observability
+  job_runs: defineTable({
+    job_name: v.string(),
+    job_id: v.optional(v.string()),
+    status: v.union(v.literal("queued"), v.literal("running"), v.literal("succeeded"), v.literal("failed"), v.literal("cancelled")),
+    started_at: v.optional(v.number()),
+    finished_at: v.optional(v.number()),
+    duration_ms: v.optional(v.number()),
+    result: v.optional(v.any()),
+    error_message: v.optional(v.string()),
+    attempt: v.optional(v.number()),
+    created_at: v.number(),
+  }).index("by_status", ["status"]).index("by_job_name", ["job_name"]).index("by_started_at", ["started_at"]),
+
+  dead_letters: defineTable({
+    queue: v.string(),
+    payload: v.any(),
+    error_message: v.optional(v.string()),
+    failed_at: v.number(),
+    retry_after: v.optional(v.number()),
+  }).index("by_queue", ["queue"]).index("by_failed_at", ["failed_at"]),
+
+  rate_limits: defineTable({
+    subject_type: v.string(), // user, client, api_key
+    subject_id: v.string(),
+    key: v.string(),
+    limit: v.number(),
+    window_seconds: v.number(),
+    used: v.number(),
+    reset_at: v.number(),
+  }).index("by_subject", ["subject_type", "subject_id"]).index("by_key", ["key"]).index("by_reset_at", ["reset_at"]),
+
+  alerts: defineTable({
+    name: v.string(),
+    severity: v.union(v.literal("info"), v.literal("warning"), v.literal("critical")),
+    rule: v.any(),
+    status: v.union(v.literal("open"), v.literal("acknowledged"), v.literal("resolved")),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_status", ["status"]).index("by_severity", ["severity"]),
+
+  // Tenant / Features
+  tenant_settings: defineTable({
+    client_id: v.id("clients"),
+    key: v.string(),
+    value: v.any(),
+    updated_at: v.number(),
+    created_at: v.number(),
+  }).index("by_client", ["client_id"]).index("by_key", ["key"]),
+
+  feature_flags: defineTable({
+    key: v.string(),
+    description: v.optional(v.string()),
+    enabled: v.boolean(),
+    rules: v.optional(v.any()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_key", ["key"]).index("by_enabled", ["enabled"]),
+
+  // AI Voice Calls & Member Interactions
+  ai_voice_calls: defineTable({
+    call_id: v.string(), // provider call SID/ID
+    member_id: v.optional(v.id("members")),
+    client_id: v.optional(v.id("clients")),
+    user_id: v.optional(v.id("users")), // internal agent if any
+    direction: v.union(v.literal("inbound"), v.literal("outbound")),
+    status: v.union(
+      v.literal("queued"),
+      v.literal("ringing"),
+      v.literal("in_progress"),
+      v.literal("completed"),
+      v.literal("failed"),
+      v.literal("busy"),
+      v.literal("no_answer")
+    ),
+    started_at: v.optional(v.number()),
+    ended_at: v.optional(v.number()),
+    duration_ms: v.optional(v.number()),
+    language: v.optional(v.string()),
+    sentiment: v.optional(v.string()),
+    intents: v.optional(v.array(v.string())),
+    entities: v.optional(v.any()),
+    transcript: v.optional(v.string()),
+    transcript_status: v.optional(v.union(v.literal("pending"), v.literal("completed"), v.literal("failed"))),
+    recording_url: v.optional(v.string()),
+    audio_url: v.optional(v.string()),
+    segments: v.optional(v.array(v.any())), // [{speaker, start, end, text}]
+    metadata: v.optional(v.any()),
+    provider: v.optional(v.string()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_call_id", ["call_id"]).index("by_member", ["member_id"]).index("by_client", ["client_id"]).index("by_status", ["status"]).index("by_started_at", ["started_at"]),
+
+  member_interactions: defineTable({
+    member_id: v.id("members"),
+    client_id: v.optional(v.id("clients")),
+    user_id: v.optional(v.id("users")),
+    channel: v.union(v.literal("sms"), v.literal("mms"), v.literal("email"), v.literal("voice"), v.literal("chat")),
+    direction: v.union(v.literal("inbound"), v.literal("outbound")),
+    content: v.optional(v.string()),
+    content_summary: v.optional(v.string()),
+    related_communication_id: v.optional(v.id("communications")),
+    related_call_id: v.optional(v.id("ai_voice_calls")),
+    status: v.optional(v.union(v.literal("received"), v.literal("sent"), v.literal("handled"), v.literal("escalated"))),
+    intent: v.optional(v.string()),
+    sentiment: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    metadata: v.optional(v.any()),
+    occurred_at: v.number(),
+    created_at: v.number(),
+    updated_at: v.number(),
+  }).index("by_member", ["member_id"]).index("by_channel", ["channel"]).index("by_direction", ["direction"]).index("by_occurred_at", ["occurred_at"]).index("by_related_comm", ["related_communication_id"]).index("by_related_call", ["related_call_id"]),
 });
