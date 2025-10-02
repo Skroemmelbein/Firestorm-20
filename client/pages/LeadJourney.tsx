@@ -54,6 +54,7 @@ import {
   Upload,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useInterval } from "@/hooks/useInterval";
 
 interface Lead {
   id: string;
@@ -110,6 +111,12 @@ interface AIScoring {
 }
 
 export default function LeadJourney() {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [jobId, setJobId] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState<{ processed: number; success: number; failed: number; status: string; completion?: number } | null>(null);
+  const [audienceKey, setAudienceKey] = useState<string>("");
+  const [dedupe, setDedupe] = useState<"merge" | "skip" | "create">("merge");
   const [leads, setLeads] = useState<Lead[]>([
     {
       id: "1",
@@ -370,6 +377,83 @@ export default function LeadJourney() {
       </div>
 
       <div className="container mx-auto px-4 py-6">
+        {/* CSV Upload to Firestorm / Twilio Contacts via Segment */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Upload className="w-5 h-5" /> Bulk Lead Upload (CSV → Firestorm + Twilio Contacts)
+            </CardTitle>
+            <CardDescription>Upload up to 1M leads. We stream, dedupe, upsert to Convex, and Identify to Segment (Contacts). Optionally tag an audience.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <div className="space-y-2">
+                <Label htmlFor="csv">CSV File</Label>
+                <Input id="csv" type="file" accept=".csv" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="aud">Segment Audience Key (optional)</Label>
+                <Input id="aud" placeholder="e.g. SEG-PETS-ACTIVE" value={audienceKey} onChange={(e) => setAudienceKey(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label>Dedupe Strategy</Label>
+                <Select value={dedupe} onValueChange={(v) => setDedupe(v as any)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="merge" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="merge">Merge</SelectItem>
+                    <SelectItem value="skip">Skip Duplicates</SelectItem>
+                    <SelectItem value="create">Always Create</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button disabled={!selectedFile || uploading} onClick={async () => {
+                if (!selectedFile) return;
+                setUploading(true);
+                const newJobId = `leads_${Date.now()}`;
+                setJobId(newJobId);
+                try {
+                  const form = new FormData();
+                  form.append("file", selectedFile);
+                  const qs = new URLSearchParams({ jobId: newJobId, audienceKey: audienceKey || "", dedupe });
+                  const resp = await fetch(`/api/real/leads/import/upload?${qs.toString()}`, { method: "POST", body: form });
+                  if (!resp.ok) {
+                    const text = await resp.text();
+                    throw new Error(`Upload failed: ${text}`);
+                  }
+                } catch (e: any) {
+                  console.error(e);
+                } finally {
+                  setUploading(false);
+                }
+              }}>
+                {uploading ? "Uploading…" : "Start Upload"}
+              </Button>
+              {jobId && (
+                <Button variant="secondary" onClick={async () => {
+                  const resp = await fetch(`/api/real/leads/import/progress/${jobId}`);
+                  const data = await resp.json();
+                  setProgress({ processed: data.job.processed, success: data.job.success, failed: data.job.failed, status: data.job.status, completion: data.job.completion });
+                }}>
+                  Refresh Progress
+                </Button>
+              )}
+            </div>
+
+            {jobId && (
+              <div className="space-y-2">
+                <div className="text-sm text-muted-foreground">Job: {jobId} {progress?.status && `• ${progress.status}`}</div>
+                <Progress value={progress?.completion || 0} />
+                <div className="text-xs text-muted-foreground">Processed: {progress?.processed || 0} • Success: {progress?.success || 0} • Failed: {progress?.failed || 0}</div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      
         {/* AI Performance Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 border-green-200 dark:border-green-700">

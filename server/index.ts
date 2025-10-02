@@ -10,6 +10,7 @@ export async function createServer() {
   app.use(express.urlencoded({ extended: true }));
 
   const routes = {
+    './routes/leads-import.ts': await import('./routes/leads-import.js'),
     './routes/api-integrations.ts': await import('./routes/api-integrations.js'),
     './routes/billing-analytics.ts': await import('./routes/billing-analytics.js'),
     './routes/billing-payments.ts': await import('./routes/billing-payments.js'),
