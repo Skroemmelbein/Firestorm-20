@@ -48,48 +48,40 @@ Auth Token: [Stored in environment]
 
 ---
 
-## 🗃️ **2. XANO COMMUNICATIONS TABLE**
+## 🗃️ **2. SUPABASE COMMUNICATIONS TABLE**
 
 ### **Table Name:** `communications`
 
 ### **Required Fields:**
 
 ```sql
-CREATE TABLE communications (
-  id                INTEGER PRIMARY KEY AUTO_INCREMENT,
-  member_id         INTEGER NULL,                    -- FK to members table
-  channel           ENUM('sms','email','voice','push'),
-  direction         ENUM('inbound','outbound'),
-  from_number       TEXT NULL,
-  to_number         TEXT NULL,
-  subject           TEXT NULL,                       -- For emails
-  content           TEXT NOT NULL,
-  status            ENUM('queued','sent','delivered','failed','bounced'),
-  provider          ENUM('twilio','sendgrid','other'),
-  provider_id       TEXT NULL,                       -- Twilio SID
-  provider_status   TEXT NULL,
-  error_message     TEXT NULL,
-  cost              DECIMAL(6,4) NULL,
-  sent_at           TIMESTAMP NULL,
-  delivered_at      TIMESTAMP NULL,
-  read_at           TIMESTAMP NULL,
-  replied_at        TIMESTAMP NULL,
-  created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-  -- AI Features
-  ai_generated      BOOLEAN DEFAULT FALSE,
-  ai_sentiment      ENUM('positive','neutral','negative') NULL,
-  ai_intent         TEXT NULL,                       -- support, sales, complaint
-  ai_confidence     DECIMAL(3,2) NULL,              -- 0.00-1.00
-
-  -- Indexes
-  INDEX idx_member_id (member_id),
-  INDEX idx_channel (channel),
-  INDEX idx_direction (direction),
-  INDEX idx_status (status),
-  INDEX idx_created_at (created_at),
-  INDEX idx_provider_id (provider_id)
+create table if not exists communications (
+  id bigint generated always as identity primary key,
+  member_id bigint,
+  channel text check (channel in ('sms','email','voice','push')),
+  direction text check (direction in ('inbound','outbound')),
+  from_number text,
+  to_number text,
+  subject text,
+  content text not null,
+  status text check (status in ('queued','sent','delivered','failed','bounced')),
+  provider text,
+  provider_id text,
+  provider_status text,
+  error_message text,
+  cost numeric(10,4),
+  sent_at timestamptz,
+  delivered_at timestamptz,
+  read_at timestamptz,
+  replied_at timestamptz,
+  created_at timestamptz default now(),
+  ai_generated boolean default false,
+  ai_sentiment text check (ai_sentiment in ('positive','neutral','negative')),
+  ai_intent text,
+  ai_confidence numeric(3,2)
 );
+create index if not exists idx_comm_provider_id on communications(provider_id);
+create index if not exists idx_comm_member_id on communications(member_id);
 ```
 
 ### **Sample Data:**
@@ -113,13 +105,11 @@ CREATE TABLE communications (
 }
 ```
 
-### **Create in Xano:**
+### **Create in Supabase:**
 
-1. **Login** to your Xano workspace
-2. **Go to Database** section
-3. **Add Table** → Name it `communications`
-4. **Add each field** with the exact types above
-5. **Set up indexes** for performance
+1. **Open** Supabase → SQL Editor
+2. **Run** the SQL above to create the table and indexes
+3. (Optional) Add RLS policies; server uses Service Role key
 
 ---
 
@@ -200,7 +190,7 @@ Phone receives message
     ↓ Status webhook
 Backend logs status
     ↓ Updates communications table
-Xano Database
+Supabase (Postgres)
 ```
 
 ### **Receiving SMS:**
@@ -212,7 +202,7 @@ POST /webhooks/twilio/incoming
     ↓ AI Customer Service
 Analyzes sentiment + intent
     ↓ Logs to communications table
-Xano Database
+Supabase (Postgres)
     ↓ Generate auto-response?
 AI generates reply
     ↓ Send via Twilio
@@ -233,13 +223,13 @@ Reply SMS delivered
 
 ### **⚠️ Needs Setup:**
 
-- Xano communications table creation
+- Supabase communications table creation
 - Twilio webhook URLs configuration
 - Production environment variables
 
 ### **🔧 Next Steps:**
 
-1. **Create `communications` table in your Xano workspace**
+1. **Create `communications` table in your Supabase project**
 2. **Set up webhook URLs in Twilio console**
 3. **Test end-to-end message flow**
 4. **Configure production environment**

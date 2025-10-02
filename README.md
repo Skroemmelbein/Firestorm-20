@@ -25,7 +25,7 @@ A comprehensive full-stack application integrating multiple messaging channels (
 
 - **Frontend**: React + TypeScript + Vite
 - **Backend**: Node.js + Express + TypeScript
-- **Database**: Xano (cloud database)
+- **Database**: Supabase (Postgres with Auth & RLS)
 - **Payment**: NMI Gateway
 - **Messaging**: Twilio, SendGrid
 - **AI**: OpenAI GPT-4o integration
@@ -83,9 +83,12 @@ A comprehensive full-stack application integrating multiple messaging channels (
 ### Required Environment Variables
 
 ```env
-# Xano Database
-XANO_API_KEY=your_xano_api_key
-XANO_BASE_URL=https://your-workspace.xano.io/api:version
+# Supabase (Server)
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# Optional: Supabase (Client/UI)
+SUPABASE_ANON_KEY=your_anon_key
 
 # Twilio Messaging
 TWILIO_ACCOUNT_SID=your_account_sid
@@ -118,10 +121,10 @@ OPENAI_API_KEY=sk-proj-your_openai_key
 ## 🏗 Architecture
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React Client  │────│  Express API    │────│  Xano Database  │
-│   (Port 8080)   │    │  (Port 5001)    │    │   (Cloud)       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+┌─────────────────┐    ┌─────────────────┐    ┌───────────────────────┐
+│   React Client  │────│  Express API    │────│       Supabase         │
+│   (Port 8080)   │    │  (Port 5001)    │    │  Postgres + Auth/RLS  │
+└─────────────────┘    └─────────────────┘    └───────────────────────┘
                               │
                     ┌─────────┼─────────┐
                     │         │         │
@@ -153,14 +156,14 @@ docker-compose --profile production up -d
 ### Environment Setup
 - Ensure all API credentials are properly configured
 - Set `NODE_ENV=production` for production deployments
-- Configure reverse proxy (nginx) for SSL termination
+- Deployment target: Vercel (this project is Vercel-first; Cloudflare/Netlify are not used)
 
 ## 📊 Monitoring
 
 - Health check endpoint: `/api/health`
 - Slack alerts for bounce rates > 3%
 - QuickChart integration for analytics graphs
-- Comprehensive logging to Xano database
+- Comprehensive logging to Supabase (Postgres)
 
 ## 🔐 Security
 
